@@ -1,0 +1,74 @@
+server:
+  port: 7071
+
+spring:
+  application:
+    name: "task-detect"
+  profiles:
+    active:
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  datasource:
+    url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    druid:
+      initial-size: 5
+      min-idle: 10
+      max-active: 20
+  redis:
+    cluster:
+      nodes: localhost:6379
+      max-redirects: 3
+    lettuce:
+      pool:
+        max-active: 32
+        max-idle: 16
+        min-idle: 8
+  elasticsearch:
+    nodes: localhost:19527
+    username:
+    password:
+
+  kafka:
+    bootstrap-servers: localhost:9095
+    listener:
+      type: batch
+      ack-mode: MANUAL_IMMEDIATE
+    consumer:
+      enable-auto-commit: false
+      max-poll-records: 1
+
+custom:
+  schedulerType: ${SCHEDULER:dolphinscheduler}
+  redis:
+    logRecord: "{lua}:log:record"
+    delayedQueue: "{lua}:delayed:task"
+    processing: "{lua}:detected:processing"
+  delayedTaskQueue:
+    enable: true
+    delayedSeconds: 10
+    tryTimes: 5
+  elasticsearch:
+    yarn-app-index: "compass-yarn-app"
+    spark-app-index: "compass-spark-app"
+    job-index: "compass-job-analysis"
+    app-index: "compass-task-app"
+    job-instance-index: "compass-job-instance"
+
+  kafka:
+    consumer:
+      group-id: cp-detection-task
+      topic-name: task-instance
+      auto:
+        start: true
+
+  detectionRule:
+    # 运行耗时长配置，单位小时
+    durationWarning: 2
+    # 长期失败配置，单位天
+    alwaysFailedWarning: 10
+
+  sparkUiProxy:
+    url: "http://%s:18018/history/%s"

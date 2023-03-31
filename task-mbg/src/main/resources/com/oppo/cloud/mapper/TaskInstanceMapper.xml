@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oppo.cloud.mapper.TaskInstanceMapper">
+  <resultMap id="BaseResultMap" type="com.oppo.cloud.model.TaskInstance">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="flow_name" jdbcType="VARCHAR" property="flowName" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+    <result column="execution_time" jdbcType="TIMESTAMP" property="executionTime" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="task_state" jdbcType="VARCHAR" property="taskState" />
+    <result column="task_type" jdbcType="VARCHAR" property="taskType" />
+    <result column="retry_times" jdbcType="INTEGER" property="retryTimes" />
+    <result column="max_retry_times" jdbcType="INTEGER" property="maxRetryTimes" />
+    <result column="worker_group" jdbcType="VARCHAR" property="workerGroup" />
+    <result column="trigger_type" jdbcType="VARCHAR" property="triggerType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, project_name, flow_name, task_name, execution_time, start_time, end_time, task_state, 
+    task_type, retry_times, max_retry_times, worker_group, trigger_type, create_time, 
+    update_time
+  </sql>
+  <select id="selectByExample" parameterType="com.oppo.cloud.model.TaskInstanceExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from task_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from task_instance
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from task_instance
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.oppo.cloud.model.TaskInstanceExample">
+    delete from task_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.oppo.cloud.model.TaskInstance">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into task_instance (project_name, flow_name, task_name, 
+      execution_time, start_time, end_time, 
+      task_state, task_type, retry_times, 
+      max_retry_times, worker_group, trigger_type, 
+      create_time, update_time)
+    values (#{projectName,jdbcType=VARCHAR}, #{flowName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, 
+      #{executionTime,jdbcType=TIMESTAMP}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{taskState,jdbcType=VARCHAR}, #{taskType,jdbcType=VARCHAR}, #{retryTimes,jdbcType=INTEGER}, 
+      #{maxRetryTimes,jdbcType=INTEGER}, #{workerGroup,jdbcType=VARCHAR}, #{triggerType,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.oppo.cloud.model.TaskInstance">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into task_instance
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projectName != null">
+        project_name,
+      </if>
+      <if test="flowName != null">
+        flow_name,
+      </if>
+      <if test="taskName != null">
+        task_name,
+      </if>
+      <if test="executionTime != null">
+        execution_time,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="taskState != null">
+        task_state,
+      </if>
+      <if test="taskType != null">
+        task_type,
+      </if>
+      <if test="retryTimes != null">
+        retry_times,
+      </if>
+      <if test="maxRetryTimes != null">
+        max_retry_times,
+      </if>
+      <if test="workerGroup != null">
+        worker_group,
+      </if>
+      <if test="triggerType != null">
+        trigger_type,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projectName != null">
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="flowName != null">
+        #{flowName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null">
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="executionTime != null">
+        #{executionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskState != null">
+        #{taskState,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null">
+        #{taskType,jdbcType=VARCHAR},
+      </if>
+      <if test="retryTimes != null">
+        #{retryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="maxRetryTimes != null">
+        #{maxRetryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="workerGroup != null">
+        #{workerGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="triggerType != null">
+        #{triggerType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.oppo.cloud.model.TaskInstanceExample" resultType="java.lang.Long">
+    select count(*) from task_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update task_instance
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.projectName != null">
+        project_name = #{record.projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.flowName != null">
+        flow_name = #{record.flowName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskName != null">
+        task_name = #{record.taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.executionTime != null">
+        execution_time = #{record.executionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.startTime != null">
+        start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endTime != null">
+        end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.taskState != null">
+        task_state = #{record.taskState,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskType != null">
+        task_type = #{record.taskType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.retryTimes != null">
+        retry_times = #{record.retryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="record.maxRetryTimes != null">
+        max_retry_times = #{record.maxRetryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="record.workerGroup != null">
+        worker_group = #{record.workerGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="record.triggerType != null">
+        trigger_type = #{record.triggerType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update task_instance
+    set id = #{record.id,jdbcType=INTEGER},
+      project_name = #{record.projectName,jdbcType=VARCHAR},
+      flow_name = #{record.flowName,jdbcType=VARCHAR},
+      task_name = #{record.taskName,jdbcType=VARCHAR},
+      execution_time = #{record.executionTime,jdbcType=TIMESTAMP},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      task_state = #{record.taskState,jdbcType=VARCHAR},
+      task_type = #{record.taskType,jdbcType=VARCHAR},
+      retry_times = #{record.retryTimes,jdbcType=INTEGER},
+      max_retry_times = #{record.maxRetryTimes,jdbcType=INTEGER},
+      worker_group = #{record.workerGroup,jdbcType=VARCHAR},
+      trigger_type = #{record.triggerType,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.TaskInstance">
+    update task_instance
+    <set>
+      <if test="projectName != null">
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="flowName != null">
+        flow_name = #{flowName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null">
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="executionTime != null">
+        execution_time = #{executionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskState != null">
+        task_state = #{taskState,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null">
+        task_type = #{taskType,jdbcType=VARCHAR},
+      </if>
+      <if test="retryTimes != null">
+        retry_times = #{retryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="maxRetryTimes != null">
+        max_retry_times = #{maxRetryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="workerGroup != null">
+        worker_group = #{workerGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="triggerType != null">
+        trigger_type = #{triggerType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.TaskInstance">
+    update task_instance
+    set project_name = #{projectName,jdbcType=VARCHAR},
+      flow_name = #{flowName,jdbcType=VARCHAR},
+      task_name = #{taskName,jdbcType=VARCHAR},
+      execution_time = #{executionTime,jdbcType=TIMESTAMP},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      task_state = #{taskState,jdbcType=VARCHAR},
+      task_type = #{taskType,jdbcType=VARCHAR},
+      retry_times = #{retryTimes,jdbcType=INTEGER},
+      max_retry_times = #{maxRetryTimes,jdbcType=INTEGER},
+      worker_group = #{workerGroup,jdbcType=VARCHAR},
+      trigger_type = #{triggerType,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,129 @@
+spring:
+  datasource:
+    dynamic:
+      primary: diagnose
+      strict: false
+      datasource:
+        diagnose:
+          url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&tinyInt1isBit=false
+          username: root
+          password: root
+        source:
+          url: jdbc:mysql://localhost:33066/airflow?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&tinyInt1isBit=false
+          username: root
+          password: Root@666
+
+  kafka:
+    bootstrap-servers: localhost:9095
+    topics: mysqldata
+    consumer:
+      group-id: task-syncer-airflow
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-interval-ms: 300000
+
+
+# 从kafka同步mysql binlog数据
+# 必须映射表: user, flow, task, task_instance
+datasource:
+  mappings:
+    # user 表映射
+    - schema: "airflow"            # 同步源数据库
+      table: "ab_user"      # 源表名
+      targetTable: "user"      # 目标表名
+      columnMapping: # 字段映射，将id,user_name...字段映射为user_id,username...
+        user_id: "id"              # 目标字段:源字段
+        username: "username"
+        password: "password"
+        email: "email"
+        create_time: "created_on"
+        update_time: "changed_on"
+      constantColumn:
+        scheduler_type: "Airflow"
+
+    # project 表映射
+    - schema: "airflow"
+      table: "dag"
+      targetTable: "project"
+      columnMapping:
+        id: ""
+        project_name: "dag_id"
+        description: "description"
+        user_id: ""
+        project_status: "is_active"
+        create_time: ""
+        update_time: "last_updated"
+      columnDep:
+        columns: [ "user_id" ]
+        queries: [ "select u.id as user_id from tb_dag as d inner join tb_ab_user as u on d.owners = u.username where d.dag_id = ${project_name}" ]
+
+
+    # flow 表映射
+    - schema: "airflow"
+      table: "dag"
+      targetTable: "flow"
+      columnMapping:
+        id: ""
+        flow_name: "dag_id"
+        description: "description"
+        user_id: ""
+        flow_status: "is_active"
+        project_id: ""
+        project_name: "dag_id"
+        update_time: "last_updated"
+      columnDep:
+        columns: [ "user_id" ]
+        queries: [ "select u.id as user_id from tb_dag as d inner join tb_ab_user as u on d.owners = u.username where d.dag_id = ${flow_name}" ]
+
+    # task 任务表映射
+    - schema: "airflow"
+      table: "task_instance"
+      targetTable: "task"
+      columnMapping:
+        id: ""
+        project_name: "dag_id"
+        project_id: ""
+        flow_name: "dag_id"
+        flow_id: ""
+        task_name: "task_id"
+        user_id: ""
+        task_type: "operator"
+        retries: "max_tries"
+        create_time: ""
+        update_time: ""
+      columnDep:
+        columns: [ "user_id", "update_time" ]
+        queries: [ "select u.id as user_id,d.last_parsed_time as update_time from tb_dag as d  inner join tb_ab_user as u on d.owners = u.username where d.dag_id = ${flow_name} limit 1" ]
+
+    # task_instance 任务表映射
+    - schema: "airflow"
+      table: "task_instance"
+      targetTable: "task_instance"
+      columnMapping:
+        id: ""
+        project_name: "dag_id"
+        flow_name: "dag_id"
+        task_name: "task_id"
+        start_time: "start_date"
+        end_time: "end_date"
+        execution_time: ""
+        task_state: "state"  # 映射
+        task_type: "operator"
+        retry_times: "try_number"
+        max_retry_times: "max_tries"
+        worker_group: ""
+        create_time: ""
+        update_time: ""
+        run_id: "run_id"
+      columnValueMapping: # 字段值映射
+        # 只需要关注成功和失败，其他状态为其他
+        task_state:
+          - { targetValue: "success", originValue: [ "success" ] }
+          - { targetValue: "fail", originValue: [ "failed" ] }
+          - { targetValue: "up_for_retry", originValue: [ "up_for_retry" ] }
+          - { targetValue: "other", originValue: [ "none", "removed", "scheduled", "queued", "running", "shutdown", "up_for_reschedule", "upstream_failed", "skipped","sensing","deferred" ] }
+      columnDep:
+        columns: [ "execution_time" ]
+        queries: [ "select execution_date as execution_time from tb_dag_run where dag_id=${flow_name} and run_id=${run_id}" ]
+      # 写回 kafka topic
+      writeKafkaTopic: task-instance

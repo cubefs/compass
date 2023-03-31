@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oppo.cloud.syncer.dao.TaskInstanceExtendMapper">
+  <insert id="save" parameterType="com.oppo.cloud.model.TaskInstance">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+        SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into task_instance (id, project_name, flow_name, task_name,
+      start_time, end_time, execution_time,
+      task_state, retry_times, max_retry_times,
+      worker_group, trigger_type, create_time, update_time
+      )
+    values (#{id, jdbcType=INTEGER}, #{projectName,jdbcType=VARCHAR}, #{flowName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR},
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{executionTime,jdbcType=TIMESTAMP},
+      #{taskState,jdbcType=VARCHAR}, #{retryTimes,jdbcType=INTEGER}, #{maxRetryTimes,jdbcType=INTEGER},
+      #{workerGroup,jdbcType=VARCHAR}, #{triggerType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="saveSelective" parameterType="com.oppo.cloud.model.TaskInstance">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into task_instance
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="projectName != null">
+        project_name,
+      </if>
+      <if test="flowName != null">
+        flow_name,
+      </if>
+      <if test="taskName != null">
+        task_name,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="executionTime != null">
+        execution_time,
+      </if>
+      <if test="taskState != null">
+        task_state,
+      </if>
+      <if test="retryTimes != null">
+        retry_times,
+      </if>
+      <if test="maxRetryTimes != null">
+        max_retry_times,
+      </if>
+      <if test="workerGroup != null">
+        worker_group,
+      </if>
+      <if test="triggerType != null">
+        trigger_type,
+      </if>
+        <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null">
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="flowName != null">
+        #{flowName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null">
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="executionTime != null">
+        #{executionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskState != null">
+        #{taskState,jdbcType=VARCHAR},
+      </if>
+      <if test="retryTimes != null">
+        #{retryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="maxRetryTimes != null">
+        #{maxRetryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="workerGroup != null">
+        #{workerGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="triggerType != null">
+        #{triggerType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByCompositePrimaryKeySelective" parameterType="com.oppo.cloud.model.TaskInstance">
+    update task_instance
+    <set>
+      <if test="projectName != null">
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="flowName != null">
+        flow_name = #{flowName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null">
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="executionTime != null">
+        execution_time = #{executionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="taskState != null">
+        task_state = #{taskState,jdbcType=VARCHAR},
+      </if>
+      <if test="retryTimes != null">
+        retry_times = #{retryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="maxRetryTimes != null">
+        max_retry_times = #{maxRetryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="workerGroup != null">
+        worker_group = #{workerGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="triggerType != null">
+        trigger_type = #{triggerType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where flow_name = #{flowName,jdbcType=VARCHAR} and task_name = #{taskName,jdbcType=VARCHAR} and execution_time = #{executionTime,jdbcType=TIMESTAMP}
+  </update>
+</mapper>
+

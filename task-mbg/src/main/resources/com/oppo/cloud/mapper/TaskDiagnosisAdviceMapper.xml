@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oppo.cloud.mapper.TaskDiagnosisAdviceMapper">
+  <resultMap id="BaseResultMap" type="com.oppo.cloud.model.TaskDiagnosisAdvice">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="log_type" jdbcType="VARCHAR" property="logType" />
+    <result column="parent_action" jdbcType="VARCHAR" property="parentAction" />
+    <result column="action" jdbcType="VARCHAR" property="action" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="variables" jdbcType="VARCHAR" property="variables" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+    <result column="normal_advice" jdbcType="VARCHAR" property="normalAdvice" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.oppo.cloud.model.TaskDiagnosisAdvice">
+    <result column="abnormal_advice" jdbcType="LONGVARCHAR" property="abnormalAdvice" />
+    <result column="rule" jdbcType="LONGVARCHAR" property="rule" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, log_type, parent_action, `action`, description, `variables`, category, deleted, 
+    normal_advice
+  </sql>
+  <sql id="Blob_Column_List">
+    abnormal_advice, `rule`
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.oppo.cloud.model.TaskDiagnosisAdviceExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from task_diagnosis_advice
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.oppo.cloud.model.TaskDiagnosisAdviceExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from task_diagnosis_advice
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from task_diagnosis_advice
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from task_diagnosis_advice
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.oppo.cloud.model.TaskDiagnosisAdviceExample">
+    delete from task_diagnosis_advice
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.oppo.cloud.model.TaskDiagnosisAdvice">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into task_diagnosis_advice (log_type, parent_action, `action`, 
+      description, `variables`, category, 
+      deleted, normal_advice, abnormal_advice, 
+      `rule`)
+    values (#{logType,jdbcType=VARCHAR}, #{parentAction,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{variables,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, 
+      #{deleted,jdbcType=INTEGER}, #{normalAdvice,jdbcType=VARCHAR}, #{abnormalAdvice,jdbcType=LONGVARCHAR}, 
+      #{rule,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.oppo.cloud.model.TaskDiagnosisAdvice">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into task_diagnosis_advice
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="logType != null">
+        log_type,
+      </if>
+      <if test="parentAction != null">
+        parent_action,
+      </if>
+      <if test="action != null">
+        `action`,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="variables != null">
+        `variables`,
+      </if>
+      <if test="category != null">
+        category,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+      <if test="normalAdvice != null">
+        normal_advice,
+      </if>
+      <if test="abnormalAdvice != null">
+        abnormal_advice,
+      </if>
+      <if test="rule != null">
+        `rule`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="logType != null">
+        #{logType,jdbcType=VARCHAR},
+      </if>
+      <if test="parentAction != null">
+        #{parentAction,jdbcType=VARCHAR},
+      </if>
+      <if test="action != null">
+        #{action,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="variables != null">
+        #{variables,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="normalAdvice != null">
+        #{normalAdvice,jdbcType=VARCHAR},
+      </if>
+      <if test="abnormalAdvice != null">
+        #{abnormalAdvice,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="rule != null">
+        #{rule,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.oppo.cloud.model.TaskDiagnosisAdviceExample" resultType="java.lang.Long">
+    select count(*) from task_diagnosis_advice
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update task_diagnosis_advice
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.logType != null">
+        log_type = #{record.logType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentAction != null">
+        parent_action = #{record.parentAction,jdbcType=VARCHAR},
+      </if>
+      <if test="record.action != null">
+        `action` = #{record.action,jdbcType=VARCHAR},
+      </if>
+      <if test="record.description != null">
+        description = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.variables != null">
+        `variables` = #{record.variables,jdbcType=VARCHAR},
+      </if>
+      <if test="record.category != null">
+        category = #{record.category,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deleted != null">
+        deleted = #{record.deleted,jdbcType=INTEGER},
+      </if>
+      <if test="record.normalAdvice != null">
+        normal_advice = #{record.normalAdvice,jdbcType=VARCHAR},
+      </if>
+      <if test="record.abnormalAdvice != null">
+        abnormal_advice = #{record.abnormalAdvice,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.rule != null">
+        `rule` = #{record.rule,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update task_diagnosis_advice
+    set id = #{record.id,jdbcType=INTEGER},
+      log_type = #{record.logType,jdbcType=VARCHAR},
+      parent_action = #{record.parentAction,jdbcType=VARCHAR},
+      `action` = #{record.action,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      `variables` = #{record.variables,jdbcType=VARCHAR},
+      category = #{record.category,jdbcType=VARCHAR},
+      deleted = #{record.deleted,jdbcType=INTEGER},
+      normal_advice = #{record.normalAdvice,jdbcType=VARCHAR},
+      abnormal_advice = #{record.abnormalAdvice,jdbcType=LONGVARCHAR},
+      `rule` = #{record.rule,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update task_diagnosis_advice
+    set id = #{record.id,jdbcType=INTEGER},
+      log_type = #{record.logType,jdbcType=VARCHAR},
+      parent_action = #{record.parentAction,jdbcType=VARCHAR},
+      `action` = #{record.action,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
+      `variables` = #{record.variables,jdbcType=VARCHAR},
+      category = #{record.category,jdbcType=VARCHAR},
+      deleted = #{record.deleted,jdbcType=INTEGER},
+      normal_advice = #{record.normalAdvice,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.TaskDiagnosisAdvice">
+    update task_diagnosis_advice
+    <set>
+      <if test="logType != null">
+        log_type = #{logType,jdbcType=VARCHAR},
+      </if>
+      <if test="parentAction != null">
+        parent_action = #{parentAction,jdbcType=VARCHAR},
+      </if>
+      <if test="action != null">
+        `action` = #{action,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="variables != null">
+        `variables` = #{variables,jdbcType=VARCHAR},
+      </if>
+      <if test="category != null">
+        category = #{category,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="normalAdvice != null">
+        normal_advice = #{normalAdvice,jdbcType=VARCHAR},
+      </if>
+      <if test="abnormalAdvice != null">
+        abnormal_advice = #{abnormalAdvice,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="rule != null">
+        `rule` = #{rule,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.oppo.cloud.model.TaskDiagnosisAdvice">
+    update task_diagnosis_advice
+    set log_type = #{logType,jdbcType=VARCHAR},
+      parent_action = #{parentAction,jdbcType=VARCHAR},
+      `action` = #{action,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      `variables` = #{variables,jdbcType=VARCHAR},
+      category = #{category,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=INTEGER},
+      normal_advice = #{normalAdvice,jdbcType=VARCHAR},
+      abnormal_advice = #{abnormalAdvice,jdbcType=LONGVARCHAR},
+      `rule` = #{rule,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.TaskDiagnosisAdvice">
+    update task_diagnosis_advice
+    set log_type = #{logType,jdbcType=VARCHAR},
+      parent_action = #{parentAction,jdbcType=VARCHAR},
+      `action` = #{action,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      `variables` = #{variables,jdbcType=VARCHAR},
+      category = #{category,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=INTEGER},
+      normal_advice = #{normalAdvice,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

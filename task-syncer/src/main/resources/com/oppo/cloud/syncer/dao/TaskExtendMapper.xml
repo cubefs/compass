@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oppo.cloud.syncer.dao.TaskExtendMapper">
+    <insert id="save" parameterType="com.oppo.cloud.model.Task">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into task (id, project_name, project_id, flow_name,
+        flow_id, task_name, description,
+        user_id, task_type, retries,
+        create_time, update_time)
+        values (#{id,javaType=INTEGER}, #{projectName,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{flowName,jdbcType=VARCHAR},
+        #{flowId,jdbcType=INTEGER}, #{taskName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+        #{userId,jdbcType=INTEGER}, #{taskType,jdbcType=VARCHAR}, #{retries,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="saveSelective" parameterType="com.oppo.cloud.model.Task">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="projectName != null">
+                project_name,
+            </if>
+            <if test="projectId != null">
+                project_id,
+            </if>
+            <if test="flowName != null">
+                flow_name,
+            </if>
+            <if test="flowId != null">
+                flow_id,
+            </if>
+            <if test="taskName != null">
+                task_name,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="taskType != null">
+                task_type,
+            </if>
+            <if test="retries != null">
+                retries,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="projectName != null">
+                #{projectName,jdbcType=VARCHAR},
+            </if>
+            <if test="projectId != null">
+                #{projectId,jdbcType=INTEGER},
+            </if>
+            <if test="flowName != null">
+                #{flowName,jdbcType=VARCHAR},
+            </if>
+            <if test="flowId != null">
+                #{flowId,jdbcType=INTEGER},
+            </if>
+            <if test="taskName != null">
+                #{taskName,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="taskType != null">
+                #{taskType,jdbcType=VARCHAR},
+            </if>
+            <if test="retries != null">
+                #{retries,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+</mapper>
+

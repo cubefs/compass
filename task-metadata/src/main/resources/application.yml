@@ -1,0 +1,45 @@
+server:
+  port: 7072
+
+spring:
+  profiles:
+    active: hadoop
+  task:
+    scheduling:
+      pool:
+        size: 10
+  redis:
+    cluster:
+      nodes: localhost:6379
+
+  zookeeper:
+    nodes: localhost:2181
+    namespace: task-metadata
+    retryCount: 5
+    elapsedTimeMs: 5000
+    sessionTimeoutMs: 15000
+    connectionTimeoutMs: 10000
+
+  elasticsearch:
+    nodes: localhost:19527
+    username:
+    password:
+    yarn-app-prefix: "compass-yarn-app-"
+    spark-app-prefix: "compass-spark-app-"
+
+scheduler:
+  clusterMeta:
+    enable: true
+    cron: "0 */30 * * * ?"
+    zkPath: "/clusterMetaLock"
+  yarnMeta:
+    enable: true
+    cron: "0/30 * * * * ?"
+    # hour
+    startedTimeBegin: 24
+    zkPath: "/yarnMetaLock"
+  sparkMeta:
+    enable: true
+    cron: "0/30 * * * * ?"
+    limitCount: 1000
+    zkPath: "/sparkMetaLock"

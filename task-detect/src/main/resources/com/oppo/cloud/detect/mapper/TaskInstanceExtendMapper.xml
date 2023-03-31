@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oppo.cloud.detect.mapper.TaskInstanceExtendMapper">
+    <resultMap id="TaskStateHistory" type="com.oppo.cloud.detect.domain.TaskStateHistory">
+        <result column="execution_time" jdbcType="TIMESTAMP" property="executionTime" />
+        <result column="state" jdbcType="VARCHAR" property="state"/>
+        <result column="value" jdbcType="DOUBLE"   property="value" />
+    </resultMap>
+
+    <select id="searchTaskState" parameterType="com.oppo.cloud.model.TaskInstanceExample" resultMap="TaskStateHistory">
+        select execution_time, max(task_state) as state, 0 as value
+        from task_instance
+        <if test="_parameter != null">
+            <include refid="com.oppo.cloud.mapper.TaskInstanceMapper.Example_Where_Clause" />
+        </if>
+        group by execution_time order by execution_time desc
+    </select>
+    
+    <select id="searchTaskDuration" parameterType="com.oppo.cloud.model.TaskInstanceExample" resultMap="TaskStateHistory">
+        select (UNIX_TIMESTAMP(end_time) - UNIX_TIMESTAMP(start_time)) as value, execution_time, task_state as state from (
+        select min(start_time) as start_time, max(end_time) as end_time , execution_time, max(task_state) as task_state
+        from task_instance
+        <if test="_parameter != null">
+            <include refid="com.oppo.cloud.mapper.TaskInstanceMapper.Example_Where_Clause"/>
+        </if>
+        group by execution_time order by execution_time desc
+        ) as a
+    </select>
+    
+    <select id="searchTaskRelativeEndTime" parameterType="com.oppo.cloud.model.TaskInstanceExample" resultMap="TaskStateHistory">
+       select (UNIX_TIMESTAMP(end_time) - UNIX_TIMESTAMP(execution_time)) as value, execution_time, task_state as state from(
+        select min(start_time) as start_time, max(end_time) as end_time , execution_time, max(task_state) as task_state
+        from task_instance
+        <if test="_parameter != null">
+            <include refid="com.oppo.cloud.mapper.TaskInstanceMapper.Example_Where_Clause"/>
+        </if>
+        group by execution_time order by execution_time desc
+        ) as a
+    </select>
+
+</mapper>

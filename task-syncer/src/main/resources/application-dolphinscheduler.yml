@@ -1,0 +1,132 @@
+spring:
+  datasource:
+    dynamic:
+      primary: diagnose
+      strict: false
+      datasource:
+        diagnose:
+          url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&tinyInt1isBit=false
+          username: root
+          password: root
+        source:
+          url: jdbc:mysql://10.177.162.27:33066/dolphinscheduler?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&tinyInt1isBit=false
+          username: root
+          password: root
+
+  kafka:
+    bootstrap-servers: localhost:9095
+    topics: mysqldata
+    consumer:
+      group-id: task-syncer-ds
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-interval-ms: 300000
+
+
+# 从kafka同步mysql binlog数据
+# 必须映射表: user, project, flow, task, task_instance
+datasource:
+  mappings:
+    # user 表映射
+    - schema: "dolphinscheduler" # 同步源数据库
+      table: "t_ds_user"         # 源表名
+      targetTable: "user"        # 目标表名
+      columnMapping: # 字段映射，将id,user_name...字段映射为user_id,username...
+        user_id: "id"            # 目标字段:源字段
+        username: "user_name"
+        password: "user_password"
+        is_admin: "user_type"
+        email: "email"
+        phone: "phone"
+        create_time: "create_time"
+        update_time: "update_time"
+      columnValueMapping: # 字段值映射, 目标字段值, 源字段值, 字段类型
+        is_admin: [ { targetValue: "0", originValue: [ "0" ] }, { targetValue: "1", originValue: [ "1" ] } ]
+      constantColumn:
+        scheduler_type: "DolphinScheduler"
+
+    # project 表映射
+    - schema: "dolphinscheduler"
+      table: "t_ds_project"
+      targetTable: "project"
+      columnMapping:
+        id: "id"
+        project_name: "name"
+        description: "description"
+        user_id: "user_id"
+        project_status: "flag"
+        create_time: "create_time"
+        update_time: "update_time"
+      columnValueMapping: # 字段值映射
+        project_status: [ { targetValue: "0", originValue: [ "0" ] }, { targetValue: "1", originValue: [ "1" ] } ]
+
+    # flow 表映射
+    - schema: "dolphinscheduler"
+      table: "t_ds_process_definition"
+      targetTable: "flow"
+      columnMapping:
+        id: "id"
+        flow_name: "name"
+        description: "description"
+        user_id: "user_id"
+        flow_status: "flag"
+        project_id: ""
+        project_name: ""
+        create_time: "create_time"
+        update_time: "update_time"
+      columnDep:
+        columns: [ "project_id", "project_name" ] # 依赖project_id, project_name, 需要从其他表抓取
+        queries: [ "select project.id as project_id, project.name as project_name from t_ds_process_definition as process inner join t_ds_project as project on process.project_code=project.code where process.id=${id}" ]
+
+    # task 表映射
+    - schema: "dolphinscheduler"
+      table: "t_ds_task_definition"
+      targetTable: "task"
+      columnMapping:
+        id: "id"
+        project_name: ""
+        project_id: ""
+        flow_name: ""
+        flow_id: ""
+        task_name: "name"
+        description: "description"
+        user_id: "user_id"
+        task_type: "task_type"
+        retries: "fail_retry_times"
+        create_time: "create_time"
+        update_time: "update_time"
+      columnDep:
+        columns: [ "project_id","project_name","flow_name","flow_id" ] # t_ds_task_definition, t_ds_process_task_relation, t_ds_process_definition, t_ds_project
+        queries: [ "select process.id as flow_id, process.name as flow_name, project.id as project_id, project.name as project_name from t_ds_task_definition as task inner join t_ds_process_task_relation as relation on task.code=relation.post_task_code inner join t_ds_process_definition as process on relation.process_definition_code=process.code inner join t_ds_project as project on task.project_code=project.code where task.id=${id}" ]
+
+    # task_instance 任务表映射
+    - schema: "dolphinscheduler"
+      table: "t_ds_task_instance"
+      targetTable: "task_instance"
+      columnMapping:
+        id: "id"
+        project_name: ""
+        flow_name: ""
+        task_name: "name"
+        start_time: "start_time"
+        end_time: "end_time"
+        execution_time: ""
+        task_state: "state"  # 映射
+        task_type: "task_type"
+        retry_times: "retry_times"
+        max_retry_times: "max_retry_times"
+        worker_group: "worker_group"
+        create_time: "create_time"
+        update_time: "update_time"
+      columnValueMapping: # 字段值映射
+        # 0 commit succeeded, 1 running, 2 prepare to pause, 3 pause, 4 prepare to stop, 5 stop, 6 fail, 7 succeed, 8 need fault tolerance, 9 kill, 10 wait for thread, 11 wait for dependency to complete'
+        # 只需要关注成功和失败，其他状态为其他
+        task_state:
+          - { targetValue: "success", originValue: [ "7", "14" ] }
+          - { targetValue: "fail", originValue: [ "6", "9" ] } # kill is also fail
+          - { targetValue: "other", originValue: [ "0", "1", "2", "3", "4", "5", "8", "10", "11", "12", "13" ] }
+      columnDep:
+        columns: [ "project_name", "flow_name", "execution_time" ]
+        queries: [ "select t2.schedule_time as execution_time, t3.name as flow_name, t4.name as project_name from t_ds_task_instance as t1 inner join t_ds_process_instance as t2 on t1.process_instance_id = t2.id inner join t_ds_process_definition as t3 on t2.process_definition_code = t3.code inner join t_ds_project as t4 on t3.project_code=t4.code where t1.id=${id}" ]
+      # 写回 kafka topic
+      writeKafkaTopic: task-instance

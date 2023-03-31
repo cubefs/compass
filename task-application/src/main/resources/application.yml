@@ -1,0 +1,15 @@
+server:
+  port: 7070
+
+spring:
+  application:
+    name: task-application
+  profiles:
+    active: dolphinscheduler,hadoop
+
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

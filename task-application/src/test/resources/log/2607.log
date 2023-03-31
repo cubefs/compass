@@ -1,0 +1,10 @@
+[INFO] 2022-02-22 11:02:27.148  - [taskAppId=TASK-4574789155328_1-2413-2607]:[42] - spark task params {"appName":"","deployMode":"client","driverCores":1,"driverMemory":"512M","executorCores":2,"executorMemory":"2G","mainArgs":"","mainClass":"","mainJar":{"id":45,"res":"20220218155540.py","resourceName":"/20220218155540.py"},"numExecutors":2,"others":"","programType":"PYTHON","resourceFilesList":[],"resourceList":[],"sparkVersion":"SPARK2"}
+[INFO] 2022-02-22 11:02:27.152  - [taskAppId=TASK-4574789155328_1-2413-2607]:[128] - getResourceFile, filePath /tmp/dolphinscheduler_201/exec/process/4551996174208/4574789155328_1/2413/2607//20220218155540.py
+[INFO] 2022-02-22 11:02:27.153  - [taskAppId=TASK-4574789155328_1-2413-2607]:[133] - getResourceFile, filePath /tmp/dolphinscheduler_201/exec/process/4551996174208/4574789155328_1/2413/2607//20220218155540.py, content rdd = sc.parallelize([1,2,3,4,5])
+print(rdd.getNumPartitions())
+
+[INFO] 2022-02-22 11:02:27.156  - [taskAppId=TASK-4574789155328_1-2413-2607]:[61] - user : hdfs, content : [rdd = sc.parallelize([1,2,3,4,5])
+print(rdd.getNumPartitions())
+]
+[INFO] 2022-02-22 11:02:27.417  - [taskAppId=TASK-4574789155328_1-2413-2607]:[90] - execId: exec_id018013linkis-cg-entrancebjht3929:9104IDE_hdfs_spark_4, taskId: 2859
+[INFO] 2022-02-22 11:02:31.669  - [taskAppId=TASK-4574789155328_1-2413-2607]:[105] - fileContents: [[2]]

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oppo.cloud.portal.dao.TaskInstanceExtendMapper">
+    <select id="searchJobCount" resultType="java.lang.Integer">
+        select count(*) from (
+               select project_name, flow_name, task_name
+               from task_instance
+        <where>
+            <if test="startTime != null">
+                and execution_time >= #{startTime}
+            </if>
+            <if test = "endTime != null">
+                and execution_time &lt;= #{endTime}
+            </if>
+        </where>
+        group by project_name, flow_name, task_name) as a
+    </select>
+
+    <select id="searchJobInstanceCount" resultType="java.lang.Integer">
+        select count(*) from task_instance
+        <where>
+            <if test="startTime != null">
+                and execution_time >= #{startTime}
+            </if>
+            <if test = "endTime != null">
+                and execution_time &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+</mapper>

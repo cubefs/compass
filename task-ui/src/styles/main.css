@@ -1,0 +1,64 @@
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #f2f2f2;
+}
+
+html.dark {
+  background: #121212;
+  color-scheme: dark;
+}
+
+#nprogress {
+  pointer-events: none;
+}
+
+#nprogress .bar {
+  background: rgb(13,148,136);
+  opacity: 0.75;
+  position: fixed;
+  z-index: 1031;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+}
+
+.m-t-5 {
+  margin-top: 5px
+}
+.m-l-5 {
+  margin-left: 5px
+}
+.m-b-5 {
+  margin-bottom: 5px
+}
+.m-b-10 {
+  margin-bottom: 10px
+}
+.m-b-15 {
+  margin-bottom: 15px
+}
+.category-card {
+  display: inline-block;
+  padding: 6px 10px;
+  margin: 4px 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 13px;
+  box-shadow: 2px 1px 5px 2px #eaeaea;
+  border-radius: 3px;
+}
+.f-r {
+  float:right
+}
+.f-l {
+  float:left
+}
+.pointer {
+  cursor: pointer;
+}

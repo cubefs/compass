@@ -1,0 +1,615 @@
+[
+  {
+    "logType": "scheduler",
+    "actions": [
+      {
+        "action": "otherError",
+        "desc": "其他错误信息",
+        "category": "otherException",
+        "step": 1,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^.+ERROR.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [],
+        "children": []
+      }
+    ]
+  },
+  {
+    "logType": "driver",
+    "actions": [
+      {
+        "action": "containerFailed",
+        "desc": "Container失败",
+        "category": "otherException",
+        "step": 1,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+Container marked as failed: (?<container>\\S+) on.+Exit status: (?<exitStatus>.+)\\..+Diagnostics:.+$"
+          ],
+          "middles": [],
+          "tails": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+$"
+          ]
+        },
+        "groupNames": [
+          "datetime",
+          "container",
+          "exitStatus"
+        ],
+        "children": []
+      },
+      {
+        "action": "stageFailed",
+        "desc": "Stage失败",
+        "category": "otherException",
+        "step": 2,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+ in stage (?<stage>\\S+) failed\\s+(?<failedNum>\\S+)\\s+times;.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "datetime",
+          "stage",
+          "failedNum"
+        ],
+        "children": []
+      },
+      {
+        "action": "jobFailedOrAbortedException",
+        "desc": "任务失败或退出异常",
+        "category": "otherException",
+        "step": 3,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+Failed to run job.+$",
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+Job aborted due to.+$"
+          ],
+          "middles": [],
+          "tails": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+$"
+          ]
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": [
+          {
+            "action": "fileNotFoundException",
+            "desc": "文件未找到异常",
+            "category": "sqlFailed",
+            "step": 1,
+            "skip": false,
+            "parserType": "DEFAULT",
+            "parserTemplate": {
+              "heads": [
+                ".+File does not exist.+"
+              ],
+              "middles": [],
+              "tails": []
+            },
+            "groupNames": [],
+            "children": []
+          },
+          {
+            "action": "failedRunJobNoTablePermission",
+            "desc": "用户没有权限",
+            "category": "sqlFailed",
+            "step": 2,
+            "skip": false,
+            "parserType": "DEFAULT",
+            "parserTemplate": {
+              "heads": [
+                "^.+the required privilege is hive://(?<user>.*):user@(?<zone>.*)/hive/(?<database>.*)/(?<table>.*)\\?option=(?<option>.*)$"
+              ],
+              "middles": [],
+              "tails": []
+            },
+            "groupNames": [
+              "user",
+              "zone",
+              "database",
+              "table",
+              "option"
+            ],
+            "children": []
+          },
+          {
+            "action": "sqlSyncError",
+            "desc": "sql语法错误,外部表必须添加外部地址",
+            "category": "sqlFailed",
+            "step": 3,
+            "skip": false,
+            "parserType": "DEFAULT",
+            "parserTemplate": {
+              "heads": [
+                "^.*Operation not allowed.*CREATE EXTERNAL TABLE must be accompanied by LOCATION.*$"
+              ],
+              "middles": [],
+              "tails": []
+            },
+            "groupNames": [],
+            "children": []
+          },
+          {
+            "action": "broadcastsTimeout",
+            "desc": "广播超时",
+            "category": "otherException",
+            "step": 4,
+            "skip": false,
+            "parserType": "DEFAULT",
+            "parserTemplate": {
+              "heads": [
+                "^.+org\\.apache\\.spark\\.SparkException.*Could not execute broadcast in.*secs.*$"
+              ],
+              "middles": [],
+              "tails": []
+            },
+            "groupNames": [],
+            "children": []
+          },
+          {
+            "action": "blockMissingException",
+            "desc": "块丢失异常",
+            "category": "otherException",
+            "step": 5,
+            "skip": false,
+            "parserType": "DEFAULT",
+            "parserTemplate": {
+              "heads": [
+                "^.+org.apache.hadoop.hdfs.BlockMissingException.*Could not obtain block.*$"
+              ],
+              "middles": [],
+              "tails": []
+            },
+            "groupNames": [],
+            "children": []
+          },
+          {
+            "action": "outOfHeapOOM",
+            "desc": "shuffle阶段获取数据时堆外内存溢出",
+            "category": "memoryOverflow",
+            "step": 6,
+            "skip": false,
+            "parserType": "DEFAULT",
+            "parserTemplate": {
+              "heads": [
+                "^.+org\\.apache\\.spark\\.SparkException.*Job aborted due to stage failure.+Container killed by YARN for exceeding memory limits.+$"
+              ],
+              "middles": [],
+              "tails": []
+            },
+            "groupNames": [
+              "datetime"
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "action": "shuffleFetchFailed",
+        "desc": "shuffle连接不上",
+        "category": "shuffleFailed",
+        "step": 4,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+TaskSetManager.+FetchFailed.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": []
+      },
+      {
+        "action": "outOfMemoryError",
+        "desc": "内存溢出",
+        "category": "memoryOverflow",
+        "step": 5,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+OutOfMemoryError.+$"
+          ],
+          "middles": [],
+          "tails": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+$"
+          ]
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": []
+      },
+      {
+        "action": "otherError",
+        "desc": "其他错误信息",
+        "category": "otherException",
+        "step": 6,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+ERROR.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": []
+      }
+    ]
+  },
+  {
+    "logType": "executor",
+    "actions": [
+      {
+        "action": "shuffleBlockFetcherIterator",
+        "desc": "节点shuffle负载过高",
+        "category": "shuffleFailed",
+        "step": 1,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+(?<shuffleBlockError>ERROR ShuffleBlockFetcherIterator:.*)$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "datetime",
+          "shuffleBlockError"
+        ],
+        "children": []
+      },
+      {
+        "action": "connectorOfExecutorAndDriverException1",
+        "desc": "executor与driver节点通讯异常",
+        "category": "otherException",
+        "step": 2,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+ERROR Executor: Exit as unable to send heartbeats to driver more than 60 times.*$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": []
+      },
+      {
+        "action": "connectorOfExecutorAndDriverException2",
+        "desc": "executor与driver节点通讯异常",
+        "category": "otherException",
+        "step": 3,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+ERROR TransportChannelHandler: Connection to.*please adjust spark.network.timeout if this is wrong.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": []
+      },
+      {
+        "action": "connectorOfExecutorAndDriverException3",
+        "desc": "executor与driver节点通讯异常",
+        "category": "otherException",
+        "step": 4,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+ERROR ResourceLeakDetector.*ByteBuf\\.release\\(\\) was not called before it.*garbage-collected.*$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": []
+      },
+      {
+        "action": "noLzo",
+        "desc": "机器中无lzo包",
+        "category": "otherException",
+        "step": 5,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+not load native.*$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": []
+      },
+      {
+        "action": "diskBlockObjectWriterError",
+        "desc": "写入磁盘失败，可能存在磁盘损坏的情况",
+        "category": "otherException",
+        "step": 6,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+DiskBlockObjectWriter.*Uncaught exception while reverting partial writes to file.*$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": []
+      },
+      {
+        "action": "transportChannelHandler",
+        "desc": "请求超时",
+        "category": "otherException",
+        "step": 7,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+ERROR TransportChannelHandler.+dead.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": []
+      },
+      {
+        "action": "outOfMemoryError",
+        "desc": "内存溢出",
+        "category": "memoryOverflow",
+        "step": 5,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+OutOfMemoryError.+$"
+          ],
+          "middles": [],
+          "tails": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+$"
+          ]
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": []
+      },
+      {
+        "action": "otherError",
+        "desc": "其他错误信息",
+        "category": "otherException",
+        "step": 8,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^(?<datetime>\\d{2,4}.\\d{2}.\\d{2}\\D+\\d{2}:\\d{2}:\\d{2}).+ERROR.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "datetime"
+        ],
+        "children": []
+      }
+    ]
+  },
+  {
+    "logType": "yarn",
+    "actions": [
+      {
+        "action": "driverOOM",
+        "desc": "内存溢出",
+        "category": "memoryOverflow",
+        "step": 1,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^.+exitCode: 137.+$",
+            "^.+OutOfMemoryError.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [],
+        "children": []
+      },
+      {
+        "action": "fileAlreadyExistsException",
+        "desc": "路径已存在",
+        "category": "otherException",
+        "step": 2,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^.+FileAlreadyExistsException: Output directory (?<filePath>.+) already exists.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "filePath"
+        ],
+        "children": []
+      },
+      {
+        "action": "killByHiveServer",
+        "desc": "任务异常终止",
+        "category": "otherException",
+        "step": 3,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^Kill job (?<job>.+) received from hive.+at (?<ip>.+)Job received Kill while in RUNNING state.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "job",
+          "ip"
+        ],
+        "children": []
+      },
+      {
+        "action": "killedByUser",
+        "desc": "任务异常终止",
+        "category": "otherException",
+        "step": 4,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^Application killed by user.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [],
+        "children": []
+      },
+      {
+        "action": "mysqlPermissionDenied",
+        "desc": "mysql权限缺失",
+        "category": "sqlFailed",
+        "step": 4,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^User class threw exception:.+: Access denied for user '(?<user>.+)'@'(?<ip>.+)'.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "user",
+          "ip"
+        ],
+        "children": []
+      },
+      {
+        "action": "permissionDenied",
+        "desc": "权限缺失",
+        "category": "sqlFailed",
+        "step": 5,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^User class threw exception.*AccessControlException.*user=(?<user>.+), access=(?<access>.+), inode=\"(?<inode>.+)\".+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [
+          "user",
+          "access",
+          "inode"
+        ],
+        "children": []
+      },
+      {
+        "action": "systemTimesError",
+        "desc": "时间同步异常",
+        "category": "otherException",
+        "step": 6,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^.+System times on machines may be out of sync.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [],
+        "children": []
+      },
+      {
+        "action": "systemTimesError",
+        "desc": "时间同步异常",
+        "category": "otherException",
+        "step": 6,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^Application killed by user.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [],
+        "children": []
+      },
+      {
+        "action": "otherError",
+        "desc": "AM异常",
+        "category": "otherException",
+        "step": 7,
+        "skip": false,
+        "parserType": "DEFAULT",
+        "parserTemplate": {
+          "heads": [
+            "^.+$"
+          ],
+          "middles": [],
+          "tails": []
+        },
+        "groupNames": [],
+        "children": []
+      }
+    ]
+  }
+]

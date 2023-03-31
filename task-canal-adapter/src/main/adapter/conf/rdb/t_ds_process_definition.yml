@@ -1,0 +1,14 @@
+dataSourceKey: defaultDS
+destination: mysqldata
+groupId: g1
+outerAdapterKey: mysql1
+concurrent: false
+dbMapping:
+  database: ${SCHEDULER_MYSQL_DB}
+  table: t_ds_process_definition
+  targetTable: t_ds_process_definition
+  targetPk:
+    id: id
+    code: code
+  mapAll: true
+  commitBatch: 1

@@ -1,0 +1,165 @@
+server:
+  port: 7073
+
+spring:
+  profiles:
+    active: hadoop
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  datasource:
+    url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    druid:
+      initial-size: 5
+      min-idle: 10
+      max-active: 20
+  redis:
+    cluster:
+      nodes: localhost:6379
+      max-redirects: 3
+    lettuce:
+      pool:
+        max-active: 32
+        max-idle: 16
+        min-idle: 8
+  elasticsearch:
+    nodes: localhost:19527
+    username:
+    password:
+    log-prefix: "compass-log-summary-"
+    detector-prefix: "compass-detector-app-"
+    gc-prefix: "compass-gc-log-"
+    job-prefix: "compass-job-analysis-"
+    task-app-prefix: "compass-task-app-"
+
+custom:
+  redisConsumer:
+    enable: false
+    maxThreadPoolSize: 10
+    logRecordList: "{lua}:log:record"
+    processingHash: "{lua}:parser:processing"
+    scheduled:
+      cron: "0/2 * * * * ?"
+      limitTime: 2 # 单位小时
+      limitCount: 2 # 次数
+  jvmType:
+    - Java HotSpot
+    - OpenJDK
+  # spark event log检测参数
+  # disable 默认false;true禁用该检测项
+  detector:
+    sparkEnvironmentConfig:
+      jvmInformation:
+        - Java Version
+      sparkProperties:
+        - spark.driver.memoryOverhead
+        - spark.driver.memory
+        - spark.executor.memoryOverhead
+        - spark.executor.memory
+        - spark.executor.cores
+        - spark.dynamicAllocation.maxExecutors
+        - spark.default.parallelism
+        - spark.sql.shuffle.partitions
+      systemProperties:
+        - sun.java.command
+    speculativeTaskConfig:
+      disable: false
+      threshold: 20
+      # app duration(ms)
+      duration: 300000
+    memWasteConfig:
+      disable: false
+      threshold: 70
+      # app duration(ms)
+      duration: 300000
+    cpuWasteConfig:
+      disable: false
+      # app duration(ms)
+      duration: 300000
+      driverThreshold: 50
+      executorThreshold: 50
+    jobDurationConfig:
+      disable: false
+      threshold: 30
+      # job duration(ms)
+      duration: 300000
+    stageDurationConfig:
+      disable: false
+      threshold: 30
+      # stage duration(ms)
+      duration: 300000
+    taskDurationConfig:
+      disable: false
+      threshold: 10
+      # app duration(ms)
+      duration: 300000
+    hdfsStuckConfig:
+      disable: false
+      threshold: 10
+      # MB
+      taskSize: 10
+      # task duration(ms)
+      duration: 300000
+    globalSortConfig:
+      disable: false
+      taskCount: 1
+      records: 50000000
+      # task duration
+      duration: 1200000
+    largeTableScanConfig:
+      disable: false
+      scanTable: 50000000000
+      # app duration(ms)
+      duration: 1200000
+    oomWarnConfig:
+      disable: false
+      oom: 40
+      # app duration(ms)
+      duration: 1200000
+      broadcastRows: 5000000
+      broadcastRowsOom: 30
+    dataSkewConfig:
+      disable: false
+      # app duration(ms)
+      duration: 1200000
+      # stage耗时/任务总耗时
+      stageDurationPercentage: 20
+      interval:
+        # 0w-5w
+        - start: 0
+          end: 50000
+          threshold: 0
+        # 5w-10w
+        - start: 50000
+          end: 100000
+          threshold: 100
+        # 10w-100w
+        - start: 100000
+          end: 1000000
+          threshold: 50
+        # 100w-500w
+        - start: 1000000
+          end: 5000000
+          threshold: 10
+        # 500w-2000w
+        - start: 5000000
+          end: 20000000
+          threshold: 5
+        # 2000w-3000w
+        - start: 20000000
+          end: 30000000
+          threshold: 3.5
+        # 3000w-4000w
+        - start: 30000000
+          end: 40000000
+          threshold: 3
+        # 4000w-5000w
+        - start: 40000000
+          end: 50000000
+          threshold: 2.25
+        # 5000w
+        - start: 50000000
+          end: 0
+          threshold: 2

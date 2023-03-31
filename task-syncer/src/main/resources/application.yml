@@ -1,0 +1,20 @@
+
+server:
+  port: 7076
+  servlet:
+    session:
+      cookie:
+        http-only: false
+
+spring:
+  application:
+    name: task-syncer
+  profiles:
+    active: dolphinscheduler
+
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

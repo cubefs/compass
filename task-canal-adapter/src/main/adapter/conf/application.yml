@@ -1,0 +1,46 @@
+server:
+  port: 8181
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+
+canal.conf:
+  mode: kafka #tcp kafka rocketMQ rabbitMQ
+  flatMessage: true
+  zookeeperHosts:
+  syncBatchSize: 1000
+  retries: 0
+  timeout:
+  accessKey:
+  secretKey:
+  consumerProperties:
+    # kafka consumer
+    kafka.bootstrap.servers: ${CANAL_ADAPTER_KAFKA_BOOTSTRAP_SERVERS}
+    kafka.enable.auto.commit: true 
+    kafka.auto.commit.interval.ms: 1000
+    kafka.auto.offset.reset: latest
+    kafka.request.timeout.ms: 40000
+    kafka.session.timeout.ms: 30000
+    kafka.isolation.level: read_committed
+    kafka.max.poll.records: 1000
+
+  srcDataSources:
+    defaultDS:
+      url: ${CANAL_ADAPTER_SOURCE_MYSQL_URL}
+      username: ${CANAL_ADAPTER_SOURCE_MYSQL_USERNAME}
+      password: ${CANAL_ADAPTER_SOURCE_MYSQL_PASSWORD}
+
+  canalAdapters:
+  - instance: mysqldata # canal instance Name or mq topic name
+    groups:
+    - groupId: g1
+      outerAdapters:
+      - name: rdb
+        key: mysql1
+        properties:
+          jdbc.driverClassName: com.mysql.jdbc.Driver
+          jdbc.url: ${CANAL_ADAPTER_DESTINATION_MYSQL_URL}
+          jdbc.username: ${CANAL_ADAPTER_DESTINATION_MYSQL_USERNAME}
+          jdbc.password: ${CANAL_ADAPTER_DESTINATION_MYSQL_PASSWORD}

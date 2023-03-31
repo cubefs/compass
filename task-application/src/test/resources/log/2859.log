@@ -1,0 +1,29 @@
+2022-02-22 11:02:27.002 INFO Program is substituting variables for you
+2022-02-22 11:02:27.002 INFO Variables substitution ended successfully
+Job with jobId : IDE_hdfs_spark_4 and execID : IDE_hdfs_spark_4 submitted 
+2022-02-22 11:02:27.002 INFO You have submitted a new jobAnalysis, script code (after variable substitution) is
+************************************SCRIPT CODE************************************
+rdd = sc.parallelize([1,2,3,4,5])
+print(rdd.getNumPartitions())
+************************************SCRIPT CODE************************************
+2022-02-22 11:02:27.002 INFO Your jobAnalysis is accepted,  jobID is IDE_hdfs_spark_4 and taskID is 2859 in ServiceInstance(linkis-cg-entrance, bjht3929:9104). Please wait it to be scheduled
+jobAnalysis is scheduled.
+2022-02-22 11:02:27.002 INFO Your jobAnalysis is Scheduled. Please wait it to run.
+Your jobAnalysis is being scheduled by orchestrator.
+2022-02-22 11:02:28.002 INFO jobAnalysis is running.
+2022-02-22 11:02:28.002 INFO Your jobAnalysis is Running now. Please wait it to complete.
+Job with jobGroupId : 2859 and subJobId : 2846 was submitted to Orchestrator.
+2022-02-22 11:02:28.002 INFO Background is starting a new engine for you, it may take several seconds, please wait
+2022-02-22 11:02:28.002 INFO EngineConn local log path: ServiceInstance(linkis-cg-engineconn, bjht3929:27505) /home/service/app/dss-linkis/data/hdfs/workDir/801b248a-6c45-4a79-bca4-3450165dabea/logs
+2022-02-22 11:02:28.002 INFO yarn application id: application_1642582961937_0382
+bjht3929:27505 >> rdd = sc.parallelize([1,2,3,4,5])
+print(rdd.getNumPartitions())
+2022-02-22 11:02:28.492 WARN  [Thread-112] org.apache.hadoop.conf.Configuration 2670 loadProperty - /home/service/app/dss-linkis/deps/hadoop-2.7.2/etc/hadoop/core-site.xml:an attempt to override final parameter: hadoop.security.authorization;  Ignoring.
+2022-02-22 11:02:28.529 WARN  [Thread-112] org.apache.hadoop.conf.Configuration 2670 loadProperty - /home/service/app/dss-linkis/deps/hadoop-2.7.2/etc/hadoop/core-site.xml:an attempt to override final parameter: hadoop.security.authorization;  Ignoring.
+2022-02-22 11:02:29.660 WARN  [Linkis-Default-Scheduler-Thread-12] org.apache.hadoop.conf.Configuration 2670 loadProperty - /home/service/app/dss-linkis/deps/hadoop-2.7.2/etc/hadoop/core-site.xml:an attempt to override final parameter: hadoop.security.authorization;  Ignoring.
+Your subjob : 2846 execue with state succeed, has 1 resultsets.
+Congratuaions! Your jobAnalysis : IDE_hdfs_spark_4 executed with status succeed and 0 results.
+2022-02-22 11:02:30.002 INFO jobAnalysis is completed.
+2022-02-22 11:02:30.002 INFO Task creation time(任务创建时间): 2022-02-22 11:02:27, Task scheduling time(任务调度时间): 2022-02-22 11:02:27, Task start time(任务开始时间): 2022-02-22 11:02:28, Mission end time(任务结束时间): 2022-02-22 11:02:30
+2022-02-22 11:02:30.002 INFO Your mission(您的任务) 2859 The total time spent is(总耗时时间为): 3.3 秒
+2022-02-22 11:02:30.002 INFO Congratulations. Your jobAnalysis completed with status Success.

@@ -1,0 +1,12 @@
+Compass
+Copyright 2023 OPPO.
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+The Initial Developer of the document/dolphinscheduler.sql,
+is Apache DolphinScheduler (https://github.com/apache/dolphinscheduler).
+Copyright 2019-2022 The Apache Software Foundation. All Rights Reserved.
+
+The part of bin and conf directories in task-canal and task-canal-adapter
+was created by Apache canal (https://github.com/apache/canal).

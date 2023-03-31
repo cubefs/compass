@@ -1,0 +1,83 @@
+server:
+  port: 7075
+  servlet:
+    context-path: /compass
+    session:
+      cookie:
+        http-only: false
+      timeout: 86400
+
+spring:
+  application:
+    name: task-portal
+  profiles:
+    active:
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  main:
+    allow-circular-references: true
+  datasource:
+    url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    druid:
+      initial-size: 5
+      min-idle: 10
+      max-active: 20
+  elasticsearch:
+    nodes: localhost:19527
+    username:
+    password:
+  redis:
+    cluster:
+      nodes: localhost:6379
+
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+custom:
+  elasticsearch:
+    logIndex:
+      name: "compass-log-summary"
+      shards: 10
+      replicas: 2
+    appIndex:
+      name: "compass-task-app"
+      shards: 10
+      replicas: 2
+    jobIndex:
+      name: "compass-job-analysis"
+      shards: 10
+      replicas: 2
+
+    detectIndex:
+      name: "compass-detector-app"
+
+    gcIndex:
+      name: "compass-gc-log"
+
+    yarnIndex:
+      name: "compass-yarn-app"
+
+    sparkIndex:
+      name: "compass-spark-app"
+
+    jobInstanceIndex:
+      name: "compass-job-instance"
+      shards: 10
+      replicas: 2
+
+  redis:
+    logRecordKey: "{lua}:log:record"
+
+  sparkUiProxy:
+    url: "http://localhost:18018/history/%s/1/jobs/?yarnhost=http://%s:18080"
+
+  jwt:
+    expireDay: 15
+    secret: 8ff3bf2c8344

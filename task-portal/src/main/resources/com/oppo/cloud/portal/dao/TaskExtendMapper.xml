@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oppo.cloud.portal.dao.TaskExtendMapper">
+    <resultMap id="BaseResultMap" type="com.oppo.cloud.model.Task">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="project_name" jdbcType="VARCHAR" property="projectName"/>
+        <result column="flow_name" jdbcType="VARCHAR" property="flowName"/>
+        <result column="task_name" jdbcType="VARCHAR" property="taskName"/>
+    </resultMap>
+    <select id="searchTasksLike" resultMap="BaseResultMap">
+        select distinct
+        <trim suffixOverrides=",">
+            <if test="projectName != null and projectName != ''">
+                project_name,
+            </if>
+            <if test="flowName != null and flowName != ''">
+                flow_name,
+            </if>
+            <if test="taskName != null and taskName != ''">
+                task_name
+            </if>
+        </trim>
+        from task
+        <where>
+            <if test="projectName != null and projectName != ''">
+                and project_name like CONCAT('%',#{projectName},'%')
+            </if>
+            <if test="flowName != null and flowName != ''">
+                and flow_name like CONCAT('%',#{flowName},'%')
+            </if>
+            <if test="taskName != null and taskName != ''">
+                and task_name like CONCAT('%',#{taskName},'%')
+            </if>
+        </where>
+        limit 10
+    </select>
+
+</mapper>

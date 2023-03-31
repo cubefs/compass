@@ -1,0 +1,18 @@
+hadoop:
+  namenodes:
+    - nameservices: log-hdfs
+      namenodesAddr: [ "host1", "host2" ]
+      namenodes: [ "namenode1", "namenode2" ]
+      user: hdfs
+      password:
+      port: 8020
+      # log directory keyword identification，used by task-application
+      matchPathKeys: [ "flume" ]
+
+  yarn:
+    - clusterName: "bigdata"
+      resourceManager: [ "localhost:8088" ]
+      jobHistoryServer: "localhost:19888"
+
+  spark:
+    sparkHistoryServer: [ "localhost:18018" ]

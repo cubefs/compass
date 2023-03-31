@@ -1,0 +1,9 @@
+
+hadoop:
+  namenodes:
+    - nameservices: logs-hdfs
+      namenodesAddr: [ "host1", "host2" ]
+      namenodes: ["namenode1", "namenode2"]
+      user: hdfs
+      password:
+      port: 8020

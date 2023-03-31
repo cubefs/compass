@@ -1,0 +1,46 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    druid:
+      initial-size: 5
+      min-idle: 10
+      max-active: 20
+  kafka:
+    bootstrap-servers: "localhost:9095"
+    topics: "task-instance"
+    consumer:
+      group-id: "cp-task-application"
+      auto-offset-reset: "earliest"
+      max-poll-interval-ms: 300000
+  redis:
+    cluster:
+      nodes: localhost:6379
+      max-redirects: 3
+    lettuce:
+      pool:
+        max-active: 32
+        max-idle: 16
+        min-idle: 8
+
+custom:
+  delayedTask:
+    enable: true
+    queue: "{lua}:task:application"
+    processing: "{lua}:task-processing"
+    delayedSeconds: 5
+    tryTimes: 20
+  # 从上到下串行执行解析到任务的applicationId
+  rules:
+    - logPathDep: # 日志依赖查询
+        query: ""    # 变量依赖查询
+      logPathJoins: # 拼接日志绝对路径
+        - { "column": "", "data": "hdfs://log-hdfs:8020/flume/airflow" } # 相当于根目录，常量
+        - { "column": "flow_name",data: "dag_id=", "regex": "(?<flowName>.*)","name": "flowName" }
+        - { "column": "run_id",data: "run_id=", "regex": "(?<runId>.*)", "name": "runId" }
+        - { "column": "task_name",data: "task_id=","regex": "(?<taskName>.*)", "name": "taskName" }
+        - { "column": "retry_times",data: "attempt=", "regex": "(?<fileName>.*)", "name": "fileName" }
+      extractLog: # 根据组装的日志路径解析日志
+        regex: "^.*Submitted application (?<applicationId>application_[0-9]+_[0-9]+).*$"     # 匹配规则
+        name: "applicationId"      # 匹配文本名，最后必须有applicationId
