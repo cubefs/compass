@@ -160,7 +160,6 @@ export SPRING_ELASTICSEARCH_NODES=""
 
 ## 系统截图
 
-![Login](document/manual/img/login.png)
 ![Login](document/manual/img/overview.png)
 ![Login](document/manual/img/overview-1.png)
 ![Login](document/manual/img/tasks.png)
