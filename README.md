@@ -10,14 +10,14 @@ The key features:
 - Non-invasive, instant diagnosis, you can experience the diagnostic effect without modifying the existing scheduling
   platform.
 
-- Supports multiple mainstream scheduling platforms, such as DolphinScheduler, Airflow, or self-developed.
+- Supports multiple scheduling platforms(DolphinScheduler, Airflow, or self-developed etc.)
 
-- Supports multi-version Spark, Hadoop 2.x and 3.x task log diagnosis and parsing.
+- Supports Spark 2.x or 3.x, Hadoop 2.x or 3.x troubleshooting.
 
 - Supports workflow layer exception diagnosis, identifies various failures and baseline time-consuming abnormal
   problems.
 
-- Supports engine layer exception diagnosis, including 14 types of exceptions such as data skew, large table scanning,
+- Supports Spark engine layer exception diagnosis, including 14 types of exceptions such as data skew, large table scanning,
   and memory waste.
 
 - Supports various log matching rule writing and abnormal threshold adjustment, and can be optimized according to actual
