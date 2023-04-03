@@ -41,7 +41,10 @@ const props = defineProps({
     <div v-if="conclusion.conclusion" class="item-footer">
       <div class="item-footer-title">
         分析结论：
-        <el-tooltip :content="conclusion.conclusionDesc" placement="top">
+        <el-tooltip placement="top">
+          <template  #content>
+            <div v-html="conclusion.conclusionDesc"></div>
+          </template >
           <el-icon><QuestionFilled /></el-icon>
         </el-tooltip>
       </div>
@@ -81,7 +84,7 @@ const props = defineProps({
     align-items: center;
   }
   .item-footer-content {
-    width:1000px;
+    width:1200px;
     display: inline;
     align-items: center;
     margin: 10px;

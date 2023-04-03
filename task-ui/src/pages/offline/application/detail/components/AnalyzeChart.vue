@@ -1,7 +1,6 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <script setup lang="ts">
 import * as echarts from 'echarts'
-
 const props = defineProps({
   index: {
     type: String,

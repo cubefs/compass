@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@antv/g6": "^4.7.9",
+    "@heytap/nubes-plugin-qiankun": "link:D:/nubes/packages/nubes-plugin-qiankun",
     "@unocss/reset": "^0.45.8",
     "@vueuse/core": "^9.1.0",
     "@vueuse/head": "^0.7.9",

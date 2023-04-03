@@ -75,16 +75,16 @@ const getHeight = () => {
         @select="handleSelect"
       >
         <el-image class="title-logo" :src="logo" />
-        <el-menu-item index="offline">
+        <!-- <el-menu-item index="offline">
           <template #title>
             离线诊断
           </template>
-        </el-menu-item>
-        <el-menu-item index="realtime">
+        </el-menu-item> -->
+        <!-- <el-menu-item index="realtime">
           <template #title>
             实时诊断
           </template>
-        </el-menu-item>
+        </el-menu-item> -->
         <div class="flex-grow" />
         <el-dropdown class="user-box" @command="handleCommand">
           <span

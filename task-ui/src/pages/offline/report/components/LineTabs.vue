@@ -81,7 +81,7 @@ watch(
   () => {
     option.title.text = cpuData.name
     option.yAxis.name = cpuData.unit ? `单位（${cpuData.unit}）` : ''
-    option.xAxis.data = cpuData.jobUsage.data.map(item => item.date)
+    option.xAxis.data = cpuData.jobUsage.data.map(item => item.date.slice(0,10))
     option.series = [
       {
         name: cpuData.jobUsage.name,
@@ -102,7 +102,7 @@ watch(
   () => {
     option.title.text = memData.name
     option.yAxis.name = `单位（${memData.unit}）`
-    option.xAxis.data = memData.jobUsage.data.map(item => item.date)
+    option.xAxis.data = memData.jobUsage.data.map(item => item.date.slice(0,10))
     option.series = [
       {
         name: memData.jobUsage.name,

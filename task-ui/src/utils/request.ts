@@ -16,7 +16,7 @@ let loadingInstance: MessageHandler | null = null
 axios.defaults.validateStatus = function (status) {
   return status >= 200 && status <= 204 // default
 }
-axios.defaults.baseURL = 'http://10.176.10.151:7075/compass'
+axios.defaults.baseURL = 'http://localhost:7075/compass'
 axios.defaults.withCredentials = true
 axios.interceptors.request.use(
   (config:any) => {
@@ -82,8 +82,10 @@ const request = function (type: Method) {
           loadingInstance = loadingService()
       }
       const res = await axios(config)
-      // if (['1002'].includes(res.data.code))
-      //   throw new Error('登录信息已失效，请重新登录')
+      if ([500].includes(+res.data.code)) {
+        ElMessage.error(res.data.msg)
+        throw new Error('请求失败')
+      }
 
       // @ts-expect-error
       // if (!['0000', 0].includes((res.data as IAjaxResponse).status))

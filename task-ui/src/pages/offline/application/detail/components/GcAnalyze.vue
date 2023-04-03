@@ -51,7 +51,7 @@ const openDialog = (id) => {
 .gc-item {
   display: inline-block;
   margin: 5px;
-  width: 255px;
+  //width: 255px;
 }
 .gc-link {
   color: #23cccd;
