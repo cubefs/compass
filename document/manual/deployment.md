@@ -598,6 +598,8 @@ task-portal 与 task-ui 可视化前后端模块，提供诊断建议、报告�
 
 task-ui前端默认一起编译放在task-portal/portal目录下
 
+如果您需要单独部署前端，需要修改 task-ui/src/utils/request.ts 下 baseURL，指定您的后端地址或者域名即可
+
 web ui默认路径: http://localhost:7075/compass/
 
 swagger ui默认路径：http://localhost:7075/compass/swagger-ui/index.html
