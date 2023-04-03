@@ -32,7 +32,7 @@ Compass has supported the concept of diagnostic types:
          <td>Type Description</td>
      </tr>
      <tr>
-         <td rowspan="3">Failure Analysis</td>
+         <td rowspan="3">Failure analysis</td>
          <td>Run failure</td>
          <td>Tasks that ultimately fail to run</td>
      </tr>
@@ -71,7 +71,7 @@ Compass has supported the concept of diagnostic types:
          <td>Tasks that fail due to memory overflow issues</td>
      </tr>
      <tr>
-         <td rowspan="2">Cost Analysis</td>
+         <td rowspan="2">Cost analysis</td>
          <td>Memory waste</td>
          <td>Tasks with a peak memory usage to total memory ratio that is too low</td>
      </tr>
@@ -134,25 +134,23 @@ mvn package -DskipTests
 cd dist/compass
 vim bin/compass_env.sh
 # Scheduler MySQL
-export SCHEDULER_MYSQL_ADDRESS=""
-export SCHEDULER_MYSQL_DB=""
-export SCHEDULER_DATASOURCE_URL=""
-export SCHEDULER_DATASOURCE_USERNAME=""
-export SCHEDULER_DATASOURCE_PASSWORD=""
+export SCHEDULER_MYSQL_ADDRESS="ip:port"
+export SCHEDULER_MYSQL_DB="scheduler"
+export SCHEDULER_DATASOURCE_USERNAME="user"
+export SCHEDULER_DATASOURCE_PASSWORD="pwd"
 # Compass MySQL
-export COMPASS_MYSQL_ADDRESS=""
-export COMPASS_MYSQL_DB=""
-export SPRING_DATASOURCE_URL=""
-export SPRING_DATASOURCE_USERNAME=""
-export SPRING_DATASOURCE_PASSWORD=""
+export COMPASS_MYSQL_ADDRESS="ip:port"
+export COMPASS_MYSQL_DB="compass"
+export SPRING_DATASOURCE_USERNAME="user"
+export SPRING_DATASOURCE_PASSWORD="pwd"
 # Kafka
-export SPRING_KAFKA_BOOTSTRAPSERVERS=""
+export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
 # Redis
-export SPRING_REDIS_CLUSTER_NODES=""
+export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
 # Zookeeper
-export SPRING_ZOOKEEPER_NODES=""
+export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
 # Elasticsearch
-export SPRING_ELASTICSEARCH_NODES=""
+export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
 ```
 
 ### 3. Deploy
@@ -161,7 +159,7 @@ export SPRING_ELASTICSEARCH_NODES=""
 ./bin/start_all.sh
 ```
 
-## documents
+## Documents
 
 [architecture document](document/manual/architecture.md)
 
@@ -169,11 +167,13 @@ export SPRING_ELASTICSEARCH_NODES=""
 
 ## User Interface
 
-![Login](document/manual/img/overview.png)
-![Login](document/manual/img/overview-1.png)
-![Login](document/manual/img/tasks.png)
-![Login](document/manual/img/onclick.png)
-![Login](document/manual/img/application.png)
+![overview](document/manual/img/overview.png)
+![overview-1](document/manual/img/overview-1.png)
+![tasks](document/manual/img/tasks.png)
+![onclick](document/manual/img/onclick.png)
+![application](document/manual/img/application.png)
+![cpu](document/manual/img/cpu.png)
+![memory](document/manual/img/memory.png)
 
 ## License
 
