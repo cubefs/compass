@@ -37,6 +37,7 @@ const option = {
   yAxis: [
     {
       type: 'value',
+      name: '单位（KB}'
     },
   ],
   series: [],

@@ -116,7 +116,7 @@ onMounted(() => {
               任务CPU消耗数
             </div>
             <div class="left-second">
-              {{ sData.abnormalJobCpuNum }}&nbsp;<span class="unit">{{ sData.cpuUnit.toUpperCase() }}</span>
+              {{ sData.abnormalJobCpuNum }}&nbsp;<span class="unit">{{ sData.cpuUnit }}</span>
             </div>
             <div class="left-third">
               <span m-r-3 style="color:#7f7f7f">总CPU消耗数</span><span>{{ sData.jobCpuNum }}</span>
@@ -133,7 +133,7 @@ onMounted(() => {
               任务内存消耗数
             </div>
             <div class="left-second">
-              {{ sData.abnormalJobMemoryNum }}&nbsp;<span class="unit">{{ sData.memoryUnit.toUpperCase() }}</span>
+              {{ sData.abnormalJobMemoryNum }}&nbsp;<span class="unit">{{ sData.memoryUnit }}</span>
             </div>
             <div class="left-third">
               <span m-r-3 style="color:#7f7f7f">总内存消耗数</span><span>{{ sData.jobMemoryNum }}</span>

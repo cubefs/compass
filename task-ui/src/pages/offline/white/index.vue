@@ -164,4 +164,5 @@ onMounted(() => {
 meta:
   title: 白名单
   name: white
+name: white
 </route>

@@ -9,6 +9,9 @@ const form = reactive({
   password: '',
   // schedulerType: '',
 })
+const canLogin = computed(() => {
+  return !!form.username && !!form.password
+})
 const router = useRouter()
 const onSubmit = async () => {
   const res = await post('/user/login', form)
@@ -16,8 +19,7 @@ const onSubmit = async () => {
   localStorage.setItem('username', res.username)
   ElMessage.success('登录成功')
   store.updateUser(res.username)
-  router.replace({
-    path: '/offline/report',
+  router.push({
     name: 'report'
   })
   setTimeout(() => {
@@ -38,7 +40,7 @@ const onSubmit = async () => {
           <el-input v-model="form.password" type="password" show-password placeholder="密码" />
         </el-form-item>
       </el-form>
-      <el-button type="primary" style="width:100%;height:40px;font-size: 16px;font-weight: bold;margin-top: 20px;" @click="onSubmit">
+      <el-button type="primary" :class="{disabled: !canLogin}" style="width:100%;height:40px;font-size: 16px;font-weight: bold;margin-top: 20px;" :disabled="!canLogin" @click="onSubmit">
         立即登录
       </el-button>
     </div>
@@ -46,6 +48,10 @@ const onSubmit = async () => {
 </template>
 
 <style lang="scss" scoped>
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .content {
   background: white;
   height: 100vh;

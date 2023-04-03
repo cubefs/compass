@@ -23,6 +23,11 @@ const label = computed(() => {
     value: Object.keys(props.data.titles),
   }
 })
+props.data.data.forEach(item => {
+  if(item.advice) {
+    item.advice = item.advice.replaceAll('\\n', '\n')
+  }
+})
 </script>
 
 <template>
@@ -30,7 +35,7 @@ const label = computed(() => {
     <el-table-column v-for="(item, index) in label.label" :key="index" :prop="label.value[index]" :label="label.label[index]" :width="widthList[index]">
       <template #default="scope">
         <ExpandBlock v-if="label.value[index] === 'logContent'" :value="scope.row.logContent" />
-        <span v-else-if="label.value[index] === 'advice'" v-html="scope.row.advice" />
+        <div style="white-space: pre-line;" v-else-if="label.value[index] === 'advice'" v-html="scope.row.advice" />
         <span v-else>{{ scope.row[label.value[index]] }}</span>
       </template>
     </el-table-column>

@@ -36,6 +36,7 @@ const option = {
   },
   yAxis: {
     type: 'value',
+    name: `单位（${props.data.unit}）`
   },
   barMaxWidth: 30,
   series: [],

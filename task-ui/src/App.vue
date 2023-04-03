@@ -1,17 +1,9 @@
 <script setup lang="ts">
 // elementplus中文包
 import zhCn from 'element-plus/lib/locale/lang/zh-cn'
-import { useStore } from '~/store/user.ts'
-import Noop from '~/layouts/Noop.vue'
 import Default from '~/layouts/default.vue'
 useHead({
   title: '罗盘',
-})
-
-const route = useRoute()
-const store = useStore()
-const layout = computed(() => {
-  return route.meta.layout || 'Default'
 })
 const locale = $ref(zhCn)
 
