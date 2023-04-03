@@ -42,7 +42,7 @@ Compass has supported the concept of diagnostic types:
      </tr>
      <tr>
          <td>Long term failure</td>
-         <td>Tasks that have failed to run in the last ten days  </td>
+         <td>Tasks that have failed to run in the last ten days</td>
      </tr>
      <tr>
          <td rowspan="3">Time analysis</td>
