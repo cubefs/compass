@@ -16,7 +16,7 @@ let loadingInstance: MessageHandler | null = null
 axios.defaults.validateStatus = function (status) {
   return status >= 200 && status <= 204 // default
 }
-axios.defaults.baseURL = 'http://localhost:7075/compass'
+axios.defaults.baseURL = window.location.origin + '/compass'
 axios.defaults.withCredentials = true
 axios.interceptors.request.use(
   (config:any) => {
