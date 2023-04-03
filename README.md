@@ -159,7 +159,7 @@ export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
 ./bin/start_all.sh
 ```
 
-## documents
+## Documents
 
 [architecture document](document/manual/architecture.md)
 
