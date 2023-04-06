@@ -166,8 +166,8 @@ CREATE TABLE `task_syncer_init` (
 CREATE TABLE `task_diagnosis_advice` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `log_type` varchar(64) DEFAULT NULL COMMENT '日志类型',
-  `action` varchar(64) DEFAULT NULL COMMENT '异常事件',
   `parent_action` varchar(64) DEFAULT NULL COMMENT '父节点异常事件',
+  `action` varchar(64) DEFAULT NULL COMMENT '异常事件',
   `description` varchar(255) DEFAULT NULL COMMENT '异常事件描述',
   `abnormal_advice` text COMMENT '建议（其中的变量用 {变量名} 表示）',
   `rule` text COMMENT '匹配规则',
