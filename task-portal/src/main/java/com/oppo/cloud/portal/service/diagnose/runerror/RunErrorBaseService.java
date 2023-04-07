@@ -26,7 +26,6 @@ import com.oppo.cloud.portal.domain.diagnose.Item;
 import com.oppo.cloud.portal.domain.diagnose.Table;
 import com.oppo.cloud.portal.domain.diagnose.runerror.RunError;
 import com.oppo.cloud.portal.domain.log.LogInfo;
-import com.oppo.cloud.portal.domain.log.LogSum;
 import com.oppo.cloud.portal.service.ElasticSearchService;
 import com.oppo.cloud.portal.service.diagnose.Generate;
 import lombok.extern.slf4j.Slf4j;
