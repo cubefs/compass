@@ -62,23 +62,13 @@ public class UserServiceImpl implements UserService {
         return users.get(0);
     }
 
-    public User getSchedulerType(String username) {
-        UserExample example = new UserExample();
-        example.createCriteria().andUsernameEqualTo(username);
-        List<User> users = userMapper.selectByExample(example);
-        if (CollectionUtils.isEmpty(users)) {
-            return null;
-        }
-        return users.get(0);
-    }
-
     /**
      * 用户登录
      */
     public UserInfo userLogin(HttpServletResponse httpServletResponse, String username, String password)
             throws Exception {
 
-        User user = getSchedulerType(username);
+        User user = getByUsername(username);
         if (user == null) {
             throw new Exception("用户名不存在");
         }
