@@ -45,33 +45,21 @@ public class ReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "projectName", value = "项目名称", dataType = "String", dataTypeClass = String.class),
     })
-    public CommonStatus<StatisticsData> getStatisticData(@RequestParam(value = "projectName", required = false) String projectName) {
-        try {
-            return CommonStatus.success(reportService.getStatisticsData(projectName));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<StatisticsData> getStatisticData(@RequestParam(value = "projectName", required = false) String projectName) throws Exception {
+        return CommonStatus.success(reportService.getStatisticsData(projectName));
     }
 
     @PostMapping(value = "/graph")
     @ApiOperation("报告总览图表接口")
-    public CommonStatus<ReportGraph> getGraph(@RequestBody ReportRequest reportRequest) {
-        try {
-            return CommonStatus.success(reportService.getGraph(reportRequest));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<ReportGraph> getGraph(@RequestBody ReportRequest reportRequest) throws Exception {
+        return CommonStatus.success(reportService.getGraph(reportRequest));
     }
 
     @ApiOperation("项目列表")
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
     @ResponseBody
-    public CommonStatus<Set<String>> getProjects() {
-        try {
-            return CommonStatus.success(reportService.getProjects());
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<Set<String>> getProjects() throws Exception {
+        return CommonStatus.success(reportService.getProjects());
     }
 
 }

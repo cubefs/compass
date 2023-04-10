@@ -52,52 +52,35 @@ public class BlocklistController {
     @PostMapping(value = "/list")
     @ApiOperation(value = "白名单列表信息", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus list(@RequestBody BlocklistReq blocklistReq) {
-        try {
-            PageHelper.startPage(blocklistReq.getPage(), blocklistReq.getPageSize());
-            List<Blocklist> blocklists = blocklistService.search(blocklistReq);
-            return CommonStatus.success(CommonPage.restPage(blocklists));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus list(@RequestBody BlocklistReq blocklistReq) throws Exception {
+        PageHelper.startPage(blocklistReq.getPage(), blocklistReq.getPageSize());
+        List<Blocklist> blocklists = blocklistService.search(blocklistReq);
+        return CommonStatus.success(CommonPage.restPage(blocklists));
     }
 
     @PostMapping(value = "/del")
     @ApiOperation(value = "删除白名单", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus delete(@RequestBody BlocklistDelReq blocklistDelReq) {
-        try {
-            blocklistService.deleteByIds(blocklistDelReq.getBlocklistIds());
-            return CommonStatus.success("ok");
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-
-        }
+    public CommonStatus delete(@RequestBody BlocklistDelReq blocklistDelReq) throws Exception {
+        blocklistService.deleteByIds(blocklistDelReq.getBlocklistIds());
+        return CommonStatus.success("ok");
     }
 
     @PostMapping(value = "/searchTasks")
     @ApiOperation(value = "添加白名单", httpMethod = "POST")
     @ResponseBody
     @Transactional
-    public CommonStatus searchTasks(@RequestBody BlocklistAddReq blocklistAddReq) {
-        try {
-            return CommonStatus.success( blocklistService.searchTasks(blocklistAddReq));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus searchTasks(@RequestBody BlocklistAddReq blocklistAddReq) throws Exception {
+        return CommonStatus.success(blocklistService.searchTasks(blocklistAddReq));
     }
 
     @PostMapping(value = "/add")
     @ApiOperation(value = "添加白名单", httpMethod = "POST")
     @ResponseBody
     @Transactional
-    public CommonStatus add(@RequestBody @Valid BlocklistAddReq blocklistAddReq) {
-        try {
-            blocklistService.addBlocklist(blocklistAddReq);
-            return CommonStatus.success("ok");
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus add(@RequestBody @Valid BlocklistAddReq blocklistAddReq) throws Exception {
+        blocklistService.addBlocklist(blocklistAddReq);
+        return CommonStatus.success("ok");
     }
 
 }
