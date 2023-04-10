@@ -16,7 +16,16 @@ let loadingInstance: MessageHandler | null = null
 axios.defaults.validateStatus = function (status) {
   return status >= 200 && status <= 204 // default
 }
-axios.defaults.baseURL = window.location.origin + '/compass'
+
+function getBaseURL():string {
+  let backend = import.meta.env.MODE === 'development' ? import.meta.env.VITE_APP_DEV_BACKEND : import.meta.env.VITE_APP_PROD_BACKEND;
+  if(backend === ''){
+    return window.location.origin + '/compass';
+  }
+  return backend +  '/compass';
+}
+
+axios.defaults.baseURL = getBaseURL()
 axios.defaults.withCredentials = true
 axios.interceptors.request.use(
   (config:any) => {
