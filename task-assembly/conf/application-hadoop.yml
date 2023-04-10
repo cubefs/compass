@@ -6,7 +6,7 @@ hadoop:
       user: hdfs
       password:
       port: 8020
-      # log directory keyword identification，used by task-application
+      # scheduler platform hdfs log path keyword identification, used by task-application
       matchPathKeys: [ "flume" ]
 
   yarn:
