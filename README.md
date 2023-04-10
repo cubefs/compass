@@ -152,7 +152,8 @@ export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
 # Elasticsearch
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
-
+```
+```shell
 vi conf/application-hadoop.yml
 hadoop:
   namenodes:
