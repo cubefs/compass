@@ -179,7 +179,6 @@ export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
 Welcome to join the community for the usage or development of Compass. Here is the way to get help:
 - Submit an [issue](https://github.com/cubefs/compass/issues).
 - Join the wechat group, search and add WeChat ID **`daiwei_cn`** or **`zebozhuang`**. Please indicate your intention in the verification information. After verification, we will invite you to the community group.
- 
 
 
 ## License

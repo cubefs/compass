@@ -12,7 +12,11 @@ check() {
   if [ -f ${PID_FILE} ]; then
     local pid=$(cat ${PID_FILE})
     echo $pid
-    if ps --pid ${pid} >/dev/null; then
+    command="ps --pid ${pid}"
+    if [[ $(uname) == "Darwin" ]]; then
+      command="ps -p ${pid}"
+    fi
+    if eval ${command} >/dev/null; then
       echo "${APP_NAME} is running, pid=${pid}. Please stop first!"
       exit 1
     fi
