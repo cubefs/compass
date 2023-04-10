@@ -577,23 +577,6 @@
         "children": []
       },
       {
-        "action": "systemTimesError",
-        "desc": "时间同步异常",
-        "category": "otherException",
-        "step": 6,
-        "skip": false,
-        "parserType": "DEFAULT",
-        "parserTemplate": {
-          "heads": [
-            "^Application killed by user.+$"
-          ],
-          "middles": [],
-          "tails": []
-        },
-        "groupNames": [],
-        "children": []
-      },
-      {
         "action": "otherError",
         "desc": "AM异常",
         "category": "otherException",
