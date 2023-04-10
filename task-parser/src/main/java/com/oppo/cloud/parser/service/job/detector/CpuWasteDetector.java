@@ -96,7 +96,7 @@ public class CpuWasteDetector implements IDetector {
             log.error("CpuWasteDetectErr:{},{}", this.param.getAppId(), cpuWasteAbnormal);
             return null;
         }
-        if ((executorWastedPercentOverAll > driverThreshold || driverWastedPercentOverAll > executorThreshold) &&
+        if ((executorWastedPercentOverAll > executorThreshold || driverWastedPercentOverAll > driverThreshold) &&
                 this.param.getAppDuration() > this.config.getDuration()) {
             detectorResult.setAbnormal(true);
         }

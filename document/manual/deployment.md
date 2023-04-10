@@ -23,6 +23,16 @@ compass
 ├── task-portal                         异常任务的可视化服务
 └── task-syncer                         调度平台任务关系表的抽象和映射
 ```
+### 初始化数据库
+
+初始化数据库和表，请先执行document/sql/compass.sql
+
+如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql
+
+如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql
+
+如果您使用的是自研调度平台，请参考[task-syncer](#task-syncer)模块，确定需要同步的表
+
 
 ### 关键脚本和配置
 
