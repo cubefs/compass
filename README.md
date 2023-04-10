@@ -132,7 +132,8 @@ mvn package -DskipTests
 
 ```shell
 cd dist/compass
-vim bin/compass_env.sh
+
+vi bin/compass_env.sh
 # Scheduler MySQL
 export SCHEDULER_MYSQL_ADDRESS="ip:port"
 export SCHEDULER_MYSQL_DB="scheduler"
@@ -151,9 +152,40 @@ export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
 # Elasticsearch
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
+
+vi conf/application-hadoop.yml
+hadoop:
+  namenodes:
+    - nameservices: logs-hdfs # the value of dfs.nameservices
+      namenodesAddr: [ "machine1.example.com", "machine2.example.com" ] # the value of dfs.namenode.rpc-address.[nameservice ID].[name node ID]
+      namenodes: [ "nn1", "nn2" ] # the value of dfs.ha.namenodes.[nameservice ID]
+      user: hdfs
+      password:
+      port: 8020
+      # scheduler platform hdfs log path keyword identification, used by task-application
+      matchPathKeys: [ "flume" ]
+
+  yarn:
+    - clusterName: "bigdata"
+      resourceManager: [ "machine1:8088", "machine2:8088" ] # the value of yarn.resourcemanager.webapp.address
+      jobHistoryServer: "machine3:19888" # the value of mapreduce.jobhistory.webapp.address
+
+  spark:
+    sparkHistoryServer: [ "machine4:18080" ] # the value of spark.history.ui
+
 ```
 
-### 3. Deploy
+### 3. Initialize the database and tables
+
+The Compass table structure consists of two parts, one is compass.sql, and the other is a table that depends on the scheduling platform (dolphinscheduler.sql or airflow.sql, etc.)
+
+1. Please execute document/sql/compass.sql first
+
+2. If you are using the DolphinScheduler scheduling platform, please execute document/sql/dolphinscheduler.sql; if you are using the Airflow scheduling platform, please execute document/sql/airflow.sql
+
+3. If you are using a self-developed scheduling platform, please refer to the [task-syncer](document/manual/deployment.md#task-syncer) module to determine the tables that need to be synchronized
+
+### 4. Deploy
 
 ```
 ./bin/start_all.sh

@@ -110,9 +110,9 @@ fi
 hadoop:
   # task-applicaiton & task-parser 模块配置依赖
   namenodes:
-    - nameservices: logs-hdfs               # hdfs集群名称
-      namenodesAddr: [ "host1", "host2" ]   # namenode地址
-      namenodes: ["namenode1", "namenode2"] # namenode名称
+    - nameservices: logs-hdfs               # dfs.nameservices 属性值
+      namenodesAddr: [ "machine1.example.com", "machine2.example.com" ]   # dfs.namenode.rpc-address.[nameservice ID].[name node ID] 属性值
+      namenodes: ["nn1", "nn2"] # dfs.ha.namenodes.[nameservice ID] 属性值
       user: hdfs                            # 用户
       password:                             # 密码，如果没开启鉴权，则不需要
       port: 8020                            # 端口
@@ -121,11 +121,13 @@ hadoop:
   # task-metadata 模块配置依赖
   yarn:
     - clusterName: "bigdata"
-      resourceManager: [ "ip:port" ]
-      jobHistoryServer: "ip:port"
+      resourceManager: [ "ip:port" ] # yarn.resourcemanager.webapp.address 属性值
+      jobHistoryServer: "ip:port" # mapreduce.jobhistory.webapp.address 属性值
   spark:
-    sparkHistoryServer: [ "ip:port" ]      
+    sparkHistoryServer: [ "ip:port" ] # spark history ui 地址
 ```
+
+
 
 ## task-canal
 
