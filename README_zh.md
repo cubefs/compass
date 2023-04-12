@@ -112,6 +112,8 @@
 
 ### 1. 代码编译
 
+使用 JDK 8 and maven 3.6.0+ 编译
+
 ```shell
 git clone https://github.com/cubefs/compass.git
 cd compass

@@ -120,6 +120,8 @@ Compass has supported the concept of diagnostic types:
 
 ## Get Started
 
+Use JDK 8 and maven 3.6.0+ to Compile
+
 ### 1. Compile
 
 ```
