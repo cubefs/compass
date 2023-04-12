@@ -45,6 +45,12 @@ compass/bin 和 compass/conf 是作为公共脚本和配置使用，方便统一
 ./bin/stop_all.sh
 ```
 
+**注意： 如果您没有使用./bin/start_all.sh，而是单独调整各模块配置，需要复制compass.env到各模块bin目录下，复制application-hadoop.yml到task-application, task-metadata, task-parser模块conf目录下**
+
+**compass_env.sh 是什么？ 所有模块的公共配置项，如果您需要快速启动，只要修改该脚本，其他配置默认即可; 如果您需要配置调优，再修改具体配置**
+
+**application-hadoop.yml 是什么？ namenode, yarn, spark依赖配置项，会在star_all.sh执行时复制到依赖的模块**
+
 #### compass_env.sh 配置说明
 
 通过Environment属性绑定对应SpringBoot配置，只修改环境变量即可。
@@ -146,7 +152,7 @@ task-canal
 │   └── stop.sh
 ├── canal.deployer-1.1.6.tar.gz   compass不提供canal依赖包，可通过init_canal.sh下载，若无网络则自行下载到task-canal根目录
 ├── conf
-│   ├── mysqldata
+│   ├── example
 │   │   ├── instance.properties   源MySQL配置和库表配置
 │   ├── canal_local.properties    zk,kafka等配置
 │   ├── canal.properties
@@ -157,7 +163,7 @@ task-canal
 
 ### 核心配置
 
-conf/mysqldata/instance.properties
+conf/example/instance.properties
 
 ```
 canal.instance.master.address=localhost:33066
