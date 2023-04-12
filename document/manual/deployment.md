@@ -621,6 +621,13 @@ task-ui前端默认一起编译放在task-portal/portal目录下
 web ui默认路径: http://localhost:7075/compass/
 
 swagger ui默认路径：http://localhost:7075/compass/swagger-ui/index.html
+
+关于用户和密码问题：
+
+如果您是使用DolphinScheduler或Airflow调度平台，即compass_env.sh中配置export SCHEDULER="dolphinscheduler / airflow"时，账号密码和调度平台相同（需要已经同步数据）
+
+如果您是自研调度或者测试，请设置 compass_env.sh 中 export SCHEDULER="custom"，执行 document/sql/compass.sql 之后，默认账密是compass,compass，该模式没进行账号密码校验，请注意数据安全
+
 ```
 task-portal
 ├── bin
