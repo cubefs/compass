@@ -27,6 +27,7 @@ import com.oppo.cloud.syncer.util.DataUtil;
 import com.oppo.cloud.syncer.util.StringUtil;
 import com.oppo.cloud.syncer.util.databuild.FlowBuilder;
 import com.oppo.cloud.syncer.util.databuild.ProjectBuilder;
+import com.oppo.cloud.syncer.util.databuild.TaskBuilder;
 import com.oppo.cloud.syncer.util.databuild.UserBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,6 +146,22 @@ public class InitService implements CommandLineRunner {
                 Flow flow = (Flow) DataUtil.parseInstance(data, FlowBuilder.class);
                 try {
                     flowMapper.saveSelective(flow);
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
+            });
+        }
+
+        // target table = task
+        mapping = this.getTableMapping("task");
+        if (mapping == null) {
+            log.error("can not find `task` table mapping");
+        } else {
+            // save task table data
+            initTable(mapping, (Map<String, String> data) -> {
+                Task task = (Task) DataUtil.parseInstance(data, TaskBuilder.class);
+                try {
+                    taskMapper.saveSelective(task);
                 } catch (Exception e) {
                     log.error(e.getMessage());
                 }
