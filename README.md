@@ -146,13 +146,13 @@ export COMPASS_MYSQL_ADDRESS="ip:port"
 export COMPASS_MYSQL_DB="compass"
 export SPRING_DATASOURCE_USERNAME="user"
 export SPRING_DATASOURCE_PASSWORD="pwd"
-# Kafka
+# Kafka (default version: 3.4.0)
 export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
-# Redis
+# Redis (cluster mode)
 export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
-# Zookeeper
+# Zookeeper (default version: 3.7.1)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
-# Elasticsearch
+# Elasticsearch (default version: 7.17.9)
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
 ```
 ```shell
