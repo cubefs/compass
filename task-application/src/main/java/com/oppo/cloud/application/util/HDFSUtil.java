@@ -80,7 +80,7 @@ public class HDFSUtil {
         for (int i = 0; i < nameNodeConf.getNamenodes().length; i++) {
             String r = nameNodeConf.getNamenodes()[i];
             conf.set("dfs.namenode.rpc-address." + nameNodeConf.getNameservices() + "." + r,
-                    nameNodeConf.getNamenodesAddr()[i]);
+                    nameNodeConf.getNamenodesAddr()[i] + ":" + nameNodeConf.getPort());
         }
 
         String nameNodes = String.join(",", nameNodeConf.getNamenodes());
