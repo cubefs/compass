@@ -204,7 +204,7 @@ public class InitService implements CommandLineRunner {
                         try {
                             result = jdbcTemplate.queryForMap(depQuery);
                         } catch (Exception e) {
-                            log.error("failed to execute dep query: " + e.getMessage());
+                            log.error("failed to execute dep query: {},{}", depQuery, e.getMessage());
                         }
                         if (result == null) {
                             continue;
@@ -239,6 +239,9 @@ public class InitService implements CommandLineRunner {
                 if (v == null) {
                     data.put(key, null);
                 } else {
+                    if (v instanceof LocalDateTime) {
+                        v = DataUtil.formatDateObject(v);
+                    }
                     data.put(key, v.toString());
                 }
             }
