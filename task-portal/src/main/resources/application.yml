@@ -32,6 +32,7 @@ spring:
   redis:
     cluster:
       nodes: localhost:6379
+    password:
 
 mybatis:
   mapper-locations:
