@@ -36,7 +36,6 @@ import java.util.Map;
  * ElasticSearch查询service
  */
 public interface ElasticSearchService {
-
     /**
      * 按条件查询记录, 分页查询
      */

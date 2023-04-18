@@ -15,7 +15,7 @@
  */
 
 package com.oppo.cloud.portal.initializer;
-
+import com.oppo.cloud.common.domain.elasticsearch.RealtimeReportMapping;
 import com.oppo.cloud.common.domain.elasticsearch.JobInstanceMapping;
 import com.oppo.cloud.common.domain.elasticsearch.JobAnalysisMapping;
 import com.oppo.cloud.common.domain.elasticsearch.LogSummaryMapping;
@@ -74,7 +74,12 @@ public class Initializer implements CommandLineRunner {
 
     @Value(value = "${custom.elasticsearch.jobInstanceIndex.replicas}")
     private Integer jobInstanceIndexReplicas;
-
+    @Value(value = "${custom.elasticsearch.realtimeReportIndex.name}")
+    private String realtimeReportIndex;
+    @Value(value = "${custom.elasticsearch.realtimeReportIndex.shards}")
+    private Integer realtimeReportIndexShards;
+    @Value(value = "${custom.elasticsearch.realtimeReportIndex.replicas}")
+    private Integer realtimeReportIndexReplicas;
     @Autowired
     @Qualifier("elasticsearch")
     private RestHighLevelClient client;
@@ -99,7 +104,12 @@ public class Initializer implements CommandLineRunner {
                     new String[]{appIndex + "-*"}, mapping, appIndexShards, appIndexReplicas);
             log.info("Create elasticsearch template {}, result: {}", appIndex, response.isAcknowledged());
         }
-
+        if (!mappingApi.existsTemplate(client, realtimeReportIndex)) {
+            Map<String, Object> mapping = RealtimeReportMapping.build(true);
+            AcknowledgedResponse response = mappingApi.putTemplate(client, realtimeReportIndex,
+                    new String[]{realtimeReportIndex + "-*"}, mapping, realtimeReportIndexShards, realtimeReportIndexReplicas);
+            log.info("Create elasticsearch template {}, result: {}", realtimeReportIndex, response.isAcknowledged());
+        }
         if (!mappingApi.existsTemplate(client, logIndex)) {
             Map<String, Object> mapping = LogSummaryMapping.build(true);
             AcknowledgedResponse response = mappingApi.putTemplate(client, logIndex,

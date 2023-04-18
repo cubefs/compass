@@ -248,6 +248,20 @@ public class LogParserServiceImpl implements LogParserService {
      * 添加任务applicationId
      */
     public void addTaskApplication(String applicationId, TaskInstance taskInstance, String logPath) {
+        // flink任务发送kafka
+        if (!StringUtils.isEmpty(kafkaConfig.getRealtimeTaskTopic()) &&
+                !StringUtils.isBlank(taskInstance.getTaskType()) && taskInstance.getTaskType().equals(TASK_TYPE_FLINK)) {
+            try {
+                RealtimeTaskInstance realtimeTaskInstance = new RealtimeTaskInstance();
+                realtimeTaskInstance.setTaskInstance(taskInstance);
+                realtimeTaskInstance.setApplicationId(applicationId);
+                messageProducer.sendMessageSync(kafkaConfig.getRealtimeTaskTopic(),
+                        JSON.toJSONString(realtimeTaskInstance));
+            } catch (Exception ex) {
+                log.error("failed to send insert data to kafka, err: " + ex.getMessage());
+            }
+        }
+
         // 数据写回kafka订阅
         log.info("application save: applicationId=" + applicationId + " task_instance=" + taskInstance + ",lopPath="
                 + logPath);
