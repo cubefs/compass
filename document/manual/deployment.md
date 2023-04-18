@@ -45,6 +45,12 @@ compass/bin 和 compass/conf 是作为公共脚本和配置使用，方便统一
 ./bin/stop_all.sh
 ```
 
+**注意： 如果您没有使用./bin/start_all.sh，而是单独调整各模块配置，需要复制compass.env到各模块bin目录下，复制application-hadoop.yml到task-application, task-metadata, task-parser模块conf目录下**
+
+**compass_env.sh 是什么？ 所有模块的公共配置项，如果您需要快速启动，只要修改该脚本，其他配置默认即可; 如果您需要配置调优，再修改具体配置**
+
+**application-hadoop.yml 是什么？ namenode, yarn, spark依赖配置项，会在star_all.sh执行时复制到依赖的模块**
+
 #### compass_env.sh 配置说明
 
 通过Environment属性绑定对应SpringBoot配置，只修改环境变量即可。
@@ -75,16 +81,16 @@ export SPRING_DATASOURCE_URL="jdbc:mysql://${COMPASS_MYSQL_ADDRESS}/${COMPASS_MY
 export SPRING_DATASOURCE_USERNAME=""
 export SPRING_DATASOURCE_PASSWORD=""
 
-# Kafka
+# Kafka (默认版本: 3.4.0)
 export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
 
-# Redis
+# Redis (cluster 模式)
 export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
 
-# Zookeeper
+# Zookeeper (默认版本: 3.7.1)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
 
-# Elasticsearch
+# Elasticsearch (默认版本: 7.17.9)
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
 
 # task-canal模块配置
@@ -110,9 +116,9 @@ fi
 hadoop:
   # task-applicaiton & task-parser 模块配置依赖
   namenodes:
-    - nameservices: logs-hdfs               # hdfs集群名称
-      namenodesAddr: [ "host1", "host2" ]   # namenode地址
-      namenodes: ["namenode1", "namenode2"] # namenode名称
+    - nameservices: logs-hdfs               # dfs.nameservices 属性值
+      namenodesAddr: [ "machine1.example.com", "machine2.example.com" ]   # dfs.namenode.rpc-address.[nameservice ID].[name node ID] 属性值
+      namenodes: ["nn1", "nn2"] # dfs.ha.namenodes.[nameservice ID] 属性值
       user: hdfs                            # 用户
       password:                             # 密码，如果没开启鉴权，则不需要
       port: 8020                            # 端口
@@ -121,11 +127,13 @@ hadoop:
   # task-metadata 模块配置依赖
   yarn:
     - clusterName: "bigdata"
-      resourceManager: [ "ip:port" ]
-      jobHistoryServer: "ip:port"
+      resourceManager: [ "ip:port" ] # yarn.resourcemanager.webapp.address 属性值
+      jobHistoryServer: "ip:port" # mapreduce.jobhistory.webapp.address 属性值
   spark:
-    sparkHistoryServer: [ "ip:port" ]      
+    sparkHistoryServer: [ "ip:port" ] # spark history ui 地址
 ```
+
+
 
 ## task-canal
 
@@ -144,7 +152,7 @@ task-canal
 │   └── stop.sh
 ├── canal.deployer-1.1.6.tar.gz   compass不提供canal依赖包，可通过init_canal.sh下载，若无网络则自行下载到task-canal根目录
 ├── conf
-│   ├── mysqldata
+│   ├── example
 │   │   ├── instance.properties   源MySQL配置和库表配置
 │   ├── canal_local.properties    zk,kafka等配置
 │   ├── canal.properties
@@ -155,7 +163,7 @@ task-canal
 
 ### 核心配置
 
-conf/mysqldata/instance.properties
+conf/example/instance.properties
 
 ```
 canal.instance.master.address=localhost:33066
@@ -432,7 +440,7 @@ custom:
       logPathJoins: 
         # end_time: 2023-02-18 01:43:11
         # log_path: ../logs/6354680786144_1/3/4.log
-        - { "column": "", "data": "hdfs://log-hdfs:8020/flume/dolphinscheduler" } # 相当于根目录，常量
+        - { "column": "", "data": "hdfs://log-hdfs:8020/flume/dolphinscheduler" } # 配置存储调度日志的hdfs根目录，log-hdfs即nameservice需要根据实际集群修改
         - { "column": "end_time", "regex": "^.*(?<date>\\d{4}-\\d{2}-\\d{2}).+$", "name": "date" }
         - { "column": "log_path", "regex": "^.*logs/(?<logpath>.*)$", "name": "logpath" }
       extractLog: # 根据组装的日志路径解析日志
@@ -613,6 +621,13 @@ task-ui前端默认一起编译放在task-portal/portal目录下
 web ui默认路径: http://localhost:7075/compass/
 
 swagger ui默认路径：http://localhost:7075/compass/swagger-ui/index.html
+
+关于用户和密码问题：
+
+如果您是使用DolphinScheduler或Airflow调度平台，即compass_env.sh中配置export SCHEDULER="dolphinscheduler / airflow"时，账号密码和调度平台相同（需要已经同步数据）
+
+如果您是自研调度或者测试，请设置 compass_env.sh 中 export SCHEDULER="custom"，执行 document/sql/compass.sql 之后，默认账密是compass,compass，该模式没进行账号密码校验，请注意数据安全
+
 ```
 task-portal
 ├── bin

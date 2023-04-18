@@ -60,12 +60,8 @@ public class AppController {
     @PostMapping(value = "/list")
     @ApiOperation(value = "application list", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus<TaskAppsResponse> searchApplications(@Validated @RequestBody TaskAppsRequest request) {
-        try {
-            return CommonStatus.success(taskAppService.searchTaskApps(request));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<TaskAppsResponse> searchApplications(@Validated @RequestBody TaskAppsRequest request) throws Exception {
+        return CommonStatus.success(taskAppService.searchTaskApps(request));
     }
 
     @GetMapping(value = "/report")
@@ -73,12 +69,8 @@ public class AppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "applicationId name", required = true, dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<DiagnoseReport> getDiagnoseReport(@RequestParam(value = "applicationId") String applicationId) {
-        try {
-            return CommonStatus.success(taskAppService.generateReport(applicationId));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<DiagnoseReport> getDiagnoseReport(@RequestParam(value = "applicationId") String applicationId) throws Exception {
+        return CommonStatus.success(taskAppService.generateReport(applicationId));
     }
 
     @GetMapping(value = "/report/runError")
@@ -86,12 +78,8 @@ public class AppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "applicationId name", required = true, dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<List<Item<RunError>>> getDiagnoseReportRunError(@RequestParam(value = "applicationId") String applicationId) {
-        try {
-            return CommonStatus.success(taskAppService.diagnoseRunError(applicationId));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<List<Item<RunError>>> getDiagnoseReportRunError(@RequestParam(value = "applicationId") String applicationId) throws Exception {
+        return CommonStatus.success(taskAppService.diagnoseRunError(applicationId));
     }
 
     @GetMapping(value = "/report/runInfo")
@@ -99,12 +87,8 @@ public class AppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "applicationId name", required = true, dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<DiagnoseReport.RunInfo> getDiagnoseReportRunInfo(@RequestParam(value = "applicationId") String applicationId) {
-        try {
-            return CommonStatus.success(taskAppService.diagnoseRunInfo(applicationId));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<DiagnoseReport.RunInfo> getDiagnoseReportRunInfo(@RequestParam(value = "applicationId") String applicationId) throws Exception {
+        return CommonStatus.success(taskAppService.diagnoseRunInfo(applicationId));
     }
 
     @GetMapping(value = "/report/runResource")
@@ -112,12 +96,8 @@ public class AppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "applicationId name", required = true, dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<List<Item>> getDiagnoseReportRunResource(@RequestParam(value = "applicationId") String applicationId) {
-        try {
-            return CommonStatus.success(taskAppService.diagnoseRunResource(applicationId));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<List<Item>> getDiagnoseReportRunResource(@RequestParam(value = "applicationId") String applicationId) throws Exception {
+        return CommonStatus.success(taskAppService.diagnoseRunResource(applicationId));
     }
 
     @GetMapping(value = "/report/runTime")
@@ -125,32 +105,20 @@ public class AppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "applicationId name", required = true, dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<List<Item>> getDiagnoseReportRunTime(@RequestParam(value = "applicationId") String applicationId) {
-        try {
-            return CommonStatus.success(taskAppService.diagnoseRunTime(applicationId));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<List<Item>> getDiagnoseReportRunTime(@RequestParam(value = "applicationId") String applicationId) throws Exception {
+        return CommonStatus.success(taskAppService.diagnoseRunTime(applicationId));
     }
 
     @GetMapping(value = "/categories")
     @ApiOperation(value = "app category type")
     public CommonStatus<List<String>> getCategories() {
-        try {
-            return CommonStatus.success(AppCategoryEnum.getAllAppCategoryOfChina());
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+        return CommonStatus.success(AppCategoryEnum.getAllAppCategoryOfChina());
     }
 
     @PostMapping(value = "/graph")
     @ApiOperation(value = "task graph")
-    public CommonStatus<TrendGraph> getGraph(@Validated @RequestBody JobsRequest request) {
-        try {
-            return CommonStatus.success(taskAppService.getGraph(request));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<TrendGraph> getGraph(@Validated @RequestBody JobsRequest request) throws Exception {
+        return CommonStatus.success(taskAppService.getGraph(request));
     }
 
     @GetMapping(value = "/diagnose")
@@ -158,15 +126,11 @@ public class AppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "applicationId名称", required = true, dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<DiagnoseResult> getAppDiagnose(@RequestParam(value = "applicationId") String applicationId) {
-        try {
-            if (StringUtils.isNotEmpty(applicationId)) {
-                return CommonStatus.success(taskAppService.diagnose(applicationId));
-            } else {
-                return CommonStatus.failed(String.format("请输入正确的applicationId[%s]信息", applicationId));
-            }
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
+    public CommonStatus<DiagnoseResult> getAppDiagnose(@RequestParam(value = "applicationId") String applicationId) throws Exception {
+        if (StringUtils.isNotEmpty(applicationId)) {
+            return CommonStatus.success(taskAppService.diagnose(applicationId));
+        } else {
+            return CommonStatus.failed(String.format("请输入正确的applicationId[%s]信息", applicationId));
         }
     }
 
@@ -176,11 +140,7 @@ public class AppController {
             @ApiImplicitParam(name = "applicationId", value = "applicationId名称", required = true, dataType = "String", dataTypeClass = String.class),
             @ApiImplicitParam(name = "executorId", value = "executor名称", required = true, dataType = "String", dataTypeClass = String.class)})
     public CommonStatus<GCReportResp> getGCReport(@RequestParam(value = "applicationId") String applicationId,
-                                                  @RequestParam(value = "executorId") String executorId) {
-        try {
-            return CommonStatus.success(taskAppService.getGcReport(applicationId, executorId));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+                                                  @RequestParam(value = "executorId") String executorId) throws Exception {
+        return CommonStatus.success(taskAppService.getGcReport(applicationId, executorId));
     }
 }

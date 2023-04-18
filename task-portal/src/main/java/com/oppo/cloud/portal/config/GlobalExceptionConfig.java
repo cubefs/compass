@@ -17,6 +17,7 @@
 package com.oppo.cloud.portal.config;
 
 import com.oppo.cloud.common.api.CommonStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionConfig {
 
@@ -36,12 +38,12 @@ public class GlobalExceptionConfig {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public CommonStatus exceptionHandler(Exception e) {
+        log.error("GlobalException: ", e);
         return CommonStatus.failed(e.getMessage());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.OK)
-    // @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseBody
     public CommonStatus validationHandler(ConstraintViolationException ex) {
         StringBuilder builder = new StringBuilder();

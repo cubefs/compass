@@ -16,13 +16,10 @@
 
 package com.oppo.cloud.portal.service;
 
-import com.oppo.cloud.common.api.CommonStatus;
 import com.oppo.cloud.model.User;
 import com.oppo.cloud.portal.domain.task.UserInfo;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * 用户管理Service

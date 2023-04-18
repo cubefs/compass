@@ -11,6 +11,7 @@ spring:
   redis:
     cluster:
       nodes: localhost:6379
+    password:
 
   zookeeper:
     nodes: localhost:2181

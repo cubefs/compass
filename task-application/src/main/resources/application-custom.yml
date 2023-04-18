@@ -18,6 +18,7 @@ spring:
     cluster:
       nodes: localhost:6379
       max-redirects: 3
+    password:
     lettuce:
       pool:
         max-active: 32
@@ -36,7 +37,7 @@ custom:
     - logPathDep: # 日志依赖查询
         query: "select CASE WHEN end_time IS NOT NULL THEN DATE_ADD(end_time, INTERVAL 1 second) ELSE start_time END as end_time,log_path from t_ds_task_instance where id=${id}"     # 查询, id 是 task-instance表的id
       logPathJoins: # 拼接日志绝对路径
-        - { "column": "", "data": "hdfs://log-hdfs:8020/flume/custom" } # 相当于根目录，常量
+        - { "column": "", "data": "hdfs://log-hdfs:8020/flume/custom" } # 配置存储调度日志的hdfs根目录，log-hdfs即nameservice需要根据实际集群修改
         - { "column": "end_time", "regex": "^.*(?<date>\\d{4}-\\d{2}-\\d{2}).+$", "name": "date" }
         - { "column": "log_path", "regex": "^.*logs/(?<logpath>.*)$", "name": "logpath" }
       extractLog: # 根据组装的日志路径解析日志

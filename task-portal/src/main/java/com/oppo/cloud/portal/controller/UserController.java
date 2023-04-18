@@ -46,13 +46,9 @@ public class UserController {
     @ApiOperation("用户登录接口")
     @PostMapping(value = "/login")
     @ResponseBody
-    public CommonStatus<UserInfo> login(HttpServletResponse httpServletResponse, @RequestBody LoginRequest loginRequest) {
-        try {
-            return CommonStatus.success(userService.userLogin(httpServletResponse, loginRequest.getUsername(),
-                    loginRequest.getPassword()));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<UserInfo> login(HttpServletResponse httpServletResponse, @RequestBody LoginRequest loginRequest) throws Exception {
+        return CommonStatus.success(userService.userLogin(httpServletResponse, loginRequest.getUsername(),
+                loginRequest.getPassword()));
     }
 
 

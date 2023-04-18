@@ -9,12 +9,16 @@ stop() {
   if [ -f ${PID_FILE} ]; then
     local pid=$(cat ${PID_FILE})
     echo $APP_NAME $pid
-    if ps --pid ${pid} >/dev/null; then
+    command="ps --pid ${pid}"
+    if [[ $(uname) == "Darwin" ]]; then
+      command="ps -p ${pid}"
+    fi
+    if eval ${command} >/dev/null; then
       kill $pid && rm -f $PID_FILE
     fi
     sleep 5
 
-    if ps --pid ${pid} >/dev/null; then
+    if eval ${command} >/dev/null; then
       kill -9 $pid
     fi
 

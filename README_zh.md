@@ -112,6 +112,8 @@
 
 ### 1. 代码编译
 
+使用 JDK 8 and maven 3.6.0+ 编译
+
 ```shell
 git clone https://github.com/cubefs/compass.git
 cd compass
@@ -122,7 +124,8 @@ mvn package -DskipTests
 
 ```shell
 cd dist/compass
-vim bin/compass_env.sh
+
+vi bin/compass_env.sh
 # Scheduler MySQL
 export SCHEDULER_MYSQL_ADDRESS="ip:port"
 export SCHEDULER_MYSQL_DB="scheduler"
@@ -133,17 +136,50 @@ export COMPASS_MYSQL_ADDRESS="ip:port"
 export COMPASS_MYSQL_DB="compass"
 export SPRING_DATASOURCE_USERNAME="user"
 export SPRING_DATASOURCE_PASSWORD="pwd"
-# Kafka
+# Kafka (默认版本: 3.4.0)
 export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
-# Redis
+# Redis (cluster 模式)
 export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
-# Zookeeper
+# Zookeeper (默认版本: 3.7.1)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
-# Elasticsearch
+# Elasticsearch (默认版本: 7.17.9)
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
 ```
 
-### 3. 一键部署
+```shell
+vi conf/application-hadoop.yml
+hadoop:
+  namenodes:
+    - nameservices: logs-hdfs # the value of dfs.nameservices
+      namenodesAddr: [ "machine1.example.com", "machine2.example.com" ] # the value of dfs.namenode.rpc-address.[nameservice ID].[name node ID]
+      namenodes: [ "nn1", "nn2" ] # the value of dfs.ha.namenodes.[nameservice ID]
+      user: hdfs
+      password:
+      port: 8020
+      # scheduler platform hdfs log path keyword identification, used by task-application
+      matchPathKeys: [ "flume" ]
+
+  yarn:
+    - clusterName: "bigdata"
+      resourceManager: [ "machine1:8088", "machine2:8088" ] # the value of yarn.resourcemanager.webapp.address
+      jobHistoryServer: "machine3:19888" # the value of mapreduce.jobhistory.webapp.address
+
+  spark:
+    sparkHistoryServer: [ "machine4:18080" ] # the value of spark.history.ui
+
+```
+
+### 3. 初始化数据库和表
+
+Compass 表结构由两部分组成，一个是compass.sql，另一个是依赖调度平台的表（dolphinscheduler.sql 或者 airflow.sql等）
+
+1. 请先执行document/sql/compass.sql
+
+2. 如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql； 如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql
+
+3. 如果您使用的是自研调度平台，请参考[task-syncer](#task-syncer)模块，确定需要同步的表
+
+### 4. 一键部署
 
 ```
 ./bin/start_all.sh
