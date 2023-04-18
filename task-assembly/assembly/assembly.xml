@@ -58,6 +58,10 @@
             <directory>${project.parent.basedir}/task-syncer/target/task-syncer</directory>
             <outputDirectory>task-syncer</outputDirectory>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/task-realtime-diagnosis/target/task-realtime-diagnosis</directory>
+            <outputDirectory>task-realtime-diagnosis</outputDirectory>
+        </fileSet>
 
     </fileSets>
 
