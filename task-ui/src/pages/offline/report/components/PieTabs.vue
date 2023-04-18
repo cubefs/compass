@@ -2,6 +2,12 @@
 import dayjs from 'dayjs'
 import * as echarts from 'echarts'
 import { post } from '~/utils/request'
+const props = defineProps({
+  projectName: {
+    type: String,
+    default: '',
+  },
+})
 const circleTab: string = $ref('first')
 let firstChart = $ref({})
 let secondChart = $ref({})
@@ -13,7 +19,7 @@ let data = $ref({
 const time = $ref([dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millisecond(0).valueOf(), dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf()])
 const getPieChart = async () => {
   const res = await post('/api/v1/report/graph', {
-    projectName: '',
+    projectName: `${props.projectName}`,
     start: time[0] / 1000,
     end: time[1] / 1000,
     graphType: 'distribution',
@@ -85,6 +91,12 @@ watch(
     option.series[0].data = secondChart.data
     memChart.setOption(option)
   },
+)
+watch(
+  () => props.projectName,
+  () => {
+    getPieChart()
+  }
 )
 const handleClick = (val) => {
   firstChart = val.paneName === 'first' ? data.cpu : data.num

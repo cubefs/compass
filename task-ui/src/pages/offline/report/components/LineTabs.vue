@@ -2,6 +2,12 @@
 import dayjs from 'dayjs'
 import * as echarts from 'echarts'
 import { post } from '~/utils/request'
+const props = defineProps({
+  projectName: {
+    type: String,
+    default: '',
+  },
+})
 const lineTab: string = $ref('first')
 let cpuData = $ref({})
 let memData = $ref({})
@@ -10,19 +16,19 @@ const time = $ref([dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millis
 const getLineChart = async () => {
   const res = await Promise.all([
     post('/api/v1/report/graph', {
-      projectName: '',
+      projectName: `${props.projectName}`,
       start: time[0] / 1000,
       end: time[1] / 1000,
       graphType: 'cpuTrend',
     }),
     post('/api/v1/report/graph', {
-      projectName: '',
+      projectName: `${props.projectName}`,
       start: time[0] / 1000,
       end: time[1] / 1000,
       graphType: 'memoryTrend',
     }),
     await post('/api/v1/report/graph', {
-      projectName: '',
+      projectName: `${props.projectName}`,
       start: time[0] / 1000,
       end: time[1] / 1000,
       graphType: 'numTrend',
@@ -117,6 +123,12 @@ watch(
     ]
     memChart.setOption(option)
   },
+)
+watch(
+  () => props.projectName,
+  () => {
+    getLineChart()
+  }
 )
 const handleClick = (val) => {
   cpuData = val.paneName === 'first' ? data[0].trendGraph : cpuData = data[2].trendGraph

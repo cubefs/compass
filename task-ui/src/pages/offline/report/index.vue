@@ -6,7 +6,7 @@ import LineTabs from './components/LineTabs.vue'
 import { get, post } from '~/utils/request'
 dayjs().format()
 const projectList = $ref([])
-const project = $ref('')
+const projectName = $ref('')
 const lineTab: string = $ref('first')
 let sData = $ref({
   abnormalJobCpuNum: 0,
@@ -32,21 +32,18 @@ let sData = $ref({
   jobNum: 0,
   memoryUnit: '',
 })
+const getProjectList = async () => {
+  const res = await get('/api/v1/report/projects')
+  projectList = res
+}
 const getStatistics = async () => {
   const res = await get('/api/v1/report/statistics', {
-    projectName: '',
+    projectName: projectName,
   })
   sData = res
 }
-const getLineChart = async () => {
-  const res = await post('/api/v1/report/graph', {
-    projectName: '',
-    start: 1666886400,
-    end: 1666972800,
-    graphType: 'distribution',
-  })
-}
 onMounted(() => {
+  getProjectList()
   getStatistics()
 })
 </script>
@@ -54,7 +51,7 @@ onMounted(() => {
 <template>
   <el-card>
     项目
-    <el-select v-model="project">
+    <el-select @change="getStatistics" v-model="projectName">
       <el-option
         v-for="item in projectList"
         :key="item"
@@ -145,10 +142,10 @@ onMounted(() => {
     </el-scrollbar>
   </el-card>
   <el-card class="m-t-5">
-    <LineTabs />
+    <LineTabs :projectName="projectName"/>
   </el-card>
   <el-card class="m-t-5" m-b-10>
-    <PieTabs />
+    <PieTabs :projectName="projectName"/>
   </el-card>
 </template>
 
