@@ -21,6 +21,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.constant.ApplicationType;
+import com.oppo.cloud.common.constant.Constant;
 import com.oppo.cloud.common.domain.cluster.spark.SparkApp;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
 import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
@@ -915,13 +916,13 @@ public class TaskAppServiceImpl implements TaskAppService {
      * 查询redis,获取yarn 日志路径
      */
     public String getYarnLogPath(String rmIp) throws Exception {
-        if (redisService.hasKey(CommonCode.RM_JHS_MAP)) {
-            Map<String, List<String>> rmJhsMap = JSON.parseObject((String) redisService.get(CommonCode.RM_JHS_MAP),
+        if (redisService.hasKey(Constant.RM_JHS_MAP)) {
+            Map<String, List<String>> rmJhsMap = JSON.parseObject((String) redisService.get(Constant.RM_JHS_MAP),
                     new TypeReference<Map<String, List<String>>>() {
                     });
             List<String> jhsIps = rmJhsMap.get(rmIp);
             for (String jhsIp : jhsIps) {
-                String key = CommonCode.JHS_HDFS_PATH + jhsIp;
+                String key = Constant.JHS_HDFS_PATH + jhsIp;
                 if (redisService.hasKey(key)) {
                     return (String) redisService.get(key);
                 } else {
@@ -930,7 +931,7 @@ public class TaskAppServiceImpl implements TaskAppService {
                 }
             }
         } else {
-            throw new Exception(String.format("search redis error,msg: can not find key %s", CommonCode.RM_JHS_MAP));
+            throw new Exception(String.format("search redis error,msg: can not find key %s", Constant.RM_JHS_MAP));
         }
         return "";
     }
