@@ -123,6 +123,16 @@ hadoop:
       password:                             # 密码，如果没开启鉴权，则不需要
       port: 8020                            # 端口
       matchPathKeys: [ "flume" ]            # task-application模块使用，调度平台日志hdfs路径关键字
+      # kerberos
+      enableKerberos: false
+      # /etc/krb5.conf
+      krb5Conf: ""
+      # hdfs/*@EXAMPLE.COM
+      principalPattern:  ""
+      # admin
+      loginUser: ""
+      # /var/kerberos/krb5kdc/admin.keytab
+      keytabPath: ""
   
   # task-metadata 模块配置依赖
   yarn:

@@ -167,6 +167,16 @@ hadoop:
       port: 8020
       # scheduler platform hdfs log path keyword identification, used by task-application
       matchPathKeys: [ "flume" ]
+      # kerberos
+      enableKerberos: false
+      # /etc/krb5.conf
+      krb5Conf: ""
+      # hdfs/*@EXAMPLE.COM
+      principalPattern:  ""
+      # admin
+      loginUser: ""
+      # /var/kerberos/krb5kdc/admin.keytab
+      keytabPath: ""
 
   yarn:
     - clusterName: "bigdata"
