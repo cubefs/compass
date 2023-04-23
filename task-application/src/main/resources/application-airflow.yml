@@ -37,7 +37,7 @@ custom:
     - logPathDep: # 日志依赖查询
         query: ""    # 变量依赖查询
       logPathJoins: # 拼接日志绝对路径
-        - { "column": "", "data": "hdfs://log-hdfs:8020/flume/airflow" } # 配置存储调度日志的hdfs根目录，log-hdfs即nameservice需要根据实际集群修改
+        - { "column": "", "data": "/flume/airflow" } # 配置存储调度日志的hdfs根目录
         - { "column": "flow_name",data: "dag_id=", "regex": "(?<flowName>.*)","name": "flowName" }
         - { "column": "run_id",data: "run_id=", "regex": "(?<runId>.*)", "name": "runId" }
         - { "column": "task_name",data: "task_id=","regex": "(?<taskName>.*)", "name": "taskName" }
