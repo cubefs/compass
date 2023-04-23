@@ -7,3 +7,13 @@ hadoop:
       user: hdfs
       password:
       port: 8020
+      # kerberos
+      enableKerberos: false
+      # /etc/krb5.conf
+      krb5Conf: ""
+      # hdfs/*@EXAMPLE.COM
+      principalPattern:  ""
+      # admin
+      loginUser: ""
+      # /var/kerberos/krb5kdc/admin.keytab
+      keytabPath: ""
