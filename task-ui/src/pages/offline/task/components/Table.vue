@@ -53,7 +53,7 @@ const handleState = async (row) => {
   emit('search')
 }
 const goReport = (row) => {
-  router.push({
+  const routeData = router.resolve({
     name: 'taskDetail',
     query: {
       flowName: row.flowName,
@@ -62,6 +62,7 @@ const goReport = (row) => {
       executionDate: row.executionDate,
     },
   })
+  window.open(routeData.href, '_blank');
 }
 </script>
 
