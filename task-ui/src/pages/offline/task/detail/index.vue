@@ -72,12 +72,13 @@ const getSummary = async () => {
   })
   summary = res
 }
+// Compatible with the problem of missing base path in the case of frontend and backend integration
 const getFormattedItem = (item) => {
   const url = window.location.href
   const basePath = '/compass/portal'
   if(url.includes(basePath)){
     return item.replace(/(href=")([^"]+)/g, function(match, p1, p2) {
-      return p1 + basePath + p2;
+      return p1 + basePath + p2
     })
   }
   return item
