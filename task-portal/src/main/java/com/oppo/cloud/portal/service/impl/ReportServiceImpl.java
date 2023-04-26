@@ -129,6 +129,11 @@ public class ReportServiceImpl implements ReportService {
         } catch (Exception e) {
             log.error("get last week period failed,msg:", e);
         }
+        if (lastResult == null || lastWeekResult == null) {
+            log.error("search statistics data is null");
+            return result;
+        }
+
         // 异常任务数占比的环比
         double exceptionChainRatio = lastResult.getAbnormalJobNumRatio() == 0 ? 1
                 : (result.getAbnormalJobNumRatio() - lastResult.getAbnormalJobNumRatio())
@@ -248,7 +253,9 @@ public class ReportServiceImpl implements ReportService {
 
         Aggregations aggregationsGroupByCount =
                 elasticSearchService.findRawAggregations(searchSourceBuilder, jobIndex + "-*");
-
+        if (aggregationsGroupByCount == null) {
+            return null;
+        }
         Terms terms = aggregationsGroupByCount.get("groupByCount");
         int abnormalJobCount = terms.getBuckets().size();
         statisticsData.setAbnormalJobNum(abnormalJobCount);
@@ -352,6 +359,10 @@ public class ReportServiceImpl implements ReportService {
 
         List<IndicatorData> totalUsageTrend = elasticSearchService.sumAggregationByDay(getBuilder(request),
                 request.getStart(), request.getEnd(), jobInstanceIndex, filed);
+        if (totalUsageTrend == null) {
+            log.error("search totalUsageTrend is null");
+            return trendGraph;
+        }
         LineGraph jobGraph = new LineGraph();
         LineGraph totalGraph = new LineGraph();
 
@@ -433,6 +444,10 @@ public class ReportServiceImpl implements ReportService {
         builder.aggregation(termsAggregationBuilder);
 
         Aggregations aggregations = elasticSearchService.findRawAggregations(builder, jobIndex + "-*");
+        if (aggregations == null) {
+            log.error("search {} aggregations is null", jobIndex);
+            return graph;
+        }
         Terms terms = aggregations.get("distribution");
         DistributionGraph cpuGraph = new DistributionGraph();
         cpuGraph.setName("CPU资源消耗分布");

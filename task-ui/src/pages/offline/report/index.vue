@@ -40,7 +40,9 @@ const getStatistics = async () => {
   const res = await get('/api/v1/report/statistics', {
     projectName: projectName,
   })
-  sData = res
+  if(res !== null){
+    sData = res
+  }
 }
 onMounted(() => {
   getProjectList()
