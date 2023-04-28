@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oppo.cloud.mapper.RealtimeTaskAppMapper">
+  <resultMap id="BaseResultMap" type="com.oppo.cloud.model.RealtimeTaskApp">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="flow_name" jdbcType="VARCHAR" property="flowName" />
+    <result column="flow_id" jdbcType="INTEGER" property="flowId" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+    <result column="task_id" jdbcType="INTEGER" property="taskId" />
+    <result column="task_state" jdbcType="VARCHAR" property="taskState" />
+    <result column="task_instance_id" jdbcType="INTEGER" property="taskInstanceId" />
+    <result column="execution_time" jdbcType="TIMESTAMP" property="executionTime" />
+    <result column="application_id" jdbcType="VARCHAR" property="applicationId" />
+    <result column="flink_track_url" jdbcType="VARCHAR" property="flinkTrackUrl" />
+    <result column="allocated_mb" jdbcType="INTEGER" property="allocatedMb" />
+    <result column="allocated_vcores" jdbcType="INTEGER" property="allocatedVcores" />
+    <result column="running_containers" jdbcType="INTEGER" property="runningContainers" />
+    <result column="engine_type" jdbcType="VARCHAR" property="engineType" />
+    <result column="duration" jdbcType="DOUBLE" property="duration" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="vcore_seconds" jdbcType="REAL" property="vcoreSeconds" />
+    <result column="memory_seconds" jdbcType="REAL" property="memorySeconds" />
+    <result column="queue" jdbcType="VARCHAR" property="queue" />
+    <result column="cluster_name" jdbcType="VARCHAR" property="clusterName" />
+    <result column="retry_times" jdbcType="INTEGER" property="retryTimes" />
+    <result column="execute_user" jdbcType="VARCHAR" property="executeUser" />
+    <result column="parallel" jdbcType="INTEGER" property="parallel" />
+    <result column="tm_slot" jdbcType="INTEGER" property="tmSlot" />
+    <result column="tm_core" jdbcType="INTEGER" property="tmCore" />
+    <result column="tm_mem" jdbcType="INTEGER" property="tmMem" />
+    <result column="jm_mem" jdbcType="INTEGER" property="jmMem" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.oppo.cloud.model.RealtimeTaskApp">
+    <result column="diagnosis" jdbcType="LONGVARCHAR" property="diagnosis" />
+    <result column="job_name" jdbcType="LONGVARCHAR" property="jobName" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, username, user_id, project_name, project_id, flow_name, flow_id, task_name, task_id, 
+    task_state, task_instance_id, execution_time, application_id, flink_track_url, allocated_mb, 
+    allocated_vcores, running_containers, engine_type, duration, start_time, end_time, 
+    vcore_seconds, memory_seconds, queue, cluster_name, retry_times, execute_user, parallel, 
+    tm_slot, tm_core, tm_mem, jm_mem, create_time, update_time
+  </sql>
+  <sql id="Blob_Column_List">
+    diagnosis, job_name
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.oppo.cloud.model.RealtimeTaskAppExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from realtime_task_app
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.oppo.cloud.model.RealtimeTaskAppExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from realtime_task_app
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from realtime_task_app
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from realtime_task_app
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.oppo.cloud.model.RealtimeTaskAppExample">
+    delete from realtime_task_app
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.oppo.cloud.model.RealtimeTaskApp">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into realtime_task_app (username, user_id, project_name, 
+      project_id, flow_name, flow_id, 
+      task_name, task_id, task_state, 
+      task_instance_id, execution_time, application_id, 
+      flink_track_url, allocated_mb, allocated_vcores, 
+      running_containers, engine_type, duration, 
+      start_time, end_time, vcore_seconds, 
+      memory_seconds, queue, cluster_name, 
+      retry_times, execute_user, parallel, 
+      tm_slot, tm_core, tm_mem, 
+      jm_mem, create_time, update_time, 
+      diagnosis, job_name)
+    values (#{username,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{projectName,jdbcType=VARCHAR}, 
+      #{projectId,jdbcType=INTEGER}, #{flowName,jdbcType=VARCHAR}, #{flowId,jdbcType=INTEGER}, 
+      #{taskName,jdbcType=VARCHAR}, #{taskId,jdbcType=INTEGER}, #{taskState,jdbcType=VARCHAR}, 
+      #{taskInstanceId,jdbcType=INTEGER}, #{executionTime,jdbcType=TIMESTAMP}, #{applicationId,jdbcType=VARCHAR}, 
+      #{flinkTrackUrl,jdbcType=VARCHAR}, #{allocatedMb,jdbcType=INTEGER}, #{allocatedVcores,jdbcType=INTEGER}, 
+      #{runningContainers,jdbcType=INTEGER}, #{engineType,jdbcType=VARCHAR}, #{duration,jdbcType=DOUBLE}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{vcoreSeconds,jdbcType=REAL}, 
+      #{memorySeconds,jdbcType=REAL}, #{queue,jdbcType=VARCHAR}, #{clusterName,jdbcType=VARCHAR}, 
+      #{retryTimes,jdbcType=INTEGER}, #{executeUser,jdbcType=VARCHAR}, #{parallel,jdbcType=INTEGER}, 
+      #{tmSlot,jdbcType=INTEGER}, #{tmCore,jdbcType=INTEGER}, #{tmMem,jdbcType=INTEGER}, 
+      #{jmMem,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{diagnosis,jdbcType=LONGVARCHAR}, #{jobName,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.oppo.cloud.model.RealtimeTaskApp">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into realtime_task_app
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="username != null">
+        username,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="projectName != null">
+        project_name,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="flowName != null">
+        flow_name,
+      </if>
+      <if test="flowId != null">
+        flow_id,
+      </if>
+      <if test="taskName != null">
+        task_name,
+      </if>
+      <if test="taskId != null">
+        task_id,
+      </if>
+      <if test="taskState != null">
+        task_state,
+      </if>
+      <if test="taskInstanceId != null">
+        task_instance_id,
+      </if>
+      <if test="executionTime != null">
+        execution_time,
+      </if>
+      <if test="applicationId != null">
+        application_id,
+      </if>
+      <if test="flinkTrackUrl != null">
+        flink_track_url,
+      </if>
+      <if test="allocatedMb != null">
+        allocated_mb,
+      </if>
+      <if test="allocatedVcores != null">
+        allocated_vcores,
+      </if>
+      <if test="runningContainers != null">
+        running_containers,
+      </if>
+      <if test="engineType != null">
+        engine_type,
+      </if>
+      <if test="duration != null">
+        duration,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="vcoreSeconds != null">
+        vcore_seconds,
+      </if>
+      <if test="memorySeconds != null">
+        memory_seconds,
+      </if>
+      <if test="queue != null">
+        queue,
+      </if>
+      <if test="clusterName != null">
+        cluster_name,
+      </if>
+      <if test="retryTimes != null">
+        retry_times,
+      </if>
+      <if test="executeUser != null">
+        execute_user,
+      </if>
+      <if test="parallel != null">
+        parallel,
+      </if>
+      <if test="tmSlot != null">
+        tm_slot,
+      </if>
+      <if test="tmCore != null">
+        tm_core,
+      </if>
+      <if test="tmMem != null">
+        tm_mem,
+      </if>
+      <if test="jmMem != null">
+        jm_mem,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="diagnosis != null">
+        diagnosis,
+      </if>
+      <if test="jobName != null">
+        job_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null">
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="flowName != null">
+        #{flowName,jdbcType=VARCHAR},
+      </if>
+      <if test="flowId != null">
+        #{flowId,jdbcType=INTEGER},
+      </if>
+      <if test="taskName != null">
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null">
+        #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="taskState != null">
+        #{taskState,jdbcType=VARCHAR},
+      </if>
+      <if test="taskInstanceId != null">
+        #{taskInstanceId,jdbcType=INTEGER},
+      </if>
+      <if test="executionTime != null">
+        #{executionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applicationId != null">
+        #{applicationId,jdbcType=VARCHAR},
+      </if>
+      <if test="flinkTrackUrl != null">
+        #{flinkTrackUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="allocatedMb != null">
+        #{allocatedMb,jdbcType=INTEGER},
+      </if>
+      <if test="allocatedVcores != null">
+        #{allocatedVcores,jdbcType=INTEGER},
+      </if>
+      <if test="runningContainers != null">
+        #{runningContainers,jdbcType=INTEGER},
+      </if>
+      <if test="engineType != null">
+        #{engineType,jdbcType=VARCHAR},
+      </if>
+      <if test="duration != null">
+        #{duration,jdbcType=DOUBLE},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vcoreSeconds != null">
+        #{vcoreSeconds,jdbcType=REAL},
+      </if>
+      <if test="memorySeconds != null">
+        #{memorySeconds,jdbcType=REAL},
+      </if>
+      <if test="queue != null">
+        #{queue,jdbcType=VARCHAR},
+      </if>
+      <if test="clusterName != null">
+        #{clusterName,jdbcType=VARCHAR},
+      </if>
+      <if test="retryTimes != null">
+        #{retryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="executeUser != null">
+        #{executeUser,jdbcType=VARCHAR},
+      </if>
+      <if test="parallel != null">
+        #{parallel,jdbcType=INTEGER},
+      </if>
+      <if test="tmSlot != null">
+        #{tmSlot,jdbcType=INTEGER},
+      </if>
+      <if test="tmCore != null">
+        #{tmCore,jdbcType=INTEGER},
+      </if>
+      <if test="tmMem != null">
+        #{tmMem,jdbcType=INTEGER},
+      </if>
+      <if test="jmMem != null">
+        #{jmMem,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="diagnosis != null">
+        #{diagnosis,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="jobName != null">
+        #{jobName,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.oppo.cloud.model.RealtimeTaskAppExample" resultType="java.lang.Long">
+    select count(*) from realtime_task_app
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update realtime_task_app
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.username != null">
+        username = #{record.username,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.projectName != null">
+        project_name = #{record.projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=INTEGER},
+      </if>
+      <if test="record.flowName != null">
+        flow_name = #{record.flowName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.flowId != null">
+        flow_id = #{record.flowId,jdbcType=INTEGER},
+      </if>
+      <if test="record.taskName != null">
+        task_name = #{record.taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskId != null">
+        task_id = #{record.taskId,jdbcType=INTEGER},
+      </if>
+      <if test="record.taskState != null">
+        task_state = #{record.taskState,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskInstanceId != null">
+        task_instance_id = #{record.taskInstanceId,jdbcType=INTEGER},
+      </if>
+      <if test="record.executionTime != null">
+        execution_time = #{record.executionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.applicationId != null">
+        application_id = #{record.applicationId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.flinkTrackUrl != null">
+        flink_track_url = #{record.flinkTrackUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.allocatedMb != null">
+        allocated_mb = #{record.allocatedMb,jdbcType=INTEGER},
+      </if>
+      <if test="record.allocatedVcores != null">
+        allocated_vcores = #{record.allocatedVcores,jdbcType=INTEGER},
+      </if>
+      <if test="record.runningContainers != null">
+        running_containers = #{record.runningContainers,jdbcType=INTEGER},
+      </if>
+      <if test="record.engineType != null">
+        engine_type = #{record.engineType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.duration != null">
+        duration = #{record.duration,jdbcType=DOUBLE},
+      </if>
+      <if test="record.startTime != null">
+        start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endTime != null">
+        end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.vcoreSeconds != null">
+        vcore_seconds = #{record.vcoreSeconds,jdbcType=REAL},
+      </if>
+      <if test="record.memorySeconds != null">
+        memory_seconds = #{record.memorySeconds,jdbcType=REAL},
+      </if>
+      <if test="record.queue != null">
+        queue = #{record.queue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.clusterName != null">
+        cluster_name = #{record.clusterName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.retryTimes != null">
+        retry_times = #{record.retryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="record.executeUser != null">
+        execute_user = #{record.executeUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parallel != null">
+        parallel = #{record.parallel,jdbcType=INTEGER},
+      </if>
+      <if test="record.tmSlot != null">
+        tm_slot = #{record.tmSlot,jdbcType=INTEGER},
+      </if>
+      <if test="record.tmCore != null">
+        tm_core = #{record.tmCore,jdbcType=INTEGER},
+      </if>
+      <if test="record.tmMem != null">
+        tm_mem = #{record.tmMem,jdbcType=INTEGER},
+      </if>
+      <if test="record.jmMem != null">
+        jm_mem = #{record.jmMem,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.diagnosis != null">
+        diagnosis = #{record.diagnosis,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.jobName != null">
+        job_name = #{record.jobName,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update realtime_task_app
+    set id = #{record.id,jdbcType=INTEGER},
+      username = #{record.username,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      project_name = #{record.projectName,jdbcType=VARCHAR},
+      project_id = #{record.projectId,jdbcType=INTEGER},
+      flow_name = #{record.flowName,jdbcType=VARCHAR},
+      flow_id = #{record.flowId,jdbcType=INTEGER},
+      task_name = #{record.taskName,jdbcType=VARCHAR},
+      task_id = #{record.taskId,jdbcType=INTEGER},
+      task_state = #{record.taskState,jdbcType=VARCHAR},
+      task_instance_id = #{record.taskInstanceId,jdbcType=INTEGER},
+      execution_time = #{record.executionTime,jdbcType=TIMESTAMP},
+      application_id = #{record.applicationId,jdbcType=VARCHAR},
+      flink_track_url = #{record.flinkTrackUrl,jdbcType=VARCHAR},
+      allocated_mb = #{record.allocatedMb,jdbcType=INTEGER},
+      allocated_vcores = #{record.allocatedVcores,jdbcType=INTEGER},
+      running_containers = #{record.runningContainers,jdbcType=INTEGER},
+      engine_type = #{record.engineType,jdbcType=VARCHAR},
+      duration = #{record.duration,jdbcType=DOUBLE},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      vcore_seconds = #{record.vcoreSeconds,jdbcType=REAL},
+      memory_seconds = #{record.memorySeconds,jdbcType=REAL},
+      queue = #{record.queue,jdbcType=VARCHAR},
+      cluster_name = #{record.clusterName,jdbcType=VARCHAR},
+      retry_times = #{record.retryTimes,jdbcType=INTEGER},
+      execute_user = #{record.executeUser,jdbcType=VARCHAR},
+      parallel = #{record.parallel,jdbcType=INTEGER},
+      tm_slot = #{record.tmSlot,jdbcType=INTEGER},
+      tm_core = #{record.tmCore,jdbcType=INTEGER},
+      tm_mem = #{record.tmMem,jdbcType=INTEGER},
+      jm_mem = #{record.jmMem,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      diagnosis = #{record.diagnosis,jdbcType=LONGVARCHAR},
+      job_name = #{record.jobName,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update realtime_task_app
+    set id = #{record.id,jdbcType=INTEGER},
+      username = #{record.username,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=INTEGER},
+      project_name = #{record.projectName,jdbcType=VARCHAR},
+      project_id = #{record.projectId,jdbcType=INTEGER},
+      flow_name = #{record.flowName,jdbcType=VARCHAR},
+      flow_id = #{record.flowId,jdbcType=INTEGER},
+      task_name = #{record.taskName,jdbcType=VARCHAR},
+      task_id = #{record.taskId,jdbcType=INTEGER},
+      task_state = #{record.taskState,jdbcType=VARCHAR},
+      task_instance_id = #{record.taskInstanceId,jdbcType=INTEGER},
+      execution_time = #{record.executionTime,jdbcType=TIMESTAMP},
+      application_id = #{record.applicationId,jdbcType=VARCHAR},
+      flink_track_url = #{record.flinkTrackUrl,jdbcType=VARCHAR},
+      allocated_mb = #{record.allocatedMb,jdbcType=INTEGER},
+      allocated_vcores = #{record.allocatedVcores,jdbcType=INTEGER},
+      running_containers = #{record.runningContainers,jdbcType=INTEGER},
+      engine_type = #{record.engineType,jdbcType=VARCHAR},
+      duration = #{record.duration,jdbcType=DOUBLE},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      vcore_seconds = #{record.vcoreSeconds,jdbcType=REAL},
+      memory_seconds = #{record.memorySeconds,jdbcType=REAL},
+      queue = #{record.queue,jdbcType=VARCHAR},
+      cluster_name = #{record.clusterName,jdbcType=VARCHAR},
+      retry_times = #{record.retryTimes,jdbcType=INTEGER},
+      execute_user = #{record.executeUser,jdbcType=VARCHAR},
+      parallel = #{record.parallel,jdbcType=INTEGER},
+      tm_slot = #{record.tmSlot,jdbcType=INTEGER},
+      tm_core = #{record.tmCore,jdbcType=INTEGER},
+      tm_mem = #{record.tmMem,jdbcType=INTEGER},
+      jm_mem = #{record.jmMem,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.RealtimeTaskApp">
+    update realtime_task_app
+    <set>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null">
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="flowName != null">
+        flow_name = #{flowName,jdbcType=VARCHAR},
+      </if>
+      <if test="flowId != null">
+        flow_id = #{flowId,jdbcType=INTEGER},
+      </if>
+      <if test="taskName != null">
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null">
+        task_id = #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="taskState != null">
+        task_state = #{taskState,jdbcType=VARCHAR},
+      </if>
+      <if test="taskInstanceId != null">
+        task_instance_id = #{taskInstanceId,jdbcType=INTEGER},
+      </if>
+      <if test="executionTime != null">
+        execution_time = #{executionTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applicationId != null">
+        application_id = #{applicationId,jdbcType=VARCHAR},
+      </if>
+      <if test="flinkTrackUrl != null">
+        flink_track_url = #{flinkTrackUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="allocatedMb != null">
+        allocated_mb = #{allocatedMb,jdbcType=INTEGER},
+      </if>
+      <if test="allocatedVcores != null">
+        allocated_vcores = #{allocatedVcores,jdbcType=INTEGER},
+      </if>
+      <if test="runningContainers != null">
+        running_containers = #{runningContainers,jdbcType=INTEGER},
+      </if>
+      <if test="engineType != null">
+        engine_type = #{engineType,jdbcType=VARCHAR},
+      </if>
+      <if test="duration != null">
+        duration = #{duration,jdbcType=DOUBLE},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="vcoreSeconds != null">
+        vcore_seconds = #{vcoreSeconds,jdbcType=REAL},
+      </if>
+      <if test="memorySeconds != null">
+        memory_seconds = #{memorySeconds,jdbcType=REAL},
+      </if>
+      <if test="queue != null">
+        queue = #{queue,jdbcType=VARCHAR},
+      </if>
+      <if test="clusterName != null">
+        cluster_name = #{clusterName,jdbcType=VARCHAR},
+      </if>
+      <if test="retryTimes != null">
+        retry_times = #{retryTimes,jdbcType=INTEGER},
+      </if>
+      <if test="executeUser != null">
+        execute_user = #{executeUser,jdbcType=VARCHAR},
+      </if>
+      <if test="parallel != null">
+        parallel = #{parallel,jdbcType=INTEGER},
+      </if>
+      <if test="tmSlot != null">
+        tm_slot = #{tmSlot,jdbcType=INTEGER},
+      </if>
+      <if test="tmCore != null">
+        tm_core = #{tmCore,jdbcType=INTEGER},
+      </if>
+      <if test="tmMem != null">
+        tm_mem = #{tmMem,jdbcType=INTEGER},
+      </if>
+      <if test="jmMem != null">
+        jm_mem = #{jmMem,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="diagnosis != null">
+        diagnosis = #{diagnosis,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="jobName != null">
+        job_name = #{jobName,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.oppo.cloud.model.RealtimeTaskApp">
+    update realtime_task_app
+    set username = #{username,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=INTEGER},
+      flow_name = #{flowName,jdbcType=VARCHAR},
+      flow_id = #{flowId,jdbcType=INTEGER},
+      task_name = #{taskName,jdbcType=VARCHAR},
+      task_id = #{taskId,jdbcType=INTEGER},
+      task_state = #{taskState,jdbcType=VARCHAR},
+      task_instance_id = #{taskInstanceId,jdbcType=INTEGER},
+      execution_time = #{executionTime,jdbcType=TIMESTAMP},
+      application_id = #{applicationId,jdbcType=VARCHAR},
+      flink_track_url = #{flinkTrackUrl,jdbcType=VARCHAR},
+      allocated_mb = #{allocatedMb,jdbcType=INTEGER},
+      allocated_vcores = #{allocatedVcores,jdbcType=INTEGER},
+      running_containers = #{runningContainers,jdbcType=INTEGER},
+      engine_type = #{engineType,jdbcType=VARCHAR},
+      duration = #{duration,jdbcType=DOUBLE},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      vcore_seconds = #{vcoreSeconds,jdbcType=REAL},
+      memory_seconds = #{memorySeconds,jdbcType=REAL},
+      queue = #{queue,jdbcType=VARCHAR},
+      cluster_name = #{clusterName,jdbcType=VARCHAR},
+      retry_times = #{retryTimes,jdbcType=INTEGER},
+      execute_user = #{executeUser,jdbcType=VARCHAR},
+      parallel = #{parallel,jdbcType=INTEGER},
+      tm_slot = #{tmSlot,jdbcType=INTEGER},
+      tm_core = #{tmCore,jdbcType=INTEGER},
+      tm_mem = #{tmMem,jdbcType=INTEGER},
+      jm_mem = #{jmMem,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      diagnosis = #{diagnosis,jdbcType=LONGVARCHAR},
+      job_name = #{jobName,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.RealtimeTaskApp">
+    update realtime_task_app
+    set username = #{username,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=INTEGER},
+      flow_name = #{flowName,jdbcType=VARCHAR},
+      flow_id = #{flowId,jdbcType=INTEGER},
+      task_name = #{taskName,jdbcType=VARCHAR},
+      task_id = #{taskId,jdbcType=INTEGER},
+      task_state = #{taskState,jdbcType=VARCHAR},
+      task_instance_id = #{taskInstanceId,jdbcType=INTEGER},
+      execution_time = #{executionTime,jdbcType=TIMESTAMP},
+      application_id = #{applicationId,jdbcType=VARCHAR},
+      flink_track_url = #{flinkTrackUrl,jdbcType=VARCHAR},
+      allocated_mb = #{allocatedMb,jdbcType=INTEGER},
+      allocated_vcores = #{allocatedVcores,jdbcType=INTEGER},
+      running_containers = #{runningContainers,jdbcType=INTEGER},
+      engine_type = #{engineType,jdbcType=VARCHAR},
+      duration = #{duration,jdbcType=DOUBLE},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      vcore_seconds = #{vcoreSeconds,jdbcType=REAL},
+      memory_seconds = #{memorySeconds,jdbcType=REAL},
+      queue = #{queue,jdbcType=VARCHAR},
+      cluster_name = #{clusterName,jdbcType=VARCHAR},
+      retry_times = #{retryTimes,jdbcType=INTEGER},
+      execute_user = #{executeUser,jdbcType=VARCHAR},
+      parallel = #{parallel,jdbcType=INTEGER},
+      tm_slot = #{tmSlot,jdbcType=INTEGER},
+      tm_core = #{tmCore,jdbcType=INTEGER},
+      tm_mem = #{tmMem,jdbcType=INTEGER},
+      jm_mem = #{jmMem,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

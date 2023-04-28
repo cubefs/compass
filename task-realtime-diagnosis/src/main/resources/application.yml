@@ -64,13 +64,3 @@ diagnosis:
   monitorHost: http://localhost:9090
   monitorToken: none
   monitorDatabase: none
-
-# 集群配置
-cluster:
-  rmPort: "8088"
-  yarn:
-    - clusterName: "cluster_name"  #可以不设置
-      resourceManager:
-        - "localhost"
-      jobHistoryServer:
-        - "localhost"

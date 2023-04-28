@@ -1,5 +1,6 @@
 package com.oppo.cloud.diagnosis.advice.rule;
 
+import com.alibaba.fastjson2.JSON;
 import com.google.common.collect.Lists;
 import com.oppo.cloud.common.domain.flink.enums.EDiagnosisReportYAxisType;
 import com.oppo.cloud.common.domain.flink.enums.EDiagnosisRule;

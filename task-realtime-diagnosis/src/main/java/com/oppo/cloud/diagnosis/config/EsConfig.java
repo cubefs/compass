@@ -15,11 +15,12 @@ import org.springframework.context.annotation.Primary;
  */
 @Configuration
 @Slf4j
+@Data
 public class EsConfig {
     /**
      * es主机列表
      */
-    @Value("${spring.elasticsearch.hosts}")
+    @Value("${spring.elasticsearch.nodes}")
     private String hosts;
     /**
      * 用户名

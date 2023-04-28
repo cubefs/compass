@@ -7,6 +7,7 @@ import java.util.Map;
 
 @Data
 public class DiagnosisRuleLineChart implements IDiagnosisRuleChart{
+    String type = "Line";
     String title;
     String yAxisUnit;
     String yAxisValueType;
@@ -14,5 +15,4 @@ public class DiagnosisRuleLineChart implements IDiagnosisRuleChart{
     Map<String,Double> constLines;
     Double yAxisMax;
     Double yAxisMin;
-
 }

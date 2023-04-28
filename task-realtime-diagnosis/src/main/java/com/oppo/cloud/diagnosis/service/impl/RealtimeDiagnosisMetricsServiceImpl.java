@@ -37,7 +37,7 @@ public class RealtimeDiagnosisMetricsServiceImpl {
     @Autowired
     DiagnosisParamsConstants cons;
     @Autowired
-    DoctorUtil doctorUtil ;
+    DoctorUtil doctorUtil;
     @Autowired
     MonitorMetricUtil monitorMetricUtil;
 
@@ -90,24 +90,26 @@ public class RealtimeDiagnosisMetricsServiceImpl {
         return getJobMetrics(promQl, start, end, step);
     }
 
-    public List<MetricResult.DataResult> getJobManagerMetrics(String promQl,DiagnosisContext context,long start,long end){
+    public List<MetricResult.DataResult> getJobManagerMetrics(String promQl, DiagnosisContext context, long start, long end) {
         String jobUpTime = addLabel(promQl, "job_id", context.getMessages().get(JobId).toString());
-        return getJobMetrics(jobUpTime,start,end);
+        return getJobMetrics(jobUpTime, start, end);
     }
 
-    public List<MetricResult.DataResult> getJobMetrics(String promQl,DiagnosisContext context,long start,long end){
+    public List<MetricResult.DataResult> getJobMetrics(String promQl, DiagnosisContext context, long start, long end) {
         String jobUpTime = addLabel(promQl, "job", context.getMessages().get(Job).toString());
-        return getJobMetrics(jobUpTime,start,end);
+        return getJobMetrics(jobUpTime, start, end);
     }
 
-    public List<MetricResult.DataResult> getTaskManagerMetrics(String promQl,DiagnosisContext context,long start,long end){
-        String jobUpTime = addLabel(promQl, "tm_id",StringUtils.join((List<String>) context.getMessages().get(TmIds),'|'));
-        return getJobMetrics(jobUpTime,start,end);
+    public List<MetricResult.DataResult> getTaskManagerMetrics(String promQl, DiagnosisContext context, long start, long end) {
+        String jobUpTime = addLabel(promQl, "tm_id", StringUtils.join((List<String>) context.getMessages().get(TmIds), '|'));
+        return getJobMetrics(jobUpTime, start, end);
     }
-    public List<MetricResult.DataResult> getTaskManagerMetrics(String promQl,DiagnosisContext context,long start,long end,int step){
-        String jobUpTime = addLabel(promQl, "tm_id",StringUtils.join((List<String>) context.getMessages().get(TmIds),'|'));
-        return getJobMetrics(jobUpTime,start,end,step);
+
+    public List<MetricResult.DataResult> getTaskManagerMetrics(String promQl, DiagnosisContext context, long start, long end, int step) {
+        String jobUpTime = addLabel(promQl, "tm_id", StringUtils.join((List<String>) context.getMessages().get(TmIds), '|'));
+        return getJobMetrics(jobUpTime, start, end, step);
     }
+
     /**
      * 查询 metrics 数据
      *
@@ -164,15 +166,15 @@ public class RealtimeDiagnosisMetricsServiceImpl {
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
             String g = matcher.group(1);
-            String[] split = g.substring(1,g.length()-1).split(",");
-            List<String> collect = Arrays.stream(split) .filter(new Predicate<String>() {
+            String[] split = g.substring(1, g.length() - 1).split(",");
+            List<String> collect = Arrays.stream(split).filter(new Predicate<String>() {
                 @Override
                 public boolean test(String s) {
                     return false;
                 }
             }).collect(Collectors.toList());
             collect.add(String.format("%s=~\"%s\"", key, value));
-            String rep ="{"+  StringUtils.join(collect,",") +"}";
+            String rep = "{" + StringUtils.join(collect, ",") + "}";
             matcher.appendReplacement(sb, rep);
         }
         matcher.appendTail(sb);
@@ -236,7 +238,7 @@ public class RealtimeDiagnosisMetricsServiceImpl {
             log.error(t.getMessage(), t);
         }
         // 获取到总的tm个数
-        List<MetricResult.DataResult> totalTmCountsMetrics = getJobMetrics(TOTAL_TM_COUNTS,context, start, end);
+        List<MetricResult.DataResult> totalTmCountsMetrics = getJobMetrics(TOTAL_TM_COUNTS, context, start, end);
         if (totalTmCountsMetrics != null && totalTmCountsMetrics.size() == 1) {
             Double latestTotalTmNum = monitorMetricUtil.getLatestOrNull(totalTmCountsMetrics);
             // 设置总的tm个数
@@ -279,73 +281,75 @@ public class RealtimeDiagnosisMetricsServiceImpl {
         RcJobDiagnosis rcJobDiagnosis = context.getRcJobDiagnosis();
         // tm 平均cpu使用率
         List<MetricResult.DataResult> tmAvgCpuUsageRateMetrics =
-                getTaskManagerMetrics(TM_AVG_CPU_USAGE_RATE, context,start, end);
+                getTaskManagerMetrics(TM_AVG_CPU_USAGE_RATE, context, start, end);
         rcJobDiagnosis.setTmAvgCpuUsageMax(doubleToFloat(monitorMetricUtil.getMaxOrNull(tmAvgCpuUsageRateMetrics)));
         rcJobDiagnosis.setTmAvgCpuUsageMin(doubleToFloat(monitorMetricUtil.getMinOrNull(tmAvgCpuUsageRateMetrics)));
         rcJobDiagnosis.setTmAvgCpuUsageAvg(doubleToFloat(monitorMetricUtil.getAvgOrNull(tmAvgCpuUsageRateMetrics)));
         context.getMetrics().put(TM_AVG_CPU_USAGE_RATE, tmAvgCpuUsageRateMetrics);
         // tm 单个cpu使用率
-        List<MetricResult.DataResult> tmCpuUsageRateMetrics = getTaskManagerMetrics(TM_CPU_USAGE_RATE,context, start, end);
+        List<MetricResult.DataResult> tmCpuUsageRateMetrics = getTaskManagerMetrics(TM_CPU_USAGE_RATE, context, start, end);
         context.getMetrics().put(TM_CPU_USAGE_RATE, tmCpuUsageRateMetrics);
         // tm 流量
-        List<MetricResult.DataResult> tmDataFlowRateMetrics = getTaskManagerMetrics(TM_DATA_FLOW_RATE,context, start, end);
+        List<MetricResult.DataResult> tmDataFlowRateMetrics = getTaskManagerMetrics(TM_DATA_FLOW_RATE, context, start, end);
         context.getMetrics().put(TM_DATA_FLOW_RATE, tmDataFlowRateMetrics);
         // 作业流量
-        List<MetricResult.DataResult> jobDataFlowMetrics = getTaskManagerMetrics(JOB_DATA_FLOW_RATE, context,start, end);
+        List<MetricResult.DataResult> jobDataFlowMetrics = getTaskManagerMetrics(JOB_DATA_FLOW_RATE, context, start, end);
         context.getMetrics().put(JOB_DATA_FLOW_RATE, jobDataFlowMetrics);
         Integer maxFlow = doubleToInteger(monitorMetricUtil.getMaxOrNull(jobDataFlowMetrics));
         if (maxFlow != null) {
             context.getMessages().put(FlowMax, maxFlow);
         }
         // 计算一天当中的流量波峰波谷
-        List<MetricResult.DataResult> jobDataFlowMetricsHourly = getTaskManagerMetrics(JOB_DATA_FLOW_RATE, context,start, end, 60 * 60);
+        List<MetricResult.DataResult> jobDataFlowMetricsHourly = getTaskManagerMetrics(JOB_DATA_FLOW_RATE, context, start, end, 60 * 60);
         context.getMetrics().put(JOB_DATA_FLOW_RATE_TROUGH, jobDataFlowMetricsHourly);
         // 慢算子检测
-        List<MetricResult.DataResult> backPressureBlockSubtaskDetailMetrics = getTaskManagerMetrics(SLOW_VERTICES,context, start, end);
+        List<MetricResult.DataResult> backPressureBlockSubtaskDetailMetrics = getTaskManagerMetrics(SLOW_VERTICES, context, start, end);
         if (backPressureBlockSubtaskDetailMetrics != null) {
             context.getMetrics().put(SLOW_VERTICES, backPressureBlockSubtaskDetailMetrics);
             log.debug("反压算子阻塞:" + backPressureBlockSubtaskDetailMetrics);
         }
         // TM 使用的管理内存
-        List<MetricResult.DataResult> tmManageMemUsageMetrics = getTaskManagerMetrics(TM_MANAGE_MEM_USAGE, context,start, end);
+        List<MetricResult.DataResult> tmManageMemUsageMetrics = getTaskManagerMetrics(TM_MANAGE_MEM_USAGE, context, start, end);
         context.getMetrics().put(TM_MANAGE_MEM_USAGE, tmManageMemUsageMetrics);
 
         // kafka partition
-        List<MetricResult.DataResult> kafkaPartitionsMetrics = getTaskManagerMetrics(KAFKA_PARTITIONS,context, start, end);
+        List<MetricResult.DataResult> kafkaPartitionsMetrics = getTaskManagerMetrics(KAFKA_PARTITIONS, context, start, end);
         context.getMetrics().put(KAFKA_PARTITIONS, kafkaPartitionsMetrics);
         // 获取最近的kafka 分区数
         Double maxPartition = monitorMetricUtil.getLatestOrNull(kafkaPartitionsMetrics);
         context.getRcJobDiagnosis().setKafkaConsumePartitionNum(maxPartition == null ? null : maxPartition.intValue());
 
         // tm使用堆内存
-        List<MetricResult.DataResult> tmUsageHeapMemMaxMetrics = getTaskManagerMetrics(TM_USAGE_HEAP_MEM_MAX,context, start, end);
+        List<MetricResult.DataResult> tmUsageHeapMemMaxMetrics = getTaskManagerMetrics(TM_USAGE_HEAP_MEM_MAX, context, start, end);
         context.getMetrics().put(TM_USAGE_HEAP_MEM_MAX, tmUsageHeapMemMaxMetrics);
         // tm总的堆内存
-        List<MetricResult.DataResult> tmTotalHeapMemMaxMetrics = getTaskManagerMetrics(TM_TOTAL_HEAP_MEM_MAX,context, start, end);
+        List<MetricResult.DataResult> tmTotalHeapMemMaxMetrics = getTaskManagerMetrics(TM_TOTAL_HEAP_MEM_MAX, context, start, end);
         context.getMetrics().put(TM_TOTAL_HEAP_MEM_MAX, tmTotalHeapMemMaxMetrics);
         // TM manage 内存总量
-        List<MetricResult.DataResult> tmManageMemTotalMetrics = getTaskManagerMetrics(TM_MANAGE_MEM_TOTAL,context, start, end);
+        List<MetricResult.DataResult> tmManageMemTotalMetrics = getTaskManagerMetrics(TM_MANAGE_MEM_TOTAL, context, start, end);
         context.getMetrics().put(TM_MANAGE_MEM_TOTAL, tmManageMemTotalMetrics);
 
         // 反压算子
-        List<MetricResult.DataResult> backPressureVerticesMetrics = getTaskManagerMetrics(BACK_PRESSURE_VERTICES,context, start, end);
+        List<MetricResult.DataResult> backPressureVerticesMetrics = getTaskManagerMetrics(BACK_PRESSURE_VERTICES, context, start, end);
         context.getMetrics().put(BACK_PRESSURE_VERTICES, backPressureVerticesMetrics);
 
         // 单个tm堆内存使用率
-        List<MetricResult.DataResult> tmHeapMemUsageRateMetrics = getTaskManagerMetrics(TM_HEAP_MEM_USAGE_RATE,context, start, end);
+        List<MetricResult.DataResult> tmHeapMemUsageRateMetrics = getTaskManagerMetrics(TM_HEAP_MEM_USAGE_RATE, context, start, end);
         context.getMetrics().put(TM_HEAP_MEM_USAGE_RATE, tmHeapMemUsageRateMetrics);
 
         return context;
     }
 
     private Long getTsDelayEnd(DiagnosisContext context, long start, long end) {
-        List<MetricResult.DataResult> lagRecordsNumMetrics = getTaskManagerMetrics(SUM_RECORDS_LAG_PROMQL,context, start, end);
+        List<MetricResult.DataResult> lagRecordsNumMetrics = getTaskManagerMetrics(SUM_RECORDS_LAG_PROMQL, context, start, end);
         if (lagRecordsNumMetrics == null || lagRecordsNumMetrics.size() != 1) {
             return null;
         }
-        Optional<Integer> min = monitorMetricUtil.getSmoothKeyValueStream(lagRecordsNumMetrics.get(0), 5).get().filter(kv -> {
-            return kv.getValue() < cons.getDiagnosisMinDelayAfterRunning();
-        }).map(MetricResult.KeyValue::getTs).min(Integer::compareTo);
+        Optional<Integer> min = monitorMetricUtil.getSmoothKeyValueStream(lagRecordsNumMetrics.get(0), 5)
+                .get()
+                .filter(kv -> (kv.getValue() != null && kv.getValue() < cons.getDiagnosisMinDelayAfterRunning()))
+                .map(MetricResult.KeyValue::getTs)
+                .min(Integer::compareTo);
         if (min.isPresent()) {
             return min.get().longValue();
         } else {
@@ -354,7 +358,7 @@ public class RealtimeDiagnosisMetricsServiceImpl {
     }
 
     private Double getLatestMaxUpTime(DiagnosisContext context, long start, long end) {
-        List<MetricResult.DataResult> jobUpTimeMetrics = getJobManagerMetrics(JOB_UP_TIME,context, start, end);
+        List<MetricResult.DataResult> jobUpTimeMetrics = getJobManagerMetrics(JOB_UP_TIME, context, start, end);
         if (jobUpTimeMetrics != null) {
             MetricResult.DataResult latestResult = jobUpTimeMetrics.stream().max((o1, o2) -> {
                 Supplier<Stream<List<Object>>> s1 = monitorMetricUtil.getTupleStream(o1);
@@ -381,7 +385,7 @@ public class RealtimeDiagnosisMetricsServiceImpl {
      * @return 秒级别时间戳
      */
     private Long getTsAfter1Hour(DiagnosisContext context, long start, long end) {
-        List<MetricResult.DataResult> jobUpTimeMetrics = getJobManagerMetrics(JOB_UP_TIME,context, start, end);
+        List<MetricResult.DataResult> jobUpTimeMetrics = getJobManagerMetrics(JOB_UP_TIME, context, start, end);
         if (jobUpTimeMetrics != null) {
             int diagnosisStartUpTimeMilliseconds = cons.getDiagnosisAfterMinutesMax() * 60 * 1000;
             MetricResult.DataResult latestResult = jobUpTimeMetrics.stream().max((o1, o2) -> {
@@ -436,7 +440,7 @@ public class RealtimeDiagnosisMetricsServiceImpl {
      * @return
      */
     private Long getTsAfter5MinutesOffsetGrow(DiagnosisContext context, long start, long end) {
-        List<MetricResult.DataResult> offsetDeltaMetrics = getTaskManagerMetrics(OFFSET_DELTA,context, start, end);
+        List<MetricResult.DataResult> offsetDeltaMetrics = getTaskManagerMetrics(OFFSET_DELTA, context, start, end);
         if (offsetDeltaMetrics != null) {
             if (offsetDeltaMetrics.size() != 1) {
                 log.info("{} job offset delta 列表数量不为1", context.getRcJobDiagnosis().getJobName());
@@ -451,7 +455,8 @@ public class RealtimeDiagnosisMetricsServiceImpl {
                             return doubleStream.filter(Objects::nonNull).mapToDouble(value -> value).average();
                         }
                     });
-            Optional<MetricResult.KeyValue> firstDelay5Minute = kvSmooth.get().filter(x -> x.getValue() > 0).findFirst();
+            Optional<MetricResult.KeyValue> firstDelay5Minute = kvSmooth.get()
+                    .filter(x -> (x.getValue() != null && x.getValue() > 0)).findFirst();
             if (firstDelay5Minute.isPresent()) {
                 return (long) firstDelay5Minute.get().getTs();
             } else {
@@ -475,7 +480,7 @@ public class RealtimeDiagnosisMetricsServiceImpl {
     private Long getTsIfCatchUpDelaySlow(DiagnosisContext context, long start, long end) {
         try {
             // 首先判断是不是还有延迟
-            List<MetricResult.DataResult> maxTimeLagPromqlMetrics = getTaskManagerMetrics(MAX_TIME_LAG_PROMQL,context, start, end);
+            List<MetricResult.DataResult> maxTimeLagPromqlMetrics = getTaskManagerMetrics(MAX_TIME_LAG_PROMQL, context, start, end);
             if (maxTimeLagPromqlMetrics == null || maxTimeLagPromqlMetrics.size() != 1) {
                 log.info("{} 延迟指标为空，不能判断是否追延迟太慢", context.getRcJobDiagnosis().getJobName());
                 return null;
@@ -487,7 +492,7 @@ public class RealtimeDiagnosisMetricsServiceImpl {
                 return null;
             }
             // 然后判断消费速率与生产速率的比值有没有达到阈值
-            List<MetricResult.DataResult> consumeDivideProduceRateMetrics = getTaskManagerMetrics(CONSUME_DIVIDE_PRODUCE_RATE,context, start, end);
+            List<MetricResult.DataResult> consumeDivideProduceRateMetrics = getTaskManagerMetrics(CONSUME_DIVIDE_PRODUCE_RATE, context, start, end);
             if (consumeDivideProduceRateMetrics == null || consumeDivideProduceRateMetrics.size() != 1) {
                 log.info("{} 消费生产速率比值指标为空", context.getRcJobDiagnosis().getJobName());
                 return null;

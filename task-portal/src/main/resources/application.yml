@@ -71,7 +71,10 @@ custom:
       name: "compass-job-instance"
       shards: 10
       replicas: 2
-
+    realtimeReportIndex:
+      name: "stream-task-report"
+      shards: 10
+      replicas: 2
   redis:
     logRecordKey: "{lua}:log:record"
 

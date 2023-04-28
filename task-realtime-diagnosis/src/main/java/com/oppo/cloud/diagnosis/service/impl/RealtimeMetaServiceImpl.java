@@ -40,8 +40,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RealtimeMetaServiceImpl implements RealtimeMetaService {
 
-    private static final String YARN_CLUSTER_INFO = "http://%s:%s/ws/v1/cluster/info";
-    private static final String YARN_APP_URL = "http://%s:%s/ws/v1/cluster/apps/%s";
+    private static final String YARN_APP_URL = "http://%s/ws/v1/cluster/apps/%s";
     private static final String FLINK_JOB_MANAGER_CONFIG = "%s/jobmanager/config";
     private static final String FLINK_JOBS = "%s/jobs";
     private static final String FLINK_TMS = "%s/taskmanagers";
@@ -67,11 +66,11 @@ public class RealtimeMetaServiceImpl implements RealtimeMetaService {
     public YarnApp requestYarnApp(String appId) {
         try {
             Map<String, String> clusters = iClusterMetaService.getYarnClusters();
+            log.info(clusters.toString());
             for (Map.Entry<String, String> cluster : clusters.entrySet()) {
-                String host = cluster.getKey();
-                String port = config.getRmPort();
-                String appUrl = String.format(YARN_APP_URL, host, port, appId);
+                String appUrl = String.format(YARN_APP_URL, cluster.getKey(), appId);
                 ResponseEntity<String> responseEntity = null;
+                log.info("请求app: {}", appUrl);
                 responseEntity = restTemplate.getForEntity(appUrl, String.class);
                 if (responseEntity.getBody() == null) {
                     continue;
@@ -195,13 +194,18 @@ public class RealtimeMetaServiceImpl implements RealtimeMetaService {
         realtimeTaskApp.setExecuteUser(yarnApp.getUser());
         // flink meta
         List<JobManagerConfigItem> configItems = reqFlinkConfig(yarnApp);
-        if (configItems == null) {
-            log.info("flink config null {}", yarnApp);
-            return;
+        if (configItems != null) {
+            String jobId = getJobId(yarnApp);
+            fillFlinkMetaWithFlinkConfigOnYarn(realtimeTaskApp, configItems, jobId);
+        } else {
+            if (realtimeTaskApp.getId() == null) {
+                log.error("flink config null {}", yarnApp);
+                return;
+            }
         }
-        String jobId = getJobId(yarnApp);
-        fillFlinkMetaWithFlinkConfigOnYarn(realtimeTaskApp, configItems, jobId);
-        realtimeTaskApp.setCreateTime(new Date());
+        if (realtimeTaskApp.getCreateTime() == null) {
+            realtimeTaskApp.setCreateTime(new Date());
+        }
         realtimeTaskApp.setUpdateTime(new Date());
         if (realtimeTaskApp.getId() == null) {
             realtimeTaskAppMapper.insertSelective(realtimeTaskApp);

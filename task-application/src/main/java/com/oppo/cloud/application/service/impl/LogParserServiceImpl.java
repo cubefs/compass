@@ -162,6 +162,7 @@ public class LogParserServiceImpl implements LogParserService {
      */
     @Override
     public ParseRet handle(TaskInstance taskInstance, Map<String, String> rawData) throws Exception {
+        log.info("收到task instance,{}", taskInstance);
         if (skipTaskInstance(taskInstance)) {
             return new ParseRet(RetCode.RET_SKIP, null);
         }

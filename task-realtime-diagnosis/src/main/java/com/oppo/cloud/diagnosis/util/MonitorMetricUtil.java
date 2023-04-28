@@ -180,7 +180,7 @@ public class MonitorMetricUtil {
                 if (i < collect.size() - 1) {
                     right = collect.get(i + 1).getValue();
                 }
-                if (cur >= left && cur >= right) {
+                if (cur != null && left != null && right != null && cur >= left && cur >= right) {
                     cur = Math.max(left, right);
                 }
                 result.add(new MetricResult.KeyValue(collect.get(i).getTs(), cur));

@@ -1,6 +1,7 @@
 package com.oppo.cloud.diagnosis.advice.rule;
 
 
+import com.alibaba.fastjson2.JSON;
 import com.google.common.collect.Lists;
 import com.oppo.cloud.common.domain.flink.enums.EDiagnosisReportYAxisType;
 import com.oppo.cloud.common.domain.flink.report.DiagnosisRuleLine;
@@ -23,10 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.oppo.cloud.diagnosis.constant.MonitorMetricConstant.*;
@@ -63,20 +61,22 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
         }
         long delayHighCount = monitorMetricUtil.getFlatKeyValueStream(delayTimeLagList.get(0))
                 .get()
+                .filter(Objects::nonNull)
                 .filter(x -> {
-                    return x.getValue() > cons.JOB_CUT_LAG_TIME_THRESHOLD;
+                    return (x.getValue() != null && x.getValue() > cons.JOB_CUT_LAG_TIME_THRESHOLD);
                 })
                 .count();
         double maxDelay = monitorMetricUtil.getFlatKeyValueStream(delayTimeLagList.get(0))
                 .get()
                 .map(MetricResult.KeyValue::getValue)
-                .mapToDouble(x->x)
+                .filter(Objects::nonNull)
+                .mapToDouble(x -> x)
                 .max()
                 .orElse(0d);
         int step = monitorMetricUtil.getStep(context.getStart(), context.getEnd());
         int countThreshold = (int) Math.ceil(10d * 60d / step);
         boolean isDelay = (delayHighCount > countThreshold);
-        Boolean delayLittleHigh = (maxDelay> cons.JOB_DELAY_LITTLE_HIGH);
+        Boolean delayLittleHigh = (maxDelay > cons.JOB_DELAY_LITTLE_HIGH);
         log.info("{} {}-{} 作业最大延迟 {} second", rcJobDiagnosis.getJobName(), context.getStart(),
                 context.getEnd(), maxDelay);
         // 判断最近10分钟内延迟连续
@@ -162,10 +162,10 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
                                 String.format("作业出现延迟%.2f second,且cpu平均利用率%.2f%%不超过阈值%.2f%%",
                                         maxDelay, rcJobDiagnosis.getTmAvgCpuUsageAvg() / rcJobDiagnosis.getTmCore() * 100, cpuHighThreshold * 100))
                         .build();
-                convertAdviceToRcJobDiagnosis(build,context);
+                convertAdviceToRcJobDiagnosis(build, context);
                 String resourceChange = buildResourceChange(context);
                 String conclusion = String.format("作业出现延迟%.2f second,且cpu平均利用率%.2f%%不超过阈值%.2f%%,%s",
-                        maxDelay, rcJobDiagnosis.getTmAvgCpuUsageAvg() / rcJobDiagnosis.getTmCore() * 100, cpuHighThreshold * 100,resourceChange);
+                        maxDelay, rcJobDiagnosis.getTmAvgCpuUsageAvg() / rcJobDiagnosis.getTmCore() * 100, cpuHighThreshold * 100, resourceChange);
                 DiagnosisRuleReport diagnosisRuleReport = new DiagnosisRuleReport();
                 diagnosisRuleReport.setTitle("并行度不足分析");
                 diagnosisRuleReport.setConclusion(conclusion);
@@ -177,8 +177,8 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
                 line.setLabel("作业延迟");
                 line.setData(delayTimeLagList);
                 diagnosisRuleLineChartDelay.setLine(line);
-                Map<String,Double> constLine = new HashMap<>();
-                constLine.put("阈值",cons.JOB_DELAY_LITTLE_HIGH.doubleValue());
+                Map<String, Double> constLine = new HashMap<>();
+                constLine.put("阈值", cons.JOB_DELAY_LITTLE_HIGH.doubleValue());
                 diagnosisRuleLineChartDelay.setConstLines(constLine);
                 DiagnosisRuleLineChart diagnosisRuleLineChartCpu = new DiagnosisRuleLineChart();
                 diagnosisRuleLineChartCpu.setTitle("作业CPU使用率");
@@ -189,9 +189,9 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
                 cpuLine.setLabel("作业CPU使用率");
                 cpuLine.setData(cpuUsageList);
                 diagnosisRuleLineChartCpu.setLine(cpuLine);
-                Map<String,Double> constLineCpu = new HashMap<>();
-                constLineCpu.put("阈值",cpuHighThreshold);
-                constLineCpu.put("均值",(double)(rcJobDiagnosis.getTmAvgCpuUsageAvg() / rcJobDiagnosis.getTmCore()));
+                Map<String, Double> constLineCpu = new HashMap<>();
+                constLineCpu.put("阈值", cpuHighThreshold);
+                constLineCpu.put("均值", (double) (rcJobDiagnosis.getTmAvgCpuUsageAvg() / rcJobDiagnosis.getTmCore()));
                 diagnosisRuleLineChartCpu.setConstLines(constLineCpu);
                 diagnosisRuleReport.setIDiagnosisRuleCharts(Lists.newArrayList(diagnosisRuleLineChartDelay,
                         diagnosisRuleLineChartCpu));
@@ -222,7 +222,7 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
      * @return
      */
     private boolean offsetGrow10minutes(DiagnosisContext context) {
-        List<MetricResult.DataResult> offsetDeltaMetrics = realtimeDiagnosisMetricsServiceImpl.getTaskManagerMetrics(OFFSET_DELTA,context, context.getStart(), context.getEnd());
+        List<MetricResult.DataResult> offsetDeltaMetrics = realtimeDiagnosisMetricsServiceImpl.getTaskManagerMetrics(OFFSET_DELTA, context, context.getStart(), context.getEnd());
         if (offsetDeltaMetrics == null || offsetDeltaMetrics.size() != 1) {
             log.info("{} job offset delta 列表数量不为1", context.getRcJobDiagnosis().getJobName());
             return false;

@@ -10,6 +10,7 @@ import com.oppo.cloud.common.domain.flink.metric.MetricResult;
 import com.oppo.cloud.common.domain.flink.report.DiagnosisRuleReport;
 import com.oppo.cloud.common.util.elastic.BulkApi;
 import com.oppo.cloud.diagnosis.advice.DiagnosisDoctor;
+import com.oppo.cloud.diagnosis.config.EsConfig;
 import com.oppo.cloud.diagnosis.constant.DiagnosisParamsConstants;
 import com.oppo.cloud.diagnosis.domain.diagnosis.DiagnosisContext;
 import com.oppo.cloud.diagnosis.domain.diagnosis.RcJobDiagnosis;
@@ -30,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.oppo.cloud.diagnosis.constant.MonitorMetricConstant.JOB_UP_TIME;
@@ -57,6 +59,8 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     BlocklistMapper blocklistMapper;
     @Resource
     private RestHighLevelClient elasticClient;
+    @Autowired
+    EsConfig esConfig;
     public static final String REALTIME_DIAGNOSIS_REPORT_ES_INDEX_PREFIX = "realtime-report-";
     private static final String YARN_APP_URL = "http://%s:%s/ws/v1/cluster/apps/%s";
     private static final String FLINK_JOB_MANAGER_CONFIG = "%s/jobmanager/config";
@@ -198,10 +202,12 @@ public class DiagnosisServiceImpl implements DiagnosisService {
                 Map<String, Object> reportDoc = new HashMap<>();
                 reportDoc.put("doc_id", realtimeTaskDiagnosisRuleAdvice.getId().toString());
                 reportDoc.put("report", reportJson);
+                reportDoc.put("ts", LocalDateTime.now());
                 reportEsList.add(reportDoc);
             }
             BulkResponse response;
             try {
+                log.info("es config:{} {} {}", esConfig.getHosts(), esConfig.getUsername(), esConfig.getPassword());
                 response = BulkApi.bulk(elasticClient, REALTIME_DIAGNOSIS_REPORT_ES_INDEX_PREFIX, reportEsList);
                 BulkItemResponse[] responses = response.getItems();
                 for (BulkItemResponse r : responses) {

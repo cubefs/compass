@@ -7,6 +7,7 @@ import com.oppo.cloud.common.api.CommonPage;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
 import com.oppo.cloud.common.domain.flink.enums.EDiagnosisRuleHasAdvice;
 import com.oppo.cloud.common.domain.flink.enums.ERealtimeTaskAppState;
+import com.oppo.cloud.common.domain.flink.report.DiagnosisRuleReport;
 import com.oppo.cloud.common.domain.flink.report.DiagnosisRuleReportDoc;
 import com.oppo.cloud.mapper.RealtimeTaskDiagnosisMapper;
 import com.oppo.cloud.mapper.RealtimeTaskDiagnosisRuleAdviceMapper;
@@ -36,11 +37,9 @@ import java.util.*;
 public class RealtimeTaskDiagnosisServiceImpl implements RealtimeTaskDiagnosisService {
 
     @Autowired
-    RealtimeTaskDiagnosisMapper realtimeTaskDiagnosisMapper;
-    @Autowired
-    RealtimeTaskDiagnosisService realtimeTaskDiagnosisService;
-    @Autowired
     RealtimeTaskDiagnosisExtendMapper realtimeTaskDiagnosisExtendMapper;
+    @Autowired
+    RealtimeTaskDiagnosisMapper realtimeTaskDiagnosisMapper;
     @Autowired
     RealtimeTaskDiagnosisRuleAdviceMapper realtimeTaskDiagnosisRuleAdviceMapper;
     @Autowired
@@ -122,9 +121,10 @@ public class RealtimeTaskDiagnosisServiceImpl implements RealtimeTaskDiagnosisSe
     @Override
     public DiagnosisReportResp getReport(RealtimeTaskDiagnosis request) {
         DiagnosisReportResp diagnosisReportResp = new DiagnosisReportResp();
-        List<DiagnosisRuleReportDoc> reports = new ArrayList<>();
+        List<String> reports = new ArrayList<>();
         diagnosisReportResp.setReports(reports);
-        diagnosisReportResp.setRealtimeTaskDiagnosis(request);
+        RealtimeTaskDiagnosis realtimeTaskDiagnosis = realtimeTaskDiagnosisMapper.selectByPrimaryKey(request.getId());
+        diagnosisReportResp.setRealtimeTaskDiagnosis(realtimeTaskDiagnosis);
         RealtimeTaskDiagnosisRuleAdviceExample example = new RealtimeTaskDiagnosisRuleAdviceExample();
         example.createCriteria().andRealtimeTaskDiagnosisIdEqualTo(request.getId());
         List<RealtimeTaskDiagnosisRuleAdvice> realtimeTaskDiagnosisRuleAdvices = realtimeTaskDiagnosisRuleAdviceMapper.selectByExample(example);
@@ -132,9 +132,9 @@ public class RealtimeTaskDiagnosisServiceImpl implements RealtimeTaskDiagnosisSe
         for (RealtimeTaskDiagnosisRuleAdvice advice : realtimeTaskDiagnosisRuleAdvices) {
             try {
                 if (advice.getHasAdvice() == EDiagnosisRuleHasAdvice.HAS_ADVICE.getCode()) {
-                    DiagnosisRuleReportDoc diagnosisRuleReportDoc = null;
+                    DiagnosisRuleReport diagnosisRuleReportDoc = null;
                     HashMap<String, Object> termQuery = new HashMap<>();
-                    termQuery.put("id.keyword", advice.getId());
+                    termQuery.put("doc_id", advice.getId());
                     Map<String, SortOrder> sort = null;
                     Map<String, Object[]> rangeConditions = null;
                     SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, rangeConditions, sort, null);
@@ -143,8 +143,10 @@ public class RealtimeTaskDiagnosisServiceImpl implements RealtimeTaskDiagnosisSe
                         log.error("Can't find report {}", advice);
                     }
                     for (SearchHit hit : searchHits) {
-                        diagnosisRuleReportDoc = JSON.parseObject(hit.getSourceAsString(), DiagnosisRuleReportDoc.class);
-                        reports.add(diagnosisRuleReportDoc);
+                        log.info(hit.getSourceAsString());
+                        log.info(hit.toString());
+                        String report = hit.getSourceAsMap().get("report").toString();
+                        reports.add(report);
                     }
 
                 }
@@ -153,6 +155,8 @@ public class RealtimeTaskDiagnosisServiceImpl implements RealtimeTaskDiagnosisSe
                 log.error(t.getMessage(), t);
             }
         }
+        log.info("报告 {}", reports.toString());
+        log.info("整体 {}", diagnosisReportResp);
         return diagnosisReportResp;
     }
 

@@ -14,6 +14,7 @@ spring:
       group-id: "cp-task-application"
       auto-offset-reset: "earliest"
       max-poll-interval-ms: 300000
+    realtimeTaskTopic: "realtime-task-topic"
   redis:
     cluster:
       nodes: localhost:6379

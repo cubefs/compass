@@ -1,6 +1,9 @@
 package com.oppo.cloud.diagnosis.config;
 
 
+import com.oppo.cloud.common.domain.cluster.hadoop.NameNodeConf;
+import com.oppo.cloud.common.domain.cluster.hadoop.SparkConf;
+import com.oppo.cloud.common.domain.cluster.hadoop.YarnConf;
 import com.oppo.cloud.diagnosis.domain.dto.YarnClusterInfo;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,15 +16,12 @@ import java.util.List;
  * YARN、SPARK集群配置
  */
 @Configuration
-@ConfigurationProperties(prefix = "cluster")
+@ConfigurationProperties(prefix = "hadoop")
 @Data
 public class ClusterConfig {
-    /**
-     * yarn集群信息
-     */
-    private List<YarnClusterInfo> yarn;
-    /**
-     * resourcemanager port
-     */
-    private String rmPort;
+    private List<NameNodeConf> namenodes;
+
+    private List<YarnConf> yarn;
+
+    private SparkConf spark;
 }

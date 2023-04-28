@@ -7,6 +7,7 @@ import java.util.Map;
 
 @Data
 public class DiagnosisRuleBarChart implements IDiagnosisRuleChart {
+    String type = "Bar";
     String title;
     String yAxisUnit;
     List<DiagnosisRulePoint> bars;

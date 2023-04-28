@@ -1,44 +1,39 @@
 #!/bin/sh
-rm -f tpid
-#source $(dirname $0)/common.sh
-PROG_DIR=$(cd $(dirname $0)/.. && pwd)
-APP_NAME="task-realtime-diagnosis"
-BINARY="${PROG_DIR}/lib/${APP_NAME}.jar"
 
-if [ "$1" = "debug" ]; then
-        DEBUG_PORT=$2
-        DEBUG_SUSPEND="n"
-        JAVA_DEBUG_OPT="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=$DEBUG_PORT,server=y,suspend=$DEBUG_SUSPEND"
+HOME_DIR=$(cd $(dirname $0)/.. && pwd)
+APP_NAME="task-realtime-diagnosis"
+PID_FILE=${HOME_DIR}/tpid
+
+if [ -f $(dirname $0)/compass_env.sh ]; then
+  source $(dirname $0)/compass_env.sh
 fi
 
-__pids_pidof() {
-    pidof -c -m -o $$ -o $PPID -x "${BINARY}"
-}
-
-# shellcheck disable=SC2112
-function check(){
-    local pid
-    # shellcheck disable=SC2039
-    pid=$(cat tpid)
+check() {
+  if [ -f ${PID_FILE} ]; then
+    local pid=$(cat ${PID_FILE})
     echo $pid
-    if [ ! -n "$pid" ];then
-        echo "[check] ${BINARY} is already stoped"
-        return 1
-    else
-        echo "[check] ${BINARY} is running, pid is $pid"
-        return 0
+    command="ps --pid ${pid}"
+    if [[ $(uname) == "Darwin" ]]; then
+      command="ps -p ${pid}"
     fi
+    if eval ${command} >/dev/null; then
+      echo "${APP_NAME} is running, pid=${pid}. Please stop first!"
+      exit 1
+    fi
+  fi
 }
 
-JAVA_OPTS="-DappName=${APP_NAME} -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/./urandom"
-JAVA_OPTS_MEM="-server -Xms2g -Xmx2g -XX:NewSize=1g -XX:MaxNewSize=1g -XX:PermSize=128m -XX:MaxPermSize=128m"
-JAVA_OPTS_CMS="-XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly"
-JAVA_OPTS_GC="-XX:+PrintTenuringDistribution -XX:+PrintGCDateStamps -XX:+PrintGCDetails -Xloggc:logs/gc-${APP_NAME}.log"
+start() {
+  check
 
-nohup java $JAVA_OPTS $JAVA_OPTS_MEM $JAVA_OPTS_CMS $JAVA_OPTS_GC $JAVA_DEBUG_OPT -jar -Dspring.config.location=$PROG_DIR/../conf/application.yml $BINARY &
+  JAVA_OPTS="-DappName=${APP_NAME} -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/./urandom  -Ddiagnosis.monitorHost=$DIAGNOSIS_MONITORHOST \"
+  JAVA_OPTS_GC="-server -XX:+UseG1GC -XX:G1HeapRegionSize=8m -verbose:GC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${HOME_DIR}/logs/dump.hprof -Xloggc:${HOME_DIR}/logs/gc-${APP_NAME}.log"
 
-echo $! > tpid
+  nohup java $JAVA_OPTS $JAVA_OPTS_GC -cp "${HOME_DIR}/conf":"${HOME_DIR}/lib/*" com.oppo.cloud.diagnosis.StartApplication >/dev/null 2>&1 &
 
-check
+  pid=$!
+  echo $pid
+  echo $pid >$PID_FILE
+}
 
-echo Start Success!
+start
