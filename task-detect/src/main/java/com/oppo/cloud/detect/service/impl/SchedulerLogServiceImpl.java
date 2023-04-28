@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.detect.service.impl;
 
-import com.oppo.cloud.detect.mapper.TaskInstanceExtendMapper;
+import com.oppo.cloud.common.util.ui.TryNumberUtil;
 import com.oppo.cloud.detect.service.SchedulerLogService;
 import com.oppo.cloud.mapper.TaskApplicationMapper;
 import com.oppo.cloud.model.TaskApplication;
@@ -24,7 +24,7 @@ import com.oppo.cloud.model.TaskApplicationExample;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -32,11 +32,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *  调度日志接口实现类
+ * 调度日志接口实现类
  */
 @Slf4j
 @Service
 public class SchedulerLogServiceImpl implements SchedulerLogService {
+
+    @Value("${custom.schedulerType}")
+    private String schedulerType;
 
     @Autowired
     private TaskApplicationMapper taskApplicationMapper;
@@ -56,6 +59,7 @@ public class SchedulerLogServiceImpl implements SchedulerLogService {
         if (taskApplicationList.size() != 0) {
             TaskApplication taskApplication = null;
             for (TaskApplication temp : taskApplicationList) {
+                temp.setRetryTimes(TryNumberUtil.updateTryNumber(temp.getRetryTimes(), schedulerType));
                 if (temp.getRetryTimes().equals(tryNum)) {
                     taskApplication = temp;
                     break;
@@ -70,8 +74,8 @@ public class SchedulerLogServiceImpl implements SchedulerLogService {
             }
         }
         log.error(
-                "can not find scheduler log from task_application,taskName:{},flowName:{}, executionDate:{}",
-                taskName, flowName, executionDate);
+                "can not find scheduler log from task_application,taskName:{},flowName:{}, executionDate:{}, tryNum:{}",
+                taskName, flowName, executionDate, tryNum);
         return null;
     }
 }

@@ -158,13 +158,15 @@ public class DetectedTask {
         try {
             BeanUtils.copyProperties(taskInstanceSum, jobAnalysis);
         } catch (Exception e) {
-            log.error("taskInstanceNum:{}, taskInstance:{}, exception:{}", taskInstanceSum, taskInstance, e.getMessage());
+            log.error("taskInstanceSum:{}, taskInstance:{}, exception:{}", taskInstanceSum, taskInstance, e.getMessage());
             return;
         }
         jobAnalysis.setExecutionDate(taskInstanceSum.getExecutionTime());
         jobAnalysis.setDuration((double) (taskInstanceSum.getEndTime().getTime() / 1000
                 - taskInstanceSum.getStartTime().getTime() / 1000));
         jobAnalysis.setCategories(new ArrayList<>());
+
+        jobAnalysis.setRetryTimes(TryNumberUtil.updateTryNumber(jobAnalysis.getRetryTimes(),schedulerType));
 
         // 异常任务检测
         for (DetectService detectService : abnormalDetects) {
