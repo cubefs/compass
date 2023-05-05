@@ -193,9 +193,9 @@ public class TaskAppServiceImpl implements TaskAppService {
     @Override
     public List<TaskApp> searchTaskApps(JobAnalysis jobAnalysis) throws Exception {
         HashMap<String, Object> termCondition = new HashMap<>();
-        termCondition.put("projectName", jobAnalysis.getProjectName());
-        termCondition.put("flowName", jobAnalysis.getFlowName());
-        termCondition.put("taskName", jobAnalysis.getTaskName());
+        termCondition.put("projectName.keyword", jobAnalysis.getProjectName());
+        termCondition.put("flowName.keyword", jobAnalysis.getFlowName());
+        termCondition.put("taskName.keyword", jobAnalysis.getTaskName());
         termCondition.put("executionDate", DateUtil.timestampToUTCDate(jobAnalysis.getExecutionDate().getTime()));
         SearchSourceBuilder searchSourceBuilder =
                 elasticSearchService.genSearchBuilder(termCondition, null, null, null);

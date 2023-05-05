@@ -83,9 +83,9 @@ public class AbnormalJobServiceImpl implements AbnormalJobService {
     @Override
     public JobAnalysis searchJob(JobAnalysis jobAnalysis) throws Exception {
         HashMap<String, Object> termQuery = new HashMap<>();
-        termQuery.put("projectName", jobAnalysis.getProjectName());
-        termQuery.put("flowName", jobAnalysis.getFlowName());
-        termQuery.put("taskName", jobAnalysis.getTaskName());
+        termQuery.put("projectName.keyword", jobAnalysis.getProjectName());
+        termQuery.put("flowName.keyword", jobAnalysis.getFlowName());
+        termQuery.put("taskName.keyword", jobAnalysis.getTaskName());
         termQuery.put("executionDate", DateUtil.timestampToUTCDate(jobAnalysis.getExecutionDate().getTime()));
         SearchSourceBuilder searchSourceBuilder = elasticSearchService.genSearchBuilder(termQuery, null, null, null);
         List<JobAnalysis> jobAnalysisList =
