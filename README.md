@@ -194,7 +194,7 @@ The Compass table structure consists of two parts, one is compass.sql, and the o
 
 1. Please execute document/sql/compass.sql first
 
-2. If you are using the DolphinScheduler scheduling platform, please execute document/sql/dolphinscheduler.sql; if you are using the Airflow scheduling platform, please execute document/sql/airflow.sql
+2. If you are using the DolphinScheduler scheduling platform, please execute document/sql/dolphinscheduler.sql(It needs to be modified according to the actual version used); if you are using the Airflow scheduling platform, please execute document/sql/airflow.sql(It needs to be modified according to the actual version used)
 
 3. If you are using a self-developed scheduling platform, please refer to the [task-syncer](document/manual/deployment.md#task-syncer) module to determine the tables that need to be synchronized
 

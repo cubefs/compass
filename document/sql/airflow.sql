@@ -15,7 +15,7 @@
  * limitations under the License.
 */
 
-# version: airflow 2.5.1
+# Example of version 2.5.1, you need to be consistent with the version you actually use.
 
 CREATE TABLE `tb_task_instance`
 (

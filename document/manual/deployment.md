@@ -27,9 +27,9 @@ compass
 
 初始化数据库和表，请先执行document/sql/compass.sql
 
-如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql
+如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql（需要根据实际使用版本修改，支持2.x和3.x）
 
-如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql
+如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql（需要根据实际使用版本修改）
 
 如果您使用的是自研调度平台，请参考[task-syncer](#task-syncer)模块，确定需要同步的表
 

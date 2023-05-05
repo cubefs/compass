@@ -185,7 +185,7 @@ Compass 表结构由两部分组成，一个是compass.sql，另一个是依赖�
 
 1. 请先执行document/sql/compass.sql
 
-2. 如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql； 如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql
+2. 如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql（需要根据实际使用版本修改）； 如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql（需要根据实际使用版本修改）
 
 3. 如果您使用的是自研调度平台，请参考[task-syncer](#task-syncer)模块，确定需要同步的表
 
@@ -212,6 +212,12 @@ Compass 表结构由两部分组成，一个是compass.sql，另一个是依赖�
 ![cpu](document/manual/img/cpu.png)
 ![memory](document/manual/img/memory.png)
 
+## 社区
+
+欢迎加入社区咨询使用或成为 Compass 开发者。以下是获得帮助的方法：
+
+- 提交 [issue](https://github.com/cubefs/compass/issues).
+- 加入微信群，搜索并添加微信号 **`daiwei_cn`** or **`zebozhuang`**。请在验证信息中注明您的意向。审核通过后，我们会邀请您加入社区群。
 
 ## 版权
 
