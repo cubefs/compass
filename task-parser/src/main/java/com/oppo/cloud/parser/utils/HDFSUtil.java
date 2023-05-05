@@ -109,11 +109,10 @@ public class HDFSUtil {
     }
 
     public static String[] readLines(NameNodeConf nameNode, String logPath) throws Exception {
-        String filePath = checkLogPath(nameNode, logPath);
         FSDataInputStream fsDataInputStream = null;
         try {
             FileSystem fs = HDFSUtil.getFileSystem(nameNode);
-            fsDataInputStream = fs.open(new Path(filePath));
+            fsDataInputStream = fs.open(new Path(logPath));
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             // 64kb
             byte[] buffer = new byte[65536];
@@ -135,7 +134,6 @@ public class HDFSUtil {
     }
 
     public static ReaderObject getReaderObject(NameNodeConf nameNode, String path) throws Exception {
-        path = checkLogPath(nameNode, path);
         FileSystem fs = HDFSUtil.getFileSystem(nameNode);
         FSDataInputStream fsDataInputStream = fs.open(new Path(path));
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fsDataInputStream));
@@ -147,7 +145,6 @@ public class HDFSUtil {
     }
 
     public static List<String> listFiles(NameNodeConf nameNode, String path) throws Exception {
-        path = checkLogPath(nameNode, path);
         FileSystem fs = HDFSUtil.getFileSystem(nameNode);
         RemoteIterator<LocatedFileStatus> it = fs.listFiles(new Path(path), true);
         List<String> result = new ArrayList<>();
@@ -159,10 +156,4 @@ public class HDFSUtil {
         return result;
     }
 
-     public static String checkLogPath(NameNodeConf nameNode, String logPath) {
-        if (logPath.contains(HDFS_SCHEME)) {
-            return logPath;
-        }
-        return String.format("%s%s:%s%s", HDFS_SCHEME, nameNode.getNameservices(), nameNode.getPort(), logPath);
-    }
 }
