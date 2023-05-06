@@ -132,4 +132,9 @@ public interface RedisService {
      */
     public Long zSetRemove(String key, Object... values);
 
+    /**
+     * Set key to hold the string value and expiration timeout if key is absent
+     */
+    Boolean acquireLock(String key, String value, Long timeout);
+
 }

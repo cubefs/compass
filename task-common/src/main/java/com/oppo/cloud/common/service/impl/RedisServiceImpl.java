@@ -284,4 +284,12 @@ public class RedisServiceImpl implements RedisService {
     public Long zSetRemove(String key, Object... values) {
         return redisTemplate.opsForZSet().remove(key, values);
     }
+
+    /**
+     * Set key to hold the string value and expiration timeout if key is absent
+     */
+    @Override
+    public Boolean acquireLock(String key, String value, Long timeout) {
+        return redisTemplate.opsForValue().setIfAbsent(key, value, timeout, TimeUnit.SECONDS);
+    }
 }
