@@ -37,7 +37,6 @@ import com.oppo.cloud.model.TaskApplication;
 import com.oppo.cloud.model.TaskInstance;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -162,7 +161,7 @@ public class LogParserServiceImpl implements LogParserService {
      */
     @Override
     public ParseRet handle(TaskInstance taskInstance, Map<String, String> rawData) throws Exception {
-        log.info("收到task instance,{}", taskInstance);
+        log.debug("收到task instance,{}", taskInstance);
         if (skipTaskInstance(taskInstance)) {
             return new ParseRet(RetCode.RET_SKIP, null);
         }
@@ -249,22 +248,8 @@ public class LogParserServiceImpl implements LogParserService {
      * 添加任务applicationId
      */
     public void addTaskApplication(String applicationId, TaskInstance taskInstance, String logPath) {
-        // flink任务发送kafka
-        if (!StringUtils.isEmpty(kafkaConfig.getRealtimeTaskTopic()) &&
-                !StringUtils.isBlank(taskInstance.getTaskType()) && taskInstance.getTaskType().equals(TASK_TYPE_FLINK)) {
-            try {
-                RealtimeTaskInstance realtimeTaskInstance = new RealtimeTaskInstance();
-                realtimeTaskInstance.setTaskInstance(taskInstance);
-                realtimeTaskInstance.setApplicationId(applicationId);
-                messageProducer.sendMessageSync(kafkaConfig.getRealtimeTaskTopic(),
-                        JSON.toJSONString(realtimeTaskInstance));
-            } catch (Exception ex) {
-                log.error("failed to send insert data to kafka, err: " + ex.getMessage());
-            }
-        }
-
         // 数据写回kafka订阅
-        log.info("application save: applicationId=" + applicationId + " task_instance=" + taskInstance + ",lopPath="
+        log.debug("application save: applicationId=" + applicationId + " task_instance=" + taskInstance + ",lopPath="
                 + logPath);
 
         TaskApplication taskApplication = new TaskApplication();
@@ -275,6 +260,7 @@ public class LogParserServiceImpl implements LogParserService {
         taskApplication.setExecuteTime(taskInstance.getExecutionTime());
         taskApplication.setRetryTimes(taskInstance.getRetryTimes());
         taskApplication.setLogPath(logPath);
+        taskApplication.setTaskType(taskInstance.getTaskType());
         taskApplication.setCreateTime(new Date());
         taskApplication.setUpdateTime(new Date());
 
@@ -287,6 +273,12 @@ public class LogParserServiceImpl implements LogParserService {
             log.error("insertErr:" + e.getMessage());
         }
 
+        try {
+            messageProducer.sendMessageSync(kafkaConfig.getTaskApplicationTopic(),
+                    JSON.toJSONString(taskApplication));
+        } catch (Exception ex) {
+            log.error("failed to send insert data to kafka, err: " + ex.getMessage());
+        }
     }
 
     /**

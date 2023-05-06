@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oppo.cloud.portal.dao.RealtimeTaskDiagnosisExtendMapper">
+<mapper namespace="com.oppo.cloud.portal.dao.FlinkTaskDiagnosisExtendMapper">
     <resultMap id="generalViewNumberMap" type="com.oppo.cloud.portal.domain.realtime.GeneralViewNumberDto">
         <result column="base_task_cnt_sum" jdbcType="INTEGER" property="baseTaskCntSum"/>
         <result column="exception_task_cnt_sum" jdbcType="INTEGER" property="exceptionTaskCntSum"/>
@@ -68,9 +68,9 @@
     </select>
 
     <select id="page" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisAdviceListReq"
-            resultMap="com.oppo.cloud.mapper.RealtimeTaskDiagnosisMapper.BaseResultMap">
+            resultMap="com.oppo.cloud.mapper.FlinkTaskDiagnosisMapper.BaseResultMap">
         select
-        <include refid="com.oppo.cloud.mapper.RealtimeTaskDiagnosisMapper.Base_Column_List" />
+        <include refid="com.oppo.cloud.mapper.FlinkTaskDiagnosisMapper.Base_Column_List" />
         from realtime_task_diagnosis
         <trim prefix="where (" prefixOverrides="and" suffix=")">
             <if test="projectName != null">

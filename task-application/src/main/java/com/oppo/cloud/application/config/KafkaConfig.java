@@ -51,8 +51,8 @@ public class KafkaConfig {
     /**
      * 消费主题
      */
-    @Value("${spring.kafka.realtimeTaskTopic}")
-    private String realtimeTaskTopic;
+    @Value("${spring.kafka.taskApplicationTopic}")
+    private String taskApplicationTopic;
     /**
      * 消费组
      */

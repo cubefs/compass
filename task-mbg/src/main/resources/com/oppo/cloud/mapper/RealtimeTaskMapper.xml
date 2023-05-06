@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oppo.cloud.mapper.RealtimeTaskMapper">
-  <resultMap id="BaseResultMap" type="com.oppo.cloud.model.RealtimeTask">
+<mapper namespace="com.oppo.cloud.mapper.FlinkTaskMapper">
+  <resultMap id="BaseResultMap" type="com.oppo.cloud.model.FlinkTask">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
@@ -107,7 +107,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.oppo.cloud.model.RealtimeTask">
+  <insert id="insert" parameterType="com.oppo.cloud.model.FlinkTask">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -120,7 +120,7 @@
       #{taskName,jdbcType=VARCHAR}, #{taskId,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.oppo.cloud.model.RealtimeTask">
+  <insert id="insertSelective" parameterType="com.oppo.cloud.model.FlinkTask">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -264,7 +264,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.RealtimeTask">
+  <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.FlinkTask">
     update realtime_task
     <set>
       <if test="username != null">
@@ -303,7 +303,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.RealtimeTask">
+  <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.FlinkTask">
     update realtime_task
     set username = #{username,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=INTEGER},

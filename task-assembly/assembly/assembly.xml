@@ -59,8 +59,8 @@
             <outputDirectory>task-syncer</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>${project.parent.basedir}/task-realtime-diagnosis/target/task-realtime-diagnosis</directory>
-            <outputDirectory>task-realtime-diagnosis</outputDirectory>
+            <directory>${project.parent.basedir}/task-flink/target/task-flink</directory>
+            <outputDirectory>task-flink</outputDirectory>
         </fileSet>
 
     </fileSets>

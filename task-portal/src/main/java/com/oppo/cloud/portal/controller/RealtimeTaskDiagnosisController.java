@@ -3,13 +3,13 @@ package com.oppo.cloud.portal.controller;
 
 import com.oppo.cloud.common.api.CommonPage;
 import com.oppo.cloud.common.api.CommonStatus;
-import com.oppo.cloud.common.domain.flink.enums.EDiagnosisFrom;
-import com.oppo.cloud.common.domain.flink.enums.EDiagnosisResourceType;
-import com.oppo.cloud.common.domain.flink.enums.EDiagnosisRule;
-import com.oppo.cloud.common.domain.flink.enums.EDiagnosisRuleType;
+import com.oppo.cloud.common.domain.flink.enums.DiagnosisFrom;
+import com.oppo.cloud.common.domain.flink.enums.DiagnosisResourceType;
+import com.oppo.cloud.common.domain.flink.enums.FlinkRule;
+import com.oppo.cloud.common.domain.flink.enums.DiagnosisRuleType;
 import com.oppo.cloud.model.RealtimeTaskDiagnosis;
 import com.oppo.cloud.portal.domain.realtime.*;
-import com.oppo.cloud.portal.service.RealtimeTaskDiagnosisService;
+import com.oppo.cloud.portal.service.FlinkTaskDiagnosisService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -29,14 +29,14 @@ import java.util.Map;
 public class RealtimeTaskDiagnosisController {
 
     @Autowired
-    RealtimeTaskDiagnosisService realtimeService;
+    FlinkTaskDiagnosisService realtimeService;
 
     @GetMapping(value = "/diagnosisRules")
     @ApiOperation(value = "获取诊断规则信息")
     public CommonStatus<List<DiagnosisRuleResp>> getDiagnosisRules() {
-        EDiagnosisRule[] eDiagnosisRules = EDiagnosisRule.values();
+        FlinkRule[] flinkRules = FlinkRule.values();
         List<DiagnosisRuleResp> list = new ArrayList<>();
-        for (EDiagnosisRule ediagnosisRule : eDiagnosisRules) {
+        for (FlinkRule ediagnosisRule : flinkRules) {
             DiagnosisRuleResp diagnosisRuleResp = new DiagnosisRuleResp();
             diagnosisRuleResp.setCode(ediagnosisRule.getCode());
             diagnosisRuleResp.setName(ediagnosisRule.getName());
@@ -49,12 +49,12 @@ public class RealtimeTaskDiagnosisController {
     @GetMapping(value = "/diagnosisFrom")
     @ApiOperation(value = "获取诊断来源信息")
     public CommonStatus<List<DiagnosisFromResp>> getDiagnosisFromTypes() {
-        EDiagnosisFrom[] eDiagnosisRules = EDiagnosisFrom.values();
+        DiagnosisFrom[] eDiagnosisRules = DiagnosisFrom.values();
         List<DiagnosisFromResp> list = new ArrayList<>();
-        for (EDiagnosisFrom eDiagnosisFrom : eDiagnosisRules) {
+        for (DiagnosisFrom diagnosisFrom : eDiagnosisRules) {
             DiagnosisFromResp diagnosisFromResp = new DiagnosisFromResp();
-            diagnosisFromResp.setCode(eDiagnosisFrom.getCode());
-            diagnosisFromResp.setName(eDiagnosisFrom.getDesc());
+            diagnosisFromResp.setCode(diagnosisFrom.getCode());
+            diagnosisFromResp.setName(diagnosisFrom.getDesc());
             list.add(diagnosisFromResp);
         }
         // todo:
@@ -65,10 +65,10 @@ public class RealtimeTaskDiagnosisController {
     @GetMapping(value = "/resourceDiagnosisRules")
     @ApiOperation(value = "获取资源诊断规则信息")
     public CommonStatus<List<DiagnosisRuleResp>> getResourceDiagnosisRules() {
-        EDiagnosisRule[] eDiagnosisRules = EDiagnosisRule.values();
+        FlinkRule[] flinkRules = FlinkRule.values();
         List<DiagnosisRuleResp> list = new ArrayList<>();
-        for (EDiagnosisRule ediagnosisRule : eDiagnosisRules) {
-            if (ediagnosisRule.getRuleType() == EDiagnosisRuleType.ResourceRule.getCode()) {
+        for (FlinkRule ediagnosisRule : flinkRules) {
+            if (ediagnosisRule.getRuleType() == DiagnosisRuleType.ResourceRule.getCode()) {
                 DiagnosisRuleResp diagnosisRuleResp = new DiagnosisRuleResp();
                 diagnosisRuleResp.setCode(ediagnosisRule.getCode());
                 diagnosisRuleResp.setName(ediagnosisRule.getName());
@@ -82,10 +82,10 @@ public class RealtimeTaskDiagnosisController {
     @GetMapping(value = "/runtimeExceptionDiagnosisTypes")
     @ApiOperation(value = "获取运行异常诊断信息")
     public CommonStatus<List<DiagnosisRuleResp>> getRuntimeExceptionDiagnosisRules() {
-        EDiagnosisRule[] eDiagnosisRules = EDiagnosisRule.values();
+        FlinkRule[] flinkRules = FlinkRule.values();
         List<DiagnosisRuleResp> list = new ArrayList<>();
-        for (EDiagnosisRule ediagnosisRule : eDiagnosisRules) {
-            if (ediagnosisRule.getRuleType() == EDiagnosisRuleType.RuntimeExceptionRule.getCode()) {
+        for (FlinkRule ediagnosisRule : flinkRules) {
+            if (ediagnosisRule.getRuleType() == DiagnosisRuleType.RuntimeExceptionRule.getCode()) {
                 DiagnosisRuleResp diagnosisRuleResp = new DiagnosisRuleResp();
                 diagnosisRuleResp.setCode(ediagnosisRule.getCode());
                 diagnosisRuleResp.setName(ediagnosisRule.getName());
@@ -99,12 +99,12 @@ public class RealtimeTaskDiagnosisController {
     @GetMapping(value = "/resourceDiagnosisTypes")
     @ApiOperation(value = "获取诊断类别信息")
     public CommonStatus<List<DiagnosisResourceTypeResp>> getResourceRuleTypes() {
-        EDiagnosisResourceType[] eDiagnosisResourceTypes = EDiagnosisResourceType.values();
+        DiagnosisResourceType[] diagnosisResourceTypes = DiagnosisResourceType.values();
         List<DiagnosisResourceTypeResp> list = new ArrayList<>();
-        for (EDiagnosisResourceType eDiagnosisResourceType : eDiagnosisResourceTypes) {
+        for (DiagnosisResourceType diagnosisResourceType : diagnosisResourceTypes) {
             DiagnosisResourceTypeResp diagnosisRuleResp = new DiagnosisResourceTypeResp();
-            diagnosisRuleResp.setCode(eDiagnosisResourceType.getCode());
-            diagnosisRuleResp.setName(eDiagnosisResourceType.getDesc());
+            diagnosisRuleResp.setCode(diagnosisResourceType.getCode());
+            diagnosisRuleResp.setName(diagnosisResourceType.getDesc());
             list.add(diagnosisRuleResp);
         }
         return CommonStatus.success(list);

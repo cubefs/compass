@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oppo.cloud.mapper.RealtimeTaskDiagnosisRuleAdviceMapper">
+<mapper namespace="com.oppo.cloud.mapper.FlinkTaskDiagnosisRuleAdviceMapper">
   <resultMap id="BaseResultMap" type="com.oppo.cloud.model.RealtimeTaskDiagnosisRuleAdvice">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="realtime_task_diagnosis_id" jdbcType="INTEGER" property="realtimeTaskDiagnosisId" />

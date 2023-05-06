@@ -21,7 +21,7 @@
         <module>task-application</module>
         <module>task-canal</module>
         <module>task-canal-adapter</module>
-        <module>task-realtime-diagnosis</module>
+        <module>task-flink</module>
         <module>task-assembly</module>
         <module>task-ui</module>
     </modules>

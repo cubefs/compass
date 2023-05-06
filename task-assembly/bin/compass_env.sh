@@ -31,7 +31,7 @@ export SPRING_ZOOKEEPER_NODES="localhost:2181"
 export SPRING_ELASTICSEARCH_NODES="localhost:19527"
 
 # prom
-export DIAGNOSIS_MONITORHOST="http://localhost:9090"
+export FLINK_PROMETHEUS="http://localhost:9090"
 
 # task-canal
 export CANAL_INSTANCE_MASTER_ADDRESS=${SCHEDULER_MYSQL_ADDRESS}

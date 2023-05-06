@@ -5,6 +5,9 @@ import lombok.Data;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 指标数据解析结构体
+ */
 @Data
 public class MetricResult {
     private String status;
