@@ -36,6 +36,9 @@ import java.util.UUID;
 @ConditionalOnProperty(prefix = "scheduler.yarnMeta", name = "enable", havingValue = "true")
 public class YarnMetaScheduler {
 
+    /**
+     * synchronize yarn app redis distributed lock
+     */
     private static final String LOCK_KEY = "compass:metadata:yarn";
 
     @Resource
@@ -52,12 +55,13 @@ public class YarnMetaScheduler {
         try {
             syncer();
         } catch (Exception e) {
-            log.error("Exception:",e);
+            log.error("Exception:", e);
         }
     }
 
     private void syncer() throws Exception {
         String lockValue = UUID.randomUUID().toString();
+        // Only one instance of the application can run the synchronization process at the same time.
         Boolean acquire = redisService.acquireLock(LOCK_KEY, lockValue, 5L);
         if (!acquire) {
             log.info("can not get the lock: {}", LOCK_KEY);

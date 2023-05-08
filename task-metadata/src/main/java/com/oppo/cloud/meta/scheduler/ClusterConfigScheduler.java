@@ -37,6 +37,9 @@ import java.util.UUID;
 @ConditionalOnProperty(prefix = "scheduler.clusterMeta", name = "enable", havingValue = "true")
 public class ClusterConfigScheduler {
 
+    /**
+     * synchronize cluster config redis distributed lock
+     */
     private static final String LOCK_KEY = "compass:metadata:cluster";
 
     @Resource
@@ -64,6 +67,7 @@ public class ClusterConfigScheduler {
 
     private void syncer() throws Exception {
         String lockValue = UUID.randomUUID().toString();
+        // Only one instance of the application can run the synchronization process at the same time.
         Boolean acquire = redisService.acquireLock(LOCK_KEY, lockValue, 5L);
         if (!acquire) {
             log.info("can not get the lock: {}", LOCK_KEY);

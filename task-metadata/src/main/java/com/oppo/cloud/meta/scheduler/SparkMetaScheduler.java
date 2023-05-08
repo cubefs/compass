@@ -36,6 +36,9 @@ import java.util.UUID;
 @ConditionalOnProperty(prefix = "scheduler.sparkMeta", name = "enable", havingValue = "true")
 public class SparkMetaScheduler {
 
+    /**
+     * synchronize spark app redis distributed lock
+     */
     private static final String LOCK_KEY = "compass:metadata:spark";
 
     @Resource
@@ -58,6 +61,7 @@ public class SparkMetaScheduler {
 
     private void syncer() throws Exception {
         String lockValue = UUID.randomUUID().toString();
+        // Only one instance of the application can run the synchronization process at the same time.
         Boolean acquire = redisService.acquireLock(LOCK_KEY, lockValue, 5L);
         if (!acquire) {
             log.info("can not get the lock: {}", LOCK_KEY);
