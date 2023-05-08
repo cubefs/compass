@@ -52,8 +52,6 @@
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <maven-surefire-report.version>2.19.1</maven-surefire-report.version>
         <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
-        <curator.version>4.2.0</curator.version>
-        <zookeeper.version>3.7.1</zookeeper.version>
         <kafka-clients.version>3.4.0</kafka-clients.version>
         <fastjson2.version>2.0.23</fastjson2.version>
         <guava.version>31.1-jre</guava.version>
@@ -202,18 +200,6 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jjwt.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-recipes</artifactId>
-                <version>${curator.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.zookeeper</groupId>
-                <artifactId>zookeeper</artifactId>
-                <version>${zookeeper.version}</version>
             </dependency>
 
             <dependency>

@@ -19,8 +19,6 @@ package com.oppo.cloud.meta.scheduler;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.meta.service.ITaskSyncerMetaService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.framework.recipes.locks.InterProcessMutex;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.script.RedisScript;
@@ -29,7 +27,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * SPARK任务app列表数据同步
@@ -47,8 +44,6 @@ public class SparkMetaScheduler {
     @Resource
     private RedisScript<Object> releaseLockScript;
 
-    @Resource(name = "sparkMetaLock")
-    private InterProcessMutex lock;
     @Resource(name = "SparkMetaServiceImpl")
     private ITaskSyncerMetaService spark;
 
