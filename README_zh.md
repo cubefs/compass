@@ -140,7 +140,7 @@ export SPRING_DATASOURCE_PASSWORD="pwd"
 export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
 # Redis (cluster 模式)
 export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
-# Zookeeper (默认版本: 3.7.1)
+# Zookeeper (默认版本: 3.4.5, canal使用)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
 # Elasticsearch (默认版本: 7.17.9)
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
