@@ -165,6 +165,6 @@ public class HDFSUtil {
         if (logPath.contains(HDFS_SCHEME)) {
             return logPath;
         }
-        return String.format("%s%s:%s%s", HDFS_SCHEME, nameNode.getNameservices(), nameNode.getPort(), logPath);
+        return String.format("%s%s%s", HDFS_SCHEME, nameNode.getNameservices(), logPath);
     }
 }
