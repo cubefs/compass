@@ -16,6 +16,7 @@
 
 package com.oppo.cloud.application.util;
 
+import com.oppo.cloud.common.constant.Constant;
 import com.oppo.cloud.common.domain.cluster.hadoop.NameNodeConf;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -35,8 +36,6 @@ import java.util.Objects;
  * Hdfs工具类
  */
 public class HDFSUtil {
-
-    private static final String HDFS_SCHEME = "hdfs://";
 
     /**
      * 获取Namnode, 根据配置matchPathKeys是否被包含在路径关键字中
@@ -62,7 +61,7 @@ public class HDFSUtil {
 
         if (nameNodeConf.getNamenodes().length == 1) {
             String defaultFs =
-                    String.format("%s%s:%s", HDFS_SCHEME, nameNodeConf.getNamenodesAddr()[0], nameNodeConf.getPort());
+                    String.format("%s%s:%s", Constant.HDFS_SCHEME, nameNodeConf.getNamenodesAddr()[0], nameNodeConf.getPort());
             conf.set("fs.defaultFS", defaultFs);
             if (nameNodeConf.isEnableKerberos()) {
                 return getAuthenticationFileSystem(nameNodeConf, conf);
@@ -75,7 +74,7 @@ public class HDFSUtil {
 
         String nameservices = nameNodeConf.getNameservices();
 
-        conf.set("fs.defaultFS", HDFS_SCHEME + nameservices);
+        conf.set("fs.defaultFS", Constant.HDFS_SCHEME + nameservices);
         conf.set("dfs.nameservices", nameservices);
         conf.set("dfs.client.failover.proxy.provider." + nameservices,
                 "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
@@ -88,7 +87,7 @@ public class HDFSUtil {
 
         String nameNodes = String.join(",", nameNodeConf.getNamenodes());
         conf.set("dfs.ha.namenodes." + nameNodeConf.getNameservices(), nameNodes);
-        URI uri = new URI(HDFS_SCHEME + nameservices);
+        URI uri = new URI(Constant.HDFS_SCHEME + nameservices);
         if (StringUtils.isNotBlank(nameNodeConf.getUser())) {
             System.setProperty("HADOOP_USER_NAME", nameNodeConf.getUser());
         }
@@ -162,9 +161,9 @@ public class HDFSUtil {
     }
 
     private static String checkLogPath(NameNodeConf nameNode, String logPath) {
-        if (logPath.contains(HDFS_SCHEME)) {
+        if (logPath.contains(Constant.HDFS_SCHEME)) {
             return logPath;
         }
-        return String.format("%s%s:%s%s", HDFS_SCHEME, nameNode.getNameservices(), nameNode.getPort(), logPath);
+        return String.format("%s%s:%s%s", Constant.HDFS_SCHEME, nameNode.getNameservices(), nameNode.getPort(), logPath);
     }
 }

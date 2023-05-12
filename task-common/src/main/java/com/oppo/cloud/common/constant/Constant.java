@@ -48,4 +48,10 @@ public class Constant {
      */
     public static final String JHS_HDFS_PATH = "jhs:hdfs:path:";
 
+    public static final String JHS_MAPREDUCE_DONE_PATH = "jhs:mapreduce:done:path:";
+
+    public static final String JHS_MAPREDUCE_INTERMEDIATE_DONE_PATH = "jhs:mapreduce:intermediate:done:path:";
+
+    public static final String HDFS_SCHEME = "hdfs://";
+
 }

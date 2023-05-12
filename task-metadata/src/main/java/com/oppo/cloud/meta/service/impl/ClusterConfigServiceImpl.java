@@ -22,10 +22,10 @@ import com.oppo.cloud.common.domain.cluster.hadoop.YarnConf;
 import com.oppo.cloud.common.domain.cluster.yarn.ClusterInfo;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.meta.config.HadoopConfig;
+import com.oppo.cloud.meta.domain.YarnPathInfo;
 import com.oppo.cloud.meta.domain.Properties;
 import com.oppo.cloud.meta.domain.YarnConfProperties;
 import com.oppo.cloud.meta.service.IClusterConfigService;
-import com.oppo.cloud.meta.utils.MatcherUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,6 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * YARN、SPARK集群地址配置信息
@@ -58,11 +57,14 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
 
     private static final String YARN_CONF = "http://%s/conf";
 
-    private Pattern defaultFSPattern = Pattern.compile(".*<name>fs.defaultFS</name><value>(?<defaultFS>.*?)</value>.*",
-            Pattern.DOTALL);
+    private static final String DEFAULT_FS = "fs.defaultFS";
 
-    private Pattern remoteDirPattern = Pattern.compile(".*<name>yarn.nodemanager.remote-app-log-dir</name><value>" +
-            "(?<remoteDir>.*?)</value>.*", Pattern.DOTALL);
+    private static final String YARN_REMOTE_APP_LOG_DIR = "yarn.nodemanager.remote-app-log-dir";
+
+    private static final String MARREDUCE_DONE_DIR = "mapreduce.jobhistory.done-dir";
+
+    private static final String MARREDUCE_INTERMEDIATE_DONE_DIR = "mapreduce.jobhistory.intermediate-done-dir";
+
 
     /**
      * 获取spark history server列表
@@ -153,21 +155,27 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
     public void updateJHSConfig(List<YarnConf> list) {
         for (YarnConf yarnClusterInfo : list) {
             String host = yarnClusterInfo.getJobHistoryServer();
-            String hdfsPath = getHDFSPath(host);
-            if (StringUtils.isEmpty(hdfsPath)) {
+            YarnPathInfo yarnPathInfo = getYarnPathInfo(host);
+            if (yarnPathInfo == null) {
                 log.error("get {}, hdfsPath empty", host);
                 continue;
             }
-            String key = Constant.JHS_HDFS_PATH + host;
-            log.info("cache hdfsPath:{},{}", key, hdfsPath);
-            redisService.set(key, hdfsPath);
+            String yarnRemotePath = Constant.JHS_HDFS_PATH + host;
+            String mapreduceDonePath = Constant.JHS_MAPREDUCE_DONE_PATH + host;
+            String mapreduceIntermediateDonePath = Constant.JHS_MAPREDUCE_INTERMEDIATE_DONE_PATH + host;
+            log.info("cache yarnPathInfo:{},{}", yarnRemotePath, yarnPathInfo.getRemoteDir());
+            log.info("cache yarnPathInfo:{},{}", mapreduceDonePath, yarnPathInfo.getMapreduceDoneDir());
+            log.info("cache yarnPathInfo:{},{}", mapreduceIntermediateDonePath, yarnPathInfo.getMapreduceIntermediateDoneDir());
+            redisService.set(yarnRemotePath, yarnPathInfo.getRemoteDir());
+            redisService.set(mapreduceDonePath, yarnPathInfo.getMapreduceDoneDir());
+            redisService.set(mapreduceIntermediateDonePath, yarnPathInfo.getMapreduceIntermediateDoneDir());
         }
     }
 
     /**
      * 获取jobhistoryserver hdfs路径信息
      */
-    public String getHDFSPath(String ip) {
+    public YarnPathInfo getYarnPathInfo(String ip) {
         String url = String.format(YARN_CONF, ip);
         log.info("getHDFSPath:{}", url);
         ResponseEntity<String> responseEntity;
@@ -177,50 +185,76 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
             log.error("getHDFSPathErr:{},{}", url, e.getMessage());
             return null;
         }
+
         if (responseEntity.getBody() == null) {
             log.error("getHDFSPathErr:{}", url);
             return null;
         }
+
         YarnConfProperties yarnConfProperties = null;
         try {
             yarnConfProperties = JSON.parseObject(responseEntity.getBody(), YarnConfProperties.class);
         } catch (Exception e) {
             log.error("Exception:", e);
+            return null;
         }
 
         String remoteDir = "";
         String defaultFS = "";
+        String mapreduceDoneDir = "";
+        String mapreduceIntermediateDoneDir = "";
+
         if (yarnConfProperties != null && yarnConfProperties.getProperties() != null) {
             for (Properties properties : yarnConfProperties.getProperties()) {
                 String key = properties.getKey();
                 String value = properties.getValue();
-                if ("yarn.nodemanager.remote-app-log-dir".equals(key)) {
-                    log.info("yarnConfProperties key: yarn.nodemanager.remote-app-log-dir, value: {}", value);
+                if (YARN_REMOTE_APP_LOG_DIR.equals(key)) {
+                    log.info("yarnConfProperties key: {}, value: {}", YARN_REMOTE_APP_LOG_DIR, value);
                     remoteDir = value;
                 }
-                if ("fs.defaultFS".equals(key)) {
-                    log.info("yarnConfProperties key: fs.defaultFS, value: {}", value);
+                if (DEFAULT_FS.equals(key)) {
+                    log.info("yarnConfProperties key: {}, value: {}", DEFAULT_FS, value);
                     defaultFS = value;
                 }
+                if (MARREDUCE_DONE_DIR.equals(key)) {
+                    log.info("yarnConfProperties key: {}, value: {}", MARREDUCE_DONE_DIR, value);
+                    mapreduceDoneDir = value;
+                }
+                if (MARREDUCE_INTERMEDIATE_DONE_DIR.equals(key)) {
+                    log.info("yarnConfProperties key: {}, value: {}", MARREDUCE_INTERMEDIATE_DONE_DIR, value);
+                    mapreduceIntermediateDoneDir = value;
+                }
             }
-        } else {
-            remoteDir = MatcherUtil.getGroupData(responseEntity.getBody(), remoteDirPattern, "remoteDir");
-            defaultFS = MatcherUtil.getGroupData(responseEntity.getBody(), defaultFSPattern, "defaultFS");
         }
-
+        if (StringUtils.isEmpty(defaultFS)) {
+            log.error("defaultFSEmpty:{}", url);
+            return null;
+        }
         if (StringUtils.isEmpty(remoteDir)) {
             log.error("remoteDirEmpty:{}", url);
             return null;
         }
-        if (!remoteDir.contains("hdfs")) {
-            if (StringUtils.isEmpty(defaultFS)) {
-                log.error("defaultFSEmpty:{}", url);
-                return null;
-            }
+        if (StringUtils.isEmpty(mapreduceDoneDir)) {
+            log.error("mapreduceDoneDirrEmpty:{}", url);
+            return null;
+        }
+        if (!remoteDir.contains(Constant.HDFS_SCHEME)) {
             remoteDir = defaultFS + remoteDir;
         }
-        log.info("getHDFSPath url: {},remoteDir: {}", url, remoteDir);
-        return remoteDir;
+        if (!mapreduceDoneDir.contains(Constant.HDFS_SCHEME)) {
+            mapreduceDoneDir = defaultFS + mapreduceDoneDir;
+        }
+        if (!mapreduceIntermediateDoneDir.contains(Constant.HDFS_SCHEME)) {
+            mapreduceIntermediateDoneDir = defaultFS + mapreduceIntermediateDoneDir;
+        }
+
+        YarnPathInfo yarnPathInfo = new YarnPathInfo();
+        yarnPathInfo.setDefaultFS(defaultFS);
+        yarnPathInfo.setRemoteDir(remoteDir);
+        yarnPathInfo.setMapreduceDoneDir(mapreduceDoneDir);
+        yarnPathInfo.setMapreduceIntermediateDoneDir(mapreduceIntermediateDoneDir);
+        log.info("yarnPathInfo: {}, {}", url, yarnPathInfo);
+        return yarnPathInfo;
     }
 
 
