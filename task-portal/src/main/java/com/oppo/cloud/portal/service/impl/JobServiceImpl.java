@@ -372,9 +372,9 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobInstance getJobInstance(String projectName, String flowName, String taskName, Date executionDate) throws Exception {
         HashMap<String, Object> termQuery = new HashMap<>();
-        termQuery.put("projectName", projectName);
-        termQuery.put("flowName", flowName);
-        termQuery.put("taskName", taskName);
+        termQuery.put("projectName.keyword", projectName);
+        termQuery.put("flowName.keyword", flowName);
+        termQuery.put("taskName.keyword", taskName);
         termQuery.put("executionDate", DateUtil.timestampToUTCDate(executionDate.getTime()));
         List<JobInstance> jobInstances = elasticSearchService.find(JobInstance.class, termQuery, jobIndexIndex + "-*");
         if (jobInstances.size() != 0) {
