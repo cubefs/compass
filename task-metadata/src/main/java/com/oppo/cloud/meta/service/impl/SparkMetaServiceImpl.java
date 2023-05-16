@@ -103,7 +103,7 @@ public class SparkMetaServiceImpl implements ITaskSyncerMetaService {
                 try {
                     pull(clusters.get(finalI));
                 } catch (Exception e) {
-                    log.error(e.getMessage());
+                    log.error("Exception: ", e);
                 }
                 return null;
             }, sparkMetaExecutor);
@@ -124,7 +124,7 @@ public class SparkMetaServiceImpl implements ITaskSyncerMetaService {
         try {
             eventLogDirectory = getEventLogDirectory(shs);
         } catch (Exception e) {
-            log.error("sparkMetaErr:eventLogDirectory:{},{}", shs, e.getMessage());
+            log.error("sparkMetaErr:eventLogDirectory:{}", shs, e);
             return;
         }
         if (StringUtils.isBlank(eventLogDirectory)) {
@@ -159,15 +159,15 @@ public class SparkMetaServiceImpl implements ITaskSyncerMetaService {
         BulkResponse response;
         try {
             response = BulkApi.bulkByIds(client, sparkAppPrefix + DateUtil.getDay(0), sparkAppMap);
-        } catch (IOException e) {
-            log.error("bulkSparkAppsErr:{}", e.getMessage());
+        } catch (Exception e) {
+            log.error("bulkSparkAppsErr:", e);
             return;
         }
         BulkItemResponse[] responses = response.getItems();
 
         for (BulkItemResponse r : responses) {
             if (r.isFailed()) {
-                log.info("failedInsertApp:{},{}", r.getId(), r.status());
+                log.error("failedInsertApp:{},{}", r.getId(), r.status());
             }
         }
 
