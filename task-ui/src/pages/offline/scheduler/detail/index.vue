@@ -95,7 +95,7 @@ const getJobInfo = async () => {
 const router = useRouter()
 const back = () => {
   router.push({
-    path: '/offline/task',
+    path: '/offline/scheduler',
   })
 }
 const refAppDetail: any = ref(null)
