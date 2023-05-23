@@ -225,6 +225,18 @@ public class RealtimeTaskDiagnosisController {
             return CommonStatus.failed("内部错误请查看日志");
         }
     }
+
+    @PostMapping("/diagnosis")
+    @ApiOperation(value = "诊断")
+    public CommonStatus<OneClickDiagnosisResponse> diagnosis(@RequestBody OneClickDiagnosisRequest req) {
+        try {
+            req.setAppId(req.getAppId().trim().replace("\t", ""));
+            return realtimeService.diagnosis(req);
+        } catch (Throwable t) {
+            log.error(t.getMessage(), t);
+        }
+        return CommonStatus.failed("未知错误");
+    }
 }
 
 

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class DiagnosisGeneralViewReq {
     // 开始时间戳秒
-    LocalDateTime startTs;
+    Long startTs;
     // 结束时间戳秒
-    LocalDateTime endTs;
+    Long endTs;
 }

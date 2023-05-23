@@ -43,19 +43,17 @@ public class DiagnosisController {
                     .stream()
                     .max(Comparator.comparing(RealtimeTaskApp::getStartTime));
             if (task.isPresent()) {
-                LocalDateTime endTime = req.getEnd();
-                LocalDateTime startTime = req.getStart();
+                Long endTime = req.getEnd();
+                Long startTime = req.getStart();
                 if (req.getStart() == null || req.getEnd() == null) {
-                    endTime = LocalDateTime.now(ZoneOffset.ofHours(8));
-                    startTime = endTime.minusDays(1);
+                    endTime = LocalDateTime.now(ZoneOffset.ofHours(8)).toEpochSecond(ZoneOffset.ofHours(8));
+                    startTime = LocalDateTime.now(ZoneOffset.ofHours(8)).minusDays(1).toEpochSecond(ZoneOffset.ofHours(8));
                 }
-                long endSec = endTime.toEpochSecond(ZoneOffset.ofHours(8));
-                long startSec = startTime.toEpochSecond(ZoneOffset.ofHours(8));
                 RealtimeTaskDiagnosis realtimeTaskDiagnosis = diagnosisService.diagnosisApp(task.get(),
-                        startSec, endSec, DiagnosisFrom.Manual);
+                        startTime, endTime, DiagnosisFrom.Manual);
                 return OResult.success(realtimeTaskDiagnosis);
             } else {
-                return OResult.fail(String.format("没有找到该任务:%s", req));
+                return OResult.fail(String.format("没有找到该任务:%s", req.getAppId()));
             }
         } catch (Throwable t) {
             log.error(t.getMessage(), t);

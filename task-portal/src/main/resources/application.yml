@@ -18,17 +18,17 @@ spring:
   main:
     allow-circular-references: true
   datasource:
-    url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://10.177.162.27:33066/diagnose_data?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
-    password: root
+    password: Root@666
     druid:
       initial-size: 5
       min-idle: 10
       max-active: 20
   elasticsearch:
-    nodes: localhost:19527
-    username:
-    password:
+    nodes: diagnose-web-test.chn-bj-test-set.elasticsearch.oppo.test:19527
+    username: elastic
+    password: super@admin
   redis:
     cluster:
       nodes: localhost:6379
@@ -84,3 +84,6 @@ custom:
   jwt:
     expireDay: 15
     secret: 8ff3bf2c8344
+
+  flink:
+    diagnosisHost: http://10.176.249.189:7001

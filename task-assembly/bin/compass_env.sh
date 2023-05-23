@@ -33,6 +33,9 @@ export SPRING_ELASTICSEARCH_NODES="localhost:19527"
 # prom
 export FLINK_PROMETHEUS="http://localhost:9090"
 
+# flink diagnosis host
+export FLINK_DIAGNOSIS_HOST="http://localhost:7001"
+
 # task-canal
 export CANAL_INSTANCE_MASTER_ADDRESS=${SCHEDULER_MYSQL_ADDRESS}
 export CANAL_INSTANCE_DBUSERNAME=${SCHEDULER_DATASOURCE_USERNAME}

@@ -16,7 +16,8 @@ let loadingInstance: MessageHandler | null = null
 axios.defaults.validateStatus = function (status) {
   return status >= 200 && status <= 204 // default
 }
-axios.defaults.baseURL = window.location.origin + '/compass'
+// axios.defaults.baseURL = window.location.origin + '/compass'
+axios.defaults.baseURL = 'http://localhost:7075' + '/compass'
 axios.defaults.withCredentials = true
 axios.interceptors.request.use(
   (config:any) => {
@@ -87,7 +88,6 @@ const request = function (type: Method) {
         throw new Error('请求失败')
       }
 
-      // @ts-expect-error
       // if (!['0000', 0].includes((res.data as IAjaxResponse).status))
       //   throw res.data
 
@@ -103,7 +103,6 @@ const request = function (type: Method) {
         errorMsg = error
 
       if (error && typeof error === 'object') {
-        // @ts-expect-error
         if (error.status && error.message)
           errorMsg = error.message
       }

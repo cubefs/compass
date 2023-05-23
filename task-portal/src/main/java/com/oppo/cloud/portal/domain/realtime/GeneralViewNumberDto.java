@@ -14,5 +14,5 @@ public class GeneralViewNumberDto {
     Integer totalMemNumSum;
     Integer cutCoreNumSum;
     Integer cutMemNumSum;
-    LocalDate date;
+    String date;
 }

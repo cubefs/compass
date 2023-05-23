@@ -9,10 +9,15 @@
         <result column="total_mem_num_sum" jdbcType="INTEGER" property="totalMemNumSum"/>
         <result column="cut_core_num_sum" jdbcType="INTEGER" property="cutCoreNumSum"/>
         <result column="cut_mem_num_sum" jdbcType="INTEGER" property="cutMemNumSum"/>
-        <result column="dt" jdbcType="INTEGER" property="data"/>
+        <result column="dt" jdbcType="VARCHAR" property="date"/>
     </resultMap>
 
-    <select id="getGeneralViewNumber" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisGeneralViewReq" resultMap="generalViewNumberMap">
+    <select id="getDiagnosisTime" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisGeneralViewQuery" resultType="java.time.LocalDateTime">
+        select max(diagnosis_end_time) as diagnosis_end_time from realtime_task_diagnosis where diagnosis_from = 0 and
+        <![CDATA[ diagnosis_end_time >= #{startTs} and diagnosis_end_time <= #{endTs} ]]>
+    </select>
+
+    <select id="getGeneralViewNumber" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisGeneralViewQuery" resultMap="generalViewNumberMap">
         select
         sum(base_task_cnt) as base_task_cnt_sum,
         sum(exception_task_cnt) as exception_task_cnt_sum,
@@ -21,25 +26,32 @@
         sum(total_mem_num) as total_mem_num_sum,
         sum(cut_core_num) as cut_core_num_sum,
         sum(cut_mem_num) as cut_mem_num_sum,
-        FROM_UNIXTIME( #{endTs}, '%Y-%m-%d' ) as dt
+        #{endTs} as dt
         from
         (
         select 1 as base_task_cnt,
-        case when diagnosis_resource_type like '%[4]%' then 1 else 0 end as exception_task_cnt,
-        case when ( diagnosis_resource_type like '%[2]%' or diagnosis_resource_type like '%[3]%')
+        case when (diagnosis_resource_type like '%4,%' or diagnosis_resource_type like '%4]%')
+        then 1 else 0 end as exception_task_cnt,
+        case when ( diagnosis_resource_type like '%2,%' or diagnosis_resource_type like '%2]%'
+        or diagnosis_resource_type like '%3,%' or diagnosis_resource_type like '%3]%')
         then 1 else 0 end as resource_task_cnt,
         tm_core * tm_num as total_core_num,
         tm_mem * tm_num as total_mem_num,
-        case when ( diagnosis_resource_type like '%[2]%')
+        case when ( diagnosis_resource_type like '%2,%' or diagnosis_resource_type like '%2]%')
         then tm_core * tm_num - diagnosis_tm_core_num * diagnosis_tm_num else 0 end as cut_core_num,
-        case when ( diagnosis_resource_type like '%[3]%')
+        case when ( diagnosis_resource_type like '%3,%' or diagnosis_resource_type like '%3]%')
         then tm_mem * tm_num - diagnosis_tm_mem_size * diagnosis_tm_num else 0 end as cut_mem_num,
         FROM_UNIXTIME( #{endTs} , '%Y-%m-%d' ) as dt
-        from realtime_task_diagnosis where diagnosis_from = 0 and
+        from realtime_task_diagnosis
+        where diagnosis_from = 0 and
         <![CDATA[ diagnosis_end_time >= #{startTs} and diagnosis_end_time <= #{endTs} ]]>
         ) a
     </select>
-    <select id="getGeneralViewTrend" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisGeneralViewReq" resultMap="generalViewNumberMap">
+    <select id="getDiagnosisDates" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisGeneralViewQuery" resultType="java.time.LocalDateTime">
+        select distinct diagnosis_end_time from realtime_task_diagnosis where diagnosis_from = 0 and
+        <![CDATA[ diagnosis_end_time >= #{startTs} and diagnosis_end_time <= #{endTs} ]]>
+    </select>
+    <select id="getGeneralViewTrend"  resultMap="generalViewNumberMap">
         select
         sum(base_task_cnt) as base_task_cnt_sum,
         sum(exception_task_cnt) as exception_task_cnt_sum,
@@ -49,22 +61,28 @@
         sum(cut_core_num) as cut_core_num_sum,
         sum(cut_mem_num) as cut_mem_num_sum,
         dt
-        from
-        (
+        from (
         select 1 as base_task_cnt,
-        case when diagnosis_resource_type like '%[4]%' then 1 else 0 end as exception_task_cnt,
-        case when ( diagnosis_resource_type like '%[2]%' or diagnosis_resource_type like '%[3]%')
+        job_name,
+        diagnosis_end_time,
+        case when (diagnosis_resource_type like '%4,%' or diagnosis_resource_type like '%4]%')
+        then 1 else 0 end as exception_task_cnt,
+        case when ( diagnosis_resource_type like '%2,%' or diagnosis_resource_type like '%2]%'
+        or diagnosis_resource_type like '%3,%' or diagnosis_resource_type like '%3]%')
         then 1 else 0 end as resource_task_cnt,
         tm_core * tm_num as total_core_num,
         tm_mem * tm_num as total_mem_num,
-        case when ( diagnosis_resource_type like '%[2]%')
+        case when ( diagnosis_resource_type like '%2,%' or diagnosis_resource_type like '%2]%')
         then tm_core * tm_num - diagnosis_tm_core_num * diagnosis_tm_num else 0 end as cut_core_num,
-        case when ( diagnosis_resource_type like '%[3]%')
+        case when ( diagnosis_resource_type like '%3,%' or diagnosis_resource_type like '%3]%')
         then tm_mem * tm_num - diagnosis_tm_mem_size * diagnosis_tm_num else 0 end as cut_mem_num,
-        FROM_UNIXTIME( diagnosis_end_time , '%Y-%m-%d' ) as dt
+        DATE_FORMAT( diagnosis_end_time , '%Y-%m-%d' ) as dt
         from realtime_task_diagnosis where diagnosis_from = 0 and
-        <![CDATA[ diagnosis_end_time >= #{startTs} and diagnosis_end_time <= #{endTs} ]]>
-        ) a group by dt
+        diagnosis_end_time in
+        <foreach item="item" collection="diagnosisEndTimes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+            ) a group by dt
     </select>
 
     <select id="page" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisAdviceListReq"
