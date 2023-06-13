@@ -83,6 +83,7 @@ public class TextParser implements ITextParser {
                 break;
             case TAIL:
                 matchTailsTemplate(line);
+                matchHeadsTemplate(line);
                 break;
             default:
                 break;
