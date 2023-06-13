@@ -21,11 +21,11 @@ public class DiagnosisAdviceListReq {
     @ApiModelProperty(value = "任务名称")
     private String taskName;
 
-    @ApiModelProperty(value = "诊断开始时间")
-    private LocalDateTime start;
+    @ApiModelProperty(value = "诊断开始时间秒")
+    private Long startTs;
 
-    @ApiModelProperty(value = "诊断结束时间")
-    private LocalDateTime end;
+    @ApiModelProperty(value = "诊断结束时间秒")
+    private Long endTs;
 
     @ApiModelProperty(value = "创建者")
     private String username;
@@ -37,6 +37,8 @@ public class DiagnosisAdviceListReq {
     private String orderColumn;
     @ApiModelProperty("排序顺序")
     private String orderType;
+    @ApiModelProperty("包括规则的中文名称")
+    private List<String> includeCategories;
     @ApiModelProperty("包括规则")
     private List<Integer> diagnosisRule;
     @ApiModelProperty("排除规则")

@@ -97,10 +97,10 @@ public class TmManagedMemory extends BaseRule {
             diagnosisRuleBarChart.setTitle("Manage内存");
             diagnosisRuleBarChart.setYAxisUnit("(MB)");
             DiagnosisRulePoint point1 = new DiagnosisRulePoint();
-            point1.setKey("总Manage数量");
+            point1.setKey("总Manage内存数");
             point1.setValue(maxTotalMb);
             DiagnosisRulePoint point2 = new DiagnosisRulePoint();
-            point2.setKey("已使用Manage数量");
+            point2.setKey("已使用Manage内存数");
             point2.setValue(maxUsage / 1024 / 1024);
             diagnosisRuleBarChart.setBars(Lists.newArrayList(point1, point2));
             diagnosisRuleReport.setIDiagnosisRuleCharts(Lists.newArrayList(diagnosisRuleBarChart));

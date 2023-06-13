@@ -212,9 +212,9 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         realtimeTaskApp.setClusterName(yarnApp.getClusterName());
         realtimeTaskApp.setExecuteUser(yarnApp.getUser());
         // flink meta
-        List<JobManagerConfigItem> configItems = reqFlinkConfig(yarnApp);
+        List<JobManagerConfigItem> configItems = reqFlinkConfig(realtimeTaskApp.getFlinkTrackUrl());
         if (configItems != null) {
-            String jobId = getJobId(yarnApp);
+            String jobId = getJobId(realtimeTaskApp.getFlinkTrackUrl());
             fillFlinkMetaWithFlinkConfigOnYarn(realtimeTaskApp, configItems, jobId);
         } else {
             if (realtimeTaskApp.getId() == null) {
@@ -233,8 +233,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         }
     }
 
-    public List<String> getTmIds(YarnApp yarnApp) {
-        String trackingUrl = yarnApp.getTrackingUrl();
+    public List<String> getTmIds(String trackingUrl) {
         String tmsUrl = String.format(FLINK_TMS, trackingUrl);
         ResponseEntity<String> responseEntity = null;
         try {
@@ -257,9 +256,6 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         }
     }
 
-    public String getJobId(YarnApp yarnApp) {
-        return getJobId(yarnApp.getTrackingUrl());
-    }
 
     public String getJobId(String trackingUrl) {
         String jobsUrl = String.format(FLINK_JOBS, trackingUrl);
@@ -283,8 +279,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         }
     }
 
-    public List<JobManagerConfigItem> reqFlinkConfig(YarnApp yarnApp) {
-        String trackingUrl = yarnApp.getTrackingUrl();
+    public List<JobManagerConfigItem> reqFlinkConfig(String trackingUrl) {
         String jobManagerConfigUrl = String.format(FLINK_JOB_MANAGER_CONFIG, trackingUrl);
         ResponseEntity<String> responseEntity = null;
         try {

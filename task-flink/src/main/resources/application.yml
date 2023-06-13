@@ -33,6 +33,7 @@ spring:
   kafka:
     bootstrap-servers: "localhost:9095"
     taskApplicationTopic: "task-application"
+    realtimeTaskAppTopic: "realtime-task-app"
     consumer:
       group-id: "task-flink-diagnosis-local"
       auto-offset-reset: "latest"  # 从提交offset开始消费，无提交offset,从头开始消费

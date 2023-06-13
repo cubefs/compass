@@ -3,6 +3,7 @@ import { ElMessage } from 'element-plus'
 import Process from './ProcessDialog.vue'
 import { cloudTheme } from '~/utils/setting'
 import dayjs from 'dayjs'
+import { get, post } from '~/utils/request'
 const applicationId: string = $ref('')
 const refDialog: any = ref(null)
 const router = useRouter()
@@ -14,6 +15,13 @@ const tableColumn = [
   { label: '创建人', value: 'username' },
 ]
 let taskAppInfo: any = $ref({})
+let categories: any = $ref([])
+let rules :any[] = []
+get('/api/realtime/taskDiagnosis/diagnosisRules', {})
+  .then(r => {
+    rules = r
+    console.log(rules)
+  })
 async function submit() {
   if (!applicationId)
     return ElMessage.warning('请输入applicationId')
@@ -21,12 +29,23 @@ async function submit() {
 }
 function searchComplete(info: any) {
   taskAppInfo = info
+  let categoryCodes = JSON.parse(taskAppInfo.diagnosisTypes)
+  console.log(categoryCodes)
+  categories = []
+  for (var code of categoryCodes) {
+    for (var rule of rules) {
+      if (rule.code == code) {
+        categories.push(rule.name)
+      }
+    }
+  }
+  console.log('category :' + categories)
 }
 const goReport = () => {
   router.push({
-    name: 'appDetail',
+    name: 'realtime-taskDetail',
     query: {
-      applicationId: taskAppInfo.applicationId,
+      id: taskAppInfo.id,
     },
   })
 }
@@ -53,7 +72,8 @@ const goReport = () => {
       </div>
       <el-card shadow="never" w-270>
         <el-table v-if="Object.keys(taskAppInfo).length !== 0" :data="[taskAppInfo]" style="width: 100%">
-          <el-table-column v-for="item in tableColumn" :key="item.value" :prop="item.value" :label="item.label" show-overflow-tooltip />
+          <el-table-column v-for="item in tableColumn" :key="item.value" :prop="item.value" :label="item.label"
+            show-overflow-tooltip />
         </el-table>
       </el-card>
       <div m-t-10>
@@ -64,18 +84,14 @@ const goReport = () => {
       <el-card shadow="never" w-270>
         <div v-if="Object.keys(taskAppInfo).length !== 0">
           <div m-b-3>
-            <span
-              v-for="(category, c_index) in taskAppInfo.categories"
-              :key="category"
-              class="category-card"
-              :title="category"
-              :style="{ 'border-left': `5px solid ${cloudTheme[c_index]}` }"
-            >
+            <span v-for="(category, c_index) in categories" :key="category" class="category-card" :title="category"
+              :style="{ 'border-left': `5px solid ${cloudTheme[c_index]}` }">
               {{ category }}
             </span>
           </div>
           <div>
-            <span style="font-size:15px" m-r-10>开始时间：{{ dayjs(taskAppInfo.startTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
+            <span style="font-size:15px" m-r-10>开始时间：{{ dayjs(taskAppInfo.startTime).format('YYYY-MM-DD HH:mm:ss')
+            }}</span>
             <span style="font-size:15px" m-r-10>任务并行度：{{ taskAppInfo.parallel }}</span>
             <span style="font-size:15px" m-r-10>任务tm个数：{{ taskAppInfo.tmNum }} 个</span>
             <span style="font-size:15px" m-r-10>任务tm core：{{ taskAppInfo.tmCore }} 个</span>
@@ -92,11 +108,12 @@ const goReport = () => {
 
 <style lang="scss" scoped>
 .result-title {
-  float:left;
+  float: left;
   font-size: 19px;
   color: #00bfbf;
   font-weight: bold;
 }
+
 .category-card {
   font-size: 20px;
   font-weight: bold;

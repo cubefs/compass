@@ -31,7 +31,9 @@ spring:
     password: super@admin
   redis:
     cluster:
-      nodes: localhost:6379
+      nodes: diagnose-web-test-dgzx.cn-s01-dgtest01.redis.oppo.test:6379
+  jackson:
+    time-zone: Asia/Shanghai
 
 mybatis:
   mapper-locations:
@@ -86,4 +88,4 @@ custom:
     secret: 8ff3bf2c8344
 
   flink:
-    diagnosisHost: http://10.176.249.189:7001
+    diagnosisHost: http://localhost:7001

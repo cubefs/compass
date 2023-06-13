@@ -91,28 +91,28 @@
         <include refid="com.oppo.cloud.mapper.FlinkTaskDiagnosisMapper.Base_Column_List" />
         from realtime_task_diagnosis
         <trim prefix="where (" prefixOverrides="and" suffix=")">
-            <if test="projectName != null">
+            <if test="projectName != null and projectName!=''">
                 and project_name=#{projectName}
             </if>
-            <if test="flowName != null">
+            <if test="flowName != null and flowName != ''">
                 and flow_name=#{flowName}
             </if>
-            <if test="taskName != null">
+            <if test="taskName != null and taskName != ''">
                 and task_name=#{taskName}
             </if>
-            <if test="start != null">
-                <![CDATA[  and diagnosis_end_time>=#{start} ]]>
+            <if test="startTs != null and startTs != 0">
+                <![CDATA[  and diagnosis_end_time>=from_unixtime(#{startTs}) ]]>
             </if>
-            <if test="end != null">
-                <![CDATA[  and diagnosis_end_time<=#{end} ]]>
+            <if test="endTs != null and endTs != 0">
+                <![CDATA[  and diagnosis_end_time<=from_unixtime(#{endTs}) ]]>
             </if>
-            <if test="username != null">
+            <if test="username != null and username != ''">
                 <![CDATA[  and username=#{username} ]]>
             </if>
-            <if test="applicationId != null">
+            <if test="applicationId != null and applicationId != ''">
                 <![CDATA[  and application_id=#{applicationId} ]]>
             </if>
-            <if test="diagnosisFrom != null">
+            <if test="diagnosisFrom != null and diagnosisFrom != ''">
                 and diagnosis_from in
                 <foreach close=")" collection="diagnosisFrom" item="listItem" open="(" separator=",">
                     #{listItem}
@@ -121,26 +121,26 @@
             <if test="diagnosisRule != null and diagnosisRule.size()!=0">
                 and
                 <foreach close=")" collection="diagnosisRule" item="listItem" open="(" separator=" or ">
-                    json_contains(diagnosis_types,"#{listItem}")
+                    json_contains(diagnosis_types,"${listItem}")
                 </foreach>
             </if>
             <if test="diagnosisRuleNe != null and diagnosisRuleNe.size()!=0">
                 and
                 <foreach close=")" collection="diagnosisRuleNe" item="listItem" open="(" separator=" and ">
-                    !json_contains(diagnosis_types,"#{listItem}")
+                    !json_contains(diagnosis_types,"${listItem}")
                 </foreach>
             </if>
 
             <if test="resourceDiagnosisType != null and resourceDiagnosisType.size()!=0">
                 and
                 <foreach close=")" collection="resourceDiagnosisType" item="listItem" open="(" separator=" or ">
-                    json_contains(diagnosis_resource_type,"#{listItem}")
+                    json_contains(diagnosis_resource_type,"${listItem}")
                 </foreach>
             </if>
             <if test="resourceDiagnosisTypeNe != null and resourceDiagnosisTypeNe.size()!=0">
                 and
                 <foreach close=")" collection="resourceDiagnosisTypeNe" item="listItem" open="(" separator=" and ">
-                    !json_contains(diagnosis_resource_type,"#{listItem}")
+                    !json_contains(diagnosis_resource_type,"${listItem}")
                 </foreach>
             </if>
 

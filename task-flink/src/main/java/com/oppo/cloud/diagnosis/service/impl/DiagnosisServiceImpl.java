@@ -51,6 +51,8 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     @Autowired
     FlinkTaskAppMapper flinkTaskAppMapper;
     @Autowired
+    BlocklistMapper blocklistMapper;
+    @Autowired
     FlinkTaskDiagnosisMapper flinkTaskDiagnosisMapper;
     @Autowired
     FlinkTaskDiagnosisRuleAdviceMapper flinkTaskDiagnosisRuleAdviceMapper;
@@ -58,8 +60,6 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     MonitorMetricUtil monitorMetricUtil;
     @Autowired
     DiagnosisParamsConstants cons;
-    @Autowired
-    BlocklistMapper blocklistMapper;
     @Resource
     private RestHighLevelClient elasticClient;
     @Autowired
@@ -70,6 +70,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
 
     /**
      * 添加诊断类型
+     *
      * @param realtimeTaskDiagnosis
      * @param code
      */
@@ -86,6 +87,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
 
     /**
      * 添加诊断资源类型
+     *
      * @param realtimeTaskDiagnosis
      * @param code
      */
@@ -100,6 +102,25 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         realtimeTaskDiagnosis.setDiagnosisResourceType(newTypes);
     }
 
+    public void updateRealtimeTaskAppStatus(RealtimeTaskApp realtimeTaskApp) {
+        // 检查app 是否在运行状态
+        String appId = realtimeTaskApp.getApplicationId();
+        YarnApp app = flinkMetaService.requestYarnApp(appId);
+        if (app == null) {
+            log.info("没有找到 app {}", appId);
+            return;
+        }
+        // 如果检测到app状态是 FINISHED,FAILED,KILLED,则标记元数据状态为finish
+        if (
+                app.getState().equalsIgnoreCase(YarnApplicationState.FINISHED.getDesc()) ||
+                        app.getState().equalsIgnoreCase(YarnApplicationState.FAILED.getDesc()) ||
+                        app.getState().equalsIgnoreCase(YarnApplicationState.KILLED.getDesc())
+        ) {
+            realtimeTaskApp.setTaskState(RealtimeTaskAppState.FINISHED.getDesc());
+            flinkTaskAppMapper.updateByPrimaryKey(realtimeTaskApp);
+            log.info(" app 已经停止 {}", appId);
+        }
+    }
 
     /**
      * 诊断作业
@@ -123,46 +144,29 @@ public class DiagnosisServiceImpl implements DiagnosisService {
                     .andComponentEqualTo(ComponentEnum.Realtime.getDes())
                     .andDeletedEqualTo(0);
             List<Blocklist> blockLists = blocklistMapper.selectByExample(blocklistExample);
+            log.debug(blocklistExample.getOredCriteria().toString());
             if (blockLists != null && blockLists.size() > 0) {
+                log.debug("白名单拦截:{}", realtimeTaskApp);
                 return null;
+            } else {
+                log.debug("白名单通过:{}", realtimeTaskApp);
             }
             RcJobDiagnosis rcJobDiagnosis = new RcJobDiagnosis();
             RealtimeTaskDiagnosis realtimeTaskDiagnosis = new RealtimeTaskDiagnosis();
             // 元数据填到诊断结果中
             fillRealtimeTaskDiagnosisWithTaskMeta(realtimeTaskDiagnosis, realtimeTaskApp);
-            // 构造context
-            // 检查app 是否在运行状态
-            String appId = realtimeTaskApp.getApplicationId();
-            YarnApp app = flinkMetaService.requestYarnApp(appId);
-            if (app == null) {
-                log.info("没有找到 app {}", appId);
-                return null;
-            }
-            // 如果检测到app状态是 FINISHED,FAILED,KILLED,则标记元数据状态为finish
-            if (
-                    app.getState().equalsIgnoreCase(YarnApplicationState.FINISHED.getDesc()) ||
-                            app.getState().equalsIgnoreCase(YarnApplicationState.FAILED.getDesc()) ||
-                            app.getState().equalsIgnoreCase(YarnApplicationState.KILLED.getDesc())
-            ) {
-                realtimeTaskApp.setTaskState(RealtimeTaskAppState.FINISHED.getDesc());
-                flinkTaskAppMapper.updateByPrimaryKey(realtimeTaskApp);
-                log.info(" app 已经停止 {}", appId);
-                return null;
-            }
-
-            if (!app.getState().equalsIgnoreCase(YarnApplicationState.RUNNING.name())) {
-                log.info(" app state not running{}", appId);
-                return null;
-            }
             // 从flink ui config 获取 jobName,运行配置参数,如果访问不到，说明作业有问题
-            List<JobManagerConfigItem> flinkConfigItems = flinkMetaService.reqFlinkConfig(app);
+            List<JobManagerConfigItem> flinkConfigItems = flinkMetaService.reqFlinkConfig(realtimeTaskApp.getFlinkTrackUrl());
             if (flinkConfigItems == null) {
-                log.info("flink ui无法访问 {}", appId);
+                log.info("flink ui无法访问 {}", realtimeTaskApp.getFlinkTrackUrl());
                 return null;
             }
-            String jobId = flinkMetaService.getJobId(app);
-            List<String> tmIds = flinkMetaService.getTmIds(app);
-
+            String jobId = flinkMetaService.getJobId(realtimeTaskApp.getFlinkTrackUrl());
+            if (jobId == null) {
+                log.info("flink jobid 获取失败 {}", realtimeTaskApp.getFlinkTrackUrl());
+                return null;
+            }
+            List<String> tmIds = flinkMetaService.getTmIds(realtimeTaskApp.getFlinkTrackUrl());
             // 通过flink job manager的配置更新元数据
             flinkMetaService.fillFlinkMetaWithFlinkConfigOnYarn(realtimeTaskApp, flinkConfigItems, jobId);
             // 更新元数据
@@ -171,6 +175,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
             fillRealtimeTaskDiagnosisWithTaskMeta(realtimeTaskDiagnosis, realtimeTaskApp);
             // 构造诊断上下文，元数据填到上下文中
             fillRcJobDiagnosisWithTaskMeta(rcJobDiagnosis, realtimeTaskApp);
+            // 构造context
             DiagnosisContext context = new DiagnosisContext(rcJobDiagnosis, start, end, flinkDiagnosisMetricsServiceImpl, from);
             context.getMessages().put(DiagnosisParam.JobId, jobId);
             context.getMessages().put(DiagnosisParam.TmIds, tmIds);
@@ -234,6 +239,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
 
     /**
      * 诊断所有作业
+     *
      * @param start
      * @param end
      * @param from
@@ -253,6 +259,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
                 List<RealtimeTaskApp> realtimeTaskApps = flinkTaskAppMapper.selectByExample(realtimeTaskAppExample);
                 for (RealtimeTaskApp realtimeTaskApp : realtimeTaskApps) {
                     diagnosisApp(realtimeTaskApp, start, end, from);
+                    updateRealtimeTaskAppStatus(realtimeTaskApp);
                 }
             } catch (Throwable t) {
                 log.error(t.getMessage(), t);
@@ -263,6 +270,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
 
     /**
      * 检测小时级诊断是否需要进行
+     *
      * @param job
      * @param start
      * @param end
@@ -339,6 +347,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
 
     /**
      * 填充元数据
+     *
      * @param rcJobDiagnosis
      * @param realtimeTaskApp
      */
@@ -356,6 +365,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
 
     /**
      * 填充元数据
+     *
      * @param realtimeTaskDiagnosis
      * @param realtimeTaskApp
      */
@@ -391,6 +401,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
 
     /**
      * 填充数据
+     *
      * @param realtimeTaskDiagnosis
      * @param context
      */

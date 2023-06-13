@@ -46,6 +46,7 @@ const search = async () => {
   const res = await post('/api/v1/blocklist/list', {
     ...formInline,
     ...pageQuery,
+    component: 'offline',
   })
   tableData.data = res.list
   tableData.count = res.total

@@ -1,9 +1,13 @@
 package com.oppo.cloud.model;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+@Data
 public class RealtimeTaskDiagnosis implements Serializable {
     @ApiModelProperty(value = "实时任务诊断结果id")
     private Integer id;
@@ -92,7 +96,7 @@ public class RealtimeTaskDiagnosis implements Serializable {
     @ApiModelProperty(value = "flink tm core")
     private Integer tmCore;
 
-    @ApiModelProperty(value = "flink tm_mem")
+    @ApiModelProperty(value = "flink tm_mem mb")
     private Integer tmMem;
 
     @ApiModelProperty(value = "flink jm_mem")
@@ -134,7 +138,7 @@ public class RealtimeTaskDiagnosis implements Serializable {
     @ApiModelProperty(value = "诊断问题类型拼接字符串[0][1][2][3]")
     private String diagnosisTypes;
 
-    @ApiModelProperty(value = "处理状态(processing, success, failed)")
+    @ApiModelProperty(value = "处理状态(processed,nonProcessed)")
     private String processState;
 
     @ApiModelProperty(value = "创建时间")
@@ -148,7 +152,11 @@ public class RealtimeTaskDiagnosis implements Serializable {
 
     @ApiModelProperty(value = "job name")
     private String jobName;
-
+    String resourceCost;
+    String memCost;
+    String resourceAdvice;
+    String timeCost;
+    List<String> ruleNames;
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {

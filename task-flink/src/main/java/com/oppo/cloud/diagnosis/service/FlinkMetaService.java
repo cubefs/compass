@@ -15,8 +15,7 @@ public interface FlinkMetaService {
     void saveRealtimeMetaOnYarn(TaskApplication taskApplication);
     YarnApp requestYarnApp(String appId);
     void fillFlinkMetaWithFlinkConfigOnYarn(RealtimeTaskApp realtimeTaskApp, List<JobManagerConfigItem> configItems,String jobId);
-    List<JobManagerConfigItem> reqFlinkConfig(YarnApp yarnApp);
-    String getJobId(YarnApp yarnApp);
+    List<JobManagerConfigItem> reqFlinkConfig(String trackingUrl);
     String getJobId(String trackingUrl);
-    List<String> getTmIds(YarnApp yarnApp);
+    List<String> getTmIds(String trackingUrl);
 }

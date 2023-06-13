@@ -6,6 +6,7 @@ import ItemWrapper from '~/pages/offline/application/detail/components/ItemWrapp
 import ErrorTable from '~/pages/offline/application/detail/components/ErrorTable.vue'
 import { get, post } from '~/utils/request'
 import { cloudTheme } from '~/utils/setting'
+
 const { query } = useRoute()
 const params = {
   executionDate: query.executionDate,

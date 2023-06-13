@@ -35,7 +35,7 @@ public class JobNoTraffic extends BaseRule {
                     .diagnosisParallel(1)
                     .diagnosisJmMem(1024)
                     .adviceDescription("该任务在诊断周期内没有流量，建议资源调到最小");
-            String conclusion = String.format("诊断周期内作业没有流量");
+            String conclusion = String.format("该任务在诊断周期内没有流量，建议资源调到最小");
             DiagnosisRuleReport diagnosisRuleReport = new DiagnosisRuleReport();
             diagnosisRuleReport.setTitle("作业流量分析");
             diagnosisRuleReport.setConclusion(conclusion);

@@ -95,7 +95,7 @@ public class RealtimeTaskApp implements Serializable {
     @ApiModelProperty(value = "flink tm core")
     private Integer tmCore;
 
-    @ApiModelProperty(value = "flink tm_mem")
+    @ApiModelProperty(value = "flink tm_mem mb")
     private Integer tmMem;
 
     @ApiModelProperty(value = "flink jm_mem")
