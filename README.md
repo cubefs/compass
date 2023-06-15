@@ -10,7 +10,7 @@ The key features:
 - Non-invasive, instant diagnosis, you can experience the diagnostic effect without modifying the existing scheduling
   platform.
 
-- Supports multiple scheduling platforms(DolphinScheduler, Airflow, or self-developed etc.)
+- Supports multiple scheduling platforms(DolphinScheduler 2.x or 3.x, Airflow, or self-developed etc.)
 
 - Supports Spark 2.x or 3.x, Hadoop 2.x or 3.x troubleshooting.
 
