@@ -48,6 +48,7 @@
     <result column="process_state" jdbcType="VARCHAR" property="processState" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="job_name" jdbcType="LONGVARCHAR" property="jobName" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.oppo.cloud.model.RealtimeTaskDiagnosis">
     <result column="diagnosis" jdbcType="LONGVARCHAR" property="diagnosis" />
@@ -119,7 +120,7 @@
     tm_slot, tm_core, tm_mem, jm_mem, tm_num, diagnosis_end_time, diagnosis_start_time, 
     diagnosis_resource_type, diagnosis_from, diagnosis_parallel, diagnosis_jm_mem_size, 
     diagnosis_tm_mem_size, diagnosis_tm_slot_num, diagnosis_tm_core_num, diagnosis_tm_num, 
-    diagnosis_types, process_state, create_time, update_time
+    diagnosis_types, process_state, create_time, update_time,job_name
   </sql>
   <sql id="Blob_Column_List">
     diagnosis, job_name

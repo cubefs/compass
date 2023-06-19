@@ -48,48 +48,13 @@ const addBarChart = (chartItem, childChartDiv) => {
       show: true,
       position: 'top',
       formatter: (params: any) => {
-        return `${Number(params.data)} MB`
+        return `${Number(params.data).toFixed(2)} ${chartItem.YAxisUnit}`
       },
     },
   }
-  chartItem.bars.map(d => {
-    return {
-      name: d.key,
-      type: 'bar',
-      data: d.value,
-      label: {
-        show: true,
-        position: 'top',
-        formatter: (params: any) => {
-          return `${Number(params.data)} MB`
-        },
-      },
-    };
-  })
   option.series = seriesLine
   console.log(option)
   childChartDiv.setOption(option)
-
-  //   let optionTest = {
-  //   xAxis: {
-  //     type: 'category',
-  //     data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-  //   },
-  //   yAxis: {
-  //     type: 'value'
-  //   },
-  //   series: [
-  //     {
-  //       data: [120, 200, 150, 80, 70, 110, 130],
-  //       type: 'bar',
-  //       showBackground: true,
-  //       backgroundStyle: {
-  //         color: 'rgba(220, 220, 220, 0.8)'
-  //       }
-  //     }
-  //   ]
-  // };
-  // chart.setOption(optionTest)
   console.log('end')
 }
 const addLineChart = (chartItem, childChart) => {
@@ -111,7 +76,6 @@ const addLineChart = (chartItem, childChart) => {
     },
     xAxis: {
       type: 'time',
-      // data: [],
     },
     yAxis: {
       type: 'value',
@@ -119,8 +83,6 @@ const addLineChart = (chartItem, childChart) => {
     series: [
     ],
   }
-  console.log(chartItem)
-  console.log(chartItem)
   option.yAxis.axisLabel = {
     show: true,
     interval: 'auto',
@@ -139,9 +101,14 @@ const addLineChart = (chartItem, childChart) => {
   console.log(chartItem)
   var seriesLine = chartItem.line.data.map((d: any) => {
     console.log(d)
+    let metric = JSON.stringify(d.metric)
+    if (metric == "{}") {
+      metric = ""
+    }
     if (chartItem.YAxisValueType == 'Percent') {
+
       return {
-        name: chartItem.line.label + JSON.stringify(d.metric),
+        name: chartItem.line.label + metric,
         type: 'line',
         data: d.values.map(x => {
           return [x[0] * 1000, x[1] * 100]
@@ -149,7 +116,7 @@ const addLineChart = (chartItem, childChart) => {
       }
     } else {
       return {
-        name: chartItem.line.label + JSON.stringify(d.metric),
+        name: chartItem.line.label + metric,
         type: 'line',
         data: d.values.map(x => {
           return [x[0] * 1000, x[1]]
@@ -160,18 +127,6 @@ const addLineChart = (chartItem, childChart) => {
   })
   option.series = seriesLine
   console.log(option)
-  // option.series = [
-  //     {
-  //       name: '任务CPU消耗数',
-  //       type: 'line',
-  //       data: props.data.jobUsage.map(item => item.count),
-  //     },
-  //     {
-  //       name: '总CPU消耗数',
-  //       type: 'line',
-  //       data: props.data.totalUsage.map(item => item.count),
-  //     },
-  //   ]
   childChart.setOption(option)
 }
 

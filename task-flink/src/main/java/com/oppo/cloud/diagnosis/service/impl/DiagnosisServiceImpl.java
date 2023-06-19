@@ -103,6 +103,15 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     }
 
     public void updateRealtimeTaskAppStatus(RealtimeTaskApp realtimeTaskApp) {
+        //通过 tracking url 检查
+        List<JobManagerConfigItem> jobManagerConfigItems = flinkMetaService.reqFlinkConfig(realtimeTaskApp.getFlinkTrackUrl());
+        if (System.currentTimeMillis() - realtimeTaskApp.getCreateTime().getTime() > 1000 * 60 * 30 && jobManagerConfigItems == null) {
+            log.info("作业访问tracking url失败 {}", realtimeTaskApp);
+            realtimeTaskApp.setTaskState(RealtimeTaskAppState.FINISHED.getDesc());
+            flinkTaskAppMapper.updateByPrimaryKey(realtimeTaskApp);
+            return;
+        }
+
         // 检查app 是否在运行状态
         String appId = realtimeTaskApp.getApplicationId();
         YarnApp app = flinkMetaService.requestYarnApp(appId);

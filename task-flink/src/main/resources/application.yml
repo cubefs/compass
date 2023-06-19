@@ -63,5 +63,5 @@ mybatis:
 
 diagnosis:
   flinkPrometheusHost: http://localhost:9090
-  flinkPrometheusToken: none
-  flinkPrometheusDatabase: none
+  flinkPrometheusToken:
+  flinkPrometheusDatabase:

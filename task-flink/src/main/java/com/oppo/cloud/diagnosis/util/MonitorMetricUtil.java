@@ -27,6 +27,7 @@ public class MonitorMetricUtil {
 
     /**
      * 查询promql
+     *
      * @param url
      * @param start
      * @param end
@@ -44,19 +45,23 @@ public class MonitorMetricUtil {
     }
 
     public List<MetricResult.DataResult> doHttpQuery(String queryUrl) {
-        log.debug("doHttpQuery queryUrl: {}", queryUrl);
-        String responseStr = httpUtil.get(queryUrl);
-        if (responseStr.contains("value\":[")) {
-            // 有的数据是以单个元素value返回的,此处做特殊处理兼容
-            responseStr = responseStr.replaceAll("value\":\\[", "values\":[");
-            responseStr = responseStr.replaceAll("]}]}}", "]]}]}}");
-        }
-        log.debug("doHttpQuery responseStr: {}", responseStr);
         try {
+            log.debug("doHttpQuery queryUrl: {}", queryUrl);
+            String responseStr = httpUtil.get(queryUrl);
+            if (responseStr == null) {
+                return null;
+            }
+            if (responseStr.contains("value\":[")) {
+                // 有的数据是以单个元素value返回的,此处做特殊处理兼容
+                responseStr = responseStr.replaceAll("value\":\\[", "values\":[");
+                responseStr = responseStr.replaceAll("]}]}}", "]]}]}}");
+            }
+            log.debug("doHttpQuery responseStr: {}", responseStr);
+
             MetricResult metricResult = JSON.parseObject(responseStr, MetricResult.class);
             return metricResult.getData().getResult();
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        } catch (Throwable e) {
+            log.error(e.getMessage() + queryUrl);
             return null;
         }
 
@@ -199,6 +204,7 @@ public class MonitorMetricUtil {
 
     /**
      * 获取平滑后的最大值
+     *
      * @param result
      * @param smoothWindow
      * @return
@@ -230,6 +236,7 @@ public class MonitorMetricUtil {
 
     /**
      * 获取平滑后的最小值
+     *
      * @param result
      * @param smoothWindow
      * @return
@@ -262,6 +269,7 @@ public class MonitorMetricUtil {
 
     /**
      * 曲线平滑,窗口内的点取平均
+     *
      * @param stream
      * @param smoothWindow
      * @return
@@ -297,6 +305,7 @@ public class MonitorMetricUtil {
 
     /**
      * 对窗口内的数值用fn函数计算聚合值
+     *
      * @param stream
      * @param smoothWindow
      * @param fn
@@ -331,6 +340,7 @@ public class MonitorMetricUtil {
 
     /**
      * 获取键值对
+     *
      * @param result
      * @return
      */
@@ -353,6 +363,7 @@ public class MonitorMetricUtil {
 
     /**
      * 获取最大值
+     *
      * @param result
      * @return
      */
@@ -407,6 +418,7 @@ public class MonitorMetricUtil {
 
     /**
      * 获取最近的值
+     *
      * @param result
      * @return
      */
@@ -435,6 +447,7 @@ public class MonitorMetricUtil {
 
     /**
      * 获取最小值
+     *
      * @param result
      * @return
      */
@@ -468,6 +481,7 @@ public class MonitorMetricUtil {
 
     /**
      * 获取平均值
+     *
      * @param result
      * @return
      */
@@ -494,6 +508,7 @@ public class MonitorMetricUtil {
 
     /**
      * 获取平均值
+     *
      * @param result
      * @return
      */
@@ -576,6 +591,7 @@ public class MonitorMetricUtil {
 
     /**
      * 获取锯齿下缘的平均值
+     *
      * @param result
      * @return
      */

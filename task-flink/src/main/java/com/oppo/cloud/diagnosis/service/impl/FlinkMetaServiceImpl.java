@@ -292,7 +292,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
             configItems = JSON.parseArray(responseEntity.getBody(), JobManagerConfigItem.class);
             return configItems;
         } catch (Throwable e) {
-            log.error(e.getMessage(), e);
+            log.error(e.getMessage() + jobManagerConfigUrl, e);
             return null;
         }
     }

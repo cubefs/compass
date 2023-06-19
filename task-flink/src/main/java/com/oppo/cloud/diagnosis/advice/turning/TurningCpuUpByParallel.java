@@ -38,7 +38,11 @@ public class TurningCpuUpByParallel implements TurningCpuUpStrategy {
         log.debug("{} job change rate {}", rcJobDiagnosis.getJobName(), changeRate);
         int newTmNum = (int) Math.ceil(rcJobDiagnosis.getTmNum() * (1 + changeRate));
         int newParallel = newTmNum * rcJobDiagnosis.getTmSlotNum();
-        int sourcePartitionNum = context.getRcJobDiagnosis().getKafkaConsumePartitionNum();
+        Integer sourcePartitionNum = context.getRcJobDiagnosis().getKafkaConsumePartitionNum();
+        if(sourcePartitionNum == null){
+            resAdvice.setDescription("并行度扩容策略不适用,分区为空");
+            return resAdvice;
+        }
         if(rcJobDiagnosis.getParallel() >= sourcePartitionNum){
             resAdvice.setDescription("并行度扩容策略不适用,并行度已经大于等于source partition总数");
             return resAdvice;

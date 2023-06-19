@@ -14,8 +14,8 @@ public class MonitorMetricConstant {
     /**
      * 单个tm进程的cpu使用率,0-1
      */
-    public static final String TM_CPU_USAGE_RATE = "avg(flink_taskmanager_Status_JVM_CPU_Load{"
-            + "}) by (tm_id)";
+//    public static final String TM_CPU_USAGE_RATE = "avg(flink_taskmanager_Status_JVM_CPU_Load{}) by (tm_id)";
+    public static final String TM_CPU_USAGE_RATE = "avg(rate(flink_taskmanager_Status_JVM_CPU_Time{}[2m]) / 1000000000) by (tm_id)";
     /**
      * 单个tm堆内存使用率
      */
@@ -38,19 +38,13 @@ public class MonitorMetricConstant {
     public static final String JOB_UP_TIME = "flink_jobmanager_job_uptime{}";
 
     /**
-     * tm的流量
-     */
-    public static final String TM_DATA_FLOW_RATE = "sum(flink_taskmanager_job_task_operator_KafkaSourceReader_KafkaConsumer_bytes_consumed_rate{"
-            + "}) by (tm_id)";
-
-    /**
      * 慢算子阻塞度明细
      */
-    public static final String SLOW_VERTICES = "max(flink_taskmanager_job_task_buffers_inPoolUsage{}) by(tm_id) - max(flink_taskmanager_job_task_buffers_outPoolUsage{}) by(tm_id)";
+    public static final String SLOW_VERTICES = "max(flink_taskmanager_job_task_buffers_inPoolUsage{}) by(tm_id,task_name) - max(flink_taskmanager_job_task_buffers_outPoolUsage{}) by(tm_id,task_name)";
     /**
      * 反压算子
      */
-    public static final String BACK_PRESSURE_VERTICES= "max(flink_taskmanager_job_task_isBackPressured{}) by (tm_id,task_name)";
+    public static final String BACK_PRESSURE_VERTICES = "max(flink_taskmanager_job_task_isBackPressured{}) by (tm_id,task_name)";
     /**
      * TM manage 内存使用量
      */
@@ -74,37 +68,42 @@ public class MonitorMetricConstant {
      */
     public static final String KAFKA_SCOPE = "KafkaConsumer";
     /**
+     * tm的流量
+     */
+    public static final String TM_DATA_FLOW_RATE = String.format("sum(flink_taskmanager_job_task_operator_%s_bytes_consumed_rate{}) by (tm_id)", KAFKA_SCOPE);
+
+    /**
      * 延迟记录数
      */
-    public static final String SUM_RECORDS_LAG_PROMQL = String.format("sum (flink_taskmanager_job_task_operator_%s_records_lag_max{})",KAFKA_SCOPE);
+    public static final String SUM_RECORDS_LAG_PROMQL = String.format("sum (flink_taskmanager_job_task_operator_%s_records_lag_max{})", KAFKA_SCOPE);
     /**
      * 延迟时间秒
      */
-    public static final String MAX_TIME_LAG_PROMQL = String.format("sum(flink_taskmanager_job_task_operator_%s_records_lag_max",KAFKA_SCOPE)
+    public static final String MAX_TIME_LAG_PROMQL = String.format("sum(flink_taskmanager_job_task_operator_%s_records_lag_max", KAFKA_SCOPE)
             + "{}  )/"
-            + String.format("sum(flink_taskmanager_job_task_operator_%s_records_consumed_rate{",KAFKA_SCOPE)
+            + String.format("sum(flink_taskmanager_job_task_operator_%s_records_consumed_rate{", KAFKA_SCOPE)
             + "}  )";
     /**
      * kafka offset的偏移量
      */
-    public static final String OFFSET_DELTA = String.format("sum(delta(flink_taskmanager_job_task_operator_%s_records_lag_max",KAFKA_SCOPE)
+    public static final String OFFSET_DELTA = String.format("sum(delta(flink_taskmanager_job_task_operator_%s_records_lag_max", KAFKA_SCOPE)
             + "{}[2m])) ";
     /**
      * 消费速率除以生产速率
      */
     public static final String CONSUME_DIVIDE_PRODUCE_RATE = "1 / ((sum(delta("
-            + String.format("flink_taskmanager_job_task_operator_%s_records_lag_max{",KAFKA_SCOPE)
-            + String.format("}[2m])) / 120) / clamp_min (sum(flink_taskmanager_job_task_operator_%s_records_consumed_rate{",KAFKA_SCOPE)
+            + String.format("flink_taskmanager_job_task_operator_%s_records_lag_max{", KAFKA_SCOPE)
+            + String.format("}[2m])) / 120) / clamp_min (sum(flink_taskmanager_job_task_operator_%s_records_consumed_rate{", KAFKA_SCOPE)
             + "}),1) + 1)";
     /**
      * 流量,作业每秒从kafka读取的数据量,单位bytes
      */
-    public static final String JOB_DATA_FLOW_RATE = String.format("sum(flink_taskmanager_job_task_operator_%s_bytes_consumed_rate{",KAFKA_SCOPE)
+    public static final String JOB_DATA_FLOW_RATE = String.format("sum(flink_taskmanager_job_task_operator_%s_bytes_consumed_rate{", KAFKA_SCOPE)
             + "})";
     /**
      * 流量，用于计算流量波谷，按小时的step来获取metrics
      */
-    public static final String JOB_DATA_FLOW_RATE_TROUGH = String.format("trough_sum(flink_taskmanager_job_task_operator_%s_bytes_consumed_rate{})",KAFKA_SCOPE);
-    public static final String KAFKA_PARTITIONS = String.format("sum(flink_taskmanager_job_task_operator_%s_assigned_partitions{})",KAFKA_SCOPE);
+    public static final String JOB_DATA_FLOW_RATE_TROUGH = String.format("trough_sum(flink_taskmanager_job_task_operator_%s_bytes_consumed_rate{})", KAFKA_SCOPE);
+    public static final String KAFKA_PARTITIONS = String.format("sum(flink_taskmanager_job_task_operator_%s_assigned_partitions{})", KAFKA_SCOPE);
 
 }

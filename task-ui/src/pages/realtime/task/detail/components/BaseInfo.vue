@@ -26,6 +26,9 @@ const props = defineProps({
         <span class="text">{{ `内存消耗: &nbsp;${info?.memCost}` || '-' }}</span>
         <span class="text">{{ `CPU消耗: &nbsp;${info?.resourceCost}` || '-' }}</span>
       </div>
+      <div class="text-group">
+        <span class="text">作业名: &nbsp;{{ info?.jobName || '-' }}</span>
+      </div>
     </div>
     <div class="item-title">
       集群信息

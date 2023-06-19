@@ -131,7 +131,7 @@ onMounted(() => {
               {{ sData.generalViewNumberDto.cutCoreNumSum }}&nbsp;<span class="unit">{{ sData.cpuUnit }}</span>
             </div>
             <div class="left-third">
-              <span m-r-3 style="color:#7f7f7f">CPU总数</span><span>{{ sData.generalViewNumberDto.totalCoreNumSum }}</span>
+              <span m-r-3 style="color:#7f7f7f">CPU总数</span><span>{{ sData.generalViewNumberDto.totalCoreNumSum }} {{ sData.cpuUnit }}</span>
             </div>
           </div>
           <CardRight :chain-ratio="sData.resourceCpuNumChainRatio" :ratio="sData.resourceCpuNumRatio"
@@ -146,7 +146,7 @@ onMounted(() => {
               {{ sData.generalViewNumberDto.cutMemNumSum }}&nbsp;<span class="unit">{{ sData.memoryUnit }}</span>
             </div>
             <div class="left-third">
-              <span m-r-3 style="color:#7f7f7f">内存数总数</span><span>{{ sData.generalViewNumberDto.totalMemNumSum }}</span>
+              <span m-r-3 style="color:#7f7f7f">内存数总数</span><span>{{ sData.generalViewNumberDto.totalMemNumSum }} {{ sData.memoryUnit }}</span>
             </div>
           </div>
           <CardRight :chain-ratio="sData.resourceMemoryNumChainRatio" :ratio="sData.resourceMemoryNumRatio"

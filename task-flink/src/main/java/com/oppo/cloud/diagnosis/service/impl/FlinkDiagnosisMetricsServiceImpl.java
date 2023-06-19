@@ -101,13 +101,41 @@ public class FlinkDiagnosisMetricsServiceImpl {
     }
 
     public List<MetricResult.DataResult> getTaskManagerMetrics(String promQl, DiagnosisContext context, long start, long end) {
-        String jobUpTime = addLabel(promQl, "tm_id", StringUtils.join((List<String>) context.getMessages().get(TmIds), '|'));
-        return getJobMetrics(jobUpTime, start, end);
+        List<MetricResult.DataResult> res = new ArrayList<>();
+        List<String> tmIds = (List<String>) context.getMessages().get(TmIds);
+        if (tmIds != null && tmIds.size() > 0) {
+            for (int i = 0; i < Math.ceil((float) tmIds.size() / 5); i++) {
+                int from = i * 5;
+                int to = i * 5 + 5;
+                if (to > tmIds.size()) {
+                    to = tmIds.size();
+                }
+                String promQlWithLabel = addLabel(promQl, "tm_id", StringUtils.join(tmIds.subList(from, to), '|'));
+                List<MetricResult.DataResult> jobMetrics = getJobMetrics(promQlWithLabel, start, end);
+                res.addAll(jobMetrics);
+            }
+        }
+        return res;
     }
 
     public List<MetricResult.DataResult> getTaskManagerMetrics(String promQl, DiagnosisContext context, long start, long end, int step) {
-        String jobUpTime = addLabel(promQl, "tm_id", StringUtils.join((List<String>) context.getMessages().get(TmIds), '|'));
-        return getJobMetrics(jobUpTime, start, end, step);
+        List<MetricResult.DataResult> res = new ArrayList<>();
+        List<String> tmIds = (List<String>) context.getMessages().get(TmIds);
+        if (tmIds != null && tmIds.size() > 0) {
+            for (int i = 0; i < Math.ceil((float) tmIds.size() / 5); i++) {
+                int from = i * 5;
+                int to = i * 5 + 5;
+                if (to > tmIds.size()) {
+                    to = tmIds.size();
+                }
+                String promQlWithLabel = addLabel(promQl, "tm_id", StringUtils.join(tmIds.subList(from, to), '|'));
+                List<MetricResult.DataResult> jobMetrics = getJobMetrics(promQlWithLabel, start, end, step);
+                if (jobMetrics != null) {
+                    res.addAll(jobMetrics);
+                }
+            }
+        }
+        return res;
     }
 
     /**
@@ -122,15 +150,19 @@ public class FlinkDiagnosisMetricsServiceImpl {
     public List<MetricResult.DataResult> getJobMetrics(String promQl, long start, long end, int step) {
         String queryUrl = "";
         try {
-            promQl = promQl.replace("$TOKEN", realtimeDiagnosisConfig.getFlinkPrometheusToken());
-            promQl = promQl.replace("$DATABASE", realtimeDiagnosisConfig.getFlinkPrometheusDatabase());
+            if (realtimeDiagnosisConfig.getFlinkPrometheusToken() != null && !realtimeDiagnosisConfig.getFlinkPrometheusToken().equals("")) {
+                promQl = addLabel(promQl, "__TOKEN__", realtimeDiagnosisConfig.getFlinkPrometheusToken());
+            }
+            if (realtimeDiagnosisConfig.getFlinkPrometheusDatabase() != null && !realtimeDiagnosisConfig.getFlinkPrometheusDatabase().equals("")) {
+                promQl = addLabel(promQl, "__DATABASE__", realtimeDiagnosisConfig.getFlinkPrometheusDatabase());
+            }
             promQl = promQl.replace("$__interval_s", String.format("%ds", step));
             promQl = promQl.replace("$__interval", String.format("%d", step));
             // promQl 可能包含url不允许的字符如空格，在这里进行encode
             promQl = URLEncoder.encode(promQl, "utf-8");
             queryUrl = realtimeDiagnosisConfig.getFlinkPrometheusHost() + MonitorMetricConstant.QUERY_RANGE_QUERY + promQl;
             return monitorMetricUtil.query(queryUrl, start, end, step);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error(e.getMessage() + queryUrl, e);
             return null;
         }
@@ -167,12 +199,14 @@ public class FlinkDiagnosisMetricsServiceImpl {
         while (matcher.find()) {
             String g = matcher.group(1);
             String[] split = g.substring(1, g.length() - 1).split(",");
-            List<String> collect = Arrays.stream(split).filter(new Predicate<String>() {
-                @Override
-                public boolean test(String s) {
-                    return false;
-                }
-            }).collect(Collectors.toList());
+            List<String> collect = Arrays.stream(split)
+                    .filter(new Predicate<String>() {
+                        @Override
+                        public boolean test(String s) {
+                            return s != null && !s.equals("");
+                        }
+                    })
+                    .collect(Collectors.toList());
             collect.add(String.format("%s=~\"%s\"", key, value));
             String rep = "{" + StringUtils.join(collect, ",") + "}";
             matcher.appendReplacement(sb, rep);

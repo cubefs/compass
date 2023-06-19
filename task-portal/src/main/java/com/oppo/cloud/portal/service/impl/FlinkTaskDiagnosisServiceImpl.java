@@ -74,16 +74,19 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         x.setResourceAdvice(resourceDesc);
         String dt = x.getDiagnosisTypes();
         JSONArray objects = JSON.parseArray(dt);
-        List<Integer> dtList = objects.toList(Integer.class);
         List<String> typesList = new ArrayList<>();
-        for (Integer code : dtList) {
-            for (FlinkRule fr : FlinkRule.values()) {
-                if (fr.getCode() == code) {
-                    typesList.add(fr.getName());
+        x.setRuleNames(typesList);
+        if (objects != null) {
+            List<Integer> dtList = objects.toList(Integer.class);
+            for (Integer code : dtList) {
+                for (FlinkRule fr : FlinkRule.values()) {
+                    if (fr.getCode() == code) {
+                        typesList.add(fr.getName());
+                    }
                 }
             }
         }
-        x.setRuleNames(typesList);
+
     }
 
     /**
@@ -217,8 +220,8 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
                     (float) (generalViewNumber.getCutMemNumSum() - generalViewNumberDay1Before.getCutMemNumSum()) /
                             generalViewNumberDay1Before.getCutMemNumSum());
         }
-        if (diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().getCutMemNumSum() % 1024 == 0
-                && diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().getTotalMemNumSum() % 1024 == 0) {
+        if (diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().getCutMemNumSum() / 1024 >= 10
+                && diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().getTotalMemNumSum() / 1024 >= 10) {
             diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().setCutMemNumSum(
                     diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().getCutMemNumSum() / 1024
             );
@@ -462,19 +465,19 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
 
         StringBuilder sb = new StringBuilder();
         if (!Objects.equals(realtimeTaskDiagnosis.getDiagnosisParallel(), realtimeTaskDiagnosis.getParallel())) {
-            sb.append("parallel:").append(realtimeTaskDiagnosis.getParallel()).append("->").append(realtimeTaskDiagnosis.getDiagnosisParallel()).append(";");
+            sb.append("作业并行度:").append(realtimeTaskDiagnosis.getParallel()).append("->").append(realtimeTaskDiagnosis.getDiagnosisParallel()).append(";");
         }
         if (!Objects.equals(realtimeTaskDiagnosis.getDiagnosisTmSlotNum(), realtimeTaskDiagnosis.getTmSlot())) {
-            sb.append("tm slot:").append(realtimeTaskDiagnosis.getTmSlot()).append("->").append(realtimeTaskDiagnosis.getDiagnosisTmSlotNum()).append(";");
+            sb.append("作业TM的Slot数:").append(realtimeTaskDiagnosis.getTmSlot()).append("->").append(realtimeTaskDiagnosis.getDiagnosisTmSlotNum()).append(";");
         }
         if (!Objects.equals(realtimeTaskDiagnosis.getDiagnosisTmCoreNum(), realtimeTaskDiagnosis.getTmCore())) {
-            sb.append("tm core:").append(realtimeTaskDiagnosis.getTmCore()).append("->").append(realtimeTaskDiagnosis.getDiagnosisTmCoreNum()).append(";");
+            sb.append("作业TM的Core数:").append(realtimeTaskDiagnosis.getTmCore()).append("->").append(realtimeTaskDiagnosis.getDiagnosisTmCoreNum()).append(";");
         }
         if (!Objects.equals(realtimeTaskDiagnosis.getDiagnosisTmMemSize(), realtimeTaskDiagnosis.getTmMem())) {
-            sb.append("tm mem:").append(realtimeTaskDiagnosis.getTmMem()).append("->").append(realtimeTaskDiagnosis.getDiagnosisTmMemSize()).append(";");
+            sb.append("作业TM的内存:").append(realtimeTaskDiagnosis.getTmMem() + "MB").append("->").append(realtimeTaskDiagnosis.getDiagnosisTmMemSize() + "MB").append(";");
         }
         if (!Objects.equals(realtimeTaskDiagnosis.getDiagnosisJmMemSize(), realtimeTaskDiagnosis.getJmMem())) {
-            sb.append("jm mem:").append(realtimeTaskDiagnosis.getJmMem()).append("->").append(realtimeTaskDiagnosis.getDiagnosisJmMemSize()).append(";");
+            sb.append("作业JM的内存:").append(realtimeTaskDiagnosis.getJmMem() + "MB").append("->").append(realtimeTaskDiagnosis.getDiagnosisJmMemSize() + "MB").append(";");
         }
         descs.add(sb.toString());
         return String.join("\n", descs);

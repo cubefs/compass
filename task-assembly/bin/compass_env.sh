@@ -31,7 +31,9 @@ export SPRING_ZOOKEEPER_NODES="localhost:2181"
 export SPRING_ELASTICSEARCH_NODES="localhost:19527"
 
 # prom
-export FLINK_PROMETHEUS="http://localhost:9090"
+export FLINK_PROMETHEUS_HOST="http://localhost:9090"
+export FLINK_PROMETHEUS_TOKEN=""
+export FLINK_PROMETHEUS_DATABASE=""
 
 # flink diagnosis host
 export FLINK_DIAGNOSIS_HOST="http://localhost:7001"

@@ -36,6 +36,8 @@
     <result column="jm_mem" jdbcType="INTEGER" property="jmMem" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="job_name" jdbcType="LONGVARCHAR" property="jobName" />
+    <result column="diagnosis" jdbcType="LONGVARCHAR" property="diagnosis" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.oppo.cloud.model.RealtimeTaskApp">
     <result column="diagnosis" jdbcType="LONGVARCHAR" property="diagnosis" />
@@ -104,7 +106,7 @@
     task_state, task_instance_id, execution_time, application_id, flink_track_url, allocated_mb, 
     allocated_vcores, running_containers, engine_type, duration, start_time, end_time, 
     vcore_seconds, memory_seconds, queue, cluster_name, retry_times, execute_user, parallel, 
-    tm_slot, tm_core, tm_mem, jm_mem, create_time, update_time
+    tm_slot, tm_core, tm_mem, jm_mem, create_time, update_time,job_name,diagnosis
   </sql>
   <sql id="Blob_Column_List">
     diagnosis, job_name

@@ -17,7 +17,8 @@ const router = useRouter()
 const tableInfo = $ref([
   { label: '工作流', prop: 'flowName', copy: true },
   { label: '实例', prop: 'taskName', copy: true },
-  { label: '项目', prop: 'projectName' },
+  { label: '项目', prop: 'projectName' , copy: true},
+  { label: '作业名', prop: 'jobName', copy: true },
   // { label: '执行周期', prop: 'executionDate', width: 200 },
   { label: '运行开始时间', prop: 'startTime' },
   { label: '时间消耗', prop: 'timeCost' },
@@ -26,7 +27,7 @@ const tableInfo = $ref([
   { label: '创建人', prop: 'username' },
   { label: '诊断开始时间', prop: 'diagnosisStartTime' },
   { label: '诊断结束时间', prop: 'diagnosisEndTime' },
-  { label: '其他信息', prop: 'resourceAdvice' },
+  { label: '诊断建议', prop: 'resourceAdvice' ,width:'100px'},
 ])
 const findColor = (value: String) => {
   const result = props.colorMap.find(item => item.name === value)
@@ -77,12 +78,12 @@ const goReport = (row) => {
   <el-card shadow="never">
     <el-table :data="data" default-expand-all>
       <el-table-column v-for="item in tableInfo" :key="item.label" :label="item.label" :prop="item.prop"
-        :width="item.width || ''" show-overflow-tooltip>
+        :width="item.width || ''" :show-overflow-tooltip="true" >
         <template #default="scope">
           <span v-if="item.copy">
             <Copy :value="scope.row[item.prop]" style="margin:15px 5px 15px 0px;" />{{ scope.row[item.prop] }}
           </span>
-          <span v-else-if="item.label === '处理状态'"><el-tag class="pointer"
+          <span  v-else-if="item.label === '处理状态'"><el-tag class="pointer"
               :type="scope.row.processState === 'processed' ? '' : 'success'" @click="handleState(scope.row)">{{
                 scope.row.processState === 'processed' ? '已处理' : '未处理' }}</el-tag></span>
           <!-- <span v-else-if="item.label === '其他信息'">{{ scope.row.others.length ? scope.row.others.join(',') : '-' }}</span> -->
@@ -143,4 +144,7 @@ const goReport = (row) => {
   justify-content: space-between;
   margin: 0 20px;
 }
+
 </style>
+
+

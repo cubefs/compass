@@ -90,9 +90,15 @@ public class SlowVerticesRule extends BaseRule {
                     SlowVerticesRecord slowVerticesRecord = new SlowVerticesRecord();
                     slowVerticesRecord.setJobName(context.getRcJobDiagnosis().getJobName());
                     slowVerticesRecord.setTmId((String) dr.getMetric().get("tm_id"));
-                    slowVerticesRecord.setTaskId((String) dr.getMetric().get("task_id"));
-                    slowVerticesRecord.setTaskName((String) dr.getMetric().get("task_name"));
-                    slowVerticesRecord.setSubtaskIndex((String) dr.getMetric().get("subtask_index"));
+                    if (dr.getMetric().get("task_id") != null) {
+                        slowVerticesRecord.setTaskId((String) dr.getMetric().get("task_id"));
+                    }
+                    if (dr.getMetric().get("task_name") != null) {
+                        slowVerticesRecord.setTaskName((String) dr.getMetric().get("task_name"));
+                    }
+                    if (dr.getMetric().get("subtask_index") != null) {
+                        slowVerticesRecord.setSubtaskIndex((String) dr.getMetric().get("subtask_index"));
+                    }
                     if (data.getSlowVertices().size() == 0) {
                         data.getSlowVertices().add(slowVerticesRecord);
                     }
@@ -108,7 +114,12 @@ public class SlowVerticesRule extends BaseRule {
         String distinctTaskName = tasks.toString();
         if (data.getSlowVertices().size() != 0) {
             data.setHasAdvice(true);
-            data.setAdviceDescription("存在慢算子:" + distinctTaskName);
+            StringBuilder sb = new StringBuilder();
+            sb.append("存在慢算子");
+            if (distinctTaskName != null && !distinctTaskName.equals("")) {
+                sb.append(":").append(distinctTaskName);
+            }
+            data.setAdviceDescription(sb.toString());
             data.setSlowTasks(distinctTaskName);
             String conclusion = String.format("存在慢算子,%s 算子的in/out pool使用率差值大于阈值%.2f%% 超过%d秒",
                     distinctTaskName, poolUsageDiffThreshold, poolUsageDiffHighThresholdSeconds);
@@ -117,7 +128,6 @@ public class SlowVerticesRule extends BaseRule {
             diagnosisRuleReport.setConclusion(conclusion);
             DiagnosisRuleLineChart diagnosisRuleLineChart = new DiagnosisRuleLineChart();
             diagnosisRuleLineChart.setTitle("慢算子");
-            diagnosisRuleLineChart.setYAxisValueType(DiagnosisReportYAxisType.Numeric.name());
             Map<String, Double> constLineMap = new HashMap<>();
             constLineMap.put("阈值", poolUsageDiffThreshold);
             diagnosisRuleLineChart.setConstLines(constLineMap);
@@ -125,6 +135,8 @@ public class SlowVerticesRule extends BaseRule {
             line.setLabel("算子in/out pool使用率差值");
             line.setData(dataResults);
             diagnosisRuleLineChart.setLine(line);
+            diagnosisRuleLineChart.setYAxisUnit("%");
+            diagnosisRuleLineChart.setYAxisValueType(DiagnosisReportYAxisType.Percent.name());
             Map<String, Double> constLine = new HashMap<>();
             diagnosisRuleLineChart.setConstLines(constLine);
             diagnosisRuleReport.setIDiagnosisRuleCharts(Lists.newArrayList(diagnosisRuleLineChart));

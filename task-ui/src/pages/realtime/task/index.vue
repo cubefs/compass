@@ -146,6 +146,10 @@ onMounted(() => {
 .card {
   overflow-y: auto;
 }
+
+.el-table .cell .el-tooltip {
+  white-space: pre-wrap;
+}
 </style>
 
 <route lang="yaml">
