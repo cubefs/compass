@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-public class RealtimeDiagnosisConfig {
+public class FlinkDiagnosisConfig {
     /**
      * prometheus host
      */

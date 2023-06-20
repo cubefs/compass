@@ -35,7 +35,7 @@ public class EsConfig {
     /**
      * bean名称
      */
-    public final static String ELASTIC_CLIENT = "elasticClient";
+    public final static String ELASTIC_CLIENT = "flinkElasticClient";
 
     @Primary
     @Bean(ELASTIC_CLIENT)

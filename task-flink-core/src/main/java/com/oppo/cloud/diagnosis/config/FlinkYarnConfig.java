@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(FlinkYarnConfig.class)
 @Data
 public class FlinkYarnConfig {
-    private String parallel;
-    private String tmCore;
-    private String tmMemory;
-    private String tmSlot;
-    private String jmMemory;
-    private String jobName;
+    private String parallel = "parallelism.default";
+    private String tmCore = "yarn.containers.vcores";
+    private String tmMemory = "taskmanager.memory.process.size";
+    private String tmSlot = "taskmanager.numberOfTaskSlots";
+    private String jmMemory = "jobmanager.memory.process.size";
+    private String jobName = "yarn.application.name";
 }

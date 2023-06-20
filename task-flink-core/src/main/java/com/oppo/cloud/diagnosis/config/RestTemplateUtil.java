@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Component
 public class RestTemplateUtil {
-    @Bean("restTemplate")
+    @Bean("flinkRestTemplate")
     public RestTemplate restTemplate() {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(15000);

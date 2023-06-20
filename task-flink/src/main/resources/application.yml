@@ -44,16 +44,6 @@ spring:
     username:
     password:
 
-flink:
-  config:
-    yarn:
-      parallel: parallelism.default
-      tmCore: yarn.containers.vcores
-      tmMemory: taskmanager.memory.process.size
-      tmSlot: taskmanager.numberOfTaskSlots
-      jmMemory: jobmanager.memory.process.size
-      jobName: yarn.application.name
-
 mybatis:
   mapper-locations:
     - classpath:dao/*.xml

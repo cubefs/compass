@@ -2,7 +2,7 @@ package com.oppo.cloud.diagnosis.service.impl;
 
 import com.google.common.collect.Lists;
 import com.oppo.cloud.common.domain.flink.metric.MetricResult;
-import com.oppo.cloud.diagnosis.config.RealtimeDiagnosisConfig;
+import com.oppo.cloud.diagnosis.config.FlinkDiagnosisConfig;
 import com.oppo.cloud.diagnosis.constant.DiagnosisParamsConstants;
 import com.oppo.cloud.diagnosis.constant.MonitorMetricConstant;
 import com.oppo.cloud.diagnosis.domain.diagnosis.DiagnosisContext;
@@ -42,7 +42,7 @@ public class FlinkDiagnosisMetricsServiceImpl {
     MonitorMetricUtil monitorMetricUtil;
 
     @Autowired
-    RealtimeDiagnosisConfig realtimeDiagnosisConfig;
+    FlinkDiagnosisConfig flinkDiagnosisConfig;
 
     public double getJobMetricCurrentValueMax(String promQl) {
         try {
@@ -150,17 +150,17 @@ public class FlinkDiagnosisMetricsServiceImpl {
     public List<MetricResult.DataResult> getJobMetrics(String promQl, long start, long end, int step) {
         String queryUrl = "";
         try {
-            if (realtimeDiagnosisConfig.getFlinkPrometheusToken() != null && !realtimeDiagnosisConfig.getFlinkPrometheusToken().equals("")) {
-                promQl = addLabel(promQl, "__TOKEN__", realtimeDiagnosisConfig.getFlinkPrometheusToken());
+            if (flinkDiagnosisConfig.getFlinkPrometheusToken() != null && !flinkDiagnosisConfig.getFlinkPrometheusToken().equals("")) {
+                promQl = addLabel(promQl, "__TOKEN__", flinkDiagnosisConfig.getFlinkPrometheusToken());
             }
-            if (realtimeDiagnosisConfig.getFlinkPrometheusDatabase() != null && !realtimeDiagnosisConfig.getFlinkPrometheusDatabase().equals("")) {
-                promQl = addLabel(promQl, "__DATABASE__", realtimeDiagnosisConfig.getFlinkPrometheusDatabase());
+            if (flinkDiagnosisConfig.getFlinkPrometheusDatabase() != null && !flinkDiagnosisConfig.getFlinkPrometheusDatabase().equals("")) {
+                promQl = addLabel(promQl, "__DATABASE__", flinkDiagnosisConfig.getFlinkPrometheusDatabase());
             }
             promQl = promQl.replace("$__interval_s", String.format("%ds", step));
             promQl = promQl.replace("$__interval", String.format("%d", step));
             // promQl 可能包含url不允许的字符如空格，在这里进行encode
             promQl = URLEncoder.encode(promQl, "utf-8");
-            queryUrl = realtimeDiagnosisConfig.getFlinkPrometheusHost() + MonitorMetricConstant.QUERY_RANGE_QUERY + promQl;
+            queryUrl = flinkDiagnosisConfig.getFlinkPrometheusHost() + MonitorMetricConstant.QUERY_RANGE_QUERY + promQl;
             return monitorMetricUtil.query(queryUrl, start, end, step);
         } catch (Throwable e) {
             log.error(e.getMessage() + queryUrl, e);

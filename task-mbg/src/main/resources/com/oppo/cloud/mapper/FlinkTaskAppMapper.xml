@@ -106,7 +106,7 @@
     task_state, task_instance_id, execution_time, application_id, flink_track_url, allocated_mb, 
     allocated_vcores, running_containers, engine_type, duration, start_time, end_time, 
     vcore_seconds, memory_seconds, queue, cluster_name, retry_times, execute_user, parallel, 
-    tm_slot, tm_core, tm_mem, jm_mem, create_time, update_time
+    tm_slot, tm_core, tm_mem, jm_mem, create_time, update_time,diagnosis, job_name
   </sql>
   <sql id="Blob_Column_List">
     diagnosis, job_name

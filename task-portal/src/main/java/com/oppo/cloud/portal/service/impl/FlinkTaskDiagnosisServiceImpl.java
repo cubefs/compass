@@ -43,8 +43,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService {
-    @Value("${custom.flink.diagnosisHost}")
-    private String diagnosisHost;
     @Autowired
     FlinkTaskDiagnosisExtendMapper flinkTaskDiagnosisExtendMapper;
     @Autowired
@@ -528,29 +526,6 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         return diagnosisReportResp;
     }
 
-    public CommonStatus<OneClickDiagnosisResponse> diagnosis(OneClickDiagnosisRequest req) {
-        try {
-            Map<String, Object> body = new HashMap<>();
-            body.put("appId", req.getAppId());
-            body.put("end", req.getEnd());
-            body.put("start", req.getStart());
-            log.debug("请求地址 {}/ostream/diagnosis {}", diagnosisHost, body);
-            String res = httpUtil.post(diagnosisHost + "/ostream/diagnosis", body);
-            JSONObject jsonObject = JSON.parseObject(res);
-            if (jsonObject.get("status") != null && jsonObject.getInteger("status").equals(200)) {
-                OneClickDiagnosisResponse result = new OneClickDiagnosisResponse();
-                result.setStatus("succeed");
-                result.setFlinkTaskDiagnosis(jsonObject.getObject("data", FlinkTaskDiagnosis.class));
-                return CommonStatus.success(result);
-            } else {
-                return CommonStatus.failed(jsonObject.getString("msg"));
-            }
-        } catch (Throwable t) {
-            log.error(t.getMessage(), t);
-            return CommonStatus.failed("未知错误");
-        }
-
-    }
 
     public CommonStatus<FlinkTaskDiagnosis> updateStatus(FlinkTaskDiagnosis flinkTaskDiagnosis) {
         if (flinkTaskDiagnosis.getId() == null) {

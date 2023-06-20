@@ -21,9 +21,11 @@
         <module>task-application</module>
         <module>task-canal</module>
         <module>task-canal-adapter</module>
+        <module>task-flink-core</module>
         <module>task-flink</module>
         <module>task-assembly</module>
         <module>task-ui</module>
+        <module>task-flink-core</module>
     </modules>
 
     <parent>
@@ -76,6 +78,7 @@
         <task-ui.version>1.0-SNAPSHOT</task-ui.version>
         <task-metadata.version>1.0-SNAPSHOT</task-metadata.version>
         <task-parser.version>1.0-SNAPSHOT</task-parser.version>
+        <task-flink-core.version>1.0-SNAPSHOT</task-flink-core.version>
 
         <!--Vulnerability version fixes-->
         <velocity.version>1.7</velocity.version>
@@ -143,6 +146,11 @@
                 <groupId>com.oppo.cloud</groupId>
                 <artifactId>task-parser</artifactId>
                 <version>${task-parser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oppo.cloud</groupId>
+                <artifactId>task-flink-core</artifactId>
+                <version>${task-flink-core.version}</version>
             </dependency>
 
             <dependency>

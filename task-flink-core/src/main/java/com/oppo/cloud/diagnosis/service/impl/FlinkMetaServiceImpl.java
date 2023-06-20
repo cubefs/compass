@@ -3,18 +3,17 @@ package com.oppo.cloud.diagnosis.service.impl;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oppo.cloud.common.domain.flink.FlinkJobs;
-import com.oppo.cloud.common.domain.flink.FlinkTms;
-import com.oppo.cloud.common.domain.flink.enums.RealtimeTaskAppState;
-import com.oppo.cloud.common.domain.flink.enums.YarnApplicationState;
-import com.oppo.cloud.diagnosis.config.ClusterConfig;
-import com.oppo.cloud.diagnosis.config.FlinkYarnConfig;
-import com.oppo.cloud.diagnosis.service.IClusterMetaService;
-import com.oppo.cloud.diagnosis.service.FlinkMetaService;
-import com.oppo.cloud.diagnosis.util.MemorySize;
 import com.oppo.cloud.common.constant.YarnAppType;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
+import com.oppo.cloud.common.domain.flink.FlinkJobs;
+import com.oppo.cloud.common.domain.flink.FlinkTms;
 import com.oppo.cloud.common.domain.flink.JobManagerConfigItem;
+import com.oppo.cloud.common.domain.flink.enums.RealtimeTaskAppState;
+import com.oppo.cloud.common.domain.flink.enums.YarnApplicationState;
+import com.oppo.cloud.diagnosis.config.FlinkYarnConfig;
+import com.oppo.cloud.diagnosis.service.FlinkMetaService;
+import com.oppo.cloud.diagnosis.service.IClusterMetaService;
+import com.oppo.cloud.diagnosis.util.MemorySize;
 import com.oppo.cloud.mapper.FlinkTaskAppMapper;
 import com.oppo.cloud.mapper.FlinkTaskMapper;
 import com.oppo.cloud.mapper.TaskMapper;
@@ -38,6 +37,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class FlinkMetaServiceImpl implements FlinkMetaService {
+
     /**
      * yarn api 获取集群作业
      */
@@ -55,12 +55,10 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
      */
     private static final String FLINK_TMS = "%s/taskmanagers";
     @Resource
-    private ClusterConfig config;
-    @Resource
     private IClusterMetaService iClusterMetaService;
     @Resource
     private ObjectMapper objectMapper;
-    @Resource(name = "restTemplate")
+    @Resource(name = "flinkRestTemplate")
     private RestTemplate restTemplate;
     @Autowired
     public TaskMapper taskMapper;
@@ -79,23 +77,8 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
 
     public YarnApp requestYarnApp(String appId) {
         try {
-            Map<String, String> clusters = iClusterMetaService.getYarnClusters();
-            log.info(clusters.toString());
-            for (Map.Entry<String, String> cluster : clusters.entrySet()) {
-                String appUrl = String.format(YARN_APP_URL, cluster.getKey(), appId);
-                ResponseEntity<String> responseEntity = null;
-                log.info("请求app: {}", appUrl);
-                responseEntity = restTemplate.getForEntity(appUrl, String.class);
-                if (responseEntity.getBody() == null) {
-                    continue;
-                }
-                JSONObject bodyJson = JSON.parseObject(responseEntity.getBody());
-                String app = bodyJson.getString("app");
-                YarnApp yarnApp = objectMapper.readValue(app, YarnApp.class);
-                if (yarnApp != null) {
-                    return yarnApp;
-                }
-            }
+            //todo:from es
+            return null;
         } catch (Throwable e) {
             log.info(e.getMessage(), e);
         }

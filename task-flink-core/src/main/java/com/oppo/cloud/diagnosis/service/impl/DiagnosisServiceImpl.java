@@ -60,7 +60,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     MonitorMetricUtil monitorMetricUtil;
     @Autowired
     DiagnosisParamsConstants cons;
-    @Resource
+    @Resource(name="flinkElasticClient")
     private RestHighLevelClient elasticClient;
     @Autowired
     EsConfig esConfig;

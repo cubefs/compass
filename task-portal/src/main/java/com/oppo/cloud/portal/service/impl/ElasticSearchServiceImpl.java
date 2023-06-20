@@ -53,6 +53,7 @@ import org.elasticsearch.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,7 @@ import java.util.TimeZone;
 @Slf4j
 public class ElasticSearchServiceImpl implements ElasticSearchService {
 
-    @Autowired
+    @Resource(name="elasticsearch")
     private RestHighLevelClient restHighLevelClient;
 
     /**

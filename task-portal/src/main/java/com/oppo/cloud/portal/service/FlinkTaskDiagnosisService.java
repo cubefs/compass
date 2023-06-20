@@ -14,6 +14,5 @@ public interface FlinkTaskDiagnosisService {
     DiagnosisGeneralViewTrendResp getGeneralViewTrend(@Validated @RequestBody DiagnosisGeneralViewReq request);
     DiagnosisGeneralVIewDistributeResp getGeneralViewDistribute(@Validated @RequestBody DiagnosisGeneralViewReq request);
     DiagnosisReportResp getReport(FlinkTaskDiagnosis request);
-    CommonStatus<OneClickDiagnosisResponse> diagnosis(OneClickDiagnosisRequest req);
     CommonStatus<FlinkTaskDiagnosis> updateStatus(FlinkTaskDiagnosis flinkTaskDiagnosis);
 }
