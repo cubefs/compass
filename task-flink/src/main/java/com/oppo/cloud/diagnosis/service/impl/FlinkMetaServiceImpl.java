@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class FlinkMetaServiceImpl implements FlinkMetaService {
-
     /**
      * yarn api 获取集群作业
      */
