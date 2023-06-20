@@ -1,9 +1,9 @@
 package com.oppo.cloud.portal.domain.realtime;
 
-import com.oppo.cloud.model.RealtimeTaskDiagnosis;
+import com.oppo.cloud.model.FlinkTaskDiagnosis;
 import lombok.Data;
 
 @Data
 public class DiagnosisPageResp {
-    RealtimeTaskDiagnosis realtimeTaskDiagnosis;
+    FlinkTaskDiagnosis flinkTaskDiagnosis;
 }

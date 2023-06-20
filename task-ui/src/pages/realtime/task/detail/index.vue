@@ -68,16 +68,16 @@ onBeforeMount(async () => {
     <p class="detail-title">
       Application诊断报告详情
     </p>
-    <div v-if="realtimeDiagnosis.realtimeTaskDiagnosis">
+    <div v-if="realtimeDiagnosis.flinkTaskDiagnosis">
       <ItemWrapper title="诊断类型" class="m-b-5">
         <div>
-          <span v-for="(item, index) in realtimeDiagnosis.realtimeTaskDiagnosis.ruleNames" :key="item"
+          <span v-for="(item, index) in realtimeDiagnosis.flinkTaskDiagnosis.ruleNames" :key="item"
             class="category-card" :title="item" :style="{ 'border-left': `3px solid ${cloudTheme[index]}` }">
             {{ item }}
           </span>
         </div>
       </ItemWrapper>
-      <BaseInfo :info="realtimeDiagnosis.realtimeTaskDiagnosis" />
+      <BaseInfo :info="realtimeDiagnosis.flinkTaskDiagnosis" />
       <ItemWrapper v-for="(item, index) in reportsProp" :key="item.title" :title="item.title"
         :conclusion="{ conclusion: item.conclusion }">
         <RealtimeChart :dataInput="item" :width-list="[120, 180, 180, '', 270]" />

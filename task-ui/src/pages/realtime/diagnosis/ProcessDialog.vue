@@ -48,10 +48,10 @@ async function diagnosisSearch() {
     // }, 5000)
   } else {
     loading = false
-    if (res.realtimeTaskDiagnosis == null) {
+    if (res.flinkTaskDiagnosis == null) {
       ElMessage.error("诊断失败")
     } else {
-      emit('searchComplete', res.realtimeTaskDiagnosis)
+      emit('searchComplete', res.flinkTaskDiagnosis)
     }
     setTimeout(() => {
       dialogVisible = false

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class RealtimeTaskDiagnosisExample {
+public class FlinkTaskDiagnosisExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public RealtimeTaskDiagnosisExample() {
+    public FlinkTaskDiagnosisExample() {
         oredCriteria = new ArrayList<>();
     }
 
@@ -165,63 +165,63 @@ public class RealtimeTaskDiagnosisExample {
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdIsNull() {
-            addCriterion("realtime_task_app_id is null");
+        public Criteria andFlinkTaskAppIdIsNull() {
+            addCriterion("flink_task_app_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdIsNotNull() {
-            addCriterion("realtime_task_app_id is not null");
+        public Criteria andFlinkTaskAppIdIsNotNull() {
+            addCriterion("flink_task_app_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdEqualTo(Integer value) {
-            addCriterion("realtime_task_app_id =", value, "realtimeTaskAppId");
+        public Criteria andFlinkTaskAppIdEqualTo(Integer value) {
+            addCriterion("flink_task_app_id =", value, "flinkTaskAppId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdNotEqualTo(Integer value) {
-            addCriterion("realtime_task_app_id <>", value, "realtimeTaskAppId");
+        public Criteria andFlinkTaskAppIdNotEqualTo(Integer value) {
+            addCriterion("flink_task_app_id <>", value, "flinkTaskAppId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdGreaterThan(Integer value) {
-            addCriterion("realtime_task_app_id >", value, "realtimeTaskAppId");
+        public Criteria andFlinkTaskAppIdGreaterThan(Integer value) {
+            addCriterion("flink_task_app_id >", value, "flinkTaskAppId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("realtime_task_app_id >=", value, "realtimeTaskAppId");
+        public Criteria andFlinkTaskAppIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("flink_task_app_id >=", value, "flinkTaskAppId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdLessThan(Integer value) {
-            addCriterion("realtime_task_app_id <", value, "realtimeTaskAppId");
+        public Criteria andFlinkTaskAppIdLessThan(Integer value) {
+            addCriterion("flink_task_app_id <", value, "flinkTaskAppId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdLessThanOrEqualTo(Integer value) {
-            addCriterion("realtime_task_app_id <=", value, "realtimeTaskAppId");
+        public Criteria andFlinkTaskAppIdLessThanOrEqualTo(Integer value) {
+            addCriterion("flink_task_app_id <=", value, "flinkTaskAppId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdIn(List<Integer> values) {
-            addCriterion("realtime_task_app_id in", values, "realtimeTaskAppId");
+        public Criteria andFlinkTaskAppIdIn(List<Integer> values) {
+            addCriterion("flink_task_app_id in", values, "flinkTaskAppId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdNotIn(List<Integer> values) {
-            addCriterion("realtime_task_app_id not in", values, "realtimeTaskAppId");
+        public Criteria andFlinkTaskAppIdNotIn(List<Integer> values) {
+            addCriterion("flink_task_app_id not in", values, "flinkTaskAppId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdBetween(Integer value1, Integer value2) {
-            addCriterion("realtime_task_app_id between", value1, value2, "realtimeTaskAppId");
+        public Criteria andFlinkTaskAppIdBetween(Integer value1, Integer value2) {
+            addCriterion("flink_task_app_id between", value1, value2, "flinkTaskAppId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskAppIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("realtime_task_app_id not between", value1, value2, "realtimeTaskAppId");
+        public Criteria andFlinkTaskAppIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("flink_task_app_id not between", value1, value2, "flinkTaskAppId");
             return (Criteria) this;
         }
 

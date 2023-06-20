@@ -38,14 +38,14 @@ public class DiagnosisController {
 
     @PostMapping("/diagnosis")
     @ApiOperation(value = "诊断")
-    public OResult<RealtimeTaskDiagnosis> diagnosis(@RequestBody DiagnosisRequest req) {
+    public OResult<FlinkTaskDiagnosis> diagnosis(@RequestBody DiagnosisRequest req) {
         try {
-            RealtimeTaskAppExample realtimeTaskAppExample = new RealtimeTaskAppExample();
-            realtimeTaskAppExample.createCriteria()
+            FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
+            flinkTaskAppExample.createCriteria()
                     .andApplicationIdEqualTo(req.getAppId());
-            Optional<RealtimeTaskApp> task = flinkTaskAppMapper.selectByExample(realtimeTaskAppExample)
+            Optional<FlinkTaskApp> task = flinkTaskAppMapper.selectByExample(flinkTaskAppExample)
                     .stream()
-                    .max(Comparator.comparing(RealtimeTaskApp::getStartTime));
+                    .max(Comparator.comparing(FlinkTaskApp::getStartTime));
             if (task.isPresent()) {
                 // 黑名单检查
                 BlocklistExample blocklistExample = new BlocklistExample();
@@ -69,12 +69,12 @@ public class DiagnosisController {
                     endTime = LocalDateTime.now(ZoneOffset.ofHours(8)).toEpochSecond(ZoneOffset.ofHours(8));
                     startTime = LocalDateTime.now(ZoneOffset.ofHours(8)).minusDays(1).toEpochSecond(ZoneOffset.ofHours(8));
                 }
-                RealtimeTaskDiagnosis realtimeTaskDiagnosis = diagnosisService.diagnosisApp(task.get(),
+                FlinkTaskDiagnosis flinkTaskDiagnosis = diagnosisService.diagnosisApp(task.get(),
                         startTime, endTime, DiagnosisFrom.Manual);
-                if (realtimeTaskDiagnosis == null) {
+                if (flinkTaskDiagnosis == null) {
                     return OResult.fail("诊断失败");
                 }
-                return OResult.success(realtimeTaskDiagnosis);
+                return OResult.success(flinkTaskDiagnosis);
             } else {
                 return OResult.fail(String.format("没有找到该任务:%s", req.getAppId()));
             }

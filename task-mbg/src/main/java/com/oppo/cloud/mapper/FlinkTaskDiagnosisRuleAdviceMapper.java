@@ -1,30 +1,30 @@
 package com.oppo.cloud.mapper;
 
-import com.oppo.cloud.model.RealtimeTaskDiagnosisRuleAdvice;
-import com.oppo.cloud.model.RealtimeTaskDiagnosisRuleAdviceExample;
+import com.oppo.cloud.model.FlinkTaskDiagnosisRuleAdvice;
+import com.oppo.cloud.model.FlinkTaskDiagnosisRuleAdviceExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface FlinkTaskDiagnosisRuleAdviceMapper {
-    long countByExample(RealtimeTaskDiagnosisRuleAdviceExample example);
+    long countByExample(FlinkTaskDiagnosisRuleAdviceExample example);
 
-    int deleteByExample(RealtimeTaskDiagnosisRuleAdviceExample example);
+    int deleteByExample(FlinkTaskDiagnosisRuleAdviceExample example);
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(RealtimeTaskDiagnosisRuleAdvice record);
+    int insert(FlinkTaskDiagnosisRuleAdvice record);
 
-    int insertSelective(RealtimeTaskDiagnosisRuleAdvice record);
+    int insertSelective(FlinkTaskDiagnosisRuleAdvice record);
 
-    List<RealtimeTaskDiagnosisRuleAdvice> selectByExample(RealtimeTaskDiagnosisRuleAdviceExample example);
+    List<FlinkTaskDiagnosisRuleAdvice> selectByExample(FlinkTaskDiagnosisRuleAdviceExample example);
 
-    RealtimeTaskDiagnosisRuleAdvice selectByPrimaryKey(Integer id);
+    FlinkTaskDiagnosisRuleAdvice selectByPrimaryKey(Integer id);
 
-    int updateByExampleSelective(@Param("record") RealtimeTaskDiagnosisRuleAdvice record, @Param("example") RealtimeTaskDiagnosisRuleAdviceExample example);
+    int updateByExampleSelective(@Param("record") FlinkTaskDiagnosisRuleAdvice record, @Param("example") FlinkTaskDiagnosisRuleAdviceExample example);
 
-    int updateByExample(@Param("record") RealtimeTaskDiagnosisRuleAdvice record, @Param("example") RealtimeTaskDiagnosisRuleAdviceExample example);
+    int updateByExample(@Param("record") FlinkTaskDiagnosisRuleAdvice record, @Param("example") FlinkTaskDiagnosisRuleAdviceExample example);
 
-    int updateByPrimaryKeySelective(RealtimeTaskDiagnosisRuleAdvice record);
+    int updateByPrimaryKeySelective(FlinkTaskDiagnosisRuleAdvice record);
 
-    int updateByPrimaryKey(RealtimeTaskDiagnosisRuleAdvice record);
+    int updateByPrimaryKey(FlinkTaskDiagnosisRuleAdvice record);
 }

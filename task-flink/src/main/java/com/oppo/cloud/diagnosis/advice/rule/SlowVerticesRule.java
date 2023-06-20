@@ -121,7 +121,7 @@ public class SlowVerticesRule extends BaseRule {
             }
             data.setAdviceDescription(sb.toString());
             data.setSlowTasks(distinctTaskName);
-            String conclusion = String.format("存在慢算子,%s 算子的in/out pool使用率差值大于阈值%.2f%% 超过%d秒",
+            String conclusion = String.format("存在慢算子,%s 算子的in/out pool使用率差值大于阈值%.2f%% 超过%d秒,建议优化代码",
                     distinctTaskName, poolUsageDiffThreshold, poolUsageDiffHighThresholdSeconds);
             DiagnosisRuleReport diagnosisRuleReport = new DiagnosisRuleReport();
             diagnosisRuleReport.setTitle("慢算子分析");

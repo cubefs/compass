@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.oppo.cloud.mapper.FlinkTaskAppMapper">
-  <resultMap id="BaseResultMap" type="com.oppo.cloud.model.RealtimeTaskApp">
+  <resultMap id="BaseResultMap" type="com.oppo.cloud.model.FlinkTaskApp">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
@@ -36,10 +36,10 @@
     <result column="jm_mem" jdbcType="INTEGER" property="jmMem" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="job_name" jdbcType="LONGVARCHAR" property="jobName" />
     <result column="diagnosis" jdbcType="LONGVARCHAR" property="diagnosis" />
+    <result column="job_name" jdbcType="LONGVARCHAR" property="jobName" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.oppo.cloud.model.RealtimeTaskApp">
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.oppo.cloud.model.FlinkTaskApp">
     <result column="diagnosis" jdbcType="LONGVARCHAR" property="diagnosis" />
     <result column="job_name" jdbcType="LONGVARCHAR" property="jobName" />
   </resultMap>
@@ -106,12 +106,12 @@
     task_state, task_instance_id, execution_time, application_id, flink_track_url, allocated_mb, 
     allocated_vcores, running_containers, engine_type, duration, start_time, end_time, 
     vcore_seconds, memory_seconds, queue, cluster_name, retry_times, execute_user, parallel, 
-    tm_slot, tm_core, tm_mem, jm_mem, create_time, update_time,job_name,diagnosis
+    tm_slot, tm_core, tm_mem, jm_mem, create_time, update_time
   </sql>
   <sql id="Blob_Column_List">
     diagnosis, job_name
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.oppo.cloud.model.RealtimeTaskAppExample" resultMap="ResultMapWithBLOBs">
+  <select id="selectByExampleWithBLOBs" parameterType="com.oppo.cloud.model.FlinkTaskAppExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">
       distinct
@@ -119,7 +119,7 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from realtime_task_app
+    from flink_task_app
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -127,13 +127,13 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" parameterType="com.oppo.cloud.model.RealtimeTaskAppExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.oppo.cloud.model.FlinkTaskAppExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from realtime_task_app
+    from flink_task_app
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -146,24 +146,24 @@
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
-    from realtime_task_app
+    from flink_task_app
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from realtime_task_app
+    delete from flink_task_app
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.oppo.cloud.model.RealtimeTaskAppExample">
-    delete from realtime_task_app
+  <delete id="deleteByExample" parameterType="com.oppo.cloud.model.FlinkTaskAppExample">
+    delete from flink_task_app
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.oppo.cloud.model.RealtimeTaskApp">
+  <insert id="insert" parameterType="com.oppo.cloud.model.FlinkTaskApp">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into realtime_task_app (username, user_id, project_name, 
+    insert into flink_task_app (username, user_id, project_name, 
       project_id, flow_name, flow_id, 
       task_name, task_id, task_state, 
       task_instance_id, execution_time, application_id, 
@@ -188,11 +188,11 @@
       #{jmMem,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{diagnosis,jdbcType=LONGVARCHAR}, #{jobName,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.oppo.cloud.model.RealtimeTaskApp">
+  <insert id="insertSelective" parameterType="com.oppo.cloud.model.FlinkTaskApp">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into realtime_task_app
+    insert into flink_task_app
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="username != null">
         username,
@@ -408,14 +408,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.oppo.cloud.model.RealtimeTaskAppExample" resultType="java.lang.Long">
-    select count(*) from realtime_task_app
+  <select id="countByExample" parameterType="com.oppo.cloud.model.FlinkTaskAppExample" resultType="java.lang.Long">
+    select count(*) from flink_task_app
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update realtime_task_app
+    update flink_task_app
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
@@ -531,7 +531,7 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update realtime_task_app
+    update flink_task_app
     set id = #{record.id,jdbcType=INTEGER},
       username = #{record.username,jdbcType=VARCHAR},
       user_id = #{record.userId,jdbcType=INTEGER},
@@ -573,7 +573,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update realtime_task_app
+    update flink_task_app
     set id = #{record.id,jdbcType=INTEGER},
       username = #{record.username,jdbcType=VARCHAR},
       user_id = #{record.userId,jdbcType=INTEGER},
@@ -612,8 +612,8 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.RealtimeTaskApp">
-    update realtime_task_app
+  <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.FlinkTaskApp">
+    update flink_task_app
     <set>
       <if test="username != null">
         username = #{username,jdbcType=VARCHAR},
@@ -723,8 +723,8 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.oppo.cloud.model.RealtimeTaskApp">
-    update realtime_task_app
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.oppo.cloud.model.FlinkTaskApp">
+    update flink_task_app
     set username = #{username,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=INTEGER},
       project_name = #{projectName,jdbcType=VARCHAR},
@@ -762,8 +762,8 @@
       job_name = #{jobName,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.RealtimeTaskApp">
-    update realtime_task_app
+  <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.FlinkTaskApp">
+    update flink_task_app
     set username = #{username,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=INTEGER},
       project_name = #{projectName,jdbcType=VARCHAR},

@@ -1,36 +1,36 @@
 package com.oppo.cloud.mapper;
 
-import com.oppo.cloud.model.RealtimeTaskApp;
-import com.oppo.cloud.model.RealtimeTaskAppExample;
+import com.oppo.cloud.model.FlinkTaskApp;
+import com.oppo.cloud.model.FlinkTaskAppExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface FlinkTaskAppMapper {
-    long countByExample(RealtimeTaskAppExample example);
+    long countByExample(FlinkTaskAppExample example);
 
-    int deleteByExample(RealtimeTaskAppExample example);
+    int deleteByExample(FlinkTaskAppExample example);
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(RealtimeTaskApp record);
+    int insert(FlinkTaskApp record);
 
-    int insertSelective(RealtimeTaskApp record);
+    int insertSelective(FlinkTaskApp record);
 
-    List<RealtimeTaskApp> selectByExampleWithBLOBs(RealtimeTaskAppExample example);
+    List<FlinkTaskApp> selectByExampleWithBLOBs(FlinkTaskAppExample example);
 
-    List<RealtimeTaskApp> selectByExample(RealtimeTaskAppExample example);
+    List<FlinkTaskApp> selectByExample(FlinkTaskAppExample example);
 
-    RealtimeTaskApp selectByPrimaryKey(Integer id);
+    FlinkTaskApp selectByPrimaryKey(Integer id);
 
-    int updateByExampleSelective(@Param("record") RealtimeTaskApp record, @Param("example") RealtimeTaskAppExample example);
+    int updateByExampleSelective(@Param("record") FlinkTaskApp record, @Param("example") FlinkTaskAppExample example);
 
-    int updateByExampleWithBLOBs(@Param("record") RealtimeTaskApp record, @Param("example") RealtimeTaskAppExample example);
+    int updateByExampleWithBLOBs(@Param("record") FlinkTaskApp record, @Param("example") FlinkTaskAppExample example);
 
-    int updateByExample(@Param("record") RealtimeTaskApp record, @Param("example") RealtimeTaskAppExample example);
+    int updateByExample(@Param("record") FlinkTaskApp record, @Param("example") FlinkTaskAppExample example);
 
-    int updateByPrimaryKeySelective(RealtimeTaskApp record);
+    int updateByPrimaryKeySelective(FlinkTaskApp record);
 
-    int updateByPrimaryKeyWithBLOBs(RealtimeTaskApp record);
+    int updateByPrimaryKeyWithBLOBs(FlinkTaskApp record);
 
-    int updateByPrimaryKey(RealtimeTaskApp record);
+    int updateByPrimaryKey(FlinkTaskApp record);
 }

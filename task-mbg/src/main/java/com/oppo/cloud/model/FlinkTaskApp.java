@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 
-public class RealtimeTaskApp implements Serializable {
+public class FlinkTaskApp implements Serializable {
     @ApiModelProperty(value = "实时任务id")
     private Integer id;
 
@@ -95,7 +95,7 @@ public class RealtimeTaskApp implements Serializable {
     @ApiModelProperty(value = "flink tm core")
     private Integer tmCore;
 
-    @ApiModelProperty(value = "flink tm_mem mb")
+    @ApiModelProperty(value = "flink tm_mem")
     private Integer tmMem;
 
     @ApiModelProperty(value = "flink jm_mem")

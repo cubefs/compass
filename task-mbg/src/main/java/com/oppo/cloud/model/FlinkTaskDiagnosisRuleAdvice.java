@@ -4,12 +4,11 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 
-public class RealtimeTaskDiagnosisRuleAdvice implements Serializable {
+public class FlinkTaskDiagnosisRuleAdvice implements Serializable {
     @ApiModelProperty(value = "实时任务诊断规则结果id")
     private Integer id;
 
-    @ApiModelProperty(value = "实时任务诊断id")
-    private Integer realtimeTaskDiagnosisId;
+    private Integer flinkTaskDiagnosisId;
 
     @ApiModelProperty(value = "规则名")
     private String ruleName;
@@ -39,12 +38,12 @@ public class RealtimeTaskDiagnosisRuleAdvice implements Serializable {
         this.id = id;
     }
 
-    public Integer getRealtimeTaskDiagnosisId() {
-        return realtimeTaskDiagnosisId;
+    public Integer getFlinkTaskDiagnosisId() {
+        return flinkTaskDiagnosisId;
     }
 
-    public void setRealtimeTaskDiagnosisId(Integer realtimeTaskDiagnosisId) {
-        this.realtimeTaskDiagnosisId = realtimeTaskDiagnosisId;
+    public void setFlinkTaskDiagnosisId(Integer flinkTaskDiagnosisId) {
+        this.flinkTaskDiagnosisId = flinkTaskDiagnosisId;
     }
 
     public String getRuleName() {
@@ -102,7 +101,7 @@ public class RealtimeTaskDiagnosisRuleAdvice implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", realtimeTaskDiagnosisId=").append(realtimeTaskDiagnosisId);
+        sb.append(", flinkTaskDiagnosisId=").append(flinkTaskDiagnosisId);
         sb.append(", ruleName=").append(ruleName);
         sb.append(", ruleType=").append(ruleType);
         sb.append(", hasAdvice=").append(hasAdvice);

@@ -8,12 +8,11 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class RealtimeTaskDiagnosis implements Serializable {
+public class FlinkTaskDiagnosis implements Serializable {
     @ApiModelProperty(value = "实时任务诊断结果id")
     private Integer id;
 
-    @ApiModelProperty(value = "task app id")
-    private Integer realtimeTaskAppId;
+    private Integer flinkTaskAppId;
 
     @ApiModelProperty(value = "用户名")
     private String username;
@@ -96,7 +95,7 @@ public class RealtimeTaskDiagnosis implements Serializable {
     @ApiModelProperty(value = "flink tm core")
     private Integer tmCore;
 
-    @ApiModelProperty(value = "flink tm_mem mb")
+    @ApiModelProperty(value = "flink tm_mem")
     private Integer tmMem;
 
     @ApiModelProperty(value = "flink jm_mem")
@@ -138,7 +137,7 @@ public class RealtimeTaskDiagnosis implements Serializable {
     @ApiModelProperty(value = "诊断问题类型拼接字符串[0][1][2][3]")
     private String diagnosisTypes;
 
-    @ApiModelProperty(value = "处理状态(processed,nonProcessed)")
+    @ApiModelProperty(value = "处理状态(processing, success, failed)")
     private String processState;
 
     @ApiModelProperty(value = "创建时间")
@@ -152,10 +151,11 @@ public class RealtimeTaskDiagnosis implements Serializable {
 
     @ApiModelProperty(value = "job name")
     private String jobName;
+
+    String timeCost;
     String resourceCost;
     String memCost;
     String resourceAdvice;
-    String timeCost;
     List<String> ruleNames;
     private static final long serialVersionUID = 1L;
 
@@ -167,12 +167,12 @@ public class RealtimeTaskDiagnosis implements Serializable {
         this.id = id;
     }
 
-    public Integer getRealtimeTaskAppId() {
-        return realtimeTaskAppId;
+    public Integer getFlinkTaskAppId() {
+        return flinkTaskAppId;
     }
 
-    public void setRealtimeTaskAppId(Integer realtimeTaskAppId) {
-        this.realtimeTaskAppId = realtimeTaskAppId;
+    public void setFlinkTaskAppId(Integer flinkTaskAppId) {
+        this.flinkTaskAppId = flinkTaskAppId;
     }
 
     public String getUsername() {
@@ -550,7 +550,7 @@ public class RealtimeTaskDiagnosis implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", realtimeTaskAppId=").append(realtimeTaskAppId);
+        sb.append(", flinkTaskAppId=").append(flinkTaskAppId);
         sb.append(", username=").append(username);
         sb.append(", userId=").append(userId);
         sb.append(", projectName=").append(projectName);

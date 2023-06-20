@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class RealtimeTaskExample {
+public class FlinkTaskExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public RealtimeTaskExample() {
+    public FlinkTaskExample() {
         oredCriteria = new ArrayList<>();
     }
 

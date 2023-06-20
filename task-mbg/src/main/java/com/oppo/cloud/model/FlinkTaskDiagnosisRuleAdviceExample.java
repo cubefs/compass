@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class RealtimeTaskDiagnosisRuleAdviceExample {
+public class FlinkTaskDiagnosisRuleAdviceExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public RealtimeTaskDiagnosisRuleAdviceExample() {
+    public FlinkTaskDiagnosisRuleAdviceExample() {
         oredCriteria = new ArrayList<>();
     }
 
@@ -165,63 +165,63 @@ public class RealtimeTaskDiagnosisRuleAdviceExample {
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdIsNull() {
-            addCriterion("realtime_task_diagnosis_id is null");
+        public Criteria andFlinkTaskDiagnosisIdIsNull() {
+            addCriterion("flink_task_diagnosis_id is null");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdIsNotNull() {
-            addCriterion("realtime_task_diagnosis_id is not null");
+        public Criteria andFlinkTaskDiagnosisIdIsNotNull() {
+            addCriterion("flink_task_diagnosis_id is not null");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdEqualTo(Integer value) {
-            addCriterion("realtime_task_diagnosis_id =", value, "realtimeTaskDiagnosisId");
+        public Criteria andFlinkTaskDiagnosisIdEqualTo(Integer value) {
+            addCriterion("flink_task_diagnosis_id =", value, "flinkTaskDiagnosisId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdNotEqualTo(Integer value) {
-            addCriterion("realtime_task_diagnosis_id <>", value, "realtimeTaskDiagnosisId");
+        public Criteria andFlinkTaskDiagnosisIdNotEqualTo(Integer value) {
+            addCriterion("flink_task_diagnosis_id <>", value, "flinkTaskDiagnosisId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdGreaterThan(Integer value) {
-            addCriterion("realtime_task_diagnosis_id >", value, "realtimeTaskDiagnosisId");
+        public Criteria andFlinkTaskDiagnosisIdGreaterThan(Integer value) {
+            addCriterion("flink_task_diagnosis_id >", value, "flinkTaskDiagnosisId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdGreaterThanOrEqualTo(Integer value) {
-            addCriterion("realtime_task_diagnosis_id >=", value, "realtimeTaskDiagnosisId");
+        public Criteria andFlinkTaskDiagnosisIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("flink_task_diagnosis_id >=", value, "flinkTaskDiagnosisId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdLessThan(Integer value) {
-            addCriterion("realtime_task_diagnosis_id <", value, "realtimeTaskDiagnosisId");
+        public Criteria andFlinkTaskDiagnosisIdLessThan(Integer value) {
+            addCriterion("flink_task_diagnosis_id <", value, "flinkTaskDiagnosisId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdLessThanOrEqualTo(Integer value) {
-            addCriterion("realtime_task_diagnosis_id <=", value, "realtimeTaskDiagnosisId");
+        public Criteria andFlinkTaskDiagnosisIdLessThanOrEqualTo(Integer value) {
+            addCriterion("flink_task_diagnosis_id <=", value, "flinkTaskDiagnosisId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdIn(List<Integer> values) {
-            addCriterion("realtime_task_diagnosis_id in", values, "realtimeTaskDiagnosisId");
+        public Criteria andFlinkTaskDiagnosisIdIn(List<Integer> values) {
+            addCriterion("flink_task_diagnosis_id in", values, "flinkTaskDiagnosisId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdNotIn(List<Integer> values) {
-            addCriterion("realtime_task_diagnosis_id not in", values, "realtimeTaskDiagnosisId");
+        public Criteria andFlinkTaskDiagnosisIdNotIn(List<Integer> values) {
+            addCriterion("flink_task_diagnosis_id not in", values, "flinkTaskDiagnosisId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdBetween(Integer value1, Integer value2) {
-            addCriterion("realtime_task_diagnosis_id between", value1, value2, "realtimeTaskDiagnosisId");
+        public Criteria andFlinkTaskDiagnosisIdBetween(Integer value1, Integer value2) {
+            addCriterion("flink_task_diagnosis_id between", value1, value2, "flinkTaskDiagnosisId");
             return (Criteria) this;
         }
 
-        public Criteria andRealtimeTaskDiagnosisIdNotBetween(Integer value1, Integer value2) {
-            addCriterion("realtime_task_diagnosis_id not between", value1, value2, "realtimeTaskDiagnosisId");
+        public Criteria andFlinkTaskDiagnosisIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("flink_task_diagnosis_id not between", value1, value2, "flinkTaskDiagnosisId");
             return (Criteria) this;
         }
 

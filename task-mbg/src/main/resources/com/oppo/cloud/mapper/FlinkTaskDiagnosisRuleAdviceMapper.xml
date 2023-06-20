@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.oppo.cloud.mapper.FlinkTaskDiagnosisRuleAdviceMapper">
-  <resultMap id="BaseResultMap" type="com.oppo.cloud.model.RealtimeTaskDiagnosisRuleAdvice">
+  <resultMap id="BaseResultMap" type="com.oppo.cloud.model.FlinkTaskDiagnosisRuleAdvice">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="realtime_task_diagnosis_id" jdbcType="INTEGER" property="realtimeTaskDiagnosisId" />
+    <result column="flink_task_diagnosis_id" jdbcType="INTEGER" property="flinkTaskDiagnosisId" />
     <result column="rule_name" jdbcType="VARCHAR" property="ruleName" />
     <result column="rule_type" jdbcType="INTEGER" property="ruleType" />
     <result column="has_advice" jdbcType="SMALLINT" property="hasAdvice" />
@@ -70,16 +70,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, realtime_task_diagnosis_id, rule_name, rule_type, has_advice, description, create_time, 
+    id, flink_task_diagnosis_id, rule_name, rule_type, has_advice, description, create_time, 
     update_time
   </sql>
-  <select id="selectByExample" parameterType="com.oppo.cloud.model.RealtimeTaskDiagnosisRuleAdviceExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosisRuleAdviceExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from realtime_task_diagnosis_rule_advice
+    from flink_task_diagnosis_rule_advice
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -90,38 +90,38 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from realtime_task_diagnosis_rule_advice
+    from flink_task_diagnosis_rule_advice
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from realtime_task_diagnosis_rule_advice
+    delete from flink_task_diagnosis_rule_advice
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.oppo.cloud.model.RealtimeTaskDiagnosisRuleAdviceExample">
-    delete from realtime_task_diagnosis_rule_advice
+  <delete id="deleteByExample" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosisRuleAdviceExample">
+    delete from flink_task_diagnosis_rule_advice
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.oppo.cloud.model.RealtimeTaskDiagnosisRuleAdvice">
+  <insert id="insert" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosisRuleAdvice">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into realtime_task_diagnosis_rule_advice (realtime_task_diagnosis_id, rule_name, 
-      rule_type, has_advice, description, 
-      create_time, update_time)
-    values (#{realtimeTaskDiagnosisId,jdbcType=INTEGER}, #{ruleName,jdbcType=VARCHAR}, 
-      #{ruleType,jdbcType=INTEGER}, #{hasAdvice,jdbcType=SMALLINT}, #{description,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    insert into flink_task_diagnosis_rule_advice (flink_task_diagnosis_id, rule_name, rule_type, 
+      has_advice, description, create_time, 
+      update_time)
+    values (#{flinkTaskDiagnosisId,jdbcType=INTEGER}, #{ruleName,jdbcType=VARCHAR}, #{ruleType,jdbcType=INTEGER}, 
+      #{hasAdvice,jdbcType=SMALLINT}, #{description,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.oppo.cloud.model.RealtimeTaskDiagnosisRuleAdvice">
+  <insert id="insertSelective" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosisRuleAdvice">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into realtime_task_diagnosis_rule_advice
+    insert into flink_task_diagnosis_rule_advice
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="realtimeTaskDiagnosisId != null">
-        realtime_task_diagnosis_id,
+      <if test="flinkTaskDiagnosisId != null">
+        flink_task_diagnosis_id,
       </if>
       <if test="ruleName != null">
         rule_name,
@@ -143,8 +143,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="realtimeTaskDiagnosisId != null">
-        #{realtimeTaskDiagnosisId,jdbcType=INTEGER},
+      <if test="flinkTaskDiagnosisId != null">
+        #{flinkTaskDiagnosisId,jdbcType=INTEGER},
       </if>
       <if test="ruleName != null">
         #{ruleName,jdbcType=VARCHAR},
@@ -166,20 +166,20 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.oppo.cloud.model.RealtimeTaskDiagnosisRuleAdviceExample" resultType="java.lang.Long">
-    select count(*) from realtime_task_diagnosis_rule_advice
+  <select id="countByExample" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosisRuleAdviceExample" resultType="java.lang.Long">
+    select count(*) from flink_task_diagnosis_rule_advice
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update realtime_task_diagnosis_rule_advice
+    update flink_task_diagnosis_rule_advice
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.realtimeTaskDiagnosisId != null">
-        realtime_task_diagnosis_id = #{record.realtimeTaskDiagnosisId,jdbcType=INTEGER},
+      <if test="record.flinkTaskDiagnosisId != null">
+        flink_task_diagnosis_id = #{record.flinkTaskDiagnosisId,jdbcType=INTEGER},
       </if>
       <if test="record.ruleName != null">
         rule_name = #{record.ruleName,jdbcType=VARCHAR},
@@ -205,9 +205,9 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update realtime_task_diagnosis_rule_advice
+    update flink_task_diagnosis_rule_advice
     set id = #{record.id,jdbcType=INTEGER},
-      realtime_task_diagnosis_id = #{record.realtimeTaskDiagnosisId,jdbcType=INTEGER},
+      flink_task_diagnosis_id = #{record.flinkTaskDiagnosisId,jdbcType=INTEGER},
       rule_name = #{record.ruleName,jdbcType=VARCHAR},
       rule_type = #{record.ruleType,jdbcType=INTEGER},
       has_advice = #{record.hasAdvice,jdbcType=SMALLINT},
@@ -218,11 +218,11 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.RealtimeTaskDiagnosisRuleAdvice">
-    update realtime_task_diagnosis_rule_advice
+  <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosisRuleAdvice">
+    update flink_task_diagnosis_rule_advice
     <set>
-      <if test="realtimeTaskDiagnosisId != null">
-        realtime_task_diagnosis_id = #{realtimeTaskDiagnosisId,jdbcType=INTEGER},
+      <if test="flinkTaskDiagnosisId != null">
+        flink_task_diagnosis_id = #{flinkTaskDiagnosisId,jdbcType=INTEGER},
       </if>
       <if test="ruleName != null">
         rule_name = #{ruleName,jdbcType=VARCHAR},
@@ -245,9 +245,9 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.RealtimeTaskDiagnosisRuleAdvice">
-    update realtime_task_diagnosis_rule_advice
-    set realtime_task_diagnosis_id = #{realtimeTaskDiagnosisId,jdbcType=INTEGER},
+  <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosisRuleAdvice">
+    update flink_task_diagnosis_rule_advice
+    set flink_task_diagnosis_id = #{flinkTaskDiagnosisId,jdbcType=INTEGER},
       rule_name = #{ruleName,jdbcType=VARCHAR},
       rule_type = #{ruleType,jdbcType=INTEGER},
       has_advice = #{hasAdvice,jdbcType=SMALLINT},

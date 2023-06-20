@@ -3,8 +3,6 @@ package com.oppo.cloud.diagnosis.consumer;
 import com.alibaba.fastjson2.JSON;
 import com.oppo.cloud.diagnosis.service.FlinkMetaService;
 import com.oppo.cloud.mapper.FlinkTaskAppMapper;
-import com.oppo.cloud.model.RealtimeTaskApp;
-import com.oppo.cloud.model.RealtimeTaskAppExample;
 import com.oppo.cloud.model.TaskApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -15,8 +13,6 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * 消费者

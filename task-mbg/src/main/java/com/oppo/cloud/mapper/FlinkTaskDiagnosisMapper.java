@@ -1,36 +1,36 @@
 package com.oppo.cloud.mapper;
 
-import com.oppo.cloud.model.RealtimeTaskDiagnosis;
-import com.oppo.cloud.model.RealtimeTaskDiagnosisExample;
+import com.oppo.cloud.model.FlinkTaskDiagnosis;
+import com.oppo.cloud.model.FlinkTaskDiagnosisExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface FlinkTaskDiagnosisMapper {
-    long countByExample(RealtimeTaskDiagnosisExample example);
+    long countByExample(FlinkTaskDiagnosisExample example);
 
-    int deleteByExample(RealtimeTaskDiagnosisExample example);
+    int deleteByExample(FlinkTaskDiagnosisExample example);
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(RealtimeTaskDiagnosis record);
+    int insert(FlinkTaskDiagnosis record);
 
-    int insertSelective(RealtimeTaskDiagnosis record);
+    int insertSelective(FlinkTaskDiagnosis record);
 
-    List<RealtimeTaskDiagnosis> selectByExampleWithBLOBs(RealtimeTaskDiagnosisExample example);
+    List<FlinkTaskDiagnosis> selectByExampleWithBLOBs(FlinkTaskDiagnosisExample example);
 
-    List<RealtimeTaskDiagnosis> selectByExample(RealtimeTaskDiagnosisExample example);
+    List<FlinkTaskDiagnosis> selectByExample(FlinkTaskDiagnosisExample example);
 
-    RealtimeTaskDiagnosis selectByPrimaryKey(Integer id);
+    FlinkTaskDiagnosis selectByPrimaryKey(Integer id);
 
-    int updateByExampleSelective(@Param("record") RealtimeTaskDiagnosis record, @Param("example") RealtimeTaskDiagnosisExample example);
+    int updateByExampleSelective(@Param("record") FlinkTaskDiagnosis record, @Param("example") FlinkTaskDiagnosisExample example);
 
-    int updateByExampleWithBLOBs(@Param("record") RealtimeTaskDiagnosis record, @Param("example") RealtimeTaskDiagnosisExample example);
+    int updateByExampleWithBLOBs(@Param("record") FlinkTaskDiagnosis record, @Param("example") FlinkTaskDiagnosisExample example);
 
-    int updateByExample(@Param("record") RealtimeTaskDiagnosis record, @Param("example") RealtimeTaskDiagnosisExample example);
+    int updateByExample(@Param("record") FlinkTaskDiagnosis record, @Param("example") FlinkTaskDiagnosisExample example);
 
-    int updateByPrimaryKeySelective(RealtimeTaskDiagnosis record);
+    int updateByPrimaryKeySelective(FlinkTaskDiagnosis record);
 
-    int updateByPrimaryKeyWithBLOBs(RealtimeTaskDiagnosis record);
+    int updateByPrimaryKeyWithBLOBs(FlinkTaskDiagnosis record);
 
-    int updateByPrimaryKey(RealtimeTaskDiagnosis record);
+    int updateByPrimaryKey(FlinkTaskDiagnosis record);
 }

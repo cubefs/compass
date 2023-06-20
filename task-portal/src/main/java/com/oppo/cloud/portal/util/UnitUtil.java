@@ -65,6 +65,7 @@ public class UnitUtil {
             return String.format("%dvcore·s", data);
         }
     }
+
     /**
      * 资源消耗转换
      */
@@ -215,6 +216,10 @@ public class UnitUtil {
             lists.add("" + millisecond / Second + "s");
             millisecond = millisecond % Second;
         }
-        return String.join(",", lists);
+        if (lists.size() > 2) {
+            return String.join("", lists.subList(0, 2));
+        } else {
+            return String.join("", lists);
+        }
     }
 }

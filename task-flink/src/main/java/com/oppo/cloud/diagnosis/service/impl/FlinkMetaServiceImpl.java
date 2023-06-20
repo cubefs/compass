@@ -129,21 +129,21 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         saveRealtimeTask(task);
 
         // 保存实时 app 元数据
-        RealtimeTaskApp realtimeTaskApp;
-        RealtimeTaskAppExample realtimeTaskAppExample = new RealtimeTaskAppExample();
-        realtimeTaskAppExample.createCriteria()
+        FlinkTaskApp flinkTaskApp;
+        FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
+        flinkTaskAppExample.createCriteria()
                 .andApplicationIdEqualTo(taskApplication.getApplicationId());
-        List<RealtimeTaskApp> realtimeTaskApps = flinkTaskAppMapper.selectByExample(realtimeTaskAppExample);
-        if (realtimeTaskApps == null || realtimeTaskApps.size() == 0) {
-            realtimeTaskApp = new RealtimeTaskApp();
-        } else if (realtimeTaskApps.size() == 1) {
-            realtimeTaskApp = realtimeTaskApps.get(0);
+        List<FlinkTaskApp> flinkTaskApps = flinkTaskAppMapper.selectByExample(flinkTaskAppExample);
+        if (flinkTaskApps == null || flinkTaskApps.size() == 0) {
+            flinkTaskApp = new FlinkTaskApp();
+        } else if (flinkTaskApps.size() == 1) {
+            flinkTaskApp = flinkTaskApps.get(0);
         } else {
-            realtimeTaskApp = realtimeTaskApps.get(0);
+            flinkTaskApp = flinkTaskApps.get(0);
             log.error("realtimeTaskApps size 大于1 , appid:{}", taskApplication.getApplicationId());
         }
         // 保存实时task app
-        saveRealtimeTaskApp(realtimeTaskApp, yarnApp, task, taskApplication);
+        saveRealtimeTaskApp(flinkTaskApp, yarnApp, task, taskApplication);
     }
 
 
@@ -171,7 +171,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         return null;
     }
 
-    public void saveRealtimeTaskApp(RealtimeTaskApp realtimeTaskApp, YarnApp yarnApp, Task task,
+    public void saveRealtimeTaskApp(FlinkTaskApp flinkTaskApp, YarnApp yarnApp, Task task,
                                     TaskApplication taskApplication) {
         User user = getUserById(task.getUserId());
         if (
@@ -179,57 +179,57 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
                         yarnApp.getState().equalsIgnoreCase(YarnApplicationState.FAILED.getDesc()) ||
                         yarnApp.getState().equalsIgnoreCase(YarnApplicationState.KILLED.getDesc())
         ) {
-            realtimeTaskApp.setTaskState(RealtimeTaskAppState.FINISHED.getDesc());
+            flinkTaskApp.setTaskState(RealtimeTaskAppState.FINISHED.getDesc());
         } else {
-            realtimeTaskApp.setTaskState(RealtimeTaskAppState.RUNNING.getDesc());
+            flinkTaskApp.setTaskState(RealtimeTaskAppState.RUNNING.getDesc());
         }
         // task meta
-        realtimeTaskApp.setUsername(user.getUsername());
-        realtimeTaskApp.setUserId(user.getUserId());
-        realtimeTaskApp.setProjectName(task.getProjectName());
-        realtimeTaskApp.setProjectId(task.getProjectId());
-        realtimeTaskApp.setFlowName(task.getFlowName());
-        realtimeTaskApp.setFlowId(task.getFlowId());
-        realtimeTaskApp.setTaskName(task.getTaskName());
-        realtimeTaskApp.setTaskId(task.getId());
+        flinkTaskApp.setUsername(user.getUsername());
+        flinkTaskApp.setUserId(user.getUserId());
+        flinkTaskApp.setProjectName(task.getProjectName());
+        flinkTaskApp.setProjectId(task.getProjectId());
+        flinkTaskApp.setFlowName(task.getFlowName());
+        flinkTaskApp.setFlowId(task.getFlowId());
+        flinkTaskApp.setTaskName(task.getTaskName());
+        flinkTaskApp.setTaskId(task.getId());
         // task instance meta
-        realtimeTaskApp.setExecutionTime(taskApplication.getExecuteTime());
-        realtimeTaskApp.setTaskInstanceId(taskApplication.getId());
-        realtimeTaskApp.setRetryTimes(taskApplication.getRetryTimes());
+        flinkTaskApp.setExecutionTime(taskApplication.getExecuteTime());
+        flinkTaskApp.setTaskInstanceId(taskApplication.getId());
+        flinkTaskApp.setRetryTimes(taskApplication.getRetryTimes());
         // yarn app meta
-        realtimeTaskApp.setApplicationId(yarnApp.getId());
-        realtimeTaskApp.setFlinkTrackUrl(yarnApp.getTrackingUrl());
-        realtimeTaskApp.setAllocatedMb(yarnApp.getAllocatedMB());
-        realtimeTaskApp.setAllocatedVcores(yarnApp.getAllocatedVCores());
-        realtimeTaskApp.setRunningContainers(yarnApp.getRunningContainers());
-        realtimeTaskApp.setEngineType(yarnApp.getApplicationType());
-        realtimeTaskApp.setDuration((double) yarnApp.getElapsedTime());
-        realtimeTaskApp.setStartTime(new Date(yarnApp.getStartedTime()));
-        realtimeTaskApp.setEndTime(new Date(yarnApp.getFinishedTime()));
-        realtimeTaskApp.setVcoreSeconds((float) yarnApp.getVcoreSeconds());
-        realtimeTaskApp.setMemorySeconds((float) yarnApp.getMemorySeconds());
-        realtimeTaskApp.setQueue(yarnApp.getQueue());
-        realtimeTaskApp.setClusterName(yarnApp.getClusterName());
-        realtimeTaskApp.setExecuteUser(yarnApp.getUser());
+        flinkTaskApp.setApplicationId(yarnApp.getId());
+        flinkTaskApp.setFlinkTrackUrl(yarnApp.getTrackingUrl());
+        flinkTaskApp.setAllocatedMb(yarnApp.getAllocatedMB());
+        flinkTaskApp.setAllocatedVcores(yarnApp.getAllocatedVCores());
+        flinkTaskApp.setRunningContainers(yarnApp.getRunningContainers());
+        flinkTaskApp.setEngineType(yarnApp.getApplicationType());
+        flinkTaskApp.setDuration((double) yarnApp.getElapsedTime());
+        flinkTaskApp.setStartTime(new Date(yarnApp.getStartedTime()));
+        flinkTaskApp.setEndTime(new Date(yarnApp.getFinishedTime()));
+        flinkTaskApp.setVcoreSeconds((float) yarnApp.getVcoreSeconds());
+        flinkTaskApp.setMemorySeconds((float) yarnApp.getMemorySeconds());
+        flinkTaskApp.setQueue(yarnApp.getQueue());
+        flinkTaskApp.setClusterName(yarnApp.getClusterName());
+        flinkTaskApp.setExecuteUser(yarnApp.getUser());
         // flink meta
-        List<JobManagerConfigItem> configItems = reqFlinkConfig(realtimeTaskApp.getFlinkTrackUrl());
+        List<JobManagerConfigItem> configItems = reqFlinkConfig(flinkTaskApp.getFlinkTrackUrl());
         if (configItems != null) {
-            String jobId = getJobId(realtimeTaskApp.getFlinkTrackUrl());
-            fillFlinkMetaWithFlinkConfigOnYarn(realtimeTaskApp, configItems, jobId);
+            String jobId = getJobId(flinkTaskApp.getFlinkTrackUrl());
+            fillFlinkMetaWithFlinkConfigOnYarn(flinkTaskApp, configItems, jobId);
         } else {
-            if (realtimeTaskApp.getId() == null) {
+            if (flinkTaskApp.getId() == null) {
                 log.error("flink config null {}", yarnApp);
                 return;
             }
         }
-        if (realtimeTaskApp.getCreateTime() == null) {
-            realtimeTaskApp.setCreateTime(new Date());
+        if (flinkTaskApp.getCreateTime() == null) {
+            flinkTaskApp.setCreateTime(new Date());
         }
-        realtimeTaskApp.setUpdateTime(new Date());
-        if (realtimeTaskApp.getId() == null) {
-            flinkTaskAppMapper.insertSelective(realtimeTaskApp);
+        flinkTaskApp.setUpdateTime(new Date());
+        if (flinkTaskApp.getId() == null) {
+            flinkTaskAppMapper.insertSelective(flinkTaskApp);
         } else {
-            flinkTaskAppMapper.updateByPrimaryKeySelective(realtimeTaskApp);
+            flinkTaskAppMapper.updateByPrimaryKeySelective(flinkTaskApp);
         }
     }
 
@@ -297,32 +297,32 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         }
     }
 
-    public void fillFlinkMetaWithFlinkConfigOnYarn(RealtimeTaskApp realtimeTaskApp, List<JobManagerConfigItem> configItems, String jobId) {
+    public void fillFlinkMetaWithFlinkConfigOnYarn(FlinkTaskApp flinkTaskApp, List<JobManagerConfigItem> configItems, String jobId) {
         try {
 
             // 找资源参数
             for (JobManagerConfigItem jobManagerConfigItem : configItems) {
                 if (flinkYarnConfig.getParallel().equalsIgnoreCase(jobManagerConfigItem.getKey())) {
-                    realtimeTaskApp.setParallel(Integer.valueOf(jobManagerConfigItem.getValue()));
+                    flinkTaskApp.setParallel(Integer.valueOf(jobManagerConfigItem.getValue()));
                 }
                 if (flinkYarnConfig.getTmSlot().equalsIgnoreCase(jobManagerConfigItem.getKey())) {
-                    realtimeTaskApp.setTmSlot(Integer.valueOf(jobManagerConfigItem.getValue()));
+                    flinkTaskApp.setTmSlot(Integer.valueOf(jobManagerConfigItem.getValue()));
                 }
                 if (flinkYarnConfig.getTmSlot().equalsIgnoreCase(jobManagerConfigItem.getKey())) {
-                    realtimeTaskApp.setTmCore(Integer.valueOf(jobManagerConfigItem.getValue()));
+                    flinkTaskApp.setTmCore(Integer.valueOf(jobManagerConfigItem.getValue()));
                 }
                 if (flinkYarnConfig.getTmMemory().equalsIgnoreCase(jobManagerConfigItem.getKey())) {
                     int tmMemMb = MemorySize.parse(jobManagerConfigItem.getValue())
                             .getMebiBytes();
-                    realtimeTaskApp.setTmMem(tmMemMb);
+                    flinkTaskApp.setTmMem(tmMemMb);
                 }
                 if (flinkYarnConfig.getJmMemory().equalsIgnoreCase(jobManagerConfigItem.getKey())) {
                     int jmMemMb = MemorySize.parse(jobManagerConfigItem.getValue())
                             .getMebiBytes();
-                    realtimeTaskApp.setJmMem(jmMemMb);
+                    flinkTaskApp.setJmMem(jmMemMb);
                 }
                 if (flinkYarnConfig.getJobName().equalsIgnoreCase(jobManagerConfigItem.getKey())) {
-                    realtimeTaskApp.setJobName(jobManagerConfigItem.getValue());
+                    flinkTaskApp.setJobName(jobManagerConfigItem.getValue());
                 }
             }
         } catch (Throwable t) {
@@ -331,10 +331,10 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
     }
 
     public void saveRealtimeTask(Task task) {
-        RealtimeTaskExample realtimeTaskExample = new RealtimeTaskExample();
-        realtimeTaskExample.createCriteria()
+        FlinkTaskExample flinkTaskExample = new FlinkTaskExample();
+        flinkTaskExample.createCriteria()
                 .andTaskIdEqualTo(task.getId());
-        List<FlinkTask> flinkTaskApps = flinkTaskMapper.selectByExample(realtimeTaskExample);
+        List<FlinkTask> flinkTaskApps = flinkTaskMapper.selectByExample(flinkTaskExample);
         if (flinkTaskApps.size() > 1) {
             log.error("realtimeTaskApps size > 1 id : {}", task.getId());
         }

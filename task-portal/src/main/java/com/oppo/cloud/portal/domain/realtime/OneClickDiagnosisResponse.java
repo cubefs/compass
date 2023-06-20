@@ -1,6 +1,6 @@
 package com.oppo.cloud.portal.domain.realtime;
 
-import com.oppo.cloud.model.RealtimeTaskDiagnosis;
+import com.oppo.cloud.model.FlinkTaskDiagnosis;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -11,5 +11,5 @@ public class OneClickDiagnosisResponse {
     @ApiModelProperty(value = "异常信息")
     private String errorMsg;
     @ApiModelProperty(value = "实时诊断结果")
-    private RealtimeTaskDiagnosis realtimeTaskDiagnosis;
+    private FlinkTaskDiagnosis flinkTaskDiagnosis;
 }

@@ -13,7 +13,7 @@
     </resultMap>
 
     <select id="getDiagnosisTime" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisGeneralViewQuery" resultType="java.time.LocalDateTime">
-        select max(diagnosis_end_time) as diagnosis_end_time from realtime_task_diagnosis where diagnosis_from = 0 and
+        select max(diagnosis_end_time) as diagnosis_end_time from flink_task_diagnosis where diagnosis_from = 0 and
         <![CDATA[ diagnosis_end_time >= #{startTs} and diagnosis_end_time <= #{endTs} ]]>
     </select>
 
@@ -42,13 +42,13 @@
         case when ( diagnosis_resource_type like '%3,%' or diagnosis_resource_type like '%3]%')
         then tm_mem * tm_num - diagnosis_tm_mem_size * diagnosis_tm_num else 0 end as cut_mem_num,
         FROM_UNIXTIME( #{endTs} , '%Y-%m-%d' ) as dt
-        from realtime_task_diagnosis
+        from flink_task_diagnosis
         where diagnosis_from = 0 and
         <![CDATA[ diagnosis_end_time >= #{startTs} and diagnosis_end_time <= #{endTs} ]]>
         ) a
     </select>
     <select id="getDiagnosisDates" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisGeneralViewQuery" resultType="java.time.LocalDateTime">
-        select distinct diagnosis_end_time from realtime_task_diagnosis where diagnosis_from = 0 and
+        select distinct diagnosis_end_time from flink_task_diagnosis where diagnosis_from = 0 and
         <![CDATA[ diagnosis_end_time >= #{startTs} and diagnosis_end_time <= #{endTs} ]]>
     </select>
     <select id="getGeneralViewTrend"  resultMap="generalViewNumberMap">
@@ -77,7 +77,7 @@
         case when ( diagnosis_resource_type like '%3,%' or diagnosis_resource_type like '%3]%')
         then tm_mem * tm_num - diagnosis_tm_mem_size * diagnosis_tm_num else 0 end as cut_mem_num,
         DATE_FORMAT( diagnosis_end_time , '%Y-%m-%d' ) as dt
-        from realtime_task_diagnosis where diagnosis_from = 0 and
+        from flink_task_diagnosis where diagnosis_from = 0 and
         diagnosis_end_time in
         <foreach item="item" collection="diagnosisEndTimes" open="(" separator="," close=")">
             #{item}
@@ -89,7 +89,7 @@
             resultMap="com.oppo.cloud.mapper.FlinkTaskDiagnosisMapper.BaseResultMap">
         select
         <include refid="com.oppo.cloud.mapper.FlinkTaskDiagnosisMapper.Base_Column_List" />
-        from realtime_task_diagnosis
+        from flink_task_diagnosis
         <trim prefix="where (" prefixOverrides="and" suffix=")">
             <if test="projectName != null and projectName!=''">
                 and project_name=#{projectName}

@@ -77,13 +77,13 @@
     id, username, user_id, project_name, project_id, flow_name, flow_id, task_name, task_id, 
     deleted, create_time, update_time
   </sql>
-  <select id="selectByExample" parameterType="com.oppo.cloud.model.RealtimeTaskExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.oppo.cloud.model.FlinkTaskExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from realtime_task
+    from flink_task
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -94,15 +94,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from realtime_task
+    from flink_task
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from realtime_task
+    delete from flink_task
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.oppo.cloud.model.RealtimeTaskExample">
-    delete from realtime_task
+  <delete id="deleteByExample" parameterType="com.oppo.cloud.model.FlinkTaskExample">
+    delete from flink_task
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -111,7 +111,7 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into realtime_task (username, user_id, project_name, 
+    insert into flink_task (username, user_id, project_name, 
       project_id, flow_name, flow_id, 
       task_name, task_id, deleted, 
       create_time, update_time)
@@ -124,7 +124,7 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into realtime_task
+    insert into flink_task
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="username != null">
         username,
@@ -196,14 +196,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.oppo.cloud.model.RealtimeTaskExample" resultType="java.lang.Long">
-    select count(*) from realtime_task
+  <select id="countByExample" parameterType="com.oppo.cloud.model.FlinkTaskExample" resultType="java.lang.Long">
+    select count(*) from flink_task
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update realtime_task
+    update flink_task
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
@@ -247,7 +247,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update realtime_task
+    update flink_task
     set id = #{record.id,jdbcType=INTEGER},
       username = #{record.username,jdbcType=VARCHAR},
       user_id = #{record.userId,jdbcType=INTEGER},
@@ -265,7 +265,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.FlinkTask">
-    update realtime_task
+    update flink_task
     <set>
       <if test="username != null">
         username = #{username,jdbcType=VARCHAR},
@@ -304,7 +304,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.FlinkTask">
-    update realtime_task
+    update flink_task
     set username = #{username,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=INTEGER},
       project_name = #{projectName,jdbcType=VARCHAR},

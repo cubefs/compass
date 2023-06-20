@@ -1,7 +1,6 @@
 package com.oppo.cloud.portal.controller;
 
 
-import com.alibaba.fastjson2.JSON;
 import com.oppo.cloud.common.api.CommonPage;
 import com.oppo.cloud.common.api.CommonStatus;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisFrom;
@@ -9,9 +8,9 @@ import com.oppo.cloud.common.domain.flink.enums.DiagnosisResourceType;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisRuleType;
 import com.oppo.cloud.common.domain.flink.enums.FlinkRule;
 import com.oppo.cloud.mapper.FlinkTaskAppMapper;
-import com.oppo.cloud.model.RealtimeTaskApp;
-import com.oppo.cloud.model.RealtimeTaskAppExample;
-import com.oppo.cloud.model.RealtimeTaskDiagnosis;
+import com.oppo.cloud.model.FlinkTaskApp;
+import com.oppo.cloud.model.FlinkTaskAppExample;
+import com.oppo.cloud.model.FlinkTaskDiagnosis;
 import com.oppo.cloud.portal.domain.realtime.*;
 import com.oppo.cloud.portal.service.FlinkTaskDiagnosisService;
 import io.swagger.annotations.Api;
@@ -125,7 +124,7 @@ public class RealtimeTaskDiagnosisController {
     @PostMapping(value = "/page")
     @ApiOperation(value = "诊断作业列表", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus<CommonPage<RealtimeTaskDiagnosis>> pageJobs(@Validated @RequestBody DiagnosisAdviceListReq request) {
+    public CommonStatus<CommonPage<FlinkTaskDiagnosis>> pageJobs(@Validated @RequestBody DiagnosisAdviceListReq request) {
         try {
             List<String> includeCategories = request.getIncludeCategories();
             if (includeCategories != null) {
@@ -199,7 +198,7 @@ public class RealtimeTaskDiagnosisController {
 
     @PostMapping("/getReport")
     @ApiOperation(value = "获取诊断报告")
-    public CommonStatus<DiagnosisReportResp> getReport(@Validated @RequestBody RealtimeTaskDiagnosis request) {
+    public CommonStatus<DiagnosisReportResp> getReport(@Validated @RequestBody FlinkTaskDiagnosis request) {
         try {
             return CommonStatus.success(realtimeService.getReport(request));
         } catch (Throwable t) {
@@ -250,9 +249,9 @@ public class RealtimeTaskDiagnosisController {
 
     @PostMapping("/updateState")
     @ApiOperation(value = "更新状态")
-    public CommonStatus<RealtimeTaskDiagnosis> updateState(@Validated @RequestBody RealtimeTaskDiagnosis realtimeTaskDiagnosis) {
+    public CommonStatus<FlinkTaskDiagnosis> updateState(@Validated @RequestBody FlinkTaskDiagnosis flinkTaskDiagnosis) {
         try {
-            return realtimeService.updateStatus(realtimeTaskDiagnosis);
+            return realtimeService.updateStatus(flinkTaskDiagnosis);
         } catch (Throwable t) {
             log.error(t.getMessage(), t);
             return CommonStatus.failed("内部错误");
@@ -273,22 +272,22 @@ public class RealtimeTaskDiagnosisController {
 
     @PostMapping("/saveRealtimeTaskApp")
     @ApiOperation(value = "诊断")
-    public CommonStatus<RealtimeTaskApp> saveRealtimeTaskApp(@RequestBody RealtimeTaskApp realtimeTaskApp) {
+    public CommonStatus<FlinkTaskApp> saveRealtimeTaskApp(@RequestBody FlinkTaskApp flinkTaskApp) {
         try {
-            RealtimeTaskAppExample realtimeTaskAppExample = new RealtimeTaskAppExample();
-            realtimeTaskAppExample.createCriteria()
-                    .andApplicationIdEqualTo(realtimeTaskApp.getApplicationId());
-            List<RealtimeTaskApp> realtimeTaskApps = flinkTaskAppMapper.selectByExample(realtimeTaskAppExample);
-            if (realtimeTaskApps == null || realtimeTaskApps.size() == 0) {
-                flinkTaskAppMapper.insert(realtimeTaskApp);
-                return CommonStatus.success(realtimeTaskApp);
-            } else if (realtimeTaskApps.size() == 1) {
-                RealtimeTaskApp pre = realtimeTaskApps.get(0);
-                pre.setTaskState(realtimeTaskApp.getTaskState());
+            FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
+            flinkTaskAppExample.createCriteria()
+                    .andApplicationIdEqualTo(flinkTaskApp.getApplicationId());
+            List<FlinkTaskApp> flinkTaskApps = flinkTaskAppMapper.selectByExample(flinkTaskAppExample);
+            if (flinkTaskApps == null || flinkTaskApps.size() == 0) {
+                flinkTaskAppMapper.insert(flinkTaskApp);
+                return CommonStatus.success(flinkTaskApp);
+            } else if (flinkTaskApps.size() == 1) {
+                FlinkTaskApp pre = flinkTaskApps.get(0);
+                pre.setTaskState(flinkTaskApp.getTaskState());
                 flinkTaskAppMapper.updateByPrimaryKeySelective(pre);
                 return CommonStatus.success(pre);
             } else {
-                log.error("realtimeTaskApps size 大于1 , appid:{}", realtimeTaskApp.getApplicationId());
+                log.error("realtimeTaskApps size 大于1 , appid:{}", flinkTaskApp.getApplicationId());
                 return CommonStatus.failed("内部错误");
             }
         } catch (Throwable t) {
