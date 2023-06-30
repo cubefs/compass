@@ -1,8 +1,8 @@
 package com.oppo.cloud.diagnosis.service.impl;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oppo.cloud.common.constant.YarnAppFinalStatus;
 import com.oppo.cloud.common.constant.YarnAppType;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
 import com.oppo.cloud.common.domain.flink.FlinkJobs;
@@ -20,13 +20,26 @@ import com.oppo.cloud.mapper.TaskMapper;
 import com.oppo.cloud.mapper.UserMapper;
 import com.oppo.cloud.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,17 +83,108 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
     FlinkTaskMapper flinkTaskMapper;
     @Autowired
     FlinkYarnConfig flinkYarnConfig;
+    @Value("${custom.elasticsearch.yarnIndex.name}")
+    private String yarnAppIndex;
+    @Resource(name = "flinkElasticClient")
+    RestHighLevelClient restHighLevelClient;
     /**
      * flink task type
      */
     private static final String TASK_TYPE_FLINK = "FLINK";
 
-    public YarnApp requestYarnApp(String appId) {
+    public SearchSourceBuilder genSearchBuilder(Map<String, Object> termQuery, Map<String, Object[]> rangeConditions,
+                                                Map<String, SortOrder> sort,
+                                                Map<String, Object> or) {
+        SearchSourceBuilder builder = new SearchSourceBuilder();
+        BoolQueryBuilder boolQuery = new BoolQueryBuilder();
+        // 查询条件
+        for (String key : termQuery.keySet()) {
+            Object value = termQuery.get(key);
+            if (value == null) {
+                // null值查询
+                boolQuery.mustNot(QueryBuilders.existsQuery(key));
+            } else if ("".equals(value)) {
+                // 不匹配任何有效字符串
+                boolQuery.mustNot(QueryBuilders.wildcardQuery(key, "*"));
+            } else if (value instanceof java.util.List) {
+                // 列表查询
+                boolQuery.filter(QueryBuilders.termsQuery(key, (List<String>) value));
+            } else {
+                // 单字符串查询
+                boolQuery.filter(QueryBuilders.termsQuery(key, value));
+            }
+        }
+        // or条件查询[xx and (a=1 or c=2)]
+        if (or != null) {
+            BoolQueryBuilder orQuery = new BoolQueryBuilder();
+            for (String key : or.keySet()) {
+                Object value = or.get(key);
+                if (value != null) {
+                    orQuery.should(QueryBuilders.termQuery(key, value));
+                }
+            }
+            boolQuery.must(orQuery);
+        }
+        // 范围查询
+        if (rangeConditions != null) {
+            for (String key : rangeConditions.keySet()) {
+                RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(key);
+                Object[] queryValue = rangeConditions.get(key);
+                if (queryValue[0] != null) {
+                    rangeQueryBuilder.gte(queryValue[0]);
+                }
+                if (queryValue[1] != null) {
+                    rangeQueryBuilder.lte(queryValue[1]);
+                }
+                boolQuery.filter(rangeQueryBuilder);
+            }
+        }
+        // sort
+        if (sort != null) {
+            for (String key : sort.keySet()) {
+                builder.sort(key, sort.get(key));
+            }
+        }
+        builder.query(boolQuery);
+        return builder;
+    }
+
+    public SearchHits find(SearchSourceBuilder builder, String... indexes) throws Exception {
+        SearchRequest searchRequest = new SearchRequest().indices(indexes).source(builder);
+        Long startTime = System.currentTimeMillis();
+        SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        Long endTime = System.currentTimeMillis();
+        log.info("indexes:{}, duration:{} ,condition:{}", indexes, (endTime - startTime) / 1000, builder.toString());
+        return searchResponse.getHits();
+    }
+
+    public YarnApp requestYarnApp(String applicationId) {
         try {
-            //todo:from es
-            return null;
-        } catch (Throwable e) {
-            log.info(e.getMessage(), e);
+            YarnApp yarnApp = null;
+            HashMap<String, Object> termQuery = new HashMap<>();
+            termQuery.put("id.keyword", applicationId);
+            SearchSourceBuilder searchSourceBuilder = this.genSearchBuilder(termQuery, null, null, null);
+            SearchHits searchHits = this.find(searchSourceBuilder, yarnAppIndex + "-*");
+            if (searchHits.getHits().length == 0) {
+                log.info("can not find this appId from yarnApp, appId:{}", applicationId);
+                return null;
+            }
+            for (SearchHit hit : searchHits) {
+                yarnApp = JSON.parseObject(hit.getSourceAsString(), YarnApp.class);
+            }
+            if (yarnApp == null) {
+                log.info("yarnApp is null, appId:{}", applicationId);
+                return null;
+            }
+            if (yarnApp.getFinalStatus().equals(YarnAppFinalStatus.SUCCEEDED.toString()) ||
+                    yarnApp.getFinalStatus().equals(YarnAppFinalStatus.FAILED.toString()) ||
+                    yarnApp.getFinalStatus().equals(YarnAppFinalStatus.KILLED.toString())) {
+                return yarnApp;
+            }
+            log.info("yarnApp state:{}, finalStatus:{}, appId:{}", yarnApp.getState(),
+                    yarnApp.getFinalStatus(), applicationId);
+        } catch (Throwable t) {
+            log.error(t.getMessage(), t);
         }
         return null;
     }

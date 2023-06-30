@@ -7,12 +7,12 @@ import java.time.LocalDateTime;
 
 @Data
 public class GeneralViewNumberDto {
-    Integer baseTaskCntSum;
-    Integer exceptionTaskCntSum;
-    Integer resourceTaskCntSum;
-    Integer totalCoreNumSum;
-    Integer totalMemNumSum;
-    Integer cutCoreNumSum;
-    Integer cutMemNumSum;
+    Integer baseTaskCntSum = 0;
+    Integer exceptionTaskCntSum = 0;
+    Integer resourceTaskCntSum= 0;
+    Integer totalCoreNumSum= 0;
+    Integer totalMemNumSum= 0;
+    Integer cutCoreNumSum= 0;
+    Integer cutMemNumSum= 0;
     String date;
 }

@@ -146,6 +146,12 @@ const getHeight = () => {
               APP运行
             </template>
           </el-menu-item>
+          <el-menu-item v-if="`${activeRoute}`=='realtime'" :index="`/${activeRoute}/metadata`">
+            <el-icon><el-image class="logo" :src="appLogo" /></el-icon>
+            <template #title>
+              元数据
+            </template>
+          </el-menu-item>
           <el-menu-item :index="`/${activeRoute}/white`">
             <el-icon><el-image class="logo" :src="whiteLogo" /></el-icon>
             <template #title>

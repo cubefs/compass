@@ -28,12 +28,14 @@
     <result column="cluster_name" jdbcType="VARCHAR" property="clusterName" />
     <result column="retry_times" jdbcType="INTEGER" property="retryTimes" />
     <result column="execute_user" jdbcType="VARCHAR" property="executeUser" />
+    <result column="diagnosis" jdbcType="VARCHAR" property="diagnosis" />
     <result column="parallel" jdbcType="INTEGER" property="parallel" />
     <result column="tm_slot" jdbcType="INTEGER" property="tmSlot" />
     <result column="tm_core" jdbcType="INTEGER" property="tmCore" />
     <result column="tm_mem" jdbcType="INTEGER" property="tmMem" />
     <result column="jm_mem" jdbcType="INTEGER" property="jmMem" />
     <result column="tm_num" jdbcType="INTEGER" property="tmNum" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
     <result column="diagnosis_end_time" jdbcType="TIMESTAMP" property="diagnosisEndTime" />
     <result column="diagnosis_start_time" jdbcType="TIMESTAMP" property="diagnosisStartTime" />
     <result column="diagnosis_resource_type" jdbcType="VARCHAR" property="diagnosisResourceType" />
@@ -48,12 +50,6 @@
     <result column="process_state" jdbcType="VARCHAR" property="processState" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="diagnosis" jdbcType="LONGVARCHAR" property="diagnosis" />
-    <result column="job_name" jdbcType="LONGVARCHAR" property="jobName" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.oppo.cloud.model.FlinkTaskDiagnosis">
-    <result column="diagnosis" jdbcType="LONGVARCHAR" property="diagnosis" />
-    <result column="job_name" jdbcType="LONGVARCHAR" property="jobName" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -117,31 +113,12 @@
     id, flink_task_app_id, username, user_id, project_name, project_id, flow_name, flow_id, 
     task_name, task_id, application_id, flink_track_url, allocated_mb, allocated_vcores, 
     running_containers, engine_type, execution_time, duration, start_time, end_time, 
-    vcore_seconds, memory_seconds, queue, cluster_name, retry_times, execute_user, parallel, 
-    tm_slot, tm_core, tm_mem, jm_mem, tm_num, diagnosis_end_time, diagnosis_start_time, 
-    diagnosis_resource_type, diagnosis_from, diagnosis_parallel, diagnosis_jm_mem_size, 
-    diagnosis_tm_mem_size, diagnosis_tm_slot_num, diagnosis_tm_core_num, diagnosis_tm_num, 
-    diagnosis_types, process_state, create_time, update_time,diagnosis, job_name
+    vcore_seconds, memory_seconds, queue, cluster_name, retry_times, execute_user, diagnosis, 
+    parallel, tm_slot, tm_core, tm_mem, jm_mem, tm_num, job_name, diagnosis_end_time, 
+    diagnosis_start_time, diagnosis_resource_type, diagnosis_from, diagnosis_parallel, 
+    diagnosis_jm_mem_size, diagnosis_tm_mem_size, diagnosis_tm_slot_num, diagnosis_tm_core_num, 
+    diagnosis_tm_num, diagnosis_types, process_state, create_time, update_time
   </sql>
-  <sql id="Blob_Column_List">
-    diagnosis, job_name
-  </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosisExample" resultMap="ResultMapWithBLOBs">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from flink_task_diagnosis
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
   <select id="selectByExample" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosisExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -156,11 +133,9 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
     from flink_task_diagnosis
     where id = #{id,jdbcType=INTEGER}
   </select>
@@ -186,15 +161,15 @@
       execution_time, duration, start_time, 
       end_time, vcore_seconds, memory_seconds, 
       queue, cluster_name, retry_times, 
-      execute_user, parallel, tm_slot, 
-      tm_core, tm_mem, jm_mem, 
-      tm_num, diagnosis_end_time, diagnosis_start_time, 
+      execute_user, diagnosis, parallel, 
+      tm_slot, tm_core, tm_mem, 
+      jm_mem, tm_num, job_name, 
+      diagnosis_end_time, diagnosis_start_time, 
       diagnosis_resource_type, diagnosis_from, diagnosis_parallel, 
       diagnosis_jm_mem_size, diagnosis_tm_mem_size, 
       diagnosis_tm_slot_num, diagnosis_tm_core_num, 
       diagnosis_tm_num, diagnosis_types, process_state, 
-      create_time, update_time, diagnosis, 
-      job_name)
+      create_time, update_time)
     values (#{flinkTaskAppId,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
       #{projectName,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{flowName,jdbcType=VARCHAR}, 
       #{flowId,jdbcType=INTEGER}, #{taskName,jdbcType=VARCHAR}, #{taskId,jdbcType=INTEGER}, 
@@ -203,15 +178,15 @@
       #{executionTime,jdbcType=TIMESTAMP}, #{duration,jdbcType=DOUBLE}, #{startTime,jdbcType=TIMESTAMP}, 
       #{endTime,jdbcType=TIMESTAMP}, #{vcoreSeconds,jdbcType=REAL}, #{memorySeconds,jdbcType=REAL}, 
       #{queue,jdbcType=VARCHAR}, #{clusterName,jdbcType=VARCHAR}, #{retryTimes,jdbcType=INTEGER}, 
-      #{executeUser,jdbcType=VARCHAR}, #{parallel,jdbcType=INTEGER}, #{tmSlot,jdbcType=INTEGER}, 
-      #{tmCore,jdbcType=INTEGER}, #{tmMem,jdbcType=INTEGER}, #{jmMem,jdbcType=INTEGER}, 
-      #{tmNum,jdbcType=INTEGER}, #{diagnosisEndTime,jdbcType=TIMESTAMP}, #{diagnosisStartTime,jdbcType=TIMESTAMP}, 
+      #{executeUser,jdbcType=VARCHAR}, #{diagnosis,jdbcType=VARCHAR}, #{parallel,jdbcType=INTEGER}, 
+      #{tmSlot,jdbcType=INTEGER}, #{tmCore,jdbcType=INTEGER}, #{tmMem,jdbcType=INTEGER}, 
+      #{jmMem,jdbcType=INTEGER}, #{tmNum,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR}, 
+      #{diagnosisEndTime,jdbcType=TIMESTAMP}, #{diagnosisStartTime,jdbcType=TIMESTAMP}, 
       #{diagnosisResourceType,jdbcType=VARCHAR}, #{diagnosisFrom,jdbcType=INTEGER}, #{diagnosisParallel,jdbcType=INTEGER}, 
       #{diagnosisJmMemSize,jdbcType=INTEGER}, #{diagnosisTmMemSize,jdbcType=INTEGER}, 
       #{diagnosisTmSlotNum,jdbcType=INTEGER}, #{diagnosisTmCoreNum,jdbcType=INTEGER}, 
       #{diagnosisTmNum,jdbcType=INTEGER}, #{diagnosisTypes,jdbcType=VARCHAR}, #{processState,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{diagnosis,jdbcType=LONGVARCHAR}, 
-      #{jobName,jdbcType=LONGVARCHAR})
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosis">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -294,6 +269,9 @@
       <if test="executeUser != null">
         execute_user,
       </if>
+      <if test="diagnosis != null">
+        diagnosis,
+      </if>
       <if test="parallel != null">
         parallel,
       </if>
@@ -311,6 +289,9 @@
       </if>
       <if test="tmNum != null">
         tm_num,
+      </if>
+      <if test="jobName != null">
+        job_name,
       </if>
       <if test="diagnosisEndTime != null">
         diagnosis_end_time,
@@ -353,12 +334,6 @@
       </if>
       <if test="updateTime != null">
         update_time,
-      </if>
-      <if test="diagnosis != null">
-        diagnosis,
-      </if>
-      <if test="jobName != null">
-        job_name,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -437,6 +412,9 @@
       <if test="executeUser != null">
         #{executeUser,jdbcType=VARCHAR},
       </if>
+      <if test="diagnosis != null">
+        #{diagnosis,jdbcType=VARCHAR},
+      </if>
       <if test="parallel != null">
         #{parallel,jdbcType=INTEGER},
       </if>
@@ -454,6 +432,9 @@
       </if>
       <if test="tmNum != null">
         #{tmNum,jdbcType=INTEGER},
+      </if>
+      <if test="jobName != null">
+        #{jobName,jdbcType=VARCHAR},
       </if>
       <if test="diagnosisEndTime != null">
         #{diagnosisEndTime,jdbcType=TIMESTAMP},
@@ -496,12 +477,6 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="diagnosis != null">
-        #{diagnosis,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="jobName != null">
-        #{jobName,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
@@ -592,6 +567,9 @@
       <if test="record.executeUser != null">
         execute_user = #{record.executeUser,jdbcType=VARCHAR},
       </if>
+      <if test="record.diagnosis != null">
+        diagnosis = #{record.diagnosis,jdbcType=VARCHAR},
+      </if>
       <if test="record.parallel != null">
         parallel = #{record.parallel,jdbcType=INTEGER},
       </if>
@@ -609,6 +587,9 @@
       </if>
       <if test="record.tmNum != null">
         tm_num = #{record.tmNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.jobName != null">
+        job_name = #{record.jobName,jdbcType=VARCHAR},
       </if>
       <if test="record.diagnosisEndTime != null">
         diagnosis_end_time = #{record.diagnosisEndTime,jdbcType=TIMESTAMP},
@@ -652,67 +633,7 @@
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.diagnosis != null">
-        diagnosis = #{record.diagnosis,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="record.jobName != null">
-        job_name = #{record.jobName,jdbcType=LONGVARCHAR},
-      </if>
     </set>
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExampleWithBLOBs" parameterType="map">
-    update flink_task_diagnosis
-    set id = #{record.id,jdbcType=INTEGER},
-      flink_task_app_id = #{record.flinkTaskAppId,jdbcType=INTEGER},
-      username = #{record.username,jdbcType=VARCHAR},
-      user_id = #{record.userId,jdbcType=INTEGER},
-      project_name = #{record.projectName,jdbcType=VARCHAR},
-      project_id = #{record.projectId,jdbcType=INTEGER},
-      flow_name = #{record.flowName,jdbcType=VARCHAR},
-      flow_id = #{record.flowId,jdbcType=INTEGER},
-      task_name = #{record.taskName,jdbcType=VARCHAR},
-      task_id = #{record.taskId,jdbcType=INTEGER},
-      application_id = #{record.applicationId,jdbcType=VARCHAR},
-      flink_track_url = #{record.flinkTrackUrl,jdbcType=VARCHAR},
-      allocated_mb = #{record.allocatedMb,jdbcType=INTEGER},
-      allocated_vcores = #{record.allocatedVcores,jdbcType=INTEGER},
-      running_containers = #{record.runningContainers,jdbcType=INTEGER},
-      engine_type = #{record.engineType,jdbcType=VARCHAR},
-      execution_time = #{record.executionTime,jdbcType=TIMESTAMP},
-      duration = #{record.duration,jdbcType=DOUBLE},
-      start_time = #{record.startTime,jdbcType=TIMESTAMP},
-      end_time = #{record.endTime,jdbcType=TIMESTAMP},
-      vcore_seconds = #{record.vcoreSeconds,jdbcType=REAL},
-      memory_seconds = #{record.memorySeconds,jdbcType=REAL},
-      queue = #{record.queue,jdbcType=VARCHAR},
-      cluster_name = #{record.clusterName,jdbcType=VARCHAR},
-      retry_times = #{record.retryTimes,jdbcType=INTEGER},
-      execute_user = #{record.executeUser,jdbcType=VARCHAR},
-      parallel = #{record.parallel,jdbcType=INTEGER},
-      tm_slot = #{record.tmSlot,jdbcType=INTEGER},
-      tm_core = #{record.tmCore,jdbcType=INTEGER},
-      tm_mem = #{record.tmMem,jdbcType=INTEGER},
-      jm_mem = #{record.jmMem,jdbcType=INTEGER},
-      tm_num = #{record.tmNum,jdbcType=INTEGER},
-      diagnosis_end_time = #{record.diagnosisEndTime,jdbcType=TIMESTAMP},
-      diagnosis_start_time = #{record.diagnosisStartTime,jdbcType=TIMESTAMP},
-      diagnosis_resource_type = #{record.diagnosisResourceType,jdbcType=VARCHAR},
-      diagnosis_from = #{record.diagnosisFrom,jdbcType=INTEGER},
-      diagnosis_parallel = #{record.diagnosisParallel,jdbcType=INTEGER},
-      diagnosis_jm_mem_size = #{record.diagnosisJmMemSize,jdbcType=INTEGER},
-      diagnosis_tm_mem_size = #{record.diagnosisTmMemSize,jdbcType=INTEGER},
-      diagnosis_tm_slot_num = #{record.diagnosisTmSlotNum,jdbcType=INTEGER},
-      diagnosis_tm_core_num = #{record.diagnosisTmCoreNum,jdbcType=INTEGER},
-      diagnosis_tm_num = #{record.diagnosisTmNum,jdbcType=INTEGER},
-      diagnosis_types = #{record.diagnosisTypes,jdbcType=VARCHAR},
-      process_state = #{record.processState,jdbcType=VARCHAR},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      diagnosis = #{record.diagnosis,jdbcType=LONGVARCHAR},
-      job_name = #{record.jobName,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -745,12 +666,14 @@
       cluster_name = #{record.clusterName,jdbcType=VARCHAR},
       retry_times = #{record.retryTimes,jdbcType=INTEGER},
       execute_user = #{record.executeUser,jdbcType=VARCHAR},
+      diagnosis = #{record.diagnosis,jdbcType=VARCHAR},
       parallel = #{record.parallel,jdbcType=INTEGER},
       tm_slot = #{record.tmSlot,jdbcType=INTEGER},
       tm_core = #{record.tmCore,jdbcType=INTEGER},
       tm_mem = #{record.tmMem,jdbcType=INTEGER},
       jm_mem = #{record.jmMem,jdbcType=INTEGER},
       tm_num = #{record.tmNum,jdbcType=INTEGER},
+      job_name = #{record.jobName,jdbcType=VARCHAR},
       diagnosis_end_time = #{record.diagnosisEndTime,jdbcType=TIMESTAMP},
       diagnosis_start_time = #{record.diagnosisStartTime,jdbcType=TIMESTAMP},
       diagnosis_resource_type = #{record.diagnosisResourceType,jdbcType=VARCHAR},
@@ -847,6 +770,9 @@
       <if test="executeUser != null">
         execute_user = #{executeUser,jdbcType=VARCHAR},
       </if>
+      <if test="diagnosis != null">
+        diagnosis = #{diagnosis,jdbcType=VARCHAR},
+      </if>
       <if test="parallel != null">
         parallel = #{parallel,jdbcType=INTEGER},
       </if>
@@ -864,6 +790,9 @@
       </if>
       <if test="tmNum != null">
         tm_num = #{tmNum,jdbcType=INTEGER},
+      </if>
+      <if test="jobName != null">
+        job_name = #{jobName,jdbcType=VARCHAR},
       </if>
       <if test="diagnosisEndTime != null">
         diagnosis_end_time = #{diagnosisEndTime,jdbcType=TIMESTAMP},
@@ -907,64 +836,7 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="diagnosis != null">
-        diagnosis = #{diagnosis,jdbcType=LONGVARCHAR},
-      </if>
-      <if test="jobName != null">
-        job_name = #{jobName,jdbcType=LONGVARCHAR},
-      </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosis">
-    update flink_task_diagnosis
-    set flink_task_app_id = #{flinkTaskAppId,jdbcType=INTEGER},
-      username = #{username,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=INTEGER},
-      project_name = #{projectName,jdbcType=VARCHAR},
-      project_id = #{projectId,jdbcType=INTEGER},
-      flow_name = #{flowName,jdbcType=VARCHAR},
-      flow_id = #{flowId,jdbcType=INTEGER},
-      task_name = #{taskName,jdbcType=VARCHAR},
-      task_id = #{taskId,jdbcType=INTEGER},
-      application_id = #{applicationId,jdbcType=VARCHAR},
-      flink_track_url = #{flinkTrackUrl,jdbcType=VARCHAR},
-      allocated_mb = #{allocatedMb,jdbcType=INTEGER},
-      allocated_vcores = #{allocatedVcores,jdbcType=INTEGER},
-      running_containers = #{runningContainers,jdbcType=INTEGER},
-      engine_type = #{engineType,jdbcType=VARCHAR},
-      execution_time = #{executionTime,jdbcType=TIMESTAMP},
-      duration = #{duration,jdbcType=DOUBLE},
-      start_time = #{startTime,jdbcType=TIMESTAMP},
-      end_time = #{endTime,jdbcType=TIMESTAMP},
-      vcore_seconds = #{vcoreSeconds,jdbcType=REAL},
-      memory_seconds = #{memorySeconds,jdbcType=REAL},
-      queue = #{queue,jdbcType=VARCHAR},
-      cluster_name = #{clusterName,jdbcType=VARCHAR},
-      retry_times = #{retryTimes,jdbcType=INTEGER},
-      execute_user = #{executeUser,jdbcType=VARCHAR},
-      parallel = #{parallel,jdbcType=INTEGER},
-      tm_slot = #{tmSlot,jdbcType=INTEGER},
-      tm_core = #{tmCore,jdbcType=INTEGER},
-      tm_mem = #{tmMem,jdbcType=INTEGER},
-      jm_mem = #{jmMem,jdbcType=INTEGER},
-      tm_num = #{tmNum,jdbcType=INTEGER},
-      diagnosis_end_time = #{diagnosisEndTime,jdbcType=TIMESTAMP},
-      diagnosis_start_time = #{diagnosisStartTime,jdbcType=TIMESTAMP},
-      diagnosis_resource_type = #{diagnosisResourceType,jdbcType=VARCHAR},
-      diagnosis_from = #{diagnosisFrom,jdbcType=INTEGER},
-      diagnosis_parallel = #{diagnosisParallel,jdbcType=INTEGER},
-      diagnosis_jm_mem_size = #{diagnosisJmMemSize,jdbcType=INTEGER},
-      diagnosis_tm_mem_size = #{diagnosisTmMemSize,jdbcType=INTEGER},
-      diagnosis_tm_slot_num = #{diagnosisTmSlotNum,jdbcType=INTEGER},
-      diagnosis_tm_core_num = #{diagnosisTmCoreNum,jdbcType=INTEGER},
-      diagnosis_tm_num = #{diagnosisTmNum,jdbcType=INTEGER},
-      diagnosis_types = #{diagnosisTypes,jdbcType=VARCHAR},
-      process_state = #{processState,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      diagnosis = #{diagnosis,jdbcType=LONGVARCHAR},
-      job_name = #{jobName,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.FlinkTaskDiagnosis">
@@ -994,12 +866,14 @@
       cluster_name = #{clusterName,jdbcType=VARCHAR},
       retry_times = #{retryTimes,jdbcType=INTEGER},
       execute_user = #{executeUser,jdbcType=VARCHAR},
+      diagnosis = #{diagnosis,jdbcType=VARCHAR},
       parallel = #{parallel,jdbcType=INTEGER},
       tm_slot = #{tmSlot,jdbcType=INTEGER},
       tm_core = #{tmCore,jdbcType=INTEGER},
       tm_mem = #{tmMem,jdbcType=INTEGER},
       jm_mem = #{jmMem,jdbcType=INTEGER},
       tm_num = #{tmNum,jdbcType=INTEGER},
+      job_name = #{jobName,jdbcType=VARCHAR},
       diagnosis_end_time = #{diagnosisEndTime,jdbcType=TIMESTAMP},
       diagnosis_start_time = #{diagnosisStartTime,jdbcType=TIMESTAMP},
       diagnosis_resource_type = #{diagnosisResourceType,jdbcType=VARCHAR},

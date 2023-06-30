@@ -123,42 +123,58 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         LocalDateTime endDt = LocalDateTime.ofEpochSecond(request.getEndTs(), 0, ZoneOffset.ofHours(8));
         GeneralViewNumberDto generalViewNumber = flinkTaskDiagnosisExtendMapper
                 .getGeneralViewNumber(getDiagnosisTime(startDt, endDt));
+        if(generalViewNumber == null){
+            generalViewNumber = new GeneralViewNumberDto();
+        }
         GeneralViewNumberDto generalViewNumberDay1Before = flinkTaskDiagnosisExtendMapper
                 .getGeneralViewNumber(getDiagnosisTime(startDt.minusDays(1), endDt.minusDays(1)));
+        if(generalViewNumberDay1Before == null){
+            generalViewNumberDay1Before = new GeneralViewNumberDto();
+        }
         GeneralViewNumberDto generalViewNumberDay7Before = flinkTaskDiagnosisExtendMapper
                 .getGeneralViewNumber(getDiagnosisTime(startDt.minusDays(7), endDt.minusDays(7)));
+        if(generalViewNumberDay7Before == null){
+            generalViewNumberDay7Before = new GeneralViewNumberDto();
+        }
         DiagnosisGeneralViewNumberResp diagnosisGeneralViewNumberResp = new DiagnosisGeneralViewNumberResp();
         diagnosisGeneralViewNumberResp.setGeneralViewNumberDto(generalViewNumber);
         diagnosisGeneralViewNumberResp.setGeneralViewNumberDtoDay1Before(generalViewNumberDay1Before);
         diagnosisGeneralViewNumberResp.setGeneralViewNumberDtoDay7Before(generalViewNumberDay7Before);
-        if (generalViewNumber.getBaseTaskCntSum() == 0) {
-            diagnosisGeneralViewNumberResp.setAbnormalJobNumRatio(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setAbnormalJobNumRatio(
-                    (float) generalViewNumber.getExceptionTaskCntSum() /
-                            generalViewNumber.getBaseTaskCntSum());
+        if (generalViewNumber != null) {
+            if (generalViewNumber.getBaseTaskCntSum() == 0) {
+                diagnosisGeneralViewNumberResp.setAbnormalJobNumRatio(0f);
+            } else {
+                diagnosisGeneralViewNumberResp.setAbnormalJobNumRatio(
+                        (float) generalViewNumber.getExceptionTaskCntSum() /
+                                generalViewNumber.getBaseTaskCntSum());
+            }
         }
-
-        if (generalViewNumberDay7Before.getExceptionTaskCntSum() == 0) {
-            diagnosisGeneralViewNumberResp.setAbnormalJobNumChainRatio(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setAbnormalJobNumChainRatio(
-                    (float) (generalViewNumber.getExceptionTaskCntSum() - generalViewNumberDay7Before.getExceptionTaskCntSum())
-                            / generalViewNumberDay7Before.getExceptionTaskCntSum());
+        if (generalViewNumberDay7Before != null && generalViewNumber != null) {
+            if (generalViewNumberDay7Before.getExceptionTaskCntSum() == 0) {
+                diagnosisGeneralViewNumberResp.setAbnormalJobNumChainRatio(0f);
+            } else {
+                diagnosisGeneralViewNumberResp.setAbnormalJobNumChainRatio(
+                        (float) (generalViewNumber.getExceptionTaskCntSum() - generalViewNumberDay7Before.getExceptionTaskCntSum())
+                                / generalViewNumberDay7Before.getExceptionTaskCntSum());
+            }
         }
-        if (generalViewNumberDay1Before.getExceptionTaskCntSum() == 0) {
-            diagnosisGeneralViewNumberResp.setAbnormalJobNumDayOnDay(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setAbnormalJobNumDayOnDay(
-                    (float) (generalViewNumber.getExceptionTaskCntSum() - generalViewNumberDay1Before.getExceptionTaskCntSum())
-                            / generalViewNumberDay1Before.getExceptionTaskCntSum());
+        if(generalViewNumberDay1Before!=null && generalViewNumber!=null) {
+            if (generalViewNumberDay1Before.getExceptionTaskCntSum() == 0) {
+                diagnosisGeneralViewNumberResp.setAbnormalJobNumDayOnDay(0f);
+            } else {
+                diagnosisGeneralViewNumberResp.setAbnormalJobNumDayOnDay(
+                        (float) (generalViewNumber.getExceptionTaskCntSum() - generalViewNumberDay1Before.getExceptionTaskCntSum())
+                                / generalViewNumberDay1Before.getExceptionTaskCntSum());
+            }
         }
-        if (generalViewNumber.getBaseTaskCntSum() == 0) {
-            diagnosisGeneralViewNumberResp.setResourceJobNumRatio(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setResourceJobNumRatio(
-                    (float) (generalViewNumber.getResourceTaskCntSum())
-                            / generalViewNumber.getBaseTaskCntSum());
+        if(generalViewNumber!=null) {
+            if (generalViewNumber.getBaseTaskCntSum() == 0) {
+                diagnosisGeneralViewNumberResp.setResourceJobNumRatio(0f);
+            } else {
+                diagnosisGeneralViewNumberResp.setResourceJobNumRatio(
+                        (float) (generalViewNumber.getResourceTaskCntSum())
+                                / generalViewNumber.getBaseTaskCntSum());
+            }
         }
         if (generalViewNumberDay7Before.getResourceTaskCntSum() == 0) {
             diagnosisGeneralViewNumberResp.setResourceJobNumChainRatio(0f);
@@ -384,12 +400,14 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
                     int costMem = flinkTaskDiagnosis.getTmMem() * flinkTaskDiagnosis.getTmNum();
                     String diagnosisTypes = flinkTaskDiagnosis.getDiagnosisTypes();
                     List<Integer> diagnosisTypesList = JSON.parseArray(diagnosisTypes, Integer.class);
-                    for (Integer t : diagnosisTypesList) {
-                        FlinkRule flinkRule = FlinkRule.valueOf(t);
-                        String key = flinkRule.getName();
-                        numDistribute.put(key, numDistribute.getOrDefault(key, 0L) + 1);
-                        memDistribute.put(key, memDistribute.getOrDefault(key, 0L) + costMem);
-                        cpuDistribute.put(key, cpuDistribute.getOrDefault(key, 0L) + costCores);
+                    if (diagnosisTypesList != null) {
+                        for (Integer t : diagnosisTypesList) {
+                            FlinkRule flinkRule = FlinkRule.valueOf(t);
+                            String key = flinkRule.getName();
+                            numDistribute.put(key, numDistribute.getOrDefault(key, 0L) + 1);
+                            memDistribute.put(key, memDistribute.getOrDefault(key, 0L) + costMem);
+                            cpuDistribute.put(key, cpuDistribute.getOrDefault(key, 0L) + costCores);
+                        }
                     }
                 }
             } catch (Throwable t) {

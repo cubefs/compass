@@ -21,6 +21,9 @@ compass
 ├── task-metadata                       同步Yarn、Spark任务元数据到Elasticsearch
 ├── task-parser                         日志解析和Spark任务异常检测
 ├── task-portal                         异常任务的可视化服务
+├── task-flink                          Flink任务资源及异常诊断
+├── task-flink-core                     Flink任务诊断规则逻辑
+├── task-portal                         异常任务的可视化服务
 └── task-syncer                         调度平台任务关系表的抽象和映射
 ```
 ### 初始化数据库

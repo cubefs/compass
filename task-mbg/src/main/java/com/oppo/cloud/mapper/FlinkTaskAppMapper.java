@@ -16,21 +16,15 @@ public interface FlinkTaskAppMapper {
 
     int insertSelective(FlinkTaskApp record);
 
-    List<FlinkTaskApp> selectByExampleWithBLOBs(FlinkTaskAppExample example);
-
     List<FlinkTaskApp> selectByExample(FlinkTaskAppExample example);
 
     FlinkTaskApp selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") FlinkTaskApp record, @Param("example") FlinkTaskAppExample example);
 
-    int updateByExampleWithBLOBs(@Param("record") FlinkTaskApp record, @Param("example") FlinkTaskAppExample example);
-
     int updateByExample(@Param("record") FlinkTaskApp record, @Param("example") FlinkTaskAppExample example);
 
     int updateByPrimaryKeySelective(FlinkTaskApp record);
-
-    int updateByPrimaryKeyWithBLOBs(FlinkTaskApp record);
 
     int updateByPrimaryKey(FlinkTaskApp record);
 }

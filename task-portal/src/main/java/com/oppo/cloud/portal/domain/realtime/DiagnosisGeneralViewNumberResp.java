@@ -10,28 +10,28 @@ public class DiagnosisGeneralViewNumberResp {
     /**
      * 异常作业数占比
      */
-    Float abnormalJobNumRatio;
+    Float abnormalJobNumRatio = 0f;
     /**
      * 异常作业数环比占比(与上周比)
      */
-    Float abnormalJobNumChainRatio;
+    Float abnormalJobNumChainRatio = 0f;
     /**
      * 异常作业数同比占比(与昨天比)
      */
-    Float abnormalJobNumDayOnDay;
+    Float abnormalJobNumDayOnDay = 0f;
 
     /**
      * 资源优化作业数占比
      */
-    Float resourceJobNumRatio;
+    Float resourceJobNumRatio = 0f;
     /**
      * 资源优化作业数环比占比(与上周比)
      */
-    Float resourceJobNumChainRatio;
+    Float resourceJobNumChainRatio = 0f;
     /**
      * 资源优化作业数同比占比(与昨天比)
      */
-    Float resourceJobNumDayOnDay;
+    Float resourceJobNumDayOnDay = 0f;
     /**
      * cpu单位个
      */
@@ -39,15 +39,15 @@ public class DiagnosisGeneralViewNumberResp {
     /**
      * 资源优化cpu数占比
      */
-    Float resourceCpuNumRatio;
+    Float resourceCpuNumRatio = 0f;
     /**
      * 资源优化cpu数环比占比(与上周比)
      */
-    Float resourceCpuNumChainRatio;
+    Float resourceCpuNumChainRatio =0f;
     /**
      * 资源优化cpu数同比占比(与昨天比)
      */
-    Float resourceCpuNumDayOnDay;
+    Float resourceCpuNumDayOnDay = 0f;
     /**
      * memory单位MB
      */
@@ -55,13 +55,13 @@ public class DiagnosisGeneralViewNumberResp {
     /**
      * 资源优化memory数占比
      */
-    Float resourceMemoryNumRatio;
+    Float resourceMemoryNumRatio = 0f;
     /**
      * 资源优化memory数环比占比(与上周比)
      */
-    Float resourceMemoryNumChainRatio;
+    Float resourceMemoryNumChainRatio=0f;
     /**
      * 资源优化memory数同比占比(与昨天比)
      */
-    Float resourceMemoryNumDayOnDay;
+    Float resourceMemoryNumDayOnDay = 0f;
 }

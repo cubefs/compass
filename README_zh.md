@@ -8,13 +8,14 @@
 
 - 非侵入式，即时诊断，无需修改已有的调度平台，即可体验诊断效果。
 - 支持多种主流调度平台，例如DolphinScheduler、Airflow或自研等。
-- 支持多版本Spark、Hadoop 2.x和3.x 任务日志诊断和解析。
+- 支持多版本Spark、Flink、Hadoop 2.x和3.x 任务日志诊断和解析。
 - 支持工作流层异常诊断，识别各种失败和基线耗时异常问题。
 - 支持引擎层异常诊断，包含数据倾斜、大表扫描、内存浪费等14种异常类型。
 - 支持各种日志匹配规则编写和异常阈值调整，可自行根据实际场景优化。
 
-罗盘已支持诊断类型概览：
+罗盘已支持诊断类型概览：  
 
+Spark引擎:
 <table>
     <tr>
         <td>诊断维度</td>
@@ -108,6 +109,70 @@
     </tr>
 </table>
 
+Flink引擎:
+<table>
+    <tr>
+        <td>诊断维度</td>
+        <td>诊断类型</td>
+        <td>类型说明</td>
+    </tr>
+    <tr>
+        <td rowspan="10">资源诊断</td>
+        <td>内存利用率高</td>
+        <td>计算内存的使用率，如果使用率高于阈值，则增加内存</td>
+    </tr>
+    <tr>
+        <td>内存利用率低</td>
+        <td>计算内存的使用率，如果使用率低于阈值，则降低内存</td>
+    </tr>
+    <tr>
+        <td>JM内存优化</td>
+        <td>根据tm个数计算jm内存的建议值</td>
+    </tr>
+    <tr>
+        <td>作业无流量</td>
+        <td>检测作业的kafka source算子是否没有流量</td>
+    </tr>
+    <tr>
+        <td>TM管理内存优化</td>
+        <td>计算作业管理内存的使用率，给出合适的管理内存建议值</td>
+    </tr>
+    <tr>
+        <td>部分TM空跑</td>
+        <td>检测是否有tm没有流量，并且cpu和内存也没有使用</td>
+    </tr>
+    <tr>
+        <td>并行度不够</td>
+        <td>检测作业是否因为并行度不够引起延迟</td>
+    </tr>
+    <tr>
+        <td>CPU利用率高</td>
+        <td>计算作业的CPU均值使用率，如果高于阈值，则增加cpu</td>
+    </tr>
+    <tr>
+        <td>CPU利用率低</td>
+        <td>计算作业的CPU均值使用率，如果低于阈值，则降低cpu</td>
+    </tr>
+    <tr>
+        <td>CPU峰值利用率高</td>
+        <td>计算作业的CPU峰值使用率，如果高于阈值，则增加cpu</td>
+    </tr>
+    <tr>
+        <td rowspan="3">异常诊断</td>
+        <td>存在慢算子</td>
+        <td>检测作业是否存在慢算子</td>
+    </tr>
+    <tr>
+        <td>存在反压算子</td>
+        <td>检测作业是否存在反压算子</td>
+    </tr>
+    <tr>
+        <td>作业延迟高</td>
+        <td>检测作业的kafka延迟是否高于阈值</td>
+    </tr>
+</table>
+
+
 ## 如何使用
 
 ### 1. 代码编译
@@ -144,6 +209,10 @@ export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
 # Elasticsearch
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
+# Flink metric prometheus
+export FLINK_PROMETHEUS_HOST="host"
+export FLINK_PROMETHEUS_TOKEN=""
+export FLINK_PROMETHEUS_DATABASE=""
 ```
 
 ```shell
@@ -193,7 +262,7 @@ Compass 表结构由两部分组成，一个是compass.sql，另一个是依赖�
 [部署指南](document/manual/deployment.md)
 
 ## 系统截图
-
+Spark:
 ![overview](document/manual/img/overview.png)
 ![overview-1](document/manual/img/overview-1.png)
 ![tasks](document/manual/img/tasks.png)
@@ -201,7 +270,11 @@ Compass 表结构由两部分组成，一个是compass.sql，另一个是依赖�
 ![application](document/manual/img/application.png)
 ![cpu](document/manual/img/cpu.png)
 ![memory](document/manual/img/memory.png)
-
+Flink:
+![overview](document/manual/img/flink-overview-1.png)
+![overview-1](document/manual/img/flink-overview-2.png)
+![tasks](document/manual/img/flink-list.png)
+![report](document/manual/img/flink-report.png)
 
 ## 版权
 

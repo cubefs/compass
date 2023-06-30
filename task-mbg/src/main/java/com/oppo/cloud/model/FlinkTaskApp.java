@@ -86,6 +86,9 @@ public class FlinkTaskApp implements Serializable {
     @ApiModelProperty(value = "执行用户")
     private String executeUser;
 
+    @ApiModelProperty(value = "yarn诊断信息")
+    private String diagnosis;
+
     @ApiModelProperty(value = "flink 并行度")
     private Integer parallel;
 
@@ -101,17 +104,14 @@ public class FlinkTaskApp implements Serializable {
     @ApiModelProperty(value = "flink jm_mem")
     private Integer jmMem;
 
+    @ApiModelProperty(value = "job name")
+    private String jobName;
+
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
-
-    @ApiModelProperty(value = "yarn诊断信息")
-    private String diagnosis;
-
-    @ApiModelProperty(value = "job name")
-    private String jobName;
 
     private static final long serialVersionUID = 1L;
 
@@ -331,6 +331,14 @@ public class FlinkTaskApp implements Serializable {
         this.executeUser = executeUser;
     }
 
+    public String getDiagnosis() {
+        return diagnosis;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
+    }
+
     public Integer getParallel() {
         return parallel;
     }
@@ -371,6 +379,14 @@ public class FlinkTaskApp implements Serializable {
         this.jmMem = jmMem;
     }
 
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -385,22 +401,6 @@ public class FlinkTaskApp implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public String getDiagnosis() {
-        return diagnosis;
-    }
-
-    public void setDiagnosis(String diagnosis) {
-        this.diagnosis = diagnosis;
-    }
-
-    public String getJobName() {
-        return jobName;
-    }
-
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
     }
 
     @Override
@@ -436,15 +436,15 @@ public class FlinkTaskApp implements Serializable {
         sb.append(", clusterName=").append(clusterName);
         sb.append(", retryTimes=").append(retryTimes);
         sb.append(", executeUser=").append(executeUser);
+        sb.append(", diagnosis=").append(diagnosis);
         sb.append(", parallel=").append(parallel);
         sb.append(", tmSlot=").append(tmSlot);
         sb.append(", tmCore=").append(tmCore);
         sb.append(", tmMem=").append(tmMem);
         sb.append(", jmMem=").append(jmMem);
+        sb.append(", jobName=").append(jobName);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
-        sb.append(", diagnosis=").append(diagnosis);
-        sb.append(", jobName=").append(jobName);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

@@ -16,21 +16,15 @@ public interface FlinkTaskDiagnosisMapper {
 
     int insertSelective(FlinkTaskDiagnosis record);
 
-    List<FlinkTaskDiagnosis> selectByExampleWithBLOBs(FlinkTaskDiagnosisExample example);
-
     List<FlinkTaskDiagnosis> selectByExample(FlinkTaskDiagnosisExample example);
 
     FlinkTaskDiagnosis selectByPrimaryKey(Integer id);
 
     int updateByExampleSelective(@Param("record") FlinkTaskDiagnosis record, @Param("example") FlinkTaskDiagnosisExample example);
 
-    int updateByExampleWithBLOBs(@Param("record") FlinkTaskDiagnosis record, @Param("example") FlinkTaskDiagnosisExample example);
-
     int updateByExample(@Param("record") FlinkTaskDiagnosis record, @Param("example") FlinkTaskDiagnosisExample example);
 
     int updateByPrimaryKeySelective(FlinkTaskDiagnosis record);
-
-    int updateByPrimaryKeyWithBLOBs(FlinkTaskDiagnosis record);
 
     int updateByPrimaryKey(FlinkTaskDiagnosis record);
 }

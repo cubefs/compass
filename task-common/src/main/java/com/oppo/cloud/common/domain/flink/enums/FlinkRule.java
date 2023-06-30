@@ -55,13 +55,13 @@ public enum FlinkRule {
     /**
      * CPU均值利用率高
      */
-    AvgCpuHighRule(10, "CPU均值利用率高", "rgb(255, 114, 46)",
-            "计算作业的CPU均值使用率，如果高于阈值，则增加cpu", DiagnosisRuleType.ResourceRule.getCode()),
+    AvgCpuHighRule(10, "CPU利用率高", "rgb(255, 114, 46)",
+            "计算作业的CPU使用率，如果高于阈值，则增加cpu", DiagnosisRuleType.ResourceRule.getCode()),
     /**
      * CPU均值利用率低
      */
-    AvgCpuLowRule(11, "CPU均值利用率低", "rgb(255, 114, 46)",
-            "计算作业的CPU均值使用率，如果低于阈值，则降低cpu", DiagnosisRuleType.ResourceRule.getCode()),
+    AvgCpuLowRule(11, "CPU利用率低", "rgb(255, 114, 46)",
+            "计算作业的CPU使用率，如果低于阈值，则降低cpu", DiagnosisRuleType.ResourceRule.getCode()),
     /**
      * CPU峰值利用率高
      */

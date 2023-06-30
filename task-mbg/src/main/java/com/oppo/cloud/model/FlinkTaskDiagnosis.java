@@ -86,6 +86,9 @@ public class FlinkTaskDiagnosis implements Serializable {
     @ApiModelProperty(value = "执行用户")
     private String executeUser;
 
+    @ApiModelProperty(value = "yarn诊断信息")
+    private String diagnosis;
+
     @ApiModelProperty(value = "flink 并行度")
     private Integer parallel;
 
@@ -103,6 +106,9 @@ public class FlinkTaskDiagnosis implements Serializable {
 
     @ApiModelProperty(value = "flink tm_num")
     private Integer tmNum;
+
+    @ApiModelProperty(value = "job name")
+    private String jobName;
 
     @ApiModelProperty(value = "诊断结束时间")
     private Date diagnosisEndTime;
@@ -145,13 +151,6 @@ public class FlinkTaskDiagnosis implements Serializable {
 
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
-
-    @ApiModelProperty(value = "yarn诊断信息")
-    private String diagnosis;
-
-    @ApiModelProperty(value = "job name")
-    private String jobName;
-
     String timeCost;
     String resourceCost;
     String memCost;
@@ -367,6 +366,14 @@ public class FlinkTaskDiagnosis implements Serializable {
         this.executeUser = executeUser;
     }
 
+    public String getDiagnosis() {
+        return diagnosis;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
+    }
+
     public Integer getParallel() {
         return parallel;
     }
@@ -413,6 +420,14 @@ public class FlinkTaskDiagnosis implements Serializable {
 
     public void setTmNum(Integer tmNum) {
         this.tmNum = tmNum;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
     }
 
     public Date getDiagnosisEndTime() {
@@ -527,22 +542,6 @@ public class FlinkTaskDiagnosis implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public String getDiagnosis() {
-        return diagnosis;
-    }
-
-    public void setDiagnosis(String diagnosis) {
-        this.diagnosis = diagnosis;
-    }
-
-    public String getJobName() {
-        return jobName;
-    }
-
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -575,12 +574,14 @@ public class FlinkTaskDiagnosis implements Serializable {
         sb.append(", clusterName=").append(clusterName);
         sb.append(", retryTimes=").append(retryTimes);
         sb.append(", executeUser=").append(executeUser);
+        sb.append(", diagnosis=").append(diagnosis);
         sb.append(", parallel=").append(parallel);
         sb.append(", tmSlot=").append(tmSlot);
         sb.append(", tmCore=").append(tmCore);
         sb.append(", tmMem=").append(tmMem);
         sb.append(", jmMem=").append(jmMem);
         sb.append(", tmNum=").append(tmNum);
+        sb.append(", jobName=").append(jobName);
         sb.append(", diagnosisEndTime=").append(diagnosisEndTime);
         sb.append(", diagnosisStartTime=").append(diagnosisStartTime);
         sb.append(", diagnosisResourceType=").append(diagnosisResourceType);
@@ -595,8 +596,6 @@ public class FlinkTaskDiagnosis implements Serializable {
         sb.append(", processState=").append(processState);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
-        sb.append(", diagnosis=").append(diagnosis);
-        sb.append(", jobName=").append(jobName);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

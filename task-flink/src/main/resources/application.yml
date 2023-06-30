@@ -33,7 +33,7 @@ spring:
   kafka:
     bootstrap-servers: "localhost:9095"
     taskApplicationTopic: "task-application"
-    realtimeTaskAppTopic: "realtime-task-app"
+    flinkTaskApp: "flink-task-app"
     consumer:
       group-id: "task-flink-diagnosis-local"
       auto-offset-reset: "latest"  # 从提交offset开始消费，无提交offset,从头开始消费
@@ -55,3 +55,41 @@ diagnosis:
   flinkPrometheusHost: http://localhost:9090
   flinkPrometheusToken:
   flinkPrometheusDatabase:
+
+custom:
+  elasticsearch:
+    logIndex:
+      name: "compass-log-summary"
+      shards: 10
+      replicas: 2
+    appIndex:
+      name: "compass-task-app"
+      shards: 10
+      replicas: 2
+    jobIndex:
+      name: "compass-job-analysis"
+      shards: 10
+      replicas: 2
+
+    detectIndex:
+      name: "compass-detector-app"
+
+    gcIndex:
+      name: "compass-gc-log"
+
+    yarnIndex:
+      name: "compass-yarn-app"
+
+    sparkIndex:
+      name: "compass-spark-app"
+
+    jobInstanceIndex:
+      name: "compass-job-instance"
+      shards: 10
+      replicas: 2
+    realtimeReportIndex:
+      name: "stream-task-report"
+      shards: 10
+      replicas: 2
+  redis:
+    logRecordKey: "{lua}:log:record"

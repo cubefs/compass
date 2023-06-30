@@ -1835,6 +1835,76 @@ public class FlinkTaskAppExample {
             return (Criteria) this;
         }
 
+        public Criteria andDiagnosisIsNull() {
+            addCriterion("diagnosis is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisIsNotNull() {
+            addCriterion("diagnosis is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisEqualTo(String value) {
+            addCriterion("diagnosis =", value, "diagnosis");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisNotEqualTo(String value) {
+            addCriterion("diagnosis <>", value, "diagnosis");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisGreaterThan(String value) {
+            addCriterion("diagnosis >", value, "diagnosis");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisGreaterThanOrEqualTo(String value) {
+            addCriterion("diagnosis >=", value, "diagnosis");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisLessThan(String value) {
+            addCriterion("diagnosis <", value, "diagnosis");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisLessThanOrEqualTo(String value) {
+            addCriterion("diagnosis <=", value, "diagnosis");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisLike(String value) {
+            addCriterion("diagnosis like", value, "diagnosis");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisNotLike(String value) {
+            addCriterion("diagnosis not like", value, "diagnosis");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisIn(List<String> values) {
+            addCriterion("diagnosis in", values, "diagnosis");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisNotIn(List<String> values) {
+            addCriterion("diagnosis not in", values, "diagnosis");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisBetween(String value1, String value2) {
+            addCriterion("diagnosis between", value1, value2, "diagnosis");
+            return (Criteria) this;
+        }
+
+        public Criteria andDiagnosisNotBetween(String value1, String value2) {
+            addCriterion("diagnosis not between", value1, value2, "diagnosis");
+            return (Criteria) this;
+        }
+
         public Criteria andParallelIsNull() {
             addCriterion("parallel is null");
             return (Criteria) this;
@@ -2132,6 +2202,76 @@ public class FlinkTaskAppExample {
 
         public Criteria andJmMemNotBetween(Integer value1, Integer value2) {
             addCriterion("jm_mem not between", value1, value2, "jmMem");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameIsNull() {
+            addCriterion("job_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameIsNotNull() {
+            addCriterion("job_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameEqualTo(String value) {
+            addCriterion("job_name =", value, "jobName");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameNotEqualTo(String value) {
+            addCriterion("job_name <>", value, "jobName");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameGreaterThan(String value) {
+            addCriterion("job_name >", value, "jobName");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameGreaterThanOrEqualTo(String value) {
+            addCriterion("job_name >=", value, "jobName");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameLessThan(String value) {
+            addCriterion("job_name <", value, "jobName");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameLessThanOrEqualTo(String value) {
+            addCriterion("job_name <=", value, "jobName");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameLike(String value) {
+            addCriterion("job_name like", value, "jobName");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameNotLike(String value) {
+            addCriterion("job_name not like", value, "jobName");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameIn(List<String> values) {
+            addCriterion("job_name in", values, "jobName");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameNotIn(List<String> values) {
+            addCriterion("job_name not in", values, "jobName");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameBetween(String value1, String value2) {
+            addCriterion("job_name between", value1, value2, "jobName");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobNameNotBetween(String value1, String value2) {
+            addCriterion("job_name not between", value1, value2, "jobName");
             return (Criteria) this;
         }
 

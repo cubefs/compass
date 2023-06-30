@@ -20,6 +20,10 @@ public class DiagnosisAdviceListReq {
 
     @ApiModelProperty(value = "任务名称")
     private String taskName;
+    @ApiModelProperty(value = "任务名称")
+    private String jobName;
+    @ApiModelProperty(value = "任务状态")
+    private String taskState;
 
     @ApiModelProperty(value = "诊断开始时间秒")
     private Long startTs;

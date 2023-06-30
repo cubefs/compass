@@ -1,6 +1,7 @@
 package com.oppo.cloud.portal.controller;
 
 
+import com.github.pagehelper.PageHelper;
 import com.oppo.cloud.common.api.CommonPage;
 import com.oppo.cloud.common.api.CommonStatus;
 import com.oppo.cloud.common.constant.ComponentEnum;
@@ -40,6 +41,7 @@ public class RealtimeTaskDiagnosisController {
     DiagnosisService diagnosisService;
     @Autowired
     BlocklistMapper blocklistMapper;
+
     @GetMapping(value = "/diagnosisRules")
     @ApiOperation(value = "获取诊断规则信息")
     public CommonStatus<List<DiagnosisRuleResp>> getDiagnosisRules() {
@@ -143,6 +145,60 @@ public class RealtimeTaskDiagnosisController {
                 request.setDiagnosisRule(includeRules);
             }
             return CommonStatus.success(flinkTaskDiagnosisService.pageJobs(request));
+        } catch (Exception e) {
+            return CommonStatus.failed(e.getMessage());
+        }
+    }
+
+    /**
+     * 获取Job列表
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/pageMetadata")
+    @ApiOperation(value = "元数据列表", httpMethod = "POST")
+    @ResponseBody
+    public CommonStatus<CommonPage<FlinkTaskApp>> pageMetadata(@Validated @RequestBody DiagnosisAdviceListReq request) {
+        try {
+            FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
+            FlinkTaskAppExample.Criteria criteria = flinkTaskAppExample.createCriteria();
+            if (request.getProjectName() != null && !request.getProjectName().equals("")) {
+                criteria.andProjectNameEqualTo(request.getProjectName());
+            }
+            if (request.getFlowName() != null && !request.getFlowName().equals("")) {
+                criteria.andFlowNameEqualTo(request.getFlowName());
+            }
+            if (request.getTaskName() != null && !request.getTaskName().equals("")) {
+                criteria.andTaskNameEqualTo(request.getTaskName());
+            }
+            if (request.getJobName() != null && !request.getJobName().equals("")) {
+                criteria.andJobNameEqualTo(request.getJobName());
+            }
+            if (request.getUsername() != null && !request.getUsername().equals("")) {
+                criteria.andUsernameEqualTo(request.getUsername());
+            }
+            if (request.getTaskState() != null && !request.getTaskState().equals("")) {
+                criteria.andTaskStateEqualTo(request.getTaskState());
+            }
+            PageHelper.startPage(request.getPage(), request.getPageSize());
+            List<FlinkTaskApp> flinkTaskApps = flinkTaskAppMapper.selectByExample(flinkTaskAppExample);
+            return CommonStatus.success(CommonPage.restPage(flinkTaskApps));
+        } catch (Exception e) {
+            return CommonStatus.failed(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/deleteMetadata")
+    @ApiOperation(value = "删除元数据", httpMethod = "POST")
+    @ResponseBody
+    public CommonStatus<FlinkTaskApp> deleteMetadata(@Validated @RequestBody FlinkTaskApp flinkTaskApp) {
+        try {
+            if (flinkTaskApp.getId() == null) {
+                return CommonStatus.failed("id为空");
+            }
+            flinkTaskAppMapper.deleteByPrimaryKey(flinkTaskApp.getId());
+            return CommonStatus.success(flinkTaskApp);
         } catch (Exception e) {
             return CommonStatus.failed(e.getMessage());
         }
@@ -261,7 +317,6 @@ public class RealtimeTaskDiagnosisController {
             return CommonStatus.failed("内部错误");
         }
     }
-
 
 
     @PostMapping("/saveRealtimeTaskApp")
