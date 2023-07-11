@@ -18,11 +18,13 @@
 Spark引擎:
 <table>
     <tr>
+        <td>引擎</td>
         <td>诊断维度</td>
         <td>诊断类型</td>
         <td>类型说明</td>
     </tr>
     <tr>
+        <td rowspan="20">Spark</td>
         <td rowspan="3">失败分析</td>
         <td>运行失败</td>
         <td>最终运行失败的任务</td>
@@ -107,16 +109,8 @@ Spark引擎:
         <td>全局排序异常</td>
         <td>全局排序导致运行耗时过长的任务</td>
     </tr>
-</table>
-
-Flink引擎:
-<table>
     <tr>
-        <td>诊断维度</td>
-        <td>诊断类型</td>
-        <td>类型说明</td>
-    </tr>
-    <tr>
+        <td rowspan="20">Flink</td>
         <td rowspan="10">资源诊断</td>
         <td>内存利用率高</td>
         <td>计算内存的使用率，如果使用率高于阈值，则增加内存</td>

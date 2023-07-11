@@ -30,11 +30,13 @@ Compass has supported the concept of diagnostic types:
 Spark:
 <table>
      <tr>
+         <td>Engine</td>
          <td>Diagnostic Dimensions</td>
          <td>Diagnostic Type</td>
          <td>Type Description</td>
      </tr>
      <tr>
+         <td rowspan="20">Spark</td>
          <td rowspan="3">Failure analysis</td>
          <td>Run failure</td>
          <td>Tasks that ultimately fail to run</td>
@@ -119,68 +121,60 @@ Spark:
          <td>Global sorting abnormality</td>
          <td>Tasks with long running time due to global sorting</td>
      </tr>
-</table>
-
-Flink:
-<table>
     <tr>
-        <td>Diagnostic Dimensions</td>
-        <td>Diagnostic Type</td>
-        <td>Type Description</td>
+          <td rowspan="20">Flink</td>
+          <td rowspan="10">Resource analysis</td>
+          <td>High memory utilization</td>
+          <td>Calculates the utilization of memory, if it's higher than threshold,then increase the memory config</td>
     </tr>
     <tr>
-        <td rowspan="10">Resource diagnosis</td>
-        <td>High memory utilization</td>
-        <td>Calculates the utilization of memory,if it's higher than threshold,then increase the memory config</td>
+          <td>Low memory utilization</td>
+          <td>Calculates the utilization of memory, if it's lower than threshold,then decrease the memory config</td>
     </tr>
     <tr>
-        <td>Low memory utilization</td>
-        <td>Calculates the utilization of memory,if it's lower than threshold,then decrease the memory config</td>
+          <td>Job manager memory</td>
+          <td>Calculates the memory of job manager according to tm numbers</td>
     </tr>
     <tr>
-        <td>Job manager memory</td>
-        <td>Calculates the memory of job manager according to tm numbers</td>
+          <td>Job no data flow</td>
+          <td>Calculates if the job has no data flow</td>
     </tr>
     <tr>
-        <td>Job no data flow</td>
-        <td>Calculates if the job has no data flow</td>
+          <td>Task manager manage memory optimization</td>
+          <td>Calculates manage memory utilization of job, give the advice of manage memory config</td>
     </tr>
     <tr>
-        <td>Task manager manage memory optimization</td>
-        <td>Calculates manage memory utilization of job,give the advice of manage memory config</td>
+          <td>Task managers run without data flow</td>
+          <td>Calculates if a part of task managers running without data flow</td>
     </tr>
     <tr>
-        <td>Task managers run without data flow</td>
-        <td>Calculates if a part of task managers running without data flow</td>
+          <td>Parallel not enough</td>
+          <td>Calculates whether the parallel of job is not enough</td>
     </tr>
     <tr>
-        <td>Parallel not enough</td>
-        <td>Calculates whether the parallel of job is not enough</td>
+          <td>Cpu utilization high</td>
+          <td>Calculates the cpu utilization of job, if it's higher than threshold then increase the cpu config</td>
     </tr>
     <tr>
-        <td>Cpu utilization high</td>
-        <td>Calculates the cpu utilization of job,if it's higher than threshold then increase the cpu config</td>
+          <td>Cpu utilization low</td>
+          <td>Calculates the cpu utilization of job, if it's lower than threshold then decrease the cpu config</td>
     </tr>
     <tr>
-        <td>Cpu utilization low</td>
-        <td>Calculates the cpu utilization of job,if it's lower than threshold then decrease the cpu config</td>
+          <td>Cpu peek utilization high</td>
+          <td>Calculates the peek cpu utilization of job, if it's higher than threshold then increase the cpu config</td>
     </tr>
     <tr>
-        <td>Cpu peek utilization high</td>
-        <td>Calculates the peek cpu utilization of job,if it's higher than threshold then increase the cpu config</td>
+          <td rowspan="3">Exception analysis</td>
+          <td>Slow vertices</td>
+          <td>Calculates if the job has slow vertices</td>
     </tr>
     <tr>
-        <td rowspan="3">Exception diagnosis</td>
-        <td>Slow vertices</td>
-        <td>Calculates if the job has slow vertices</td>
+          <td>Back pressure</td>
+          <td>Calculates if the job has back pressure</td>
     </tr>
     <tr>
-        <td>Back pressure</td>
-        <td>Calculates if the job has back pressure</td>
-    </tr>
-    <tr>
-        <td>High delay</td>
-        <td>Calculates if the job has high data delay</td>
+          <td>High delay</td>
+          <td>Calculates if the job has high data delay</td>
     </tr>
 </table>
 
