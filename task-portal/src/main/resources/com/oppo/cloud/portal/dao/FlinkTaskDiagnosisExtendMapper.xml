@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.oppo.cloud.portal.dao.FlinkTaskDiagnosisExtendMapper">
-    <resultMap id="generalViewNumberMap" type="com.oppo.cloud.portal.domain.realtime.GeneralViewNumberDto">
+    <resultMap id="generalViewNumberMap" type="com.oppo.cloud.portal.domain.flink.GeneralViewNumberDto">
         <result column="base_task_cnt_sum" jdbcType="INTEGER" property="baseTaskCntSum"/>
         <result column="exception_task_cnt_sum" jdbcType="INTEGER" property="exceptionTaskCntSum"/>
         <result column="resource_task_cnt_sum" jdbcType="INTEGER" property="resourceTaskCntSum"/>
@@ -12,12 +12,12 @@
         <result column="dt" jdbcType="VARCHAR" property="date"/>
     </resultMap>
 
-    <select id="getDiagnosisTime" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisGeneralViewQuery" resultType="java.time.LocalDateTime">
+    <select id="getDiagnosisTime" parameterType="com.oppo.cloud.portal.domain.flink.DiagnosisGeneralViewQuery" resultType="java.time.LocalDateTime">
         select max(diagnosis_end_time) as diagnosis_end_time from flink_task_diagnosis where diagnosis_from = 0 and
         <![CDATA[ diagnosis_end_time >= #{startTs} and diagnosis_end_time <= #{endTs} ]]>
     </select>
 
-    <select id="getGeneralViewNumber" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisGeneralViewQuery" resultMap="generalViewNumberMap">
+    <select id="getGeneralViewNumber" parameterType="com.oppo.cloud.portal.domain.flink.DiagnosisGeneralViewQuery" resultMap="generalViewNumberMap">
         select
         sum(base_task_cnt) as base_task_cnt_sum,
         sum(exception_task_cnt) as exception_task_cnt_sum,
@@ -47,7 +47,7 @@
         <![CDATA[ diagnosis_end_time >= #{startTs} and diagnosis_end_time <= #{endTs} ]]>
         ) a
     </select>
-    <select id="getDiagnosisDates" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisGeneralViewQuery" resultType="java.time.LocalDateTime">
+    <select id="getDiagnosisDates" parameterType="com.oppo.cloud.portal.domain.flink.DiagnosisGeneralViewQuery" resultType="java.time.LocalDateTime">
         select distinct diagnosis_end_time from flink_task_diagnosis where diagnosis_from = 0 and
         <![CDATA[ diagnosis_end_time >= #{startTs} and diagnosis_end_time <= #{endTs} ]]>
     </select>
@@ -85,7 +85,7 @@
             ) a group by dt
     </select>
 
-    <select id="page" parameterType="com.oppo.cloud.portal.domain.realtime.DiagnosisAdviceListReq"
+    <select id="page" parameterType="com.oppo.cloud.portal.domain.flink.DiagnosisAdviceListReq"
             resultMap="com.oppo.cloud.mapper.FlinkTaskDiagnosisMapper.BaseResultMap">
         select
         <include refid="com.oppo.cloud.mapper.FlinkTaskDiagnosisMapper.Base_Column_List" />

@@ -1,8 +1,23 @@
+/*
+ * Copyright 2023 OPPO.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.oppo.cloud.portal.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.oppo.cloud.common.api.CommonPage;
 import com.oppo.cloud.common.api.CommonStatus;
@@ -12,7 +27,7 @@ import com.oppo.cloud.mapper.FlinkTaskDiagnosisMapper;
 import com.oppo.cloud.mapper.FlinkTaskDiagnosisRuleAdviceMapper;
 import com.oppo.cloud.model.*;
 import com.oppo.cloud.portal.dao.FlinkTaskDiagnosisExtendMapper;
-import com.oppo.cloud.portal.domain.realtime.*;
+import com.oppo.cloud.portal.domain.flink.*;
 import com.oppo.cloud.portal.domain.report.*;
 import com.oppo.cloud.portal.domain.task.IndicatorData;
 import com.oppo.cloud.portal.service.ElasticSearchService;
@@ -25,7 +40,6 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;

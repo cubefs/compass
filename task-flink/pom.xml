@@ -108,7 +108,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>com.oppo.cloud.diagnosis.StartApplication</mainClass>
+                            <mainClass>com.oppo.cloud.flink.TaskFlinkApplication</mainClass>
                         </manifest>
                     </archive>
                     <descriptors>
