@@ -52,11 +52,11 @@ onMounted(async () => {
         :conclusion="item.conclusion">
         <ErrorTable :data="item.item.table" :width-list="[120, 180, 180, '', 270]" />
       </ItemWrapper>
-      <ItemWrapper v-if="memoryData.item" :title="memoryData.name" :conclusion="memoryData.conclusion"
+      <ItemWrapper v-if="memoryData && memoryData.item" :title="memoryData.name" :conclusion="memoryData.conclusion"
         :gc-info="memoryData.item?.computeNodeList">
         <Chart v-for="chartList in memoryData.item.chartList" :data="chartList" />
       </ItemWrapper>
-      <div v-if="cpuData.conclusion">
+      <div v-if="cpuData && cpuData.conclusion">
         <ItemWrapper :title="cpuData.name" :conclusion="cpuData.conclusion">
           <CpuChart :data="cpuData.item" />
         </ItemWrapper>
