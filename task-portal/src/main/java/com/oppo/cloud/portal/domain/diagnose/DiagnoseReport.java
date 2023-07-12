@@ -26,6 +26,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @ApiModel("诊断报告")
@@ -53,7 +54,7 @@ public class DiagnoseReport {
         private ClusterInfo clusterInfo;
 
         @ApiModelProperty("app运行参数")
-        private AppInfo appInfo;
+        private Map<String, Object> env;
 
         @ApiModelProperty("错误信息")
         private String error;

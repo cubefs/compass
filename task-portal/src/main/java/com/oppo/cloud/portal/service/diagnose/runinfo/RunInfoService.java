@@ -92,54 +92,13 @@ public class RunInfoService {
             } else {
                 taskInfo.setCategories(AppCategoryEnum.getAppCategoryCh(taskApp.getCategories()));
             }
-            AppInfo appInfo = generateAppInfo(detectorStorage.getEnv());
-            runInfo.setAppInfo(appInfo);
+            runInfo.setEnv(detectorStorage.getEnv());
         } catch (Exception e) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             e.printStackTrace(new PrintStream(baos));
             runInfo.setError(baos.toString());
         }
         return runInfo;
-    }
-
-    /**
-     * 产生spark配置信息
-     * @param env
-     * @return
-     */
-    private AppInfo generateAppInfo(Map<String, Object> env) {
-        AppInfo appInfo = new AppInfo();
-        for (String name : env.keySet()) {
-            String value = (String) env.get(name);
-            switch (name) {
-                case "spark.executor.memory":
-                    appInfo.setExecutorMemory(value);
-                    break;
-                case "spark.driver.memory":
-                    appInfo.setDriverMemory(value);
-                    break;
-                case "spark.driver.memoryOverhead":
-                    appInfo.setDriverOverhead(value);
-                    break;
-                case "spark.executor.memoryOverhead":
-                    appInfo.setExecutorOverhead(value);
-                    break;
-                case "spark.default.parallelism":
-                    appInfo.setParallelism(value);
-                    break;
-                case "spark.executor.cores":
-                    appInfo.setExecutorCores(value);
-                    break;
-                case "spark.dynamicAllocation.maxExecutors":
-                    appInfo.setMaxExecutors(value);
-                    break;
-                case "spark.sql.shuffle.partitions":
-                    appInfo.setShufflePartitions(value);
-                    break;
-                default:
-            }
-        }
-        return appInfo;
     }
 
 }

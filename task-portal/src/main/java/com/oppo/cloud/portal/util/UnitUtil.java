@@ -74,6 +74,13 @@ public class UnitUtil {
     }
 
     /**
+     * MB转GB
+     */
+    public static double transferMBToGB(Long v) {
+        return transferDouble(v / 1024.0);
+    }
+
+    /**
      * double保留两位小数，太小的就返回原始值
      */
     public static double transferDouble(double data) {

@@ -116,14 +116,16 @@ public abstract class ResourceBaseService<T extends IsAbnormal> implements Gener
         String error = null;
         Conclusion conclusion = null;
         try {
-            for (DetectorResult detectorResult : detectorStorage.getDataList()) {
-                if (detectorResult.getAppCategory().equals(this.getCategory())) {
-                    // 根据es元数据生成诊断报告
-                    data = this.generateData(detectorResult, detectorStorage.getConfig(),
-                            detectorStorage.getApplicationId());
-                    // 根据诊断结果数据中var变量生成诊断建议
-                    conclusion = this.generateConclusion(data);
-                    break;
+            if (detectorStorage.getDataList() != null) {
+                for (DetectorResult detectorResult : detectorStorage.getDataList()) {
+                    if (detectorResult.getAppCategory().equals(this.getCategory())) {
+                        // 根据es元数据生成诊断报告
+                        data = this.generateData(detectorResult, detectorStorage.getConfig(),
+                                detectorStorage.getApplicationId());
+                        // 根据诊断结果数据中var变量生成诊断建议
+                        conclusion = this.generateConclusion(data);
+                        break;
+                    }
                 }
             }
         } catch (Exception e) {
