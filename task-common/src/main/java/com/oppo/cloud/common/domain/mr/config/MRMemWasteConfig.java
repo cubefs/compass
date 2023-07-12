@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.common.domain.mr;
+package com.oppo.cloud.common.domain.mr.config;
 
 import lombok.Data;
 
@@ -26,9 +26,9 @@ public class MRMemWasteConfig {
 
     private Boolean disable;
 
-    private Float mapThreshold;
+    private Double mapThreshold;
 
-    private Float reduceThreshold;
+    private Double reduceThreshold;
 
     private Long duration;
 

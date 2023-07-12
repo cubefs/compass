@@ -16,6 +16,10 @@
 
 package com.oppo.cloud.common.domain.eventlog.config;
 
+import com.oppo.cloud.common.domain.mr.config.MRDataSkewConfig;
+import com.oppo.cloud.common.domain.mr.config.MREnvironmentConfig;
+import com.oppo.cloud.common.domain.mr.config.MRLargeTableScanConfig;
+import com.oppo.cloud.common.domain.mr.config.MRMemWasteConfig;
 import lombok.Data;
 
 /**
@@ -83,5 +87,24 @@ public class DetectorConfig {
      * 数据倾斜配置
      */
     private DataSkewConfig dataSkewConfig;
+    /**
+     * MapReduce env config
+     */
 
+    private MREnvironmentConfig mrEnvironmentConfig;
+
+    /**
+     * MapReduce memory config
+     */
+    private MRMemWasteConfig mrMemWasteConfig;
+
+    /**
+     * MapReduce large table config
+     */
+    private MRLargeTableScanConfig mrLargeTableScanConfig;
+
+    /**
+     * MapReduce data skew config
+     */
+    private MRDataSkewConfig mrDataSkewConfig;
 }

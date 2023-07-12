@@ -28,18 +28,18 @@ public class MRUtil {
 
     private static final String SUB_DIR_FORMAT = "%s/%s/";
 
-    public static String historyLogSubdirectory(String id, long finishedTime) {
+    public static String getHistoryLogSubdirectory(String appId, long finishedTime) {
         String timestampComponent = timestampDirectoryComponent(finishedTime);
-        String serialNumberDirectory = serialNumberDirectoryComponent(id);
+        String serialNumberDirectory = serialNumberDirectoryComponent(appId);
         return String.format(SUB_DIR_FORMAT, timestampComponent, serialNumberDirectory);
     }
 
-    public static String serialNumberDirectoryComponent(String id) {
-        return String.format(SERIAL_NUMBER_FORMAT, jobSerialNumber(id)).substring(0, SERIAL_NUMBER_DIRECTORY_DIGITS);
+    public static String serialNumberDirectoryComponent(String appId) {
+        return String.format(SERIAL_NUMBER_FORMAT, jobSerialNumber(appId)).substring(0, SERIAL_NUMBER_DIRECTORY_DIGITS);
     }
 
-    public static int jobSerialNumber(String id) {
-        return Integer.parseInt(id.substring(id.lastIndexOf('_') + 1));
+    public static int jobSerialNumber(String appId) {
+        return Integer.parseInt(appId.substring(appId.lastIndexOf('_') + 1));
     }
 
     public static String timestampDirectoryComponent(long millisecondTime) {
@@ -52,5 +52,12 @@ public class MRUtil {
                 timestamp.get(Calendar.DAY_OF_MONTH));
         dateString = dateString.intern();
         return dateString;
+    }
+
+    public static String appIdToJobId(String appId) {
+        if (appId == null) {
+            return "";
+        }
+        return appId.replaceFirst("^application_", "job_");
     }
 }

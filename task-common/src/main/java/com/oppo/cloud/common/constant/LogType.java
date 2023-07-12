@@ -28,8 +28,9 @@ public enum LogType {
     SPARK_EXECUTOR("executor"),
 
     YARN("yarn"),
+    SPARK_GC("gc"),
+    MAPREDUCE_JOB_HISTORY("jobhistory");
 
-    SPARK_GC("gc");
     private final String name;
 
     private static final Map<String, LogType> MAP;

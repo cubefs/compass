@@ -17,5 +17,5 @@
 package com.oppo.cloud.common.constant;
 
 public enum LogPathType {
-    FILE, DIRECTORY
+    FILE, DIRECTORY, PATTERN
 }

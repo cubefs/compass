@@ -36,7 +36,7 @@ public class LogPath {
     private String logType;
 
     /**
-     * 日志路径类型: file,directory
+     * 日志路径类型: file,directory,pattern
      */
     private LogPathType logPathType;
 

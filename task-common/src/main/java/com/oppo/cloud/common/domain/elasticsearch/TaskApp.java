@@ -109,6 +109,12 @@ public class TaskApp extends EsInfo {
     @ApiModelProperty(value = "yarn log路径")
     private String yarnLogPath;
 
+    @ApiModelProperty(value = "mr job history done path")
+    private String jobHistoryDoneLogPath;
+
+    @ApiModelProperty(value = "mr job history intermediate done path")
+    private String jobHistoryIntermediateDoneLogPath;
+
     @ApiModelProperty(value = "am 主机名")
     private String amHost;
 

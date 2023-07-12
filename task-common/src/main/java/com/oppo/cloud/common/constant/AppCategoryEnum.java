@@ -66,6 +66,21 @@ public enum AppCategoryEnum {
     // 全局排序异常
     GLOBAL_SORT("globalSortAbnormal", "全局排序异常", "runPerformance"),
 
+    // MapReduce内存浪费
+    MR_MEMORY_WASTE("mrMemoryWaste", "MR内存浪费", "resourceUsage"),
+
+    // MapReduce大表扫描
+    MR_LARGE_TABLE_SCAN("mrLargeTableScan", "MR大表扫描", "runPerformance"),
+
+    // MapReduce数据倾斜
+    MR_DATA_SKEW("mrDataSkew", "MR数据倾斜", "runPerformance"),
+
+    // MapReduce Task长尾
+    MR_TASK_DURATION("mrTaskDurationAbnormal", "MRTask长尾", "runPerformance"),
+
+    // MapReduce推测执行Task过多
+    MR_SPECULATIVE_TASK("mrSpeculativeTask", "MR推测执行Task过多", "runPerformance"),
+
     // 其他异常
     OTHER_EXCEPTION("otherException", "其他异常", "runError");
 

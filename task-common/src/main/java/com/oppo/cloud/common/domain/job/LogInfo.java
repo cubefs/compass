@@ -25,7 +25,7 @@ import java.util.Map;
 public class LogInfo {
 
     /**
-     * 日志分组类别: scheduler,spark
+     * 日志分组类别: scheduler,spark,mapreduce
      */
     private String logGroup;
 
