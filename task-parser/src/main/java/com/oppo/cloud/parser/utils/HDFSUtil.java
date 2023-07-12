@@ -139,9 +139,11 @@ public class HDFSUtil {
         ReaderObject readerObject = new ReaderObject();
         readerObject.setLogPath(path);
         readerObject.setBufferedReader(bufferedReader);
+        readerObject.setFsDataInputStream(fsDataInputStream);
         readerObject.setFs(fs);
         return readerObject;
     }
+
 
     public static List<String> listFiles(NameNodeConf nameNode, String path) throws Exception {
         FileSystem fs = HDFSUtil.getFileSystem(nameNode);
@@ -150,6 +152,23 @@ public class HDFSUtil {
         while (it.hasNext()) {
             LocatedFileStatus locatedFileStatus = it.next();
             result.add(locatedFileStatus.getPath().toString());
+        }
+        fs.close();
+        return result;
+    }
+
+
+    public static List<String> filesPattern(NameNodeConf nameNodeConf, String filePath) throws Exception {
+        FileSystem fs = HDFSUtil.getFileSystem(nameNodeConf);
+        FileStatus[] fileStatuses = fs.globStatus(new Path(filePath));
+        List<String> result = new ArrayList<>();
+        if (fileStatuses == null) {
+            return result;
+        }
+        for (FileStatus fileStatus : fileStatuses) {
+            if (fs.exists(fileStatus.getPath())) {
+                result.add(fileStatus.getPath().toString());
+            }
         }
         fs.close();
         return result;

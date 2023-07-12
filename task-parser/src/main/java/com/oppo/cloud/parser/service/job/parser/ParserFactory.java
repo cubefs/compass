@@ -43,6 +43,10 @@ public class ParserFactory {
                 sparkExecutorLogParser.addListener(listener);
                 return sparkExecutorLogParser;
 
+            case MAPREDUCE_JOB_HISTORY:
+                MapReduceJobHistoryParser mapReduceJobHistoryParser = new MapReduceJobHistoryParser(parserParam);
+                mapReduceJobHistoryParser.addListener(listener);
+                return mapReduceJobHistoryParser;
             default:
                 return null;
         }

@@ -17,6 +17,7 @@
 package com.oppo.cloud.parser.domain.job;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oppo.cloud.common.constant.LogGroupType;
 import com.oppo.cloud.common.domain.job.App;
 import com.oppo.cloud.common.domain.job.LogInfo;
 import com.oppo.cloud.common.domain.job.LogRecord;
@@ -33,7 +34,7 @@ public class TaskParam {
     /**
      * 任务类型
      */
-    private String category;
+    private LogGroupType category;
     /**
      * job元数据
      */
@@ -59,7 +60,7 @@ public class TaskParam {
     }
 
     public TaskParam(String category, LogRecord logRecord, App app, LogInfo logInfo) {
-        this.category = category;
+        this.category = LogGroupType.get(category);
         this.logRecord = logRecord;
         this.app = app;
         this.logInfo = logInfo;

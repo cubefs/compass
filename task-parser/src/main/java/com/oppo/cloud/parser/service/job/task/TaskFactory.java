@@ -21,10 +21,6 @@ import com.oppo.cloud.parser.domain.job.TaskParam;
 
 public class TaskFactory {
 
-    private static final String SCHEDULER = "scheduler";
-    private static final String SPARK = "spark";
-    private static final String YARN = "yarn";
-
 
     public static Task create(TaskParam taskParam) {
         switch (taskParam.getCategory()) {
@@ -32,6 +28,8 @@ public class TaskFactory {
                 return new SchedulerTask(taskParam);
             case SPARK:
                 return new SparkTask(taskParam);
+            case MAPREDUCE:
+                return new MapReduceTask(taskParam);
             case YARN:
                 return new YarnTask(taskParam);
             default:

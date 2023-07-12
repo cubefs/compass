@@ -16,13 +16,13 @@
 
 package com.oppo.cloud.parser.service.job;
 
-import com.oppo.cloud.common.constant.LogType;
+import com.oppo.cloud.common.constant.LogGroupType;
 import com.oppo.cloud.common.domain.job.App;
 import com.oppo.cloud.common.domain.job.LogInfo;
 import com.oppo.cloud.common.domain.job.LogRecord;
 import com.oppo.cloud.common.service.RedisService;
-import com.oppo.cloud.parser.config.ThreadPoolConfig;
 import com.oppo.cloud.parser.config.CustomConfig;
+import com.oppo.cloud.parser.config.ThreadPoolConfig;
 import com.oppo.cloud.parser.domain.job.TaskParam;
 import com.oppo.cloud.parser.domain.job.TaskResult;
 import com.oppo.cloud.parser.service.job.task.Task;
@@ -70,7 +70,7 @@ public class JobManager {
                     }
                     tasks.add(task);
                 }
-                tasks.add(TaskFactory.create(new TaskParam(LogType.YARN.getName(), logRecord, app, null)));
+                tasks.add(TaskFactory.create(new TaskParam(LogGroupType.YARN.getName(), logRecord, app, null)));
             }
         }
         return tasks;

@@ -27,6 +27,8 @@ public interface IReader {
 
     List<String> listFiles() throws Exception;
 
+    List<String> filesPattern() throws Exception;
+
     ReaderObject getReaderObject() throws Exception;
 
     List<ReaderObject> getReaderObjects() throws Exception;

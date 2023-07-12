@@ -57,6 +57,11 @@ public class HDFSReader implements IReader {
     }
 
     @Override
+    public List<String> filesPattern() throws Exception {
+        return HDFSUtil.filesPattern(nameNode, logPath.getLogPath());
+    }
+
+    @Override
     public ReaderObject getReaderObject() throws Exception {
         return HDFSUtil.getReaderObject(nameNode, logPath.getLogPath());
     }
@@ -70,6 +75,14 @@ public class HDFSReader implements IReader {
                 break;
             case DIRECTORY:
                 List<String> files = listFiles();
+                if (files.size() > 0) {
+                    for (String path : files) {
+                        list.add(HDFSUtil.getReaderObject(nameNode, path));
+                    }
+                }
+                break;
+            case PATTERN:
+                files = filesPattern();
                 if (files.size() > 0) {
                     for (String path : files) {
                         list.add(HDFSUtil.getReaderObject(nameNode, path));

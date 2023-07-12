@@ -17,6 +17,7 @@
 package com.oppo.cloud.parser.domain.reader;
 
 import lombok.Data;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 
 import java.io.BufferedReader;
@@ -27,6 +28,8 @@ public class ReaderObject {
     private String logPath;
 
     private BufferedReader bufferedReader;
+
+    private FSDataInputStream fsDataInputStream;
 
     private FileSystem fs;
 }
