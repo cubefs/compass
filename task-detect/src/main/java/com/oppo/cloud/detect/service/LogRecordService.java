@@ -33,7 +33,7 @@ public interface LogRecordService {
     List<App> getSchedulerLog(JobAnalysis detectJobAnalysis);
 
     /**
-     * 获取appId的spark引擎日志
+     * 获取appId的日志
      */
     List<App> getAppLog(List<TaskApp> taskAppList);
 }
