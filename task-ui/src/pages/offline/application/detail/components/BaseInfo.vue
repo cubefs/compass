@@ -8,6 +8,20 @@ const props = defineProps({
     },
   },
 })
+
+const groupedEnv = computed(() => {
+  const entries = Object.entries(props.info.env)
+  const groups = []
+  for (let i = 0; i < entries.length; i += 3) {
+    let group = entries.slice(i, i + 3).map(([key, value]) => `${key}: ${value}`)
+    while (group.length < 3) {
+      group.push('')
+    }
+    groups.push(group)
+  }
+  return groups
+})
+
 </script>
 
 <template>
@@ -23,8 +37,8 @@ const props = defineProps({
       </div>
       <div class="text-group">
         <span class="text">运行耗时: &nbsp;{{ info.taskInfo?.appTime || '-' }}</span>
-        <span class="text">{{ `内存消耗:  &nbsp;${info.taskInfo?.memorySeconds}` || '-' }}</span>
-        <span class="text">{{ `CPU消耗:  &nbsp;${info.taskInfo?.vcoreSeconds}` || '-' }}</span>
+        <span class="text">{{ `内存消耗: &nbsp;${info.taskInfo?.memorySeconds}` || '-' }}</span>
+        <span class="text">{{ `CPU消耗: &nbsp;${info.taskInfo?.vcoreSeconds}` || '-' }}</span>
       </div>
     </div>
     <div class="item-title">
@@ -41,20 +55,8 @@ const props = defineProps({
       运行参数
     </div>
     <div style="border: 1px solid #d7d7d7; border-top: none;">
-      <div class="text-group">
-        <span class="text">spark.driver.memoryOverhead: &nbsp;{{ info.appInfo?.driverOverhead || '-' }}</span>
-        <span class="text">spark.driver.memory: &nbsp;{{ info.appInfo?.driverMemory || '-' }}</span>
-        <span class="text">spark.executor.memoryOverhead: &nbsp;{{ info.appInfo?.executorOverhead || '-' }}</span>
-      </div>
-      <div class="text-group">
-        <span class="text">spark.executor.memory: &nbsp;{{ info.appInfo?.executorMemory || '-' }}</span>
-        <span class="text">spark.executor.cores: &nbsp;{{ info.appInfo?.executorCores || '-' }}</span>
-        <span class="text">spark.dynamicAllocation.maxExecutors: &nbsp;{{ info.appInfo?.maxExecutors || '-' }}</span>
-      </div>
-      <div class="text-group">
-        <span class="text">spark.default.parallelism: &nbsp;{{ info.appInfo?.parallelism || '-' }}</span>
-        <span class="text">spark.sql.shuffle.partitions: &nbsp;{{ info.appInfo?.shufflePartitions || '-' }}</span>
-        <span class="text" />
+      <div class="text-group" v-for="(group, index) in groupedEnv" :key="index">
+        <span class="text" v-for="item in group" :key="item" :title="item">{{ item || '-' }}</span>
       </div>
     </div>
   </div>
@@ -70,10 +72,12 @@ const props = defineProps({
   border-left: 3px solid #00bfbf;
   border-collapse: collapse;
 }
+
 .text-group {
   display: flex;
   border-collapse: collapse;
 }
+
 .text {
   flex: 1;
   padding: 5px;
@@ -81,7 +85,10 @@ const props = defineProps({
   border-top: none;
   border-right: none;
   border-collapse: collapse;
-  margin : 0px 0px -1px -1px;
+  margin: 0px 0px -1px -1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
 

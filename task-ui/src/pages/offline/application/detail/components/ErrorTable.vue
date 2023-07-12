@@ -31,7 +31,7 @@ props.data.data.forEach(item => {
 </script>
 
 <template>
-  <el-table :data="data.data" style="width: 100%" :height="data.data ? 250 : 100 ">
+  <el-table :data="data.data" style="width: 100%" :height="(data.data.length + 1) * 50 > 250 ? 250 : (data.data.length + 1) * 50">
     <el-table-column v-for="(item, index) in label.label" :key="index" :prop="label.value[index]" :label="label.label[index]" :width="widthList[index]">
       <template #default="scope">
         <ExpandBlock v-if="label.value[index] === 'logContent'" :value="scope.row.logContent" />

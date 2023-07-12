@@ -35,10 +35,10 @@ const props = defineProps({
     <div class="item-content">
       <slot />
     </div>
-    <div v-if="gcInfo.length" class="item-footer">
+    <div v-if="gcInfo && gcInfo.length" class="item-footer">
       <GcAnalyze :gc-info="gcInfo" />
     </div>
-    <div v-if="conclusion.conclusion" class="item-footer">
+    <div v-if="conclusion && conclusion.conclusion" class="item-footer">
       <div class="item-footer-title">
         分析结论：
         <el-tooltip placement="top">

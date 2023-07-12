@@ -11,10 +11,11 @@ let detailInfo: any = $ref({
 })
 const route = useRoute()
 const memoryData = computed(() => {
-  return detailInfo?.resourcesAnalyze[1]
+  return detailInfo?.resourcesAnalyze.find(item => item.type === 'memoryChart' && item.item)
 })
+
 const cpuData = computed(() => {
-  return detailInfo?.resourcesAnalyze[0]
+  return detailInfo?.resourcesAnalyze.find(item => item.type === 'cpuChart')
 })
 onMounted(async () => {
   const res = await Promise.all([
@@ -40,30 +41,31 @@ onMounted(async () => {
     <div v-if="detailInfo.runInfo">
       <ItemWrapper title="诊断类型" class="m-b-5">
         <div>
-          <span
-            v-for="(item, index) in detailInfo.runInfo.taskInfo.categories"
-            :key="item"
-            class="category-card"
-            :title="item"
-            :style="{ 'border-left': `3px solid ${cloudTheme[index]}` }"
-          >
+          <span v-for="(item, index) in detailInfo.runInfo.taskInfo.categories" :key="item" class="category-card"
+            :title="item" :style="{ 'border-left': `3px solid ${cloudTheme[index]}` }">
             {{ item }}
           </span>
         </div>
       </ItemWrapper>
       <BaseInfo :info="detailInfo.runInfo" />
-      <ItemWrapper v-for="(item, index) in detailInfo.runErrorAnalyze" :key="item.name" :title="item.name" :conclusion="item.conclusion">
+      <ItemWrapper v-for="(item, index) in detailInfo.runErrorAnalyze" :key="item.name" :title="item.name"
+        :conclusion="item.conclusion">
         <ErrorTable :data="item.item.table" :width-list="[120, 180, 180, '', 270]" />
       </ItemWrapper>
-      <ItemWrapper v-if="memoryData.item" :title="memoryData.name" :conclusion="memoryData.conclusion" :gc-info="memoryData.item?.computeNodeList">
-        <Chart :data="memoryData.item.chartList[0]" />
+      <ItemWrapper v-if="memoryData.item" :title="memoryData.name" :conclusion="memoryData.conclusion"
+        :gc-info="memoryData.item?.computeNodeList">
+        <Chart v-for="chartList in memoryData.item.chartList" :data="chartList" />
       </ItemWrapper>
-      <ItemWrapper :title="cpuData.name" :conclusion="cpuData.conclusion">
-        <CpuChart :data="cpuData.item" />
-      </ItemWrapper>
-      <ItemWrapper v-for="(item, index) in detailInfo.runTimeAnalyze" :key="item.name" :title="item.name" :conclusion="item.conclusion">
+      <div v-if="cpuData.conclusion">
+        <ItemWrapper :title="cpuData.name" :conclusion="cpuData.conclusion">
+          <CpuChart :data="cpuData.item" />
+        </ItemWrapper>
+      </div>
+      <ItemWrapper v-for="(item, index) in detailInfo.runTimeAnalyze" :key="item.name" :title="item.name"
+        :conclusion="item.conclusion">
         <div v-if="item.type === 'chart'">
-          <Chart v-for="(itemC, indexC) in item.item.chartList" :key="indexC" :index="`${index}-${indexC}`" :data="itemC" />
+          <Chart v-for="(itemC, indexC) in item.item.chartList" :key="indexC" :index="`${index}-${indexC}`"
+            :data="itemC" />
         </div>
         <div v-if="item.type === 'table'">
           <ErrorTable :data="item.item.table" />
