@@ -41,5 +41,5 @@ custom:
         - { "column": "end_time", "regex": "^.*(?<date>\\d{4}-\\d{2}-\\d{2}).+$", "name": "date" }
         - { "column": "log_path", "regex": "^.*logs/(?<logpath>.*)$", "name": "logpath" }
       extractLog: # 根据组装的日志路径解析日志
-        regex: "^.*Submitted application (?<applicationId>application_[0-9]+_[0-9]+).*$"     # 匹配规则
+        regex: ".*(?<applicationId>application_[0-9]+_[0-9]+).*$"     # 匹配规则
         name: "applicationId"      # 匹配文本名，最后必须有applicationId
