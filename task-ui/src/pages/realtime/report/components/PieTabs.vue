@@ -10,10 +10,10 @@ let data = $ref({
   mem: {},
   num: {},
 })
-let time = $ref([dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millisecond(0).valueOf(), dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf()])
+let time = $ref([dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millisecond(0).valueOf(), dayjs().valueOf()])
 const getPieChart = async () => {
   if (time == null) {
-    time = [dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millisecond(0).valueOf(), dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf()]
+    time = [dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millisecond(0).valueOf(), dayjs().valueOf()]
   }
   const res = await post('/api/realtime/taskDiagnosis/getGeneralViewDistribute', {
     projectName: '',
