@@ -395,6 +395,9 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         query.setEndTs(LocalDateTime.ofEpochSecond(request.getEndTs(), 0, ZoneOffset.ofHours(8)));
         List<Date> diagnosisEndTimes = getDiagnosisEndTimes(query).stream()
                 .map(x -> new Date(x.toEpochSecond(ZoneOffset.ofHours(8)) * 1000)).collect(Collectors.toList());
+        if(diagnosisEndTimes.size() == 0){
+            return null;
+        }
         FlinkTaskDiagnosisExample realtimeTaskAppExample = new FlinkTaskDiagnosisExample();
         realtimeTaskAppExample.createCriteria()
                 .andDiagnosisEndTimeIn(diagnosisEndTimes)
