@@ -50,6 +50,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_MANAGE_MEM_
 @Component
 @Slf4j
 public class TmManagedMemory extends BaseRule {
+
     @Autowired
     DiagnosisParamsConstants cons;
     private MonitorMetricUtil monitorMetricUtil = new MonitorMetricUtil();

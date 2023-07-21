@@ -49,7 +49,7 @@ public class KafkaConfig {
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
     /**
-     * 消费模式: lastest, earliest
+     * 消费模式: latest, earliest
      */
     @Value("${spring.kafka.consumer.auto-offset-reset}")
     private String autoOffsetReset;

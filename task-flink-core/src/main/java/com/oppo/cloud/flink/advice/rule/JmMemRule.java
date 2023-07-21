@@ -43,7 +43,7 @@ public class JmMemRule extends BaseRule {
         RcJobDiagnosisAdvice.RcJobDiagnosisAdviceBuilder builder = getBuilder(context);
         builder.adviceType(FlinkRule.JmMemoryRule);
         int tmNum = rcJobDiagnosis.getDiagnosisTmNum();
-        Integer adviceJmMem;
+        int adviceJmMem;
         StringBuilder descriptionBuilder = new StringBuilder();
         if (tmNum <= cons.jm1gTmNum) {
             adviceJmMem = 1024;

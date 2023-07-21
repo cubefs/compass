@@ -84,18 +84,21 @@ public class TmNoTraffic extends BaseRule {
                 String resourceChange = buildResourceChange(context);
                 String conclusion = String.format("空跑TM数量%d个,该部分CPU,流量,内存都为空,建议缩减并行度,%s"
                         , cutTmNum, resourceChange);
+
                 DiagnosisRuleReport diagnosisRuleReport = new DiagnosisRuleReport();
                 diagnosisRuleReport.setTitle("TM空跑分析");
                 diagnosisRuleReport.setConclusion(conclusion);
                 DiagnosisRuleBarChart diagnosisRuleBarChart = new DiagnosisRuleBarChart();
                 diagnosisRuleBarChart.setTitle("TM个数");
                 diagnosisRuleBarChart.setYAxisUnit("(个)");
+
                 DiagnosisRulePoint point1 = new DiagnosisRulePoint();
                 point1.setKey("空跑TM个数");
                 point1.setValue((double) cutTmNum);
                 DiagnosisRulePoint point2 = new DiagnosisRulePoint();
                 point2.setKey("总TM个数");
                 point2.setValue((double) rcJobDiagnosis.getTmNum());
+                // bar chart
                 diagnosisRuleBarChart.setBars(Lists.newArrayList(point1, point2));
                 diagnosisRuleReport.setIDiagnosisRuleCharts(Lists.newArrayList(diagnosisRuleBarChart));
                 build.setDiagnosisRuleReport(diagnosisRuleReport);

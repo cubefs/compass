@@ -53,10 +53,13 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_CPU_USAGE_R
 public class PeekRatioResourceRule extends BaseRule {
     @Autowired
     DiagnosisParamsConstants cons;
+
     @Autowired
-    DoctorUtil doctorUtil ;
+    DoctorUtil doctorUtil;
+
     @Autowired
-    TurningManager turningManager ;
+    TurningManager turningManager;
+
     @Autowired
     MonitorMetricUtil monitorMetricUtil;
 
@@ -91,7 +94,7 @@ public class PeekRatioResourceRule extends BaseRule {
                     log.debug("tm平均峰值利用率高的数据:" + stream);
                     TurningAdvice turning = turningManager.turningCpuUp(r);
                     if (turning != null && turning.getStatus().equals(DiagnosisTurningStatus.HAS_ADVICE)) {
-                        RcJobDiagnosisAdvice build = convertTurningToAdviceBuilder(turning,builder)
+                        RcJobDiagnosisAdvice build = convertTurningToAdviceBuilder(turning, builder)
                                 .hasAdvice(true)
                                 .adviceDescription(String.format("作业部分TM峰值归一化cpu超过%.2f%%的时间累计超过%.2f%%",
                                         cpuHighThreshold * 100, cons.getCpuUsageAccHighTimeRate() * 100))
@@ -99,7 +102,7 @@ public class PeekRatioResourceRule extends BaseRule {
                         convertAdviceToRcJobDiagnosis(build, r);
                         String resourceChange = buildResourceChange(r);
                         String conclusion = String.format("作业部分TM峰值归一化cpu超过%.2f%%的时间累计超过%.2f%%,%s",
-                                cpuHighThreshold * 100, cons.getCpuUsageAccHighTimeRate() * 100,resourceChange);
+                                cpuHighThreshold * 100, cons.getCpuUsageAccHighTimeRate() * 100, resourceChange);
                         DiagnosisRuleReport diagnosisRuleReport = new DiagnosisRuleReport();
                         diagnosisRuleReport.setTitle("峰值CPU利用率高分析");
                         diagnosisRuleReport.setConclusion(conclusion);
@@ -113,8 +116,8 @@ public class PeekRatioResourceRule extends BaseRule {
                         line.setLabel("作业CPU使用率");
                         line.setData(dataResults);
                         diagnosisRuleLineChart.setLine(line);
-                        Map<String,Double> constLine = new HashMap<>();
-                        constLine.put("阈值",cpuHighThreshold);
+                        Map<String, Double> constLine = new HashMap<>();
+                        constLine.put("阈值", cpuHighThreshold);
                         diagnosisRuleLineChart.setConstLines(constLine);
                         diagnosisRuleReport.setIDiagnosisRuleCharts(Lists.newArrayList(diagnosisRuleLineChart));
                         build.setDiagnosisRuleReport(diagnosisRuleReport);
