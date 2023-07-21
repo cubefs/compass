@@ -6,10 +6,10 @@ const lineTab: string = $ref('first')
 let cpuData = $ref({})
 let memData = $ref({})
 let data: any = $ref([])
-let time = $ref([dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millisecond(0).valueOf(), dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf()])
+let time = $ref([dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millisecond(0).valueOf(), dayjs().valueOf()])
 const getLineChart = async () => {
   if (time == null) {
-    time = [dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millisecond(0).valueOf(), dayjs().hour(0).minute(0).second(0).millisecond(0).valueOf()]
+    time = [dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millisecond(0).valueOf(), dayjs().valueOf()]
   }
   const res = await Promise.all([
     post('/api/realtime/taskDiagnosis/getGeneralViewTrend', {

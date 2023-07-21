@@ -123,7 +123,7 @@ public class BackPressureRule extends BaseRule {
             data.setHasAdvice(true);
             data.setAdviceDescription("存在反压:" + distinctTaskName);
             data.setSlowTasks(distinctTaskName);
-            String conclusion = String.format("存在反压:" + distinctTaskName);
+            String conclusion = String.format("存在反压:%s,建议优化代码提高下游处理速度" , distinctTaskName);
             DiagnosisRuleReport diagnosisRuleReport = new DiagnosisRuleReport();
             diagnosisRuleReport.setTitle("反压算子分析");
             diagnosisRuleReport.setConclusion(conclusion);

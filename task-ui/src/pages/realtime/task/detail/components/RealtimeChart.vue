@@ -99,7 +99,7 @@ const addLineChart = (chartItem, childChart) => {
     return relVal;
   };
   console.log(chartItem)
-  var seriesLine = chartItem.line.data.map((d: any) => {
+  var seriesLine = chartItem.line.data.slice(0,6).map((d: any) => {
     console.log(d)
     let metric = JSON.stringify(d.metric)
     if (metric == "{}") {
