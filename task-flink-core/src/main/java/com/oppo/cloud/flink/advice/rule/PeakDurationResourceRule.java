@@ -57,12 +57,16 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_CPU_USAGE_R
 public class PeakDurationResourceRule extends BaseRule {
     @Autowired
     DiagnosisParamsConstants cons;
+
     @Autowired
     DoctorUtil doctorUtil;
+
     @Autowired
-    TurningManager turningManager ;
+    TurningManager turningManager;
+
     @Autowired
-    MonitorMetricUtil monitorMetricUtil ;
+    MonitorMetricUtil monitorMetricUtil;
+
     @Override
     public RcJobDiagnosisAdvice advice(DiagnosisContext context) {
         Double cpuHighThreshold = doctorUtil.getCpuHighThreshold(context);
@@ -109,17 +113,17 @@ public class PeakDurationResourceRule extends BaseRule {
                     context.getMessages().put(DiagnosisParam.GrowCpuChangeRate, changeRate);
                     TurningAdvice turning = turningManager.turningCpuUp(context);
                     if (turning != null && turning.getStatus().equals(DiagnosisTurningStatus.HAS_ADVICE)) {
-                        RcJobDiagnosisAdvice build = convertTurningToAdviceBuilder(turning,builder)
+                        RcJobDiagnosisAdvice build = convertTurningToAdviceBuilder(turning, builder)
                                 .hasAdvice(true)
                                 .adviceDescription(String.format("作业部分TM最近%d分钟CPU均值利用率:%.2f%%,超过%.2f%%",
                                         cons.getTmCpuHighLatestNMinutes(), averageUnitCpuMinutes5Before.getAsDouble() * 100,
                                         cpuHighThreshold.floatValue() * 100)
                                 ).build();
-                        convertAdviceToRcJobDiagnosis(build,context);
+                        convertAdviceToRcJobDiagnosis(build, context);
                         String resourceChange = buildResourceChange(context);
                         String conclusion = String.format("作业部分TM最近%d分钟CPU均值利用率:%.2f%%,超过%.2f%%,%s",
                                 cons.getTmCpuHighLatestNMinutes(), averageUnitCpuMinutes5Before.getAsDouble() * 100,
-                                cpuHighThreshold.floatValue() * 100,resourceChange);
+                                cpuHighThreshold.floatValue() * 100, resourceChange);
                         DiagnosisRuleReport diagnosisRuleReport = new DiagnosisRuleReport();
                         diagnosisRuleReport.setTitle("峰值CPU利用率高分析");
                         diagnosisRuleReport.setConclusion(conclusion);
@@ -133,9 +137,9 @@ public class PeakDurationResourceRule extends BaseRule {
                         line.setLabel("作业CPU使用率");
                         line.setData(cpuUsageList);
                         diagnosisRuleLineChart.setLine(line);
-                        Map<String,Double> constLine = new HashMap<>();
-                        constLine.put("阈值",cpuHighThreshold);
-                        constLine.put("最近五分钟CPU均值",averageUnitCpuMinutes5Before.getAsDouble());
+                        Map<String, Double> constLine = new HashMap<>();
+                        constLine.put("阈值", cpuHighThreshold);
+                        constLine.put("最近五分钟CPU均值", averageUnitCpuMinutes5Before.getAsDouble());
                         diagnosisRuleLineChart.setConstLines(constLine);
                         diagnosisRuleReport.setIDiagnosisRuleCharts(Lists.newArrayList(diagnosisRuleLineChart));
                         build.setDiagnosisRuleReport(diagnosisRuleReport);
@@ -174,15 +178,15 @@ public class PeakDurationResourceRule extends BaseRule {
                     log.debug("tm单个峰值利用率高的数据:" + context.getRcJobDiagnosis().getJobName() + ":" + JSON.toJSONString(dataResult));
                     TurningAdvice turning = turningManager.turningCpuUp(context);
                     if (turning != null && turning.getStatus().equals(DiagnosisTurningStatus.HAS_ADVICE)) {
-                        RcJobDiagnosisAdvice build = convertTurningToAdviceBuilder(turning,builder)
+                        RcJobDiagnosisAdvice build = convertTurningToAdviceBuilder(turning, builder)
                                 .hasAdvice(true)
                                 .adviceDescription(String.format("作业部分tm峰值归一化cpu利用率超过%.2f%%的时间累计超过%.2f秒",
                                         cpuHighThreshold.floatValue() * 100, cons.getTmPeakHighTimeThreshold())
                                 ).build();
-                        convertAdviceToRcJobDiagnosis(build,context);
+                        convertAdviceToRcJobDiagnosis(build, context);
                         String resourceChange = buildResourceChange(context);
                         String conclusion = String.format("作业部分tm峰值归一化cpu利用率超过%.2f%%的时间累计超过%.2f秒,%s",
-                                cpuHighThreshold.floatValue() * 100, cons.getTmPeakHighTimeThreshold(),resourceChange);
+                                cpuHighThreshold.floatValue() * 100, cons.getTmPeakHighTimeThreshold(), resourceChange);
                         DiagnosisRuleReport diagnosisRuleReport = new DiagnosisRuleReport();
                         diagnosisRuleReport.setTitle("峰值CPU利用率高分析");
                         diagnosisRuleReport.setConclusion(conclusion);
@@ -196,8 +200,8 @@ public class PeakDurationResourceRule extends BaseRule {
                         line.setLabel("作业CPU使用率");
                         line.setData(cpuUsageList);
                         diagnosisRuleLineChart.setLine(line);
-                        Map<String,Double> constLine = new HashMap<>();
-                        constLine.put("阈值",cpuHighThreshold);
+                        Map<String, Double> constLine = new HashMap<>();
+                        constLine.put("阈值", cpuHighThreshold);
                         diagnosisRuleLineChart.setConstLines(constLine);
                         diagnosisRuleReport.setIDiagnosisRuleCharts(Lists.newArrayList(diagnosisRuleLineChart));
                         build.setDiagnosisRuleReport(diagnosisRuleReport);

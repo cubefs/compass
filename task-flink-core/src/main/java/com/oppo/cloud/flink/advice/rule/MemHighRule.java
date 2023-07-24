@@ -50,12 +50,16 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_HEAP_MEM_US
 @Component
 @Slf4j
 public class MemHighRule extends BaseRule {
+
     @Autowired
     DiagnosisParamsConstants cons;
+
     @Autowired
     DoctorUtil doctorUtil;
+
     @Autowired
     TurningManager turningManager;
+
     @Autowired
     MonitorMetricUtil monitorMetricUtil;
 
