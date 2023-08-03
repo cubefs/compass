@@ -69,7 +69,6 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         ThreadLocalUserInfo.set(userInfo);
 
         return true;
-
     }
 
     @Override
