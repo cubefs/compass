@@ -28,7 +28,7 @@ const handleSelect = (index: string) => {
   if (activeRoute !== index) {
     activeRoute = index
     router.push({
-      path: `/${activeRoute}/${currentRoute.meta.name}`,
+      path: `/${activeRoute}/report`,
     })
   }
 }

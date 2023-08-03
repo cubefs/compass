@@ -137,17 +137,17 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         LocalDateTime endDt = LocalDateTime.ofEpochSecond(request.getEndTs(), 0, ZoneOffset.ofHours(8));
         GeneralViewNumberDto generalViewNumber = flinkTaskDiagnosisExtendMapper
                 .getGeneralViewNumber(getDiagnosisTime(startDt, endDt));
-        if(generalViewNumber == null){
+        if (generalViewNumber == null) {
             generalViewNumber = new GeneralViewNumberDto();
         }
         GeneralViewNumberDto generalViewNumberDay1Before = flinkTaskDiagnosisExtendMapper
                 .getGeneralViewNumber(getDiagnosisTime(startDt.minusDays(1), endDt.minusDays(1)));
-        if(generalViewNumberDay1Before == null){
+        if (generalViewNumberDay1Before == null) {
             generalViewNumberDay1Before = new GeneralViewNumberDto();
         }
         GeneralViewNumberDto generalViewNumberDay7Before = flinkTaskDiagnosisExtendMapper
                 .getGeneralViewNumber(getDiagnosisTime(startDt.minusDays(7), endDt.minusDays(7)));
-        if(generalViewNumberDay7Before == null){
+        if (generalViewNumberDay7Before == null) {
             generalViewNumberDay7Before = new GeneralViewNumberDto();
         }
         DiagnosisGeneralViewNumberResp diagnosisGeneralViewNumberResp = new DiagnosisGeneralViewNumberResp();
@@ -172,7 +172,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
                                 / generalViewNumberDay7Before.getExceptionTaskCntSum());
             }
         }
-        if(generalViewNumberDay1Before!=null && generalViewNumber!=null) {
+        if (generalViewNumberDay1Before != null && generalViewNumber != null) {
             if (generalViewNumberDay1Before.getExceptionTaskCntSum() == 0) {
                 diagnosisGeneralViewNumberResp.setAbnormalJobNumDayOnDay(0f);
             } else {
@@ -181,7 +181,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
                                 / generalViewNumberDay1Before.getExceptionTaskCntSum());
             }
         }
-        if(generalViewNumber!=null) {
+        if (generalViewNumber != null) {
             if (generalViewNumber.getBaseTaskCntSum() == 0) {
                 diagnosisGeneralViewNumberResp.setResourceJobNumRatio(0f);
             } else {
@@ -302,7 +302,32 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         if (diagnosisEndTimes == null || diagnosisEndTimes.size() == 0) {
             return null;
         }
-        List<GeneralViewNumberDto> generalViewTrend = flinkTaskDiagnosisExtendMapper.getGeneralViewTrend(diagnosisEndTimes);
+        List<GeneralViewNumberDto> initGeneralViewTrend = flinkTaskDiagnosisExtendMapper.getGeneralViewTrend(diagnosisEndTimes);
+        LocalDateTime curLdt = LocalDateTime.ofEpochSecond(startTs, 0, ZoneOffset.ofHours(8));
+        LocalDateTime endLdt = LocalDateTime.ofEpochSecond(endTs, 0, ZoneOffset.ofHours(8));
+        if (curLdt.isAfter(endLdt)) {
+            log.error("time wrong,{}.{}", curLdt, endLdt);
+            return null;
+        }
+        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String curDtStr = curLdt.format(dtFormatter);
+        List<GeneralViewNumberDto> generalViewTrend = new ArrayList<>();
+        do {
+            boolean dataMiss = true;
+            for (GeneralViewNumberDto generalViewNumberDto : initGeneralViewTrend) {
+                if (generalViewNumberDto.getDate().equals(curDtStr)) {
+                    generalViewTrend.add(generalViewNumberDto);
+                    dataMiss = false;
+                }
+            }
+            if(dataMiss){
+                GeneralViewNumberDto stub = new GeneralViewNumberDto();
+                stub.setDate(curDtStr);
+                generalViewTrend.add(stub);
+            }
+            curLdt = curLdt.plusDays(1);
+            curDtStr = curLdt.format(dtFormatter);
+        } while (!curLdt.isAfter(endLdt));
         diagnosisGeneralViewTrendResp.setTrend(generalViewTrend);
         TrendGraph cpuTrend = new TrendGraph();
         cpuTrend.setName("CPU消耗趋势");
@@ -336,7 +361,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         List<IndicatorData> memoryDecrList = generalViewTrend.stream().map(x -> {
             IndicatorData indicatorData = new IndicatorData();
             indicatorData.setDate(x.getDate());
-            indicatorData.setCount(x.getCutMemNumSum() / 1024f);
+            indicatorData.setCount((int)(x.getCutMemNumSum() / 1024f));
             return indicatorData;
         }).collect(Collectors.toList());
         memoryDecrLine.setData(memoryDecrList);
@@ -346,7 +371,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         List<IndicatorData> memoryTotalList = generalViewTrend.stream().map(x -> {
             IndicatorData indicatorData = new IndicatorData();
             indicatorData.setDate(x.getDate());
-            indicatorData.setCount(x.getTotalMemNumSum() / 1024f);
+            indicatorData.setCount((int)(x.getTotalMemNumSum() / 1024f));
             return indicatorData;
         }).collect(Collectors.toList());
         memoryTotalLine.setData(memoryTotalList);
@@ -395,7 +420,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         query.setEndTs(LocalDateTime.ofEpochSecond(request.getEndTs(), 0, ZoneOffset.ofHours(8)));
         List<Date> diagnosisEndTimes = getDiagnosisEndTimes(query).stream()
                 .map(x -> new Date(x.toEpochSecond(ZoneOffset.ofHours(8)) * 1000)).collect(Collectors.toList());
-        if(diagnosisEndTimes.size() == 0){
+        if (diagnosisEndTimes.size() == 0) {
             return null;
         }
         FlinkTaskDiagnosisExample realtimeTaskAppExample = new FlinkTaskDiagnosisExample();

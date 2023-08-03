@@ -83,7 +83,7 @@ public class AvgCpuLowRule extends BaseRule {
                             .build();
                     convertAdviceToRcJobDiagnosis(build, r);
                     String resourceChange = buildResourceChange(r);
-                    String conclusion = String.format("作业TM CPU最大使用率%.2f%%,低于阈值%.2f%%,请扩充容量,使CPU使用率接近%.2f%%,%s",
+                    String conclusion = String.format("作业TM CPU最大使用率%.2f%%,低于阈值%.2f%%,请缩减容量,使CPU使用率接近%.2f%%,%s",
                             maxCpuUsage * 100, cpuLowThreshold * 100, cpuLowTarget * 100, resourceChange);
                     DiagnosisRuleReport diagnosisRuleReport = new DiagnosisRuleReport();
                     diagnosisRuleReport.setTitle("CPU利用率低分析");
