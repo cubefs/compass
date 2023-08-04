@@ -81,6 +81,9 @@ public enum AppCategoryEnum {
     // MapReduce推测执行Task过多
     MR_SPECULATIVE_TASK("mrSpeculativeTask", "MR推测执行Task过多", "runPerformance"),
 
+    // MapReduce GC异常
+    MR_GC_ABNORMAL("mrGCAbnormal", "MRGC异常", "runPerformance"),
+
     // 其他异常
     OTHER_EXCEPTION("otherException", "其他异常", "runError");
 

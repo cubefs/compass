@@ -26,10 +26,10 @@ public enum LogType {
     SPARK_EVENT("event"),
     SPARK_DRIVER("driver"),
     SPARK_EXECUTOR("executor"),
-
     YARN("yarn"),
     SPARK_GC("gc"),
-    MAPREDUCE_JOB_HISTORY("jobhistory");
+    MAPREDUCE_JOB_HISTORY("jobhistory"),
+    MAPREDUCE_CONTAINER("mrContainer");
 
     private final String name;
 

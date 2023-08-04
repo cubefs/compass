@@ -2,23 +2,24 @@ package com.oppo.cloud.common.domain.mr;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 @Data
 public class MRDataSkewAbnormal {
 
-    private Double mapRatio;
+    private Boolean abnormal;
 
-    private Double reduceRatio;
+    private String taskType;
 
-    private Boolean isMapSkew;
+    private Double ratio;
 
-    private Boolean isReduceSkew;
+    private Long elapsedTime;
 
-    private List<MRDataSkewGraph> mapGraphList;
+    private List<MRDataSkewGraph> graphList;
 
-    private List<MRDataSkewGraph> reduceGraphList;
-
-
+    public MRDataSkewAbnormal() {
+        graphList = new ArrayList<>();
+    }
 }

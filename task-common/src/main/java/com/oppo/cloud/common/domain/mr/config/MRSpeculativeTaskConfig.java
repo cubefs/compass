@@ -14,32 +14,20 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.common.domain.mr;
+package com.oppo.cloud.common.domain.mr.config;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * MapReduce Speculative task config
+ */
 @Data
-public class MRMemWasteAbnormal {
+public class MRSpeculativeTaskConfig {
 
-    private Boolean abnormal;
+    private Boolean disable;
 
-    private String taskType;
-    /**
-     * unit:MB
-     */
-    private Long memory;
+    private Integer threshold;
 
-    private Double wastePercent;
+    private Long duration;
 
-    /**
-     * unit:MB
-     */
-    List<MRTaskMemPeak> taskMemPeakList;
-
-    public MRMemWasteAbnormal() {
-        taskMemPeakList = new ArrayList<>();
-    }
 }

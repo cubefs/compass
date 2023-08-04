@@ -70,6 +70,8 @@ public class App {
             logPathList.add(new LogPath(ProtocolType.HDFS.getName(), LogType.MAPREDUCE_JOB_HISTORY.getName(),
                     LogPathType.PATTERN, taskApp.getJobHistoryIntermediateDoneLogPath()));
             logPathMap.put(LogType.MAPREDUCE_JOB_HISTORY.getName(), logPathList);
+            logPathMap.put(LogType.MAPREDUCE_CONTAINER.getName(), Collections.singletonList(new LogPath(ProtocolType.HDFS.getName(),
+                    LogType.MAPREDUCE_CONTAINER.getName(), LogPathType.DIRECTORY, taskApp.getYarnLogPath())));
             logInfo.setLogPathMap(logPathMap);
         }
 

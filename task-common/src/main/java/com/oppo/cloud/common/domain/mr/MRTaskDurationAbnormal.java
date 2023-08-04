@@ -16,30 +16,23 @@
 
 package com.oppo.cloud.common.domain.mr;
 
+import com.oppo.cloud.common.domain.eventlog.TaskDurationGraph;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class MRMemWasteAbnormal {
-
+public class MRTaskDurationAbnormal {
     private Boolean abnormal;
-
     private String taskType;
-    /**
-     * unit:MB
-     */
-    private Long memory;
+    private Double ratio;
+    private List<TaskDurationGraph> graphList;
 
-    private Double wastePercent;
-
-    /**
-     * unit:MB
-     */
-    List<MRTaskMemPeak> taskMemPeakList;
-
-    public MRMemWasteAbnormal() {
-        taskMemPeakList = new ArrayList<>();
+    public MRTaskDurationAbnormal() {
+        graphList = new ArrayList<>();
     }
+
 }
