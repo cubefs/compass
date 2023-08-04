@@ -220,11 +220,6 @@ public class TaskAppServiceImpl implements TaskAppService {
                     sparkApp.getEventLogDirectory() + "/" + taskApplication.getApplicationId() + "_" + attemptId);
             taskApp.setSparkUI(
                     String.format(sparkUiProxy, sparkApp.getSparkHistoryServer(), taskApplication.getApplicationId()));
-            String yarnLogPath = getYarnLogPath(Constant.JHS_HDFS_PATH, yarnApp.getIp());
-            if ("".equals(yarnLogPath)) {
-                throw new Exception(String.format("can not find yarn log path: rm ip : %s", yarnApp.getIp()));
-            }
-            taskApp.setYarnLogPath(yarnLogPath + "/" + yarnApp.getUser() + "/logs/" + taskApplication.getApplicationId());
         }
 
         if (ApplicationType.MAPREDUCE.getValue().equals(yarnApp.getApplicationType())) {
@@ -240,6 +235,12 @@ public class TaskAppServiceImpl implements TaskAppService {
             String jobHistoryIntermediateDoneLogPath = String.format("%s/%s/%s*", jobHistoryIntermediateDoneLogPathPrefix, yarnApp.getUser(), jobId);
             taskApp.setJobHistoryIntermediateDoneLogPath(jobHistoryIntermediateDoneLogPath);
         }
+
+        String yarnLogPath = getYarnLogPath(Constant.JHS_HDFS_PATH, yarnApp.getIp());
+        if ("".equals(yarnLogPath)) {
+            throw new Exception(String.format("can not find yarn log path: rm ip : %s", yarnApp.getIp()));
+        }
+        taskApp.setYarnLogPath(yarnLogPath + "/" + yarnApp.getUser() + "/logs/" + taskApplication.getApplicationId());
 
         return taskApp;
     }
@@ -287,11 +288,6 @@ public class TaskAppServiceImpl implements TaskAppService {
             taskApp.setVcoreSeconds((double) yarnApp.getVcoreSeconds());
             taskApp.setMemorySeconds((double) Math.round(yarnApp.getMemorySeconds()));
             taskApp.setTaskAppState(yarnApp.getState());
-//            String yarnLogPath = getYarnLogPath(yarnApp.getIp());
-//            if (!"".equals(yarnLogPath)) {
-//                taskApp.setYarnLogPath(
-//                        yarnLogPath + "/" + yarnApp.getUser() + "/logs/" + taskApplication.getApplicationId());
-//            }
             String[] amHost = yarnApp.getAmHostHttpAddress().split(":");
             if (amHost.length != 0) {
                 taskApp.setAmHost(amHost[0]);
