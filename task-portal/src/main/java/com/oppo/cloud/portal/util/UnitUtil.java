@@ -74,6 +74,13 @@ public class UnitUtil {
     }
 
     /**
+     * B转MB
+     */
+    public static double transferBToMB(Long v) {
+        return v / (1024.0 * 1024.0);
+    }
+
+    /**
      * MB转GB
      */
     public static double transferMBToGB(Long v) {

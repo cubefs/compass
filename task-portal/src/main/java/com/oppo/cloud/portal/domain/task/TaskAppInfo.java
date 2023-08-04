@@ -38,6 +38,9 @@ public class TaskAppInfo {
     @ApiModelProperty(value = "appId名称")
     private String applicationId;
 
+    @ApiModelProperty(value = "applicationType类型")
+    private String applicationType;
+
     @ApiModelProperty(value = "项目名称")
     private String projectName;
 
@@ -74,6 +77,7 @@ public class TaskAppInfo {
     public static TaskAppInfo from(TaskApp taskApp) {
         TaskAppInfo taskAppInfo = new TaskAppInfo();
         taskAppInfo.setApplicationId(taskApp.getApplicationId());
+        taskAppInfo.setApplicationType(taskApp.getApplicationType());
         taskAppInfo.setProjectName(taskApp.getProjectName());
         taskAppInfo.setFlowName(taskApp.getFlowName());
         taskAppInfo.setTaskName(taskApp.getTaskName());

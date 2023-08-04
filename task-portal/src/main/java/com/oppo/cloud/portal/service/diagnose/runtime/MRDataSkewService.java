@@ -16,19 +16,20 @@
 
 package com.oppo.cloud.portal.service.diagnose.runtime;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
 import com.oppo.cloud.common.constant.AppCategoryEnum;
-import com.oppo.cloud.common.constant.MRTaskType;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.domain.mr.MRDataSkewAbnormal;
 import com.oppo.cloud.common.domain.mr.MRDataSkewGraph;
+import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.common.util.ui.UIUtil;
 import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.DataSkew;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
 import com.oppo.cloud.portal.util.UnitUtil;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,42 +40,50 @@ import java.util.Map;
 /**
  * MR数据倾斜
  */
+@Order(1)
 @Service
 public class MRDataSkewService extends RunTimeBaseService<DataSkew> {
 
-    /**
-     * 获取该子类异常类型
-     */
     @Override
     public String getCategory() {
         return AppCategoryEnum.MR_DATA_SKEW.getCategory();
     }
 
-    /**
-     * 产生该异常类型的报告
-     */
     @Override
     public DataSkew generateData(DetectorResult detectorResult, DetectorConfig config) throws Exception {
         DataSkew dataSkew = new DataSkew();
         dataSkew.setAbnormal(detectorResult.getAbnormal());
         List<Chart<MetricInfo>> chartList = dataSkew.getChartList();
         List<String> info = new ArrayList<>();
-
-        MRDataSkewAbnormal data = ((JSONObject) detectorResult.getData()).toJavaObject(MRDataSkewAbnormal.class);
-        if (data.getMapGraphList() != null) {
-            chartList.add(buildTaskChart(MRTaskType.MAP.getName(), data.getMapGraphList(), info));
+        List<MRDataSkewAbnormal> data = ((JSONArray) detectorResult.getData()).toJavaList(MRDataSkewAbnormal.class);
+        if (data == null) {
+            return null;
         }
-        if (data.getReduceGraphList() != null) {
-            chartList.add(buildTaskChart(MRTaskType.REDUCE.getName(), data.getReduceGraphList(), info));
+        List<String> taskType = new ArrayList<>();
+        for (MRDataSkewAbnormal dataSkewAbnormal : data) {
+            if (dataSkewAbnormal.getGraphList().size() == 0) {
+                continue;
+            }
+            chartList.add(buildTaskChart(dataSkewAbnormal, info));
+            if (dataSkewAbnormal.getAbnormal()) {
+                taskType.add(dataSkewAbnormal.getTaskType());
+            }
         }
+        dataSkew.getVars().put("dataSkewInfo", String.join("; ", info));
+        dataSkew.getVars().put("taskType", String.join(",", taskType));
+        dataSkew.getVars().put("taskSize", String.valueOf(config.getMrDataSkewConfig().getTaskSize()));
+        dataSkew.getVars().put("taskDuration", String.valueOf(config.getMrDataSkewConfig().getTaskDuration()));
+        dataSkew.getVars().put("mapThreshold", String.valueOf(config.getMrDataSkewConfig().getMapThreshold()));
+        dataSkew.getVars().put("reduceThreshold", String.valueOf(config.getMrDataSkewConfig().getReduceThreshold()));
 
-        dataSkew.getVars().put("dataSkewInfo", String.join(",", info));
         return dataSkew;
     }
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("");
+        return String.format("Task处理的最大数据量超过%sMB,时间超过%sms,最大值/中位值比值map超过%s或者reduce超过%s",
+                thresholdMap.get("taskSize"), thresholdMap.get("taskDuration"), thresholdMap.get("mapThreshold"),
+                thresholdMap.get("reduceThreshold"));
     }
 
     @Override
@@ -90,8 +99,8 @@ public class MRDataSkewService extends RunTimeBaseService<DataSkew> {
 
     private void buildChartInfo(Chart<MetricInfo> chart) {
         chart.setX("task id");
-        chart.setY("BYTES");
-        chart.setUnit("");
+        chart.setY("数据量");
+        chart.setUnit("MB");
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
         dataCategory.put("max", new Chart.ChartInfo("最大值", UIUtil.ABNORMAL_COLOR));
         dataCategory.put("median", new Chart.ChartInfo("中位值", UIUtil.KEY_COLOR));
@@ -99,35 +108,36 @@ public class MRDataSkewService extends RunTimeBaseService<DataSkew> {
         chart.setDataCategory(dataCategory);
     }
 
-    private Chart<MetricInfo> buildTaskChart(String taskType, List<MRDataSkewGraph> graphList, List<String> info) {
+    private Chart<MetricInfo> buildTaskChart(MRDataSkewAbnormal dataSkewAbnormal, List<String> info) {
         Chart<MetricInfo> chart = new Chart<>();
         buildChartInfo(chart);
-        chart.setDes(String.format("%s任务处理数据量分布图", taskType));
+        chart.setDes(String.format("%s任务处理数据量分布图", dataSkewAbnormal.getTaskType()));
         List<MetricInfo> metricInfoList = chart.getDataList();
         double max = 0.0;
         double median = 0.0;
         String taskId = "";
-        for (MRDataSkewGraph dataSkewGraph : graphList) {
-            double value = UnitUtil.transferDouble(dataSkewGraph.getDataSize());
+        for (MRDataSkewGraph dataSkewGraph : dataSkewAbnormal.getGraphList()) {
             MetricInfo metricInfo = new MetricInfo();
             metricInfo.setXValue(String.valueOf(dataSkewGraph.getTaskId()));
             List<ValueInfo> yValues = metricInfo.getYValues();
             ValueInfo yValue = new ValueInfo();
-            yValue.setValue(value);
+            yValue.setValue(UnitUtil.transferBToMB(dataSkewGraph.getDataSize()));
             yValue.setType(dataSkewGraph.getGraphType());
             yValues.add(yValue);
             metricInfoList.add(metricInfo);
             if ("max".equals(dataSkewGraph.getGraphType())) {
-                max = value;
+                max = dataSkewGraph.getDataSize();
                 taskId = String.valueOf(dataSkewGraph.getTaskId());
             }
             if ("median".equals(dataSkewGraph.getGraphType())) {
-                median = value;
+                median = dataSkewGraph.getDataSize();
             }
         }
         info.add(String.format(
-                "task[<span style=\"color: #e24a4a;\">%s</span>]处理数据量为<span style=\"color: #e24a4a;\">%s</span> 中位值为%s",
-                taskId, UnitUtil.transferByte(max), UnitUtil.transferByte(median)));
+                "%s task[<span style=\"color: #e24a4a;\">%s</span>]处理数据量为<span style=\"color: #e24a4a;\">%s</span>, " +
+                        "运行耗时为<span style=\"color: #e24a4a;\">%s</span>, 中位值为%s",
+                dataSkewAbnormal.getTaskType(), taskId, UnitUtil.transferByte(max),
+                DateUtil.timeSimplify((double) (dataSkewAbnormal.getElapsedTime() / 1000)), UnitUtil.transferByte(median)));
         return chart;
     }
 }

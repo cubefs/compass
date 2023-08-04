@@ -17,27 +17,23 @@
 package com.oppo.cloud.portal.service.diagnose.runtime;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
-import com.oppo.cloud.common.domain.eventlog.LargeTableScanAbnormal;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.domain.mr.MRLargeTableScanAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.Table;
-import com.oppo.cloud.portal.domain.diagnose.runtime.BigTableScan;
 import com.oppo.cloud.portal.domain.diagnose.runtime.mr.MRBigTableScan;
-import com.oppo.cloud.portal.service.diagnose.runtime.RunTimeBaseService;
 import com.oppo.cloud.portal.util.UnitUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * MR大表扫描
  */
+@Order(4)
 @Service
 public class MRBigTableScanService extends RunTimeBaseService<MRBigTableScan> {
     @Override
@@ -55,11 +51,13 @@ public class MRBigTableScanService extends RunTimeBaseService<MRBigTableScan> {
         Table<MRBigTableScan.TaskInfo> taskInfoTable = bigTableScan.getTable();
         List<MRBigTableScan.TaskInfo> taskInfoList = taskInfoTable.getData();
         MRBigTableScan.TaskInfo taskInfo = new MRBigTableScan.TaskInfo();
-        taskInfo.setColumns(UnitUtil.transferRows(Double.parseDouble(String.valueOf(largeTableScanAbnormal.getRecords()))));
-        taskInfo.setThreshold(UnitUtil.transferRows(config.getMrLargeTableScanConfig().getThreshold()));
+        String value = UnitUtil.transferRows(Double.parseDouble(String.valueOf(largeTableScanAbnormal.getRecords())));
+        taskInfo.setColumns(value);
+        String threshold = UnitUtil.transferRows(config.getMrLargeTableScanConfig().getThreshold());
+        taskInfo.setThreshold(threshold);
         taskInfoList.add(taskInfo);
-        bigTableScan.getVars().put("values", String.valueOf(largeTableScanAbnormal.getRecords()));
-        bigTableScan.getVars().put("threshold", UnitUtil.transferRows(config.getMrLargeTableScanConfig().getThreshold()));
+        bigTableScan.getVars().put("values", value);
+        bigTableScan.getVars().put("threshold", threshold);
         return bigTableScan;
     }
 
