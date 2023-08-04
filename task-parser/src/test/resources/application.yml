@@ -163,3 +163,48 @@ custom:
         - start: 50000000
           end: 0
           threshold: 2
+    # mapreduce
+    mrEnvironmentConfig:
+      keys:
+        - mapreduce.map.cpu.vcores
+        - mapreduce.map.memory.mb
+        - mapreduce.reduce.cpu.vcores
+        - mapreduce.reduce.memory.mb
+        - hive.query.string
+    mrMemWasteConfig:
+      disable: false
+      mapThreshold: 1
+      reduceThreshold: 1
+      duration: 1
+    mrLargeTableScanConfig:
+      disable: false
+      threshold: 1
+      duration: 1
+    mrDataSkewConfig:
+      disable: false
+      # MB
+      taskSize: 1
+      # task duration(ms)
+      taskDuration: 1
+      mapThreshold: 1
+      reduceThreshold: 1
+      # app duration(ms)
+      duration: 1
+    mrSpeculativeTaskConfig:
+      disable: false
+      threshold: 1
+      duration: 1
+    mrTaskDurationConfig:
+      disable: false
+      # task duration(ms)
+      taskDuration: 600000
+      mapThreshold: 1
+      reduceThreshold: 1
+      # app duration(ms)
+      duration: 1
+    mrGCConfig:
+      disable: false
+      mapThreshold: 0.01
+      reduceThreshold: 0.01
+      # app duration(ms)
+      duration: 1

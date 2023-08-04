@@ -16,6 +16,7 @@
 
 package com.oppo.cloud.parser.service;
 
+import com.oppo.cloud.common.constant.ApplicationType;
 import com.oppo.cloud.common.constant.LogPathType;
 import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
 import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
@@ -63,8 +64,9 @@ public class ParamUtil {
         DetectorParam detectorParam = new DetectorParam(logRecord.getJobAnalysis().getFlowName(),
                 logRecord.getJobAnalysis().getProjectName(), logRecord.getJobAnalysis().getTaskName(),
                 logRecord.getJobAnalysis().getExecutionDate(), logRecord.getJobAnalysis().getRetryTimes(),
-                logRecord.getApps().get(0).getAppId(), appDuration, "",
-                jobRulesConfigService.detectorConfig, replayEventLogs, logRecord.getIsOneClick());
+                logRecord.getApps().get(0).getAppId(), ApplicationType.SPARK, appDuration, "",
+                jobRulesConfigService.detectorConfig, logRecord.getIsOneClick());
+        detectorParam.setReplayEventLogs(replayEventLogs);
 
         return detectorParam;
     }
@@ -142,21 +144,39 @@ public class ParamUtil {
         List<LogPath> eventList = new ArrayList<>();
         eventList.add(event);
 
-        Map<String, List<LogPath>> logPathMap1 = new HashMap<>();
-        logPathMap1.put("event", eventList);
-        logPathMap1.put("executor", executorList);
+        Map<String, List<LogPath>> sprakLogPathMap = new HashMap<>();
+        sprakLogPathMap.put("event", eventList);
+        sprakLogPathMap.put("executor", executorList);
+
+        LogPath jobHistory = new LogPath();
+        jobHistory.setProtocol("hdfs");
+        jobHistory.setLogType("jobhistory");
+        jobHistory.setLogPath("hdfs://logs-hdfs/user/history/done/2023/07/13/015486/job_1647412501924_15486285*");
+        jobHistory.setLogPathType(LogPathType.PATTERN);
+        List<LogPath> jobHistoryList = new ArrayList<>();
+        jobHistoryList.add(jobHistory);
+
+        Map<String, List<LogPath>> mrLogPathMap = new HashMap<>();
+        mrLogPathMap.put("jobhistory", jobHistoryList);
+
 
         List<LogInfo> logInfoList = new ArrayList<>();
-        LogInfo logInfo = new LogInfo();
-        logInfo.setLogGroup("scheduler");
-        logInfo.setLogPathMap(logPathMap);
+        LogInfo schedulerLogInfo = new LogInfo();
+        schedulerLogInfo.setLogGroup("scheduler");
+        schedulerLogInfo.setLogPathMap(logPathMap);
 
-        LogInfo logInfo1 = new LogInfo();
-        logInfo1.setLogGroup("spark");
-        logInfo1.setLogPathMap(logPathMap1);
+        LogInfo sparkLogInfo = new LogInfo();
+        sparkLogInfo.setLogGroup("spark");
+        sparkLogInfo.setLogPathMap(sprakLogPathMap);
 
-        logInfoList.add(logInfo);
-        logInfoList.add(logInfo1);
+
+        LogInfo mrLogInfo = new LogInfo();
+        mrLogInfo.setLogGroup("mapreduce");
+        mrLogInfo.setLogPathMap(mrLogPathMap);
+
+        logInfoList.add(schedulerLogInfo);
+        logInfoList.add(sparkLogInfo);
+        logInfoList.add(mrLogInfo);
 
         app.setLogInfoList(logInfoList);
         apps.add(app);

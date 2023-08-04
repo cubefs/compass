@@ -16,7 +16,9 @@
 
 package com.oppo.cloud.parser.service.job.parser;
 
+import com.oppo.cloud.common.constant.ApplicationType;
 import com.oppo.cloud.common.constant.ProgressState;
+import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
 import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.domain.job.LogPath;
@@ -25,11 +27,11 @@ import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
 import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
 import com.oppo.cloud.common.util.spring.SpringBeanUtil;
 import com.oppo.cloud.parser.domain.job.CommonResult;
-import com.oppo.cloud.parser.domain.job.MRDetectorParam;
+import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.mr.MRAppInfo;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
-import com.oppo.cloud.parser.service.job.detector.mr.MRDetectorManager;
+import com.oppo.cloud.parser.service.job.detector.DetectorManager;
 import com.oppo.cloud.parser.service.job.oneclick.OneClickSubject;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
@@ -37,6 +39,7 @@ import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
 import com.oppo.cloud.parser.utils.JobHistoryUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,22 +104,20 @@ public class MapReduceJobHistoryParser extends OneClickSubject implements IParse
 
     private CommonResult detect(MRAppInfo mrAppInfo, String logPath) {
 
-        long appDuration = mrAppInfo.getFinishTime() - mrAppInfo.getSubmitTime();
-        if (appDuration < 0) {
-            appDuration = 0L;
-        }
+        long appDuration = mrAppInfo.getElapsedTime();
 
-        MRDetectorParam detectorParam = new MRDetectorParam(this.param.getLogRecord().getJobAnalysis().getFlowName(),
+        DetectorParam detectorParam = new DetectorParam(this.param.getLogRecord().getJobAnalysis().getFlowName(),
                 this.param.getLogRecord().getJobAnalysis().getProjectName(),
                 this.param.getLogRecord().getJobAnalysis().getTaskName(),
                 this.param.getLogRecord().getJobAnalysis().getExecutionDate(),
                 this.param.getLogRecord().getJobAnalysis().getRetryTimes(),
-                this.param.getApp().getAppId(), appDuration, logPath, config, mrAppInfo,
+                this.param.getApp().getAppId(), ApplicationType.MAPREDUCE, appDuration, logPath, config,
                 this.param.getLogRecord().getIsOneClick());
+        detectorParam.setMrAppInfo(mrAppInfo);
 
-        MRDetectorManager detectorManager = new MRDetectorManager(detectorParam);
+        DetectorManager detectorManager = new DetectorManager();
         // run all detector
-        DetectorStorage detectorStorage = detectorManager.run();
+        DetectorStorage detectorStorage = detectorManager.run(detectorParam);
 
         detectorStorage.setEnv(getMREnvironmentConfig(mrAppInfo));
 

@@ -61,6 +61,7 @@ public class MapReduceTask extends Task {
         List<CompletableFuture<CommonResult>> futures = super.createFutures(parsers, taskThreadPool);
 
         DetectorStorage detectorStorage = null;
+        List<String> categories = new ArrayList<>();
         for (Future<CommonResult> result : futures) {
             CommonResult commonResult;
             try {
@@ -69,6 +70,9 @@ public class MapReduceTask extends Task {
                     switch (commonResult.getLogType()) {
                         case MAPREDUCE_JOB_HISTORY:
                             detectorStorage = (DetectorStorage) commonResult.getResult();
+                            break;
+                        case MAPREDUCE_CONTAINER:
+                            categories.addAll((List<String>) commonResult.getResult());
                             break;
                         default:
                             break;
@@ -79,13 +83,12 @@ public class MapReduceTask extends Task {
             }
         }
 
-        // get mr jobhistory categories
-        List<String> categories = new ArrayList<>();
         if (detectorStorage == null) {
             return new TaskResult(this.taskParam.getApp().getAppId(), categories);
         }
 
         if (detectorStorage.getAbnormal()) {
+            // get mr jobhistory categories
             for (DetectorResult detectorResult : detectorStorage.getDataList()) {
                 if (detectorResult.getAbnormal()) {
                     categories.add(detectorResult.getAppCategory());

@@ -51,6 +51,7 @@ custom:
   # spark event log检测参数
   # disable 默认false;true禁用该检测项
   detector:
+    # spark
     sparkEnvironmentConfig:
       jvmInformation:
         - Java Version
@@ -164,3 +165,49 @@ custom:
         - start: 50000000
           end: 0
           threshold: 2
+    # mapreduce
+    mrEnvironmentConfig:
+      keys:
+        - mapreduce.map.cpu.vcores
+        - mapreduce.map.memory.mb
+        - mapreduce.reduce.cpu.vcores
+        - mapreduce.reduce.memory.mb
+        - hive.query.string
+    mrMemWasteConfig:
+      disable: false
+      mapThreshold: 80
+      reduceThreshold: 80
+      # task duration(ms)
+      duration: 1200000
+    mrLargeTableScanConfig:
+      disable: false
+      threshold: 5000000000
+      duration: 1200000
+    mrDataSkewConfig:
+      disable: false
+      # MB
+      taskSize: 500
+      # task duration(ms)
+      taskDuration: 900000
+      mapThreshold: 2
+      reduceThreshold: 2
+      # app duration(ms)
+      duration: 1200000
+    mrSpeculativeTaskConfig:
+      disable: false
+      threshold: 10
+      duration: 1200000
+    mrTaskDurationConfig:
+      disable: false
+      # task duration(ms)
+      taskDuration: 900000
+      mapThreshold: 2
+      reduceThreshold: 2
+      # app duration(ms)
+      duration: 1200000
+    mrGCConfig:
+      disable: false
+      mapThreshold: 0.1
+      reduceThreshold: 0.1
+      # app duration(ms)
+      duration: 1200000

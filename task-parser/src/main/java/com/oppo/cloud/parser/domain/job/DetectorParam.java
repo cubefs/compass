@@ -16,9 +16,10 @@
 
 package com.oppo.cloud.parser.domain.job;
 
+import com.oppo.cloud.common.constant.ApplicationType;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
+import com.oppo.cloud.parser.domain.mr.MRAppInfo;
 import com.oppo.cloud.parser.utils.ReplayEventLogs;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -26,7 +27,6 @@ import java.util.Date;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class DetectorParam {
 
     /**
@@ -55,12 +55,17 @@ public class DetectorParam {
     private Integer tryNumber;
 
     /**
-     * spark applicationId
+     * applicationId
      */
     private String appId;
 
     /**
-     * spark app duration(ms)
+     * application type
+     */
+    private ApplicationType appType;
+
+    /**
+     * app duration(ms)
      */
     private long appDuration;
 
@@ -68,7 +73,26 @@ public class DetectorParam {
 
     private DetectorConfig config;
 
+    private boolean isOneClick;
+
     private ReplayEventLogs replayEventLogs;
 
-    private boolean isOneClick;
+    private MRAppInfo mrAppInfo;
+
+    public DetectorParam(String flowName, String projectName, String taskName, Date executionTime, Integer tryNumber,
+                         String appId, ApplicationType appType, long appDuration, String logPath, DetectorConfig config,
+                         boolean isOneClick) {
+        this.flowName = flowName;
+        this.projectName = projectName;
+        this.taskName = taskName;
+        this.executionTime = executionTime;
+        this.tryNumber = tryNumber;
+        this.appId = appId;
+        this.appType = appType;
+        this.appDuration = appDuration;
+        this.logPath = logPath;
+        this.config = config;
+        this.isOneClick = isOneClick;
+    }
+
 }

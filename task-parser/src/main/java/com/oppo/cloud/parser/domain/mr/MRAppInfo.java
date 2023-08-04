@@ -3,6 +3,7 @@ package com.oppo.cloud.parser.domain.mr;
 import com.oppo.cloud.parser.domain.mr.event.TaskInfo;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +26,20 @@ public class MRAppInfo {
     private Integer killedMaps;
     private Integer killedReduces;
     private Long finishTime;
+    private Long elapsedTime;
     private String jobStatus;
     private Map<String, String> confMap;
-
-    private Map<String, TaskInfo> tasksMap = new HashMap<>();
+    private Map<String, TaskInfo> tasksMap;
     private Map<String, Map<String, Long>> totalCounters;
     private List<MRTaskAttemptInfo> mapList;
     private List<MRTaskAttemptInfo> reduceList;
     private SpeculationInfo speculationInfo;
+
+    public MRAppInfo() {
+        this.tasksMap = new HashMap<>();
+        this.totalCounters = new HashMap<>();
+        this.mapList = new ArrayList<>();
+        this.reduceList = new ArrayList<>();
+    }
 
 }

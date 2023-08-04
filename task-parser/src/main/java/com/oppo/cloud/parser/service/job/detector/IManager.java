@@ -18,19 +18,14 @@ package com.oppo.cloud.parser.service.job.detector;
 
 import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.parser.domain.job.DetectorParam;
-import com.oppo.cloud.parser.service.ParamUtil;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class DetectorManagerTest {
+import java.util.List;
 
-    @Test
-    void run() throws Exception {
-        DetectorParam param = ParamUtil.getDetectorParam();
-        DetectorManager detectorManager = new DetectorManager();
-        DetectorStorage detectorStorage = detectorManager.run(param);
-        System.out.println(detectorStorage);
-    }
+public interface IManager {
+
+    List<IDetector> createDetectors(DetectorParam param);
+
+
+    DetectorStorage run(DetectorParam param);
 
 }

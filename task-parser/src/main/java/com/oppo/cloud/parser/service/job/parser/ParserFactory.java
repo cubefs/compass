@@ -47,6 +47,12 @@ public class ParserFactory {
                 MapReduceJobHistoryParser mapReduceJobHistoryParser = new MapReduceJobHistoryParser(parserParam);
                 mapReduceJobHistoryParser.addListener(listener);
                 return mapReduceJobHistoryParser;
+
+            case MAPREDUCE_CONTAINER:
+                MapReduceContainerLogParser mapReduceContainerLogParser = new MapReduceContainerLogParser(parserParam);
+                mapReduceContainerLogParser.addListener(listener);
+                return mapReduceContainerLogParser;
+
             default:
                 return null;
         }

@@ -221,10 +221,10 @@ public class ReplayMREventLogs {
         this.mrAppInfo.setTasksMap(tasksMap);
     }
 
-    private void handleTaskFailed(TaskFailed event) {
+    private void handleTaskFailed(TaskFailed event) throws Exception {
         TaskInfo taskInfo = this.mrAppInfo.getTasksMap().get(event.getTaskid());
         if (taskInfo == null) {
-            log.error("TaskInfo is null:{}", event.getTaskid());
+            log.warn("TaskInfo is null:{}", event.getTaskid());
             return;
         }
         taskInfo.setStatus(JobStatus.FAILED.name());
@@ -234,19 +234,19 @@ public class ReplayMREventLogs {
         taskInfo.setCounters(event.getCounters());
     }
 
-    private void handleTaskUpdated(TaskUpdated event) {
+    private void handleTaskUpdated(TaskUpdated event) throws Exception {
         TaskInfo taskInfo = this.mrAppInfo.getTasksMap().get(event.getTaskid());
         if (taskInfo == null) {
-            log.error("TaskInfo is null:{}", event.getTaskid());
+            log.warn("TaskInfo is null:{}", event.getTaskid());
             return;
         }
         taskInfo.setFinishTime(event.getFinishTime());
     }
 
-    private void handleTaskFinished(TaskFinished event) {
+    private void handleTaskFinished(TaskFinished event) throws Exception {
         TaskInfo taskInfo = this.mrAppInfo.getTasksMap().get(event.getTaskid());
         if (taskInfo == null) {
-            log.error("TaskInfo is null:{}", event.getTaskid());
+            log.warn("TaskInfo is null:{}", event.getTaskid());
             return;
         }
         taskInfo.setCounters(event.getCounters());
@@ -255,7 +255,7 @@ public class ReplayMREventLogs {
         taskInfo.setSuccessfulAttemptId(event.getSuccessfulAttemptId());
     }
 
-    private void handleTaskAttemptStarted(TaskAttemptStarted event) {
+    private void handleTaskAttemptStarted(TaskAttemptStarted event) throws Exception {
         String attemptId = event.getAttemptId();
         TaskInfo taskInfo = this.mrAppInfo.getTasksMap().get(event.getTaskid());
 
@@ -272,16 +272,20 @@ public class ReplayMREventLogs {
         taskInfo.setAttemptsMap(attemptsMap);
     }
 
-    private void handleTaskAttemptFailed(TaskAttemptUnsuccessfulCompletion event) {
+    private void handleTaskAttemptFailed(TaskAttemptUnsuccessfulCompletion event) throws Exception {
         TaskInfo taskInfo = this.mrAppInfo.getTasksMap().get(event.getTaskid());
         if (taskInfo == null) {
-            log.error("TaskInfo is null:{}", event.getTaskid());
+            log.warn("TaskInfo is null:{}", event.getTaskid());
+            return;
+        }
+        if (taskInfo.getAttemptsMap() == null) {
+            log.warn("TaskAttemptMap is null:{},{}", this.mrAppInfo.getJobId(), taskInfo.getTaskId());
             return;
         }
         TaskAttemptInfo attemptInfo =
                 taskInfo.getAttemptsMap().get(event.getAttemptId());
         if (attemptInfo == null) {
-            log.error("TaskAttemptInfo is null:{}", event.getAttemptId());
+            log.warn("TaskAttemptInfo is null:{}", event.getAttemptId());
             return;
         }
         attemptInfo.setFinishTime(event.getFinishTime());
@@ -304,16 +308,16 @@ public class ReplayMREventLogs {
         }
     }
 
-    private void handleMapAttemptFinished(MapAttemptFinished event) {
+    private void handleMapAttemptFinished(MapAttemptFinished event) throws Exception {
         TaskInfo taskInfo = this.mrAppInfo.getTasksMap().get(event.getTaskid());
         if (taskInfo == null) {
-            log.error("TaskInfo is null:{}", event.getTaskid());
+            log.warn("TaskInfo is null:{}", event.getTaskid());
             return;
         }
         TaskAttemptInfo attemptInfo =
                 taskInfo.getAttemptsMap().get(event.getAttemptId());
         if (attemptInfo == null) {
-            log.error("TaskAttemptInfo is null:{}", event.getAttemptId());
+            log.warn("TaskAttemptInfo is null:{}", event.getAttemptId());
             return;
         }
         attemptInfo.setFinishTime(event.getFinishTime());
@@ -326,16 +330,16 @@ public class ReplayMREventLogs {
         attemptInfo.setRackname(event.getRackname());
     }
 
-    private void handleReduceAttemptFinished(ReduceAttemptFinished event) {
+    private void handleReduceAttemptFinished(ReduceAttemptFinished event) throws Exception {
         TaskInfo taskInfo = this.mrAppInfo.getTasksMap().get(event.getTaskid());
         if (taskInfo == null) {
-            log.error("TaskInfo is null:{}", event.getTaskid());
+            log.warn("TaskInfo is null:{}", event.getTaskid());
             return;
         }
         TaskAttemptInfo attemptInfo =
                 taskInfo.getAttemptsMap().get(event.getAttemptId());
         if (attemptInfo == null) {
-            log.error("TaskAttemptInfo is null:{}", event.getAttemptId());
+            log.warn("TaskAttemptInfo is null:{}", event.getAttemptId());
             return;
         }
         attemptInfo.setFinishTime(event.getFinishTime());
@@ -349,16 +353,16 @@ public class ReplayMREventLogs {
         attemptInfo.setRackname(event.getRackname());
     }
 
-    private void handleTaskAttemptFinished(TaskAttemptFinished event) {
+    private void handleTaskAttemptFinished(TaskAttemptFinished event) throws Exception {
         TaskInfo taskInfo = this.mrAppInfo.getTasksMap().get(event.getTaskid());
         if (taskInfo == null) {
-            log.error("TaskInfo is null:{}", event.getTaskid());
+            log.warn("TaskInfo is null:{}", event.getTaskid());
             return;
         }
         TaskAttemptInfo attemptInfo =
                 taskInfo.getAttemptsMap().get(event.getAttemptId());
         if (attemptInfo == null) {
-            log.error("TaskAttemptInfo is null:{}", event.getAttemptId());
+            log.warn("TaskAttemptInfo is null:{}", event.getAttemptId());
             return;
         }
         attemptInfo.setFinishTime(event.getFinishTime());
@@ -374,6 +378,9 @@ public class ReplayMREventLogs {
         SpeculationInfo speculationInfo = new SpeculationInfo();
         for (Map.Entry<String, TaskInfo> map : this.mrAppInfo.getTasksMap().entrySet()) {
             TaskInfo taskInfo = map.getValue();
+            if (taskInfo.getAttemptsMap() == null) {
+                continue;
+            }
             if (TaskType.MAP.toString().equals(taskInfo.getTaskType())) {
                 setMRTaskAttemptInfoList(taskInfo, mapList, speculationInfo);
             } else if (TaskType.REDUCE.toString().equals(taskInfo.getTaskType())) {
@@ -383,6 +390,11 @@ public class ReplayMREventLogs {
         this.mrAppInfo.setMapList(mapList);
         this.mrAppInfo.setReduceList(reduceList);
         this.mrAppInfo.setSpeculationInfo(speculationInfo);
+        long elapsedTime = mrAppInfo.getFinishTime() - mrAppInfo.getSubmitTime();
+        if (elapsedTime < 0) {
+            elapsedTime = 0L;
+        }
+        this.mrAppInfo.setElapsedTime(elapsedTime);
     }
 
     private void setMRTaskAttemptInfoList(TaskInfo taskInfo, List<MRTaskAttemptInfo> list, SpeculationInfo speculationInfo) {
@@ -394,11 +406,15 @@ public class ReplayMREventLogs {
             long elapsedTime = finishTime - startTime;
 
             if (taskAttemptInfo.getError() != null && taskAttemptInfo.getError().contains(SPECULATION)) {
-                speculationInfo.setSpeculationCount(speculationInfo.getSpeculationCount() + 1);
-                speculationInfo.setSpeculationElapsedTime(speculationInfo.getSpeculationElapsedTime() + elapsedTime);
+                List<Long> elapsedTimeList = speculationInfo.getElapsedTime();
+                elapsedTimeList.add(elapsedTime);
                 List<String> taskAttemptIds = speculationInfo.getTaskAttemptIds();
                 taskAttemptIds.add(taskAttemptInfo.getAttemptId());
                 speculationInfo.setTaskAttemptIds(taskAttemptIds);
+            }
+
+            if (!JobStatus.SUCCEEDED.toString().equals(taskAttemptInfo.getStatus())) {
+                continue;
             }
 
             Map<String, Map<String, Long>> mapCounters = handleCounters(taskInfo.getCounters());

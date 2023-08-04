@@ -23,51 +23,56 @@ import com.oppo.cloud.common.domain.eventlog.GraphType;
 import com.oppo.cloud.common.domain.mr.MRDataSkewAbnormal;
 import com.oppo.cloud.common.domain.mr.MRDataSkewGraph;
 import com.oppo.cloud.common.domain.mr.config.MRDataSkewConfig;
-import com.oppo.cloud.parser.domain.job.MRDetectorParam;
+import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.domain.mr.CounterInfo;
 import com.oppo.cloud.parser.domain.mr.MRAppInfo;
 import com.oppo.cloud.parser.domain.mr.MRTaskAttemptInfo;
 import com.oppo.cloud.parser.service.job.detector.IDetector;
+import com.oppo.cloud.parser.utils.UnitUtil;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import java.util.*;
 
 public class MRDataSkewDetector implements IDetector {
 
-    private final MRDetectorParam param;
+    private final DetectorParam param;
 
     private final MRDataSkewConfig config;
 
-    MRDataSkewDetector(MRDetectorParam param) {
+    public MRDataSkewDetector(DetectorParam param) {
         this.param = param;
         this.config = param.getConfig().getMrDataSkewConfig();
     }
 
     @Override
     public DetectorResult detect() {
-        DetectorResult<MRDataSkewAbnormal> detectorResult =
+        DetectorResult<List<MRDataSkewAbnormal>> detectorResult =
                 new DetectorResult<>(AppCategoryEnum.MR_DATA_SKEW.getCategory(), false);
 
-        MRDataSkewAbnormal mrDataSkewAbnormal = new MRDataSkewAbnormal();
-        mrDataSkewAbnormal.setIsMapSkew(false);
-        mrDataSkewAbnormal.setIsReduceSkew(false);
-
+        List<MRDataSkewAbnormal> data = new ArrayList<>();
         MRAppInfo mrAppInfo = param.getMrAppInfo();
 
-        judgeDataSkew(mrDataSkewAbnormal, mrAppInfo.getMapList(), MRTaskType.MAP);
-        judgeDataSkew(mrDataSkewAbnormal, mrAppInfo.getReduceList(), MRTaskType.REDUCE);
-        if (mrDataSkewAbnormal.getIsMapSkew() || mrDataSkewAbnormal.getIsReduceSkew()) {
+        MRDataSkewAbnormal mapResult = judgeDataSkew(mrAppInfo.getMapList(), MRTaskType.MAP);
+        MRDataSkewAbnormal reduceResult = judgeDataSkew(mrAppInfo.getReduceList(), MRTaskType.REDUCE);
+        if (mapResult.getAbnormal() || reduceResult.getAbnormal()) {
             detectorResult.setAbnormal(true);
+            data.add(mapResult);
+            data.add(reduceResult);
         }
-        detectorResult.setData(mrDataSkewAbnormal);
+        detectorResult.setData(data);
         return detectorResult;
     }
 
 
-    private void judgeDataSkew(MRDataSkewAbnormal mrDataSkewAbnormal, List<MRTaskAttemptInfo> lists, MRTaskType taskType) {
+    private MRDataSkewAbnormal judgeDataSkew(List<MRTaskAttemptInfo> lists, MRTaskType taskType) {
+        MRDataSkewAbnormal mrDataSkewAbnormal = new MRDataSkewAbnormal();
+        mrDataSkewAbnormal.setAbnormal(false);
+        mrDataSkewAbnormal.setTaskType(taskType.getName());
         List<MRDataSkewGraph> dataSkewGraphList = new ArrayList<>();
 
         double[] dataList = new double[lists.size()];
+        long elapsedTime = 0L;
+        long maxTaskSize = 0L;
         for (int i = 0; i < lists.size(); i++) {
             MRTaskAttemptInfo task = lists.get(i);
             Long dataSize = 0L;
@@ -75,12 +80,12 @@ public class MRDataSkewDetector implements IDetector {
                 case MAP:
                     String group = CounterInfo.CounterGroupName.FILE_SYSTEM_COUNTER.getCounterGroupName();
                     Map<String, Long> metrics = task.getCounters().get(group);
-                    dataSize = metrics.get(CounterInfo.CounterName.HDFS_BYTES_READ.getCounterName());
+                    dataSize = metrics.getOrDefault(CounterInfo.CounterName.HDFS_BYTES_READ.getCounterName(), 0L);
                     break;
                 case REDUCE:
                     group = CounterInfo.CounterGroupName.TASK_COUNTER.getCounterGroupName();
                     metrics = task.getCounters().get(group);
-                    dataSize = metrics.get(CounterInfo.CounterName.REDUCE_SHUFFLE_BYTES.getCounterName());
+                    dataSize = metrics.getOrDefault(CounterInfo.CounterName.REDUCE_SHUFFLE_BYTES.getCounterName(), 0L);
                     break;
                 default:
                     break;
@@ -92,35 +97,35 @@ public class MRDataSkewDetector implements IDetector {
                     dataSize,
                     GraphType.normal.toString())
             );
+            if (dataSize > maxTaskSize) {
+                maxTaskSize = dataSize;
+                elapsedTime = task.getElapsedTime();
+            }
         }
-
-
+        mrDataSkewAbnormal.setElapsedTime(elapsedTime);
         DescriptiveStatistics statistics = new DescriptiveStatistics(dataList);
         double median = statistics.getPercentile(50);
-        double max = statistics.getMax();
-        double ratio = max / median;
+        double ratio = maxTaskSize / median;
 
-        boolean skew;
+        boolean skew = false;
         switch (taskType) {
             case MAP:
-                skew = ratio > config.getMapThreshold();
-                if (skew) {
-                    mrDataSkewAbnormal.setIsMapSkew(true);
-                    mrDataSkewAbnormal.setMapRatio(ratio);
-                    mrDataSkewAbnormal.setMapGraphList(handleSkewGraph(dataSkewGraphList));
-                }
+                skew = ratio > config.getMapThreshold() && maxTaskSize > UnitUtil.MBToByte(config.getTaskSize()) &&
+                        elapsedTime > config.getTaskDuration();
                 break;
             case REDUCE:
-                skew = ratio > config.getReduceThreshold();
-                if (skew) {
-                    mrDataSkewAbnormal.setIsReduceSkew(true);
-                    mrDataSkewAbnormal.setReduceRatio(ratio);
-                    mrDataSkewAbnormal.setReduceGraphList(handleSkewGraph(dataSkewGraphList));
-                }
+                skew = ratio > config.getReduceThreshold() && maxTaskSize > UnitUtil.MBToByte(config.getTaskSize()) &&
+                        elapsedTime > config.getTaskDuration();
                 break;
             default:
                 break;
         }
+        mrDataSkewAbnormal.setAbnormal(skew);
+        mrDataSkewAbnormal.setRatio(ratio);
+        if(dataSkewGraphList.size() > 0){
+            mrDataSkewAbnormal.setGraphList(handleSkewGraph(dataSkewGraphList));
+        }
+        return mrDataSkewAbnormal;
     }
 
     private List<MRDataSkewGraph> handleSkewGraph(List<MRDataSkewGraph> dataSkewGraphList) {

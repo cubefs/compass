@@ -16,7 +16,9 @@
 
 package com.oppo.cloud.parser.service.job.parser;
 
+import com.oppo.cloud.common.constant.ApplicationType;
 import com.oppo.cloud.common.constant.ProgressState;
+import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
 import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.domain.eventlog.config.SparkEnvironmentConfig;
@@ -37,7 +39,9 @@ import com.oppo.cloud.parser.utils.ReplayEventLogs;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class SparkEventLogParser extends OneClickSubject implements IParser {
@@ -109,12 +113,13 @@ public class SparkEventLogParser extends OneClickSubject implements IParser {
                 this.param.getLogRecord().getJobAnalysis().getTaskName(),
                 this.param.getLogRecord().getJobAnalysis().getExecutionDate(),
                 this.param.getLogRecord().getJobAnalysis().getRetryTimes(),
-                this.param.getApp().getAppId(), appDuration, logPath, config, replayEventLogs,
+                this.param.getApp().getAppId(), ApplicationType.SPARK, appDuration, logPath, config,
                 this.param.getLogRecord().getIsOneClick());
+        detectorParam.setReplayEventLogs(replayEventLogs);
 
-        DetectorManager detectorManager = new DetectorManager(detectorParam);
+        DetectorManager detectorManager = new DetectorManager();
         // run all detector
-        DetectorStorage detectorStorage = detectorManager.run();
+        DetectorStorage detectorStorage = detectorManager.run(detectorParam);
 
         detectorStorage.setEnv(env);
         SparkEventLogParserResult sparkEventLogParserResult = new SparkEventLogParserResult();

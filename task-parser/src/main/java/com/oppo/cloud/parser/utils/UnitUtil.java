@@ -65,4 +65,8 @@ public class UnitUtil {
         }
     }
 
+    public static Long MBToByte(Long mb) {
+        return mb * 1024 * 1024;
+    }
+
 }

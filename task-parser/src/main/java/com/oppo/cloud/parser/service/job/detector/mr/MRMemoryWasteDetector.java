@@ -17,68 +17,75 @@
 package com.oppo.cloud.parser.service.job.detector.mr;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
+import com.oppo.cloud.common.constant.MRTaskType;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
-import com.oppo.cloud.common.domain.mr.MRTaskMemPeak;
 import com.oppo.cloud.common.domain.mr.MRMemWasteAbnormal;
+import com.oppo.cloud.common.domain.mr.MRTaskMemPeak;
 import com.oppo.cloud.common.domain.mr.config.MRMemWasteConfig;
-import com.oppo.cloud.parser.domain.job.MRDetectorParam;
+import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.domain.mr.CounterInfo;
 import com.oppo.cloud.parser.domain.mr.MRAppInfo;
 import com.oppo.cloud.parser.domain.mr.MRTaskAttemptInfo;
 import com.oppo.cloud.parser.service.job.detector.IDetector;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class MRMemoryWasteDetector implements IDetector {
 
-    private final MRDetectorParam param;
+    private final DetectorParam param;
 
     private final MRMemWasteConfig config;
 
-    MRMemoryWasteDetector(MRDetectorParam param) {
+    public MRMemoryWasteDetector(DetectorParam param) {
         this.param = param;
         this.config = param.getConfig().getMrMemWasteConfig();
     }
 
     @Override
     public DetectorResult detect() {
-        DetectorResult<MRMemWasteAbnormal> detectorResult =
+        DetectorResult<List<MRMemWasteAbnormal>> detectorResult =
                 new DetectorResult<>(AppCategoryEnum.MR_MEMORY_WASTE.getCategory(), false);
 
-        MRMemWasteAbnormal memWastedAbnormal = new MRMemWasteAbnormal();
-        memWastedAbnormal.setAbnormal(false);
-
+        List<MRMemWasteAbnormal> data = new ArrayList<>();
         MRAppInfo mrAppInfo = param.getMrAppInfo();
         Map<String, String> confMap = param.getMrAppInfo().getConfMap();
 
-        long mapMemoryMB = Long.parseLong(confMap.get(CounterInfo.MRConfiguration.MAP_MEMORY_MB.getKey()));
-        long reduceMemoryMB = Long.parseLong(confMap.get(CounterInfo.MRConfiguration.REDUCE_MEMORY_MB.getKey()));
-
-        List<MRTaskMemPeak> mapPeakList = new ArrayList<>();
-        List<MRTaskMemPeak> reducePeakList = new ArrayList<>();
-        double mapWastePercent = calculateMemoryWaste(mrAppInfo.getMapList(), mapMemoryMB, mapPeakList);
-        double reduceWastePercent = calculateMemoryWaste(mrAppInfo.getReduceList(), reduceMemoryMB, reducePeakList);
-
-        memWastedAbnormal.setMapMemory(mapMemoryMB);
-        memWastedAbnormal.setReduceMemory(mapMemoryMB);
-        memWastedAbnormal.setMapWastePercent(mapWastePercent);
-        memWastedAbnormal.setReduceWastePercent(reduceWastePercent);
-        memWastedAbnormal.setMapTaskMemPeakList(mapPeakList);
-        memWastedAbnormal.setReduceTaskMemPeakList(reducePeakList);
-
-        if (mapWastePercent > config.getMapThreshold() || reduceWastePercent > config.getReduceThreshold()) {
-            memWastedAbnormal.setAbnormal(true);
-            detectorResult.setAbnormal(true);
+        long mapMemoryMB = Long.parseLong(confMap.getOrDefault(CounterInfo.MRConfiguration.MAP_MEMORY_MB.getKey(), "0"));
+        long reduceMemoryMB = Long.parseLong(confMap.getOrDefault(CounterInfo.MRConfiguration.REDUCE_MEMORY_MB.getKey(), "0"));
+        if (mapMemoryMB == 0 || reduceMemoryMB == 0) {
+            log.error("appId：{},mapMemoryMB:{},reduceMemoryMB:{}", param.getAppId(),
+                    confMap.get(CounterInfo.MRConfiguration.MAP_MEMORY_MB.getKey()),
+                    confMap.get(CounterInfo.MRConfiguration.REDUCE_MEMORY_MB.getKey()));
+            return detectorResult;
         }
 
-        detectorResult.setData(memWastedAbnormal);
+        MRMemWasteAbnormal mapResult = calculateMemoryWaste(detectorResult, mrAppInfo.getMapList(), mapMemoryMB, MRTaskType.MAP.getName());
+        MRMemWasteAbnormal reduceResult = calculateMemoryWaste(detectorResult, mrAppInfo.getReduceList(), reduceMemoryMB, MRTaskType.REDUCE.getName());
+        if (detectorResult.getAbnormal()) {
+            if (mapResult != null) {
+                data.add(mapResult);
+            }
+            if (reduceResult != null) {
+                data.add(reduceResult);
+            }
+        }
+        detectorResult.setData(data);
         return detectorResult;
     }
 
 
-    private double calculateMemoryWaste(List<MRTaskAttemptInfo> lists, long allocationMB, List<MRTaskMemPeak> peakList) {
+    private MRMemWasteAbnormal calculateMemoryWaste(DetectorResult detectorResult, List<MRTaskAttemptInfo> lists,
+                                                    long allocationMB, String taskType) {
+        MRMemWasteAbnormal memWasteAbnormal = new MRMemWasteAbnormal();
+        memWasteAbnormal.setAbnormal(false);
+        memWasteAbnormal.setTaskType(taskType);
+        memWasteAbnormal.setMemory(allocationMB);
+
+        List<MRTaskMemPeak> peakList = new ArrayList<>();
         long memComputeSeconds = 0L;
         long memAvailableSeconds = 0L;
 
@@ -89,15 +96,31 @@ public class MRMemoryWasteDetector implements IDetector {
             long elapsedSecondsValue = task.getElapsedTime() / 1000;
             memComputeSeconds += memMBValue * elapsedSecondsValue;
             memAvailableSeconds += allocationMB * elapsedSecondsValue;
-
             peakList.add(new MRTaskMemPeak(task.getTaskId(), (int) memMBValue));
         }
 
         if (memComputeSeconds == 0) {
-            return 0F;
+            return null;
+        }
+        if (memAvailableSeconds < memComputeSeconds) {
+            log.warn("appId:{}, memAvailableSeconds less than memComputeSeconds", param.getAppId());
+            return null;
         }
 
-        return (((double) memAvailableSeconds - memComputeSeconds) / memAvailableSeconds) * 100;
+        double wastePercent = (((double) memAvailableSeconds - memComputeSeconds) / memAvailableSeconds) * 100;
+        boolean abnormal;
+        if (MRTaskType.MAP.getName().equals(taskType)) {
+            abnormal = wastePercent > config.getMapThreshold();
+        } else {
+            abnormal = wastePercent > config.getReduceThreshold();
+        }
+        if (abnormal) {
+            detectorResult.setAbnormal(true);
+        }
+        memWasteAbnormal.setAbnormal(abnormal);
+        memWasteAbnormal.setWastePercent(wastePercent);
+        memWasteAbnormal.setTaskMemPeakList(peakList);
+        return memWasteAbnormal;
     }
 
 }

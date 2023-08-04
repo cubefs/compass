@@ -20,7 +20,7 @@ import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
 import com.oppo.cloud.common.domain.mr.MRLargeTableScanAbnormal;
 import com.oppo.cloud.common.domain.mr.config.MRLargeTableScanConfig;
-import com.oppo.cloud.parser.domain.job.MRDetectorParam;
+import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.domain.mr.CounterInfo;
 import com.oppo.cloud.parser.service.job.detector.IDetector;
 
@@ -28,11 +28,11 @@ import java.util.Map;
 
 public class MRLargeTableScanDetector implements IDetector {
 
-    private final MRDetectorParam param;
+    private final DetectorParam param;
 
     private final MRLargeTableScanConfig config;
 
-    MRLargeTableScanDetector(MRDetectorParam param) {
+    public MRLargeTableScanDetector(DetectorParam param) {
         this.param = param;
         this.config = param.getConfig().getMrLargeTableScanConfig();
     }
