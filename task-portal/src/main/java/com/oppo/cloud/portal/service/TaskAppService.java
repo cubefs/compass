@@ -49,10 +49,6 @@ public interface TaskAppService {
      */
     List<Item> generatePartOfReport(String applicationId, Set<String> category) throws Exception;
 
-    /**
-     * one click diagnosis
-     */
-    DiagnoseResult diagnose(String applicationId) throws Exception;
 
     /**
      * get run info of diagnose report

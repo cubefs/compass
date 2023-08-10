@@ -23,7 +23,11 @@ import com.oppo.cloud.portal.domain.diagnose.GCReportResp;
 import com.oppo.cloud.portal.domain.diagnose.Item;
 import com.oppo.cloud.portal.domain.diagnose.oneclick.DiagnoseResult;
 import com.oppo.cloud.portal.domain.diagnose.runerror.RunError;
-import com.oppo.cloud.portal.domain.task.*;
+import com.oppo.cloud.portal.domain.task.JobsRequest;
+import com.oppo.cloud.portal.domain.task.TaskAppsRequest;
+import com.oppo.cloud.portal.domain.task.TaskAppsResponse;
+import com.oppo.cloud.portal.domain.task.TrendGraph;
+import com.oppo.cloud.portal.service.OneClickDiagnosisService;
 import com.oppo.cloud.portal.service.TaskAppService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -35,8 +39,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.List;
 
 /**
@@ -50,6 +52,9 @@ public class AppController {
 
     @Autowired
     private TaskAppService taskAppService;
+
+    @Autowired
+    private OneClickDiagnosisService oneClickDiagnosisService;
 
     /**
      * get application list
@@ -128,7 +133,7 @@ public class AppController {
     })
     public CommonStatus<DiagnoseResult> getAppDiagnose(@RequestParam(value = "applicationId") String applicationId) throws Exception {
         if (StringUtils.isNotEmpty(applicationId)) {
-            return CommonStatus.success(taskAppService.diagnose(applicationId));
+            return CommonStatus.success(oneClickDiagnosisService.diagnose(applicationId));
         } else {
             return CommonStatus.failed(String.format("请输入正确的applicationId[%s]信息", applicationId));
         }

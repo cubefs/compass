@@ -24,16 +24,6 @@ public class CommonCode {
     public static final String TASK_APP_TEMP = ":taskApp:temp";
 
     /**
-     * 一键诊断event log诊断过程
-     */
-    public static final String EVENT_DETECT = ":event";
-
-    /**
-     * 一键诊断executor log解析过程
-     */
-    public static final String EXECUTOR_PARSER = ":executor";
-
-    /**
      * diagnose report-runInfo
      */
     public static final String DIAGNOSE_DETECTORSTORAGE = ":diagnose:detectorStorage";
