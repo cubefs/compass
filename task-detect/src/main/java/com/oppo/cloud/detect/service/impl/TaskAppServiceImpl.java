@@ -25,9 +25,10 @@ import com.oppo.cloud.common.domain.cluster.spark.SparkApp;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
 import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
 import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.mr.MRJobHistoryLogPath;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.common.util.DateUtil;
-import com.oppo.cloud.common.util.MRUtil;
+import com.oppo.cloud.common.util.LogPathUtil;
 import com.oppo.cloud.common.util.ui.TryNumberUtil;
 import com.oppo.cloud.detect.domain.AbnormalTaskAppInfo;
 import com.oppo.cloud.detect.service.*;
@@ -223,17 +224,9 @@ public class TaskAppServiceImpl implements TaskAppService {
         }
 
         if (ApplicationType.MAPREDUCE.getValue().equals(yarnApp.getApplicationType())) {
-            String jobHistoryDoneLogPathPrefix = getYarnLogPath(Constant.JHS_MAPREDUCE_DONE_PATH, yarnApp.getIp());
-            if ("".equals(jobHistoryDoneLogPathPrefix)) {
-                throw new Exception(String.format("can not find mr job history log path: rm ip : %s", yarnApp.getIp()));
-            }
-            String logSubdirectory = MRUtil.getHistoryLogSubdirectory(yarnApp.getId(), yarnApp.getFinishedTime());
-            String jobId = MRUtil.appIdToJobId(yarnApp.getId());
-            String jobHistoryDoneLogPath = String.format("%s/%s%s*", jobHistoryDoneLogPathPrefix, logSubdirectory, jobId);
-            taskApp.setJobHistoryDoneLogPath(jobHistoryDoneLogPath);
-            String jobHistoryIntermediateDoneLogPathPrefix = getYarnLogPath(Constant.JHS_MAPREDUCE_INTERMEDIATE_DONE_PATH, yarnApp.getIp());
-            String jobHistoryIntermediateDoneLogPath = String.format("%s/%s/%s*", jobHistoryIntermediateDoneLogPathPrefix, yarnApp.getUser(), jobId);
-            taskApp.setJobHistoryIntermediateDoneLogPath(jobHistoryIntermediateDoneLogPath);
+            MRJobHistoryLogPath mrJobHistoryLogPath = LogPathUtil.getMRJobHistoryDoneLogPath(yarnApp, redisService);
+            taskApp.setJobHistoryDoneLogPath(mrJobHistoryLogPath.getDoneLogPath());
+            taskApp.setJobHistoryIntermediateDoneLogPath(mrJobHistoryLogPath.getIntermediateDoneLogPath());
         }
 
         String yarnLogPath = getYarnLogPath(Constant.JHS_HDFS_PATH, yarnApp.getIp());
