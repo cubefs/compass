@@ -47,7 +47,7 @@ const handleState = async (row) => {
     return
   row.processState = 'processed'
   try {
-    await post('/api/realtime/taskDiagnosis/updateState', row, {
+    await post('/api/flink/updateState', row, {
       confirmTips: '是否将该记录设置为已处理？',
     })
   } catch (error) {

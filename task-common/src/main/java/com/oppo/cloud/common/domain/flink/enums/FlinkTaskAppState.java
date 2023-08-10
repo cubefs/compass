@@ -14,10 +14,29 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.portal.dao;
+package com.oppo.cloud.common.domain.flink.enums;
 
-import com.oppo.cloud.model.FlinkTaskDiagnosisExample;
+import lombok.Getter;
 
-public class FlinkTaskDiagnosisExampleExtend extends FlinkTaskDiagnosisExample {
+/**
+ * 实时作业运行状态
+ */
+@Getter
+public enum FlinkTaskAppState {
+    /**
+     * 运行状态
+     */
+    RUNNING(0, "RUNNING"),
+    /**
+     * 结束状态
+     */
+    FINISHED(1, "FINISHED"),
+    ;
+    private final int code;
+    private final String desc;
 
+    FlinkTaskAppState(int code, String desc) {
+        this.code = code;
+        this.desc = desc;
+    }
 }

@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.portal.domain.flink;
 
-import com.oppo.cloud.model.FlinkTaskDiagnosis;
+import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -27,5 +27,5 @@ public class OneClickDiagnosisResponse {
     @ApiModelProperty(value = "异常信息")
     private String errorMsg;
     @ApiModelProperty(value = "实时诊断结果")
-    private FlinkTaskDiagnosis flinkTaskDiagnosis;
+    private FlinkTaskAnalysis flinkTaskAnalysis;
 }

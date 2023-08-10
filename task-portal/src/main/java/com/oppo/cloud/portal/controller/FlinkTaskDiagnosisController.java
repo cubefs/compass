@@ -21,6 +21,7 @@ import com.github.pagehelper.PageHelper;
 import com.oppo.cloud.common.api.CommonPage;
 import com.oppo.cloud.common.api.CommonStatus;
 import com.oppo.cloud.common.constant.ComponentEnum;
+import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisFrom;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisResourceType;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisRuleType;
@@ -43,17 +44,20 @@ import java.time.ZoneOffset;
 import java.util.*;
 
 @RestController
-@RequestMapping(value = "/api/realtime/taskDiagnosis")
-@Api(value = "RealtimeTaskDiagnosisController", description = "实时任务诊断查询接口")
+@RequestMapping(value = "/api/flink")
+@Api(value = "FlinkTaskDiagnosisController", description = "实时任务诊断查询接口")
 @Slf4j
-public class RealtimeTaskDiagnosisController {
+public class FlinkTaskDiagnosisController {
 
     @Autowired
     FlinkTaskDiagnosisService flinkTaskDiagnosisService;
+
     @Autowired
     FlinkTaskAppMapper flinkTaskAppMapper;
+
     @Autowired
     DiagnosisService diagnosisService;
+
     @Autowired
     BlocklistMapper blocklistMapper;
 
@@ -145,28 +149,24 @@ public class RealtimeTaskDiagnosisController {
     @PostMapping(value = "/page")
     @ApiOperation(value = "诊断作业列表", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus<CommonPage<FlinkTaskDiagnosis>> pageJobs(@Validated @RequestBody DiagnosisAdviceListReq request) {
-        try {
-            List<String> includeCategories = request.getIncludeCategories();
-            if (includeCategories != null) {
-                List<Integer> includeRules = new ArrayList<>();
-                for (String msg : includeCategories) {
-                    for (FlinkRule fr : FlinkRule.values()) {
-                        if (fr.getName().equals(msg)) {
-                            includeRules.add(fr.getCode());
-                        }
+    public CommonStatus<?> pageJobs(@Validated @RequestBody DiagnosisAdviceListReq request) throws Exception {
+        List<String> includeCategories = request.getIncludeCategories();
+        if (includeCategories != null) {
+            List<Integer> includeRules = new ArrayList<>();
+            for (String msg : includeCategories) {
+                for (FlinkRule fr : FlinkRule.values()) {
+                    if (fr.getName().equals(msg)) {
+                        includeRules.add(fr.getCode());
                     }
                 }
-                request.setDiagnosisRule(includeRules);
             }
-            return CommonStatus.success(flinkTaskDiagnosisService.pageJobs(request));
-        } catch (Exception e) {
-            return CommonStatus.failed(e.getMessage());
+            request.setDiagnosisRule(includeRules);
         }
+        return flinkTaskDiagnosisService.pageJobs(request);
     }
 
     /**
-     * 获取Job列表
+     * 获取元数据Job列表
      *
      * @param request
      * @return
@@ -273,7 +273,7 @@ public class RealtimeTaskDiagnosisController {
 
     @PostMapping("/getReport")
     @ApiOperation(value = "获取诊断报告")
-    public CommonStatus<DiagnosisReportResp> getReport(@Validated @RequestBody FlinkTaskDiagnosis request) {
+    public CommonStatus<DiagnosisReportResp> getReport(@Validated @RequestBody ReportDetailReq request) {
         try {
             return CommonStatus.success(flinkTaskDiagnosisService.getReport(request));
         } catch (Throwable t) {
@@ -284,29 +284,25 @@ public class RealtimeTaskDiagnosisController {
 
     @PostMapping("/getGeneralViewNumber")
     @ApiOperation(value = "获取概览数值指标")
-    public CommonStatus<DiagnosisGeneralViewNumberResp> getGeneralViewNumber(@Validated @RequestBody DiagnosisGeneralViewReq request) {
-        try {
-            DiagnosisGeneralViewNumberResp generalViewNumber = flinkTaskDiagnosisService.getGeneralViewNumber(request);
-            return CommonStatus.success(generalViewNumber);
-        } catch (Throwable t) {
-            log.error(t.getMessage(), t);
-            return CommonStatus.failed("内部错误请查看日志");
-        }
+    public CommonStatus<?> getGeneralViewNumber(@Validated @RequestBody DiagnosisGeneralViewReq request) {
+        DiagnosisGeneralViewNumberResp generalViewNumber = flinkTaskDiagnosisService.getGeneralViewNumber(request);
+        return CommonStatus.success(generalViewNumber);
     }
 
+    /**
+     * 获取内存趋势、CPU趋势、数量趋势
+     *
+     * @param request
+     * @return
+     */
     @PostMapping("/getGeneralViewTrend")
     @ApiOperation(value = "获取概览趋势指标")
-    public CommonStatus<DiagnosisGeneralViewTrendResp> getGeneralViewTrend(@Validated @RequestBody DiagnosisGeneralViewReq request) {
-        try {
-            DiagnosisGeneralViewTrendResp generalViewTrend = flinkTaskDiagnosisService.getGeneralViewTrend(request);
-            if (generalViewTrend != null) {
-                return CommonStatus.success(generalViewTrend);
-            } else {
-                return CommonStatus.failed("该周期内无数据");
-            }
-        } catch (Throwable t) {
-            log.error(t.getMessage(), t);
-            return CommonStatus.failed("内部错误请查看日志");
+    public CommonStatus<DiagnosisGeneralViewTrendResp> getGeneralViewTrend(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception {
+        DiagnosisGeneralViewTrendResp generalViewTrend = flinkTaskDiagnosisService.getGeneralViewTrend(request);
+        if (generalViewTrend != null) {
+            return CommonStatus.success(generalViewTrend);
+        } else {
+            return CommonStatus.failed("该周期内无数据");
         }
     }
 
@@ -327,33 +323,6 @@ public class RealtimeTaskDiagnosisController {
     public CommonStatus<FlinkTaskDiagnosis> updateState(@Validated @RequestBody FlinkTaskDiagnosis flinkTaskDiagnosis) {
         try {
             return flinkTaskDiagnosisService.updateStatus(flinkTaskDiagnosis);
-        } catch (Throwable t) {
-            log.error(t.getMessage(), t);
-            return CommonStatus.failed("内部错误");
-        }
-    }
-
-
-    @PostMapping("/saveRealtimeTaskApp")
-    @ApiOperation(value = "诊断")
-    public CommonStatus<FlinkTaskApp> saveRealtimeTaskApp(@RequestBody FlinkTaskApp flinkTaskApp) {
-        try {
-            FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
-            flinkTaskAppExample.createCriteria()
-                    .andApplicationIdEqualTo(flinkTaskApp.getApplicationId());
-            List<FlinkTaskApp> flinkTaskApps = flinkTaskAppMapper.selectByExample(flinkTaskAppExample);
-            if (flinkTaskApps == null || flinkTaskApps.size() == 0) {
-                flinkTaskAppMapper.insert(flinkTaskApp);
-                return CommonStatus.success(flinkTaskApp);
-            } else if (flinkTaskApps.size() == 1) {
-                FlinkTaskApp pre = flinkTaskApps.get(0);
-                pre.setTaskState(flinkTaskApp.getTaskState());
-                flinkTaskAppMapper.updateByPrimaryKeySelective(pre);
-                return CommonStatus.success(pre);
-            } else {
-                log.error("realtimeTaskApps size 大于1 , appid:{}", flinkTaskApp.getApplicationId());
-                return CommonStatus.failed("内部错误");
-            }
         } catch (Throwable t) {
             log.error(t.getMessage(), t);
             return CommonStatus.failed("内部错误");
@@ -394,13 +363,13 @@ public class RealtimeTaskDiagnosisController {
                     endTime = LocalDateTime.now(ZoneOffset.ofHours(8)).toEpochSecond(ZoneOffset.ofHours(8));
                     startTime = LocalDateTime.now(ZoneOffset.ofHours(8)).minusDays(1).toEpochSecond(ZoneOffset.ofHours(8));
                 }
-                FlinkTaskDiagnosis flinkTaskDiagnosis = diagnosisService.diagnosisApp(task.get(),
+                FlinkTaskAnalysis flinkTaskAnalysis = diagnosisService.diagnosisApp(task.get(),
                         startTime, endTime, DiagnosisFrom.Manual);
-                if (flinkTaskDiagnosis == null) {
+                if (flinkTaskAnalysis == null) {
                     return CommonStatus.failed("诊断失败");
                 }
                 OneClickDiagnosisResponse res = new OneClickDiagnosisResponse();
-                res.setFlinkTaskDiagnosis(flinkTaskDiagnosis);
+                res.setFlinkTaskAnalysis(flinkTaskAnalysis);
                 res.setStatus("succeed");
                 return CommonStatus.success(res);
             } else {

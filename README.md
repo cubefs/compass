@@ -258,13 +258,14 @@ The Compass table structure consists of two parts, one is compass.sql, and the o
 ./bin/start_all.sh
 ```
 
-### 5. Custom metadata report
-We can report flink metadata to compass system through kafka or http interface
+### 5. Flink Custom metadata
+Third party system can send flink metadata to compass by kafka stream or http API, user do not have to run canal to capture 
+metadata from scheduler. the format of metadata as following: 
 
-Content:
+format parameter:
 ```json
 {
-    // required
+    // fields required
     "startTime":"2023-06-01", // job startrd time
     "projectName":"test", // project name
     "flowName":"test", // flow name
@@ -276,16 +277,13 @@ Content:
     "parallel":150, // job parallel
     "tmSlot":1, // tm slot
     "tmCore":2, // tm core
-    "jmMem":1024, // jm memory MB
-    "tmMem":4096, // tm memory MB
+    "jmMem":1024, // jobmanager memory MB
+    "tmMem":4096, // taskmanager memory MB
   
-    // not required
-    "userId":1,  // user id
-    "projectName":"test", // project name
+    // fields optionally required 
+    "userId":1,  // user id from scheduler
     "projectId":1, // project id
-    "flowName":"test", // flow name
     "flowId":1, // flow id
-    "taskName":"test", // task name
     "taskId":1, // task id
     "taskInstanceId":1, // task instance id
     "executionTime":"2023-06-01", // execution time
@@ -304,22 +302,19 @@ Content:
     "createTime":"2023-06-01", // created time
     "updateTime":"2023-06-01", // updated time
     "diagnosis":"1", // yarn diagnosis
-    "taskId":1, // task id
-    "flowId":1, // flow id
-    "projectId":1, // project id
     "applicationId":"app id" // app id
   
 }
 ```
 
 Kafka:  
-Send the json content to flink-task-app topic.If you want to change the topic
+Send the json content to flink-task-app topic. If you want to change the topic
  name,then modify the spring.kafka.flinkTaskApp property of application.yml file in
 task-flink module.
 
 Http:  
 Fill the json content to http body and send the post request to 
-http://[compass_host]/compass/api/realtime/taskDiagnosis/saveRealtimeTaskApp,
+http://[compass_host]/compass/api/flink/saveRealtimeTaskApp,
 
 
 

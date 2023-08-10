@@ -20,12 +20,12 @@ import lombok.Data;
 
 @Data
 public class GeneralViewNumberDto {
-    Integer baseTaskCntSum = 0;
-    Integer exceptionTaskCntSum = 0;
-    Integer resourceTaskCntSum= 0;
-    Integer totalCoreNumSum= 0;
-    Integer totalMemNumSum= 0;
-    Integer cutCoreNumSum= 0;
-    Integer cutMemNumSum= 0;
-    String date;
+    private Integer baseTaskCntSum = 0;
+    private Integer exceptionTaskCntSum = 0;
+    private Integer resourceTaskCntSum = 0;
+    private Integer totalCoreNumSum = 0;
+    private Integer totalMemNumSum = 0;
+    private Integer cutCoreNumSum = 0;
+    private Integer cutMemNumSum = 0;
+    private String date;
 }

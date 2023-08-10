@@ -49,7 +49,7 @@ public interface ElasticSearchService {
     /**
      * 按天分桶查询
      */
-    List<IndicatorData> findValueByDayBuckets(SearchSourceBuilder builder, String... indexes) throws Exception;
+    List<IndicatorData> findValueByDayBuckets(String bucket, SearchSourceBuilder builder, String... indexes) throws Exception;
 
     <T> List<T> find(Class<T> itemType, SearchSourceBuilder builder, String... indexes) throws Exception;
 
@@ -83,10 +83,10 @@ public interface ElasticSearchService {
     /**
      * 按天聚合字段值和
      */
-    List<IndicatorData> sumAggregationByDay(SearchSourceBuilder builder, long start, long end, String index, String filed) throws Exception;
+    List<IndicatorData> sumAggregationByDay(SearchSourceBuilder builder, long start, long end, String index, String aggField, String filed) throws Exception;
 
     /**
      * 按天统计数量聚合
      */
-    List<IndicatorData> countDocByDay(SearchSourceBuilder builder, long start, long end, String index) throws Exception;
+    List<IndicatorData> countDocByDay(SearchSourceBuilder builder, long start, long end, String index, String aggField) throws Exception;
 }

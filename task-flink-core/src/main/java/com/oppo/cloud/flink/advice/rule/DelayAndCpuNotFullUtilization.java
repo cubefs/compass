@@ -51,14 +51,19 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.*;
 @Component
 @Slf4j
 public class DelayAndCpuNotFullUtilization extends BaseRule {
+
     @Autowired
     DiagnosisParamsConstants cons;
+
     @Autowired
     DoctorUtil doctorUtil;
+
     @Resource
     MonitorMetricUtil monitorMetricUtil;
+
     @Autowired
     FlinkDiagnosisMetricsServiceImpl flinkDiagnosisMetricsServiceImpl;
+
     @Autowired
     MemTurningByUsage memTurningByUsage;
 

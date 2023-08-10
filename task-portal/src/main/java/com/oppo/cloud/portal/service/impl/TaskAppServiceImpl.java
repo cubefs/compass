@@ -414,16 +414,16 @@ public class TaskAppServiceImpl implements TaskAppService {
             case "cpuTrend":
                 trendGraph.setName("CPU趋势");
                 data = elasticSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(),
-                        taskAppsIndex, "vcoreSeconds");
+                        taskAppsIndex, "executionDate", "vcoreSeconds");
                 break;
             case "memoryTrend":
                 trendGraph.setName("内存趋势");
                 data = elasticSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(),
-                        taskAppsIndex, "memorySeconds");
+                        taskAppsIndex, "executionDate", "memorySeconds");
                 break;
             case "numTrend":
                 trendGraph.setName("数量趋势");
-                data = elasticSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), taskAppsIndex);
+                data = elasticSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), taskAppsIndex, "executionDate");
                 break;
             default:
                 break;

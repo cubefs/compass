@@ -56,27 +56,27 @@ custom:
       name: "compass-job-analysis"
       shards: 10
       replicas: 2
-
     detectIndex:
       name: "compass-detector-app"
-
     gcIndex:
       name: "compass-gc-log"
-
     yarnIndex:
       name: "compass-yarn-app"
-
     sparkIndex:
       name: "compass-spark-app"
-
     jobInstanceIndex:
       name: "compass-job-instance"
       shards: 10
       replicas: 2
-    realtimeReportIndex:
-      name: "stream-task-report"
+    flinkReportIndex:
+      name: "compass-flink-report"
       shards: 10
       replicas: 2
+    flinkTaskAnalysisIndex:
+      name: "compass-flink-task-analysis"
+      shards: 10
+      replicas: 2
+
   redis:
     logRecordKey: "{lua}:log:record"
 

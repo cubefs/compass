@@ -39,10 +39,13 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_CPU_USAGE_R
 @Slf4j
 @Component
 public class TurningCpuDownByParallel implements TurningCpuDownStrategy {
+
     @Autowired
     DiagnosisParamsConstants cons;
+
     @Autowired
     DoctorUtil doctorUtil ;
+
     @Autowired
     MonitorMetricUtil monitorMetricUtil;
 

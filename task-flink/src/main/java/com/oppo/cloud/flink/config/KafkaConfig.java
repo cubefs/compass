@@ -63,6 +63,7 @@ public class KafkaConfig {
      */
     @Value("${spring.kafka.consumer.max-poll-interval-ms}")
     private String maxPollIntervalMs;
+
     /**
      * 创建消费者
      */
@@ -70,6 +71,7 @@ public class KafkaConfig {
     public ConsumerFactory<String, String> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new StringDeserializer());
     }
+
     /**
      * 消费者配置
      */
@@ -106,28 +108,5 @@ public class KafkaConfig {
     @Bean(name = "consumerId")
     public String consumerClientId() {
         return String.format("client-%d-%d", Thread.currentThread().getId(), new Random().nextInt());
-    }
-    /**
-     * 获取brokers
-     */
-    @Bean(name = "bootstrapServers")
-    public String getBootstrapServers() {
-        return this.bootstrapServers;
-    }
-    /**
-     * 获取groupId
-     */
-    @Bean(name = "groupId")
-    public String getGroupId() {
-        return this.groupId;
-    }
-    /**
-     * 使用Kafka Admin Client API操作
-     */
-    @Bean(name = "kafkaAdminClient")
-    public AdminClient kafkaAdminClient() {
-        Properties properties = new Properties();
-        properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        return AdminClient.create(properties);
     }
 }

@@ -13,7 +13,7 @@
 - 支持引擎层异常诊断，包含数据倾斜、大表扫描、内存浪费等14种异常类型。
 - 支持各种日志匹配规则编写和异常阈值调整，可自行根据实际场景优化。
 
-罗盘已支持诊断类型概览：  
+罗盘已支持诊断类型概览：
 
 Spark引擎:
 <table>
@@ -166,7 +166,6 @@ Spark引擎:
     </tr>
 </table>
 
-
 ## 如何使用
 
 ### 1. 代码编译
@@ -249,68 +248,94 @@ Compass 表结构由两部分组成，一个是compass.sql，另一个是依赖�
 ```
 
 ### 5. 自定义上报元数据
-我们可以通过kafka消息队列或者http接口的方式自定义上报Flink作业元数据到Compass系统。  
+
+第三方系统可以通过kafka消息队列或者http接口的方式自定义上报Flink作业元数据到Compass系统, 用户无需运行canal相关组件抓取调度器元数据， 上报格式如下:
 
 上报内容:
+
 ```json
 {
-    // 必填内容
-    "startTime":"2023-06-01", // 作业开始时间
-    "projectName":"test", // 项目名称
-    "flowName":"test", // 数据流名称
-    "taskName":"test", // 任务名称
-    "jobName":"job_name", // 作业名称
-    "username":"test",  // 用户名
-    "flinkTrackUrl":"tracking url", // 作业 trackingutl
-    "taskState":"RUNNING", // 运行状态
-    "parallel":150, // 作业并行度
-    "tmSlot":1, // tm slot
-    "tmCore":2, // tm core
-    "jmMem":1024, // jm 内存MB
-    "tmMem":4096, // tm 内存MB
-  
-    // 非必填内容
-    "userId":1,  // 用户id
-    "projectName":"test", // 项目名称
-    "projectId":1, // 项目id
-    "flowName":"test", // 数据流名称
-    "flowId":1, // 数据流id
-    "taskName":"test", // 任务名称
-    "taskId":1, // 任务id
-    "taskInstanceId":1, // 任务实例id
-    "executionTime":"2023-06-01", // 执行时间
-    "allocatedMb":1, // yarn分配的内存资源
-    "allocatedVcores":1, // yarn分配的core
-    "runningContainers":1, // 运行容器数量
-    "engineType":"flink", // 引擎类别
-    "duration":"1", // 作业持续时间
-    "endTime":"2023-06-01", // 作业结束时间
-    "vcoreSeconds":1, // vcore时间
-    "memorySeconds":1, // 内存时间
-    "queue":"flink", // 队列 flink
-    "clusterName":"flink", // 集群名称 
-    "retryTimes":1, // 重试次数
-    "executeUser":"user", // 执行用户
-    "createTime":"2023-06-01", // 创建时间
-    "updateTime":"2023-06-01", // 更新时间
-    "diagnosis":"1", // yarn诊断
-    "taskId":1, // 任务id
-    "flowId":1, // 数据流id
-    "projectId":1, // 项目id
-    "applicationId":"app id" // app id
-  
+  // 必填内容
+  "startTime": "2023-06-01",
+  // 作业开始时间
+  "projectName": "test",
+  // 项目名称
+  "flowName": "test",
+  // 数据流名称
+  "taskName": "test",
+  // 任务名称
+  "jobName": "job_name",
+  // 作业名称
+  "username": "test",
+  // 用户名
+  "flinkTrackUrl": "tracking url",
+  // 作业 trackingutl
+  "taskState": "RUNNING",
+  // 运行状态
+  "parallel": 150,
+  // 作业并行度
+  "tmSlot": 1,
+  // tm slot
+  "tmCore": 2,
+  // tm core
+  "jmMem": 1024,
+  // jm 内存MB
+  "tmMem": 4096,
+  // tm 内存MB
+
+  // 非必填内容
+  "userId": 1,
+  // 用户id
+  "projectId": 1,
+  // 项目id
+  "flowId": 1,
+  // 数据流id
+  "taskId": 1,
+  // 任务id
+  "taskInstanceId": 1,
+  // 任务实例id
+  "executionTime": "2023-06-01",
+  // 执行时间
+  "allocatedMb": 1,
+  // yarn分配的内存资源
+  "allocatedVcores": 1,
+  // yarn分配的core
+  "runningContainers": 1,
+  // 运行容器数量
+  "engineType": "flink",
+  // 引擎类别
+  "duration": "1",
+  // 作业持续时间
+  "endTime": "2023-06-01",
+  // 作业结束时间
+  "vcoreSeconds": 1,
+  // vcore时间
+  "memorySeconds": 1,
+  // 内存时间
+  "queue": "flink",
+  // 队列 flink
+  "clusterName": "flink",
+  // 集群名称 
+  "retryTimes": 1,
+  // 重试次数
+  "executeUser": "user",
+  // 执行用户
+  "createTime": "2023-06-01",
+  // 创建时间
+  "updateTime": "2023-06-01",
+  // 更新时间
+  "diagnosis": "1",
+  // yarn诊断
+  "applicationId": "app id"
+  // app id
 }
 ```
 
 Kafka上报方式:  
-发送上述元数据内容到flink-task-app主题。若想修改主题名称，可以修改
-task-flink模块，application.yml文件中的spring.kafka.flinkTaskApp属性。
+发送上述元数据内容到flink-task-app主题。若想修改主题名称，可以修改 task-flink模块，application.yml文件中的spring.kafka.flinkTaskApp属性。
 
 Http接口上报方式:  
-发送post请求到http://[compass_host]/compass/api/realtime/taskDiagnosis/saveRealtimeTaskApp,
-http请求body填入上述元数据内容。
-
-
+发送post请求到http://[compass_host]/compass/api/flink/saveRealtimeTaskApp, http请求body填入上述元数据内容。
 
 ## 文档
 
@@ -319,6 +344,7 @@ http请求body填入上述元数据内容。
 [部署指南](document/manual/deployment.md)
 
 ## 系统截图
+
 Spark:
 ![overview](document/manual/img/overview.png)
 ![overview-1](document/manual/img/overview-1.png)

@@ -10,7 +10,7 @@
     <property name="LOG_PATTERN"
               value="%date %-5level ${PID:- } [%thread] [%X{TRACE_ID}] : /* [%logger{50}:%line] %msg* */%n"/>
     <!-- 定义日志存储的路径，不要配置相对路径 -->
-    <property name="FILE_PATH" value="logs/task-realtime-diagnosis.info.%d{yyyy-MM-dd}.%i.log"/>
+    <property name="FILE_PATH" value="logs/task-flink.info.%d{yyyy-MM-dd}.%i.log"/>
 
     <!-- 控制台输出日志 -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
@@ -58,7 +58,7 @@
     <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
-            <fileNamePattern>logs/task-realtime-diagnosis.error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/task-flink.error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 
             <maxHistory>7</maxHistory>
 
@@ -87,7 +87,7 @@
     <appender name="warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
-            <fileNamePattern>logs/task-realtime-diagnosis.warn.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/task-flink.warn.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 
             <maxHistory>3</maxHistory>
 
@@ -116,7 +116,7 @@
     <appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 
-            <fileNamePattern>logs/task-realtime-diagnosis.debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/task-flink.debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 
             <maxHistory>3</maxHistory>
 

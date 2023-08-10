@@ -16,12 +16,43 @@
 
 package com.oppo.cloud.portal.domain.flink;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.oppo.cloud.common.util.DateUtil;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
 
 @Data
+@Slf4j
 public class DiagnosisGeneralViewReq {
     // 开始时间戳秒
-    Long startTs;
+    private Long startTs;
     // 结束时间戳秒
-    Long endTs;
+    private Long endTs;
+
+    @JsonIgnore
+    public HashMap<String, Object[]> getRangeConditions() {
+        if (startTs == null || endTs == null || startTs == 0 || endTs == 0) {
+            this.endTs = System.currentTimeMillis();
+            this.startTs = this.endTs - 30 * 24 * 3600 * 1000L;
+        }
+
+        if (startTs.toString().length() < 13) { // to millis
+            startTs *= 1000;
+            endTs *= 1000;
+        }
+
+        HashMap<String, Object[]> rangeConditions = new HashMap<>();
+        Object[] values = new Object[2];
+        if (startTs != 0) {
+            values[0] = DateUtil.timestampToUTCDate(startTs);
+        }
+        if (endTs != 0) {
+            values[1] = DateUtil.timestampToUTCDate(endTs);
+        }
+        rangeConditions.put("createTime", values);
+
+        return rangeConditions;
+    }
 }

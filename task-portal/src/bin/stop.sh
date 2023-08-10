@@ -4,6 +4,7 @@ HOME_DIR=$(cd $(dirname $0)/.. && pwd)
 APP_NAME="task-portal"
 PID_FILE=${HOME_DIR}/tpid
 
+
 stop() {
   if [ -f ${PID_FILE} ]; then
     local pid=$(cat ${PID_FILE})

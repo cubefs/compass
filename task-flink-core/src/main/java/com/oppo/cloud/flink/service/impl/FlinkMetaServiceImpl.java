@@ -24,7 +24,7 @@ import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
 import com.oppo.cloud.common.domain.flink.FlinkJobs;
 import com.oppo.cloud.common.domain.flink.FlinkTms;
 import com.oppo.cloud.common.domain.flink.JobManagerConfigItem;
-import com.oppo.cloud.common.domain.flink.enums.RealtimeTaskAppState;
+import com.oppo.cloud.common.domain.flink.enums.FlinkTaskAppState;
 import com.oppo.cloud.common.domain.flink.enums.YarnApplicationState;
 import com.oppo.cloud.flink.config.FlinkYarnConfig;
 import com.oppo.cloud.flink.service.FlinkMetaService;
@@ -85,24 +85,33 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
     private static final String FLINK_TMS = "%s/taskmanagers";
     @Resource
     private IClusterMetaService iClusterMetaService;
+
     @Resource
     private ObjectMapper objectMapper;
+
     @Resource(name = "flinkRestTemplate")
     private RestTemplate restTemplate;
+
     @Autowired
     public TaskMapper taskMapper;
+
     @Autowired
     private UserMapper userMapper;
+
     @Autowired
-    FlinkTaskAppMapper flinkTaskAppMapper;
+    private FlinkTaskAppMapper flinkTaskAppMapper;
+
     @Autowired
-    FlinkTaskMapper flinkTaskMapper;
+    private FlinkTaskMapper flinkTaskMapper;
+
     @Autowired
-    FlinkYarnConfig flinkYarnConfig;
+    private FlinkYarnConfig flinkYarnConfig;
+
     @Value("${custom.elasticsearch.yarnIndex.name}")
     private String yarnAppIndex;
+
     @Resource(name = "flinkElasticClient")
-    RestHighLevelClient restHighLevelClient;
+    private RestHighLevelClient restHighLevelClient;
     /**
      * flink task type
      */
@@ -281,9 +290,9 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
                         yarnApp.getState().equalsIgnoreCase(YarnApplicationState.FAILED.getDesc()) ||
                         yarnApp.getState().equalsIgnoreCase(YarnApplicationState.KILLED.getDesc())
         ) {
-            flinkTaskApp.setTaskState(RealtimeTaskAppState.FINISHED.getDesc());
+            flinkTaskApp.setTaskState(FlinkTaskAppState.FINISHED.getDesc());
         } else {
-            flinkTaskApp.setTaskState(RealtimeTaskAppState.RUNNING.getDesc());
+            flinkTaskApp.setTaskState(FlinkTaskAppState.RUNNING.getDesc());
         }
         // task meta
         flinkTaskApp.setUsername(user.getUsername());
@@ -358,7 +367,12 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         }
     }
 
-
+    /**
+     * 通过 flink tracking url获取 jobId
+     *
+     * @param trackingUrl
+     * @return
+     */
     public String getJobId(String trackingUrl) {
         String jobsUrl = String.format(FLINK_JOBS, trackingUrl);
         ResponseEntity<String> responseEntity = null;
@@ -368,8 +382,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
                 log.error("flink api:{} body is null", jobsUrl);
                 return null;
             }
-            FlinkJobs overview;
-            overview = JSON.parseObject(responseEntity.getBody(), FlinkJobs.class);
+            FlinkJobs overview = JSON.parseObject(responseEntity.getBody(), FlinkJobs.class);
             if (overview != null && overview.getJobs() != null && overview.getJobs().size() > 0) {
                 return overview.getJobs().get(0).getId();
             } else {

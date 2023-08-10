@@ -33,18 +33,25 @@ import java.util.List;
 @Slf4j
 @Component
 public class TurningManager {
+
     @Autowired
     TurningCpuDownByParallel turningCpuDownByParallel;
+
     @Autowired
     TurningCpuUpByParallel turningCpuUpByParallel;
+
     @Autowired
     TurningCpuUpBySpec turningCpuUpBySpec;
+
     @Autowired
     TurningCpuDownBySpec turningCpuDownBySpec;
+
     @Autowired
     TurningMemDownBySpec turningMemDownBySpec;
+
     @Autowired
     TurningMemUpBySpec turningMemUpBySpec;
+
     @Autowired
     DoctorUtil doctorUtil;
 

@@ -49,10 +49,13 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_CPU_USAGE_R
 @Slf4j
 @Component
 public class AvgCpuLowRule extends BaseRule {
+
     @Autowired
     DoctorUtil doctorUtil;
+
     @Autowired
     TurningManager turningManager;
+
     @Autowired
     MonitorMetricUtil monitorMetricUtil;
 

@@ -284,16 +284,16 @@ public class JobServiceImpl implements JobService {
             case "cpuTrend":
                 trendGraph.setName("CPU趋势");
                 data = elasticSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(), jobsIndex,
-                        "vcoreSeconds");
+                        "executionDate", "vcoreSeconds");
                 break;
             case "memoryTrend":
                 trendGraph.setName("内存趋势");
                 data = elasticSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(), jobsIndex,
-                        "memorySeconds");
+                        "executionDate", "memorySeconds");
                 break;
             case "numTrend":
                 trendGraph.setName("数量趋势");
-                data = elasticSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), jobsIndex);
+                data = elasticSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), jobsIndex, "executionDate");
                 break;
             default:
                 break;

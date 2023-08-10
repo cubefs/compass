@@ -60,7 +60,7 @@ const getRealtimeStatistics = async () => {
   console.log(endTs)
   console.log(startTs)
   try {
-    const res = await post('/api/realtime/taskDiagnosis/getGeneralViewNumber', {
+    const res = await post('/api/flink/getGeneralViewNumber', {
       startTs: startTs,
       endTs: endTs,
     })

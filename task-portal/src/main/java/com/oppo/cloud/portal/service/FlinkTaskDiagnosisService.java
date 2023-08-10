@@ -18,17 +18,27 @@ package com.oppo.cloud.portal.service;
 
 import com.oppo.cloud.common.api.CommonPage;
 import com.oppo.cloud.common.api.CommonStatus;
+import com.oppo.cloud.model.FlinkTaskApp;
 import com.oppo.cloud.model.FlinkTaskDiagnosis;
 import com.oppo.cloud.portal.domain.flink.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 public interface FlinkTaskDiagnosisService {
-    String getResourceAdvice(FlinkTaskDiagnosis request);
-    CommonPage<FlinkTaskDiagnosis> pageJobs(DiagnosisAdviceListReq req);
+
+    CommonStatus<?> pageJobs(DiagnosisAdviceListReq req) throws Exception;
+
     DiagnosisGeneralViewNumberResp getGeneralViewNumber(@Validated @RequestBody DiagnosisGeneralViewReq request);
-    DiagnosisGeneralViewTrendResp getGeneralViewTrend(@Validated @RequestBody DiagnosisGeneralViewReq request);
-    DiagnosisGeneralVIewDistributeResp getGeneralViewDistribute(@Validated @RequestBody DiagnosisGeneralViewReq request);
-    DiagnosisReportResp getReport(FlinkTaskDiagnosis request);
+
+    DiagnosisGeneralViewTrendResp getGeneralViewTrend(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception;
+
+    DiagnosisGeneralVIewDistributeResp getGeneralViewDistribute(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception;
+
+    DiagnosisReportResp getReport(ReportDetailReq request) throws Exception;
+
     CommonStatus<FlinkTaskDiagnosis> updateStatus(FlinkTaskDiagnosis flinkTaskDiagnosis);
+
+    CommonStatus<?> batchMetadata(List<FlinkTaskApp> apps);
 }

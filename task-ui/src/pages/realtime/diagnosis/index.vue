@@ -17,7 +17,7 @@ const tableColumn = [
 let taskAppInfo: any = $ref({})
 let categories: any = $ref([])
 let rules :any[] = []
-get('/api/realtime/taskDiagnosis/diagnosisRules', {})
+get('/api/flink/diagnosisRules', {})
   .then(r => {
     rules = r
     console.log(rules)

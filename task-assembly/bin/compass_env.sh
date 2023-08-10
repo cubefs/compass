@@ -30,7 +30,7 @@ export SPRING_ZOOKEEPER_NODES="localhost:2181"
 # Elasticsearch
 export SPRING_ELASTICSEARCH_NODES="localhost:19527"
 
-# prom
+# Prometheus for flink, ignore it if you do not use flink.
 export FLINK_PROMETHEUS_HOST="http://localhost:9090"
 export FLINK_PROMETHEUS_TOKEN=""
 export FLINK_PROMETHEUS_DATABASE=""
