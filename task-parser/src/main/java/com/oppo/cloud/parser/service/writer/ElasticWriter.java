@@ -200,6 +200,9 @@ public class ElasticWriter {
      * 更新job categories信息
      */
     public void updateJob(JobAnalysis jobAnalysis, Map<String, Boolean> categoryMap) throws Exception {
+        if (jobAnalysis.getTaskName() == null) {
+            return;
+        }
         UpdateApi api = new UpdateApi();
         String index = jobPrefix + DateUtil.formatToDay(jobAnalysis.getExecutionDate());
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
@@ -209,7 +212,7 @@ public class ElasticWriter {
         boolQueryBuilder.filter(QueryBuilders.termQuery("executionDate",
                 DateUtil.timestampToUTCDate(jobAnalysis.getExecutionDate().getTime())));
 
-        JobAnalysis jobAnalysisResult = searchEs(JobAnalysis.class, index,boolQueryBuilder);
+        JobAnalysis jobAnalysisResult = searchEs(JobAnalysis.class, index, boolQueryBuilder);
 
         String id;
         List<String> existedCategories = null;
@@ -388,7 +391,11 @@ public class ElasticWriter {
         // update job categories
         if (jobCategoryMap.size() > 0) {
             log.info("updateJob:{},{}", logRecord.getId(), jobCategoryMap);
-            ElasticWriter.getInstance().updateJob(logRecord.getJobAnalysis(), jobCategoryMap);
+            try {
+                ElasticWriter.getInstance().updateJob(logRecord.getJobAnalysis(), jobCategoryMap);
+            } catch (Exception e) {
+                log.error("updateJobErr:", e);
+            }
         }
 
         for (Map.Entry<String, List<String>> map : appCategoryMap.entrySet()) {
