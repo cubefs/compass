@@ -44,12 +44,16 @@ public class Constant {
      */
     public static final String RM_JHS_MAP = "rm:jhs:map";
     /**
-     * jobHistoryServer hdfs路径
+     * jobHistoryServer conf: yarn.nodemanager.remote-app-log-dir
      */
     public static final String JHS_HDFS_PATH = "jhs:hdfs:path:";
-
+    /**
+     * mapreduce.jobhistory.done-dir
+     */
     public static final String JHS_MAPREDUCE_DONE_PATH = "jhs:mapreduce:done:path:";
-
+    /**
+     * mapreduce.jobhistory.intermediate-done-dir
+     */
     public static final String JHS_MAPREDUCE_INTERMEDIATE_DONE_PATH = "jhs:mapreduce:intermediate:done:path:";
 
     public static final String HDFS_SCHEME = "hdfs://";

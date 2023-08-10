@@ -16,7 +16,15 @@
 
 package com.oppo.cloud.common.domain.elasticsearch;
 
+import com.oppo.cloud.common.constant.AppCategoryEnum;
+import com.oppo.cloud.common.constant.ApplicationType;
+import com.oppo.cloud.common.constant.Constant;
+import com.oppo.cloud.common.domain.cluster.spark.SparkApp;
+import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
+import com.oppo.cloud.common.domain.mr.MRJobHistoryLogPath;
+import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.common.util.DateUtil;
+import com.oppo.cloud.common.util.LogPathUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -103,10 +111,10 @@ public class TaskApp extends EsInfo {
     @ApiModelProperty(value = "跳转SparkUI")
     private String sparkUI;
 
-    @ApiModelProperty(value = "event log路径")
+    @ApiModelProperty(value = "spark event log path")
     private String eventLogPath;
 
-    @ApiModelProperty(value = "yarn log路径")
+    @ApiModelProperty(value = "yarn container log path")
     private String yarnLogPath;
 
     @ApiModelProperty(value = "mr job history done path")
@@ -162,5 +170,48 @@ public class TaskApp extends EsInfo {
     public String genDocId() {
         return StringUtils.isNotBlank(this.getDocId()) ? this.getDocId() : UUID.randomUUID().toString();
     }
+
+    public void updateTaskApp(YarnApp yarnApp, SparkApp sparkApp, RedisService redisService) throws Exception {
+        this.applicationId = yarnApp.getId();
+        this.applicationType = yarnApp.getApplicationType();
+        this.executeUser = yarnApp.getUser();
+        this.queue = yarnApp.getQueue();
+        this.clusterName = yarnApp.getClusterName();
+        this.startTime = new Date(yarnApp.getStartedTime());
+        this.finishTime = new Date(yarnApp.getFinishedTime());
+        this.elapsedTime = (double) yarnApp.getElapsedTime();
+        this.diagnostics = yarnApp.getDiagnostics();
+        this.diagnoseResult = StringUtils.isNotBlank(yarnApp.getDiagnostics()) ? "abnormal" : "";
+        this.categories = StringUtils.isNotBlank(yarnApp.getDiagnostics())
+                ? Collections.singletonList(AppCategoryEnum.OTHER_EXCEPTION.getCategory())
+                : new ArrayList<>();
+        this.executeUser = yarnApp.getUser();
+        this.vcoreSeconds = (double) yarnApp.getVcoreSeconds();
+        this.taskAppState = yarnApp.getFinalStatus();
+        this.setMemorySeconds((double) Math.round(yarnApp.getMemorySeconds()));
+        String[] amHost = yarnApp.getAmHostHttpAddress().split(":");
+        if (amHost.length == 0) {
+            throw new Exception(String.format("parse amHost error, amHost:%s", yarnApp.getAmHostHttpAddress()));
+        }
+        this.amHost = amHost[0];
+        if (sparkApp != null) {
+            String attemptId = StringUtils.isNotEmpty(sparkApp.getAttemptId()) ? sparkApp.getAttemptId() : "1";
+            this.eventLogPath = sparkApp.getEventLogDirectory() + "/" + this.applicationId + "_" + attemptId;
+        }
+        if (ApplicationType.MAPREDUCE.getValue().equals(yarnApp.getApplicationType())) {
+            MRJobHistoryLogPath mrJobHistoryLogPath = LogPathUtil.getMRJobHistoryDoneLogPath(yarnApp, redisService);
+            this.jobHistoryDoneLogPath = mrJobHistoryLogPath.getDoneLogPath();
+            this.jobHistoryIntermediateDoneLogPath = mrJobHistoryLogPath.getIntermediateDoneLogPath();
+        }
+
+        String yarnLogPath = LogPathUtil.getYarnLogPath(Constant.JHS_HDFS_PATH, yarnApp.getIp(), redisService);
+        if ("".equals(yarnLogPath)) {
+            throw new Exception(String.format("can not find yarn log path: rm ip : %s", yarnApp.getIp()));
+        }
+        // todo adapt to different hadoop versions
+        this.yarnLogPath = yarnLogPath + "/" + yarnApp.getUser() + "/logs/" + this.applicationId;
+
+    }
+
 
 }
