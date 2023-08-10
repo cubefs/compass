@@ -22,25 +22,32 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public enum LogType {
 
-    SCHEDULER("scheduler"),
-    SPARK_EVENT("event"),
-    SPARK_DRIVER("driver"),
-    SPARK_EXECUTOR("executor"),
-    YARN("yarn"),
-    SPARK_GC("gc"),
-    MAPREDUCE_JOB_HISTORY("jobhistory"),
-    MAPREDUCE_CONTAINER("mrContainer");
+    SCHEDULER("scheduler", "Scheduler Log"),
+    SPARK_EVENT("event", "Spark Event Log"),
+    SPARK_DRIVER("driver", "Spark Driver Log"),
+    SPARK_EXECUTOR("executor", "Spark Executor Log"),
+    YARN("yarn", "Yarn Diagnostics Log"),
+    SPARK_GC("gc", "Spark GC Log"),
+    MAPREDUCE_JOB_HISTORY("jobhistory", "MapReduce JobHistory Log"),
+    MAPREDUCE_CONTAINER("mrContainer", "MapReduce Container Log");
 
     private final String name;
 
+    private final String desc;
+
     private static final Map<String, LogType> MAP;
 
-    LogType(String name) {
+    LogType(String name, String desc) {
         this.name = name;
+        this.desc = desc;
     }
 
     public String getName() {
         return this.name;
+    }
+
+    public String getDesc() {
+        return this.desc;
     }
 
     static {
