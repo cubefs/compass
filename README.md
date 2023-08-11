@@ -27,7 +27,6 @@ The key features:
 
 Compass has supported the concept of diagnostic types:
 
-Spark:
 <table>
      <tr>
          <td>Engine</td>
