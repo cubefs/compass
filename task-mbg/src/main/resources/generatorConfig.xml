@@ -35,7 +35,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.oppo.cloud.mapper"
                              targetProject="task-mbg\src\main\java"/>
         <!-- 生成全部表tableName设为% -->
-        <table tableName="task_instance">
+        <table tableName="flink_task_app">
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
     </context>

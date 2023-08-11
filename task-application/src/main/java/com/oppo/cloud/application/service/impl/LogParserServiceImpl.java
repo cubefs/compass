@@ -17,6 +17,7 @@
 package com.oppo.cloud.application.service.impl;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import com.oppo.cloud.application.config.CustomConfig;
 import com.oppo.cloud.application.config.HadoopConfig;
 import com.oppo.cloud.application.config.KafkaConfig;
@@ -158,6 +159,7 @@ public class LogParserServiceImpl implements LogParserService {
      */
     @Override
     public ParseRet handle(TaskInstance taskInstance, Map<String, String> rawData) throws Exception {
+        log.debug("收到task instance,{}", taskInstance);
         if (skipTaskInstance(taskInstance)) {
             return new ParseRet(RetCode.RET_SKIP, null);
         }
@@ -245,7 +247,7 @@ public class LogParserServiceImpl implements LogParserService {
      */
     public void addTaskApplication(String applicationId, TaskInstance taskInstance, String logPath) {
         // 数据写回kafka订阅
-        log.info("application save: applicationId=" + applicationId + " task_instance=" + taskInstance + ",lopPath="
+        log.debug("application save: applicationId=" + applicationId + " task_instance=" + taskInstance + ",lopPath="
                 + logPath);
 
         TaskApplication taskApplication = new TaskApplication();
@@ -256,6 +258,7 @@ public class LogParserServiceImpl implements LogParserService {
         taskApplication.setExecuteTime(taskInstance.getExecutionTime());
         taskApplication.setRetryTimes(taskInstance.getRetryTimes());
         taskApplication.setLogPath(logPath);
+        taskApplication.setTaskType(taskInstance.getTaskType());
         taskApplication.setCreateTime(new Date());
         taskApplication.setUpdateTime(new Date());
 
@@ -268,6 +271,12 @@ public class LogParserServiceImpl implements LogParserService {
             log.error("insertErr:" + e.getMessage());
         }
 
+        try {
+            messageProducer.sendMessageSync(kafkaConfig.getTaskApplicationTopic(),
+                    JSON.toJSONString(taskApplication));
+        } catch (Exception ex) {
+            log.error("failed to send insert data to kafka, err: " + ex.getMessage());
+        }
     }
 
     /**

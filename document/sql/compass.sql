@@ -147,7 +147,7 @@ CREATE TABLE `blocklist` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_project_flow_task_category` (`project_name`,`flow_name`,`task_name`)
+  UNIQUE KEY `idx_project_flow_task_component` (`project_name`,`flow_name`,`task_name`,`component`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='任务白名单表';
 
 
@@ -193,6 +193,76 @@ CREATE TABLE `task_datum` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_projectName_flowName_taskName_executionDate` (`project_name`,`flow_name`,`task_name`,`execution_date`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='任务基线运行表';
+
+-- ----------------------------
+-- Flink: Table structure for flink_app
+-- ----------------------------
+ CREATE TABLE `flink_task` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '实时任务id',
+  `username` varchar(64) DEFAULT NULL COMMENT '用户名',
+  `user_id` int(11) DEFAULT NULL COMMENT '用户记录id',
+  `project_name` varchar(64) DEFAULT NULL COMMENT '项目名',
+  `project_id` int(11) DEFAULT NULL COMMENT '项目id',
+  `flow_name` varchar(64) DEFAULT NULL COMMENT '工作流名称',
+  `flow_id` int(11) DEFAULT NULL COMMENT '工作流id',
+  `task_name` varchar(64) DEFAULT NULL COMMENT '任务名称',
+  `task_id` int(11) DEFAULT NULL COMMENT '任务id',
+  `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_project_flow_task` (`project_name`,`flow_name`,`task_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='实时任务表';
+
+-- ----------------------------
+-- Flink: Table structure for flink_task_app
+-- ----------------------------
+ CREATE TABLE `flink_task_app` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '实时任务id',
+  `username` varchar(64) DEFAULT NULL COMMENT '用户名',
+  `user_id` int(11) DEFAULT NULL COMMENT '用户记录id',
+  `project_name` varchar(64) DEFAULT NULL COMMENT '项目名',
+  `project_id` int(11) DEFAULT NULL COMMENT '项目id',
+  `flow_name` varchar(64) DEFAULT NULL COMMENT '工作流名称',
+  `flow_id` int(11) DEFAULT NULL COMMENT '工作流id',
+  `task_name` varchar(64) DEFAULT NULL COMMENT '任务名称',
+  `task_id` int(11) DEFAULT NULL COMMENT '任务id',
+  `task_state` varchar(64) DEFAULT NULL COMMENT '任务运行状态,running,finish',
+  `task_instance_id` int(11) NOT NULL COMMENT 'task instance id',
+  `execution_time` datetime DEFAULT NULL COMMENT 'task instance 执行周期',
+  `application_id` varchar(64) DEFAULT NULL COMMENT 'appId',
+  `flink_track_url` varchar(255) DEFAULT NULL COMMENT 'flink track url',
+  `allocated_mb` int(11) DEFAULT NULL COMMENT 'yarn获取的总共分配mb',
+  `allocated_vcores` int(11) DEFAULT NULL COMMENT 'yarn获取的总共分配vcore',
+  `running_containers` int(11) DEFAULT NULL COMMENT 'yarn获取的总共分配容器',
+  `engine_type` varchar(64) DEFAULT NULL COMMENT '执行引擎',
+  `duration` double DEFAULT NULL COMMENT '运行耗时',
+  `start_time` datetime DEFAULT NULL COMMENT '开始时间',
+  `end_time` datetime DEFAULT NULL COMMENT '结束时间',
+  `vcore_seconds` float DEFAULT NULL COMMENT 'cpu消耗(vcore-seconds)',
+  `memory_seconds` float DEFAULT NULL COMMENT '内存消耗(GB-seconds)',
+  `queue` varchar(64) DEFAULT NULL COMMENT '运行队列',
+  `cluster_name` varchar(64) DEFAULT NULL COMMENT '集群名称',
+  `retry_times` int(11) DEFAULT NULL COMMENT '重试次数',
+  `execute_user` varchar(64) DEFAULT NULL COMMENT '执行用户',
+  `diagnosis` varchar(255) COMMENT 'yarn诊断信息',
+  `parallel` int(11) DEFAULT NULL COMMENT 'flink 并行度',
+  `tm_slot` int(11) DEFAULT NULL COMMENT 'flink tm slot',
+  `tm_core` int(11) DEFAULT NULL COMMENT 'flink tm core',
+  `tm_mem` int(11) DEFAULT NULL COMMENT 'flink tm_mem',
+  `jm_mem` int(11) DEFAULT NULL COMMENT 'flink jm_mem',
+  `job_name` varchar(255) COMMENT 'job name',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_application_id` (`application_id`),
+  KEY `idx_project_name` (`project_name`),
+  KEY `idx_flow_name` (`flow_name`),
+  KEY `idx_task_name` (`task_name`),
+  KEY `idx_username` (`username`),
+  KEY `idx_job_name` (`job_name`),
+  KEY `idx_task_state` (`task_state`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='实时任务application表';
 
 INSERT INTO `user` (`username`, `password`) values ('compass', 'compass');
 

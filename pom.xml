@@ -8,7 +8,7 @@
     <groupId>com.oppo.cloud</groupId>
     <artifactId>compass</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <modules>
         <module>task-mbg</module>
         <module>task-common</module>
@@ -21,6 +21,8 @@
         <module>task-application</module>
         <module>task-canal</module>
         <module>task-canal-adapter</module>
+        <module>task-flink-core</module>
+        <module>task-flink</module>
         <module>task-assembly</module>
         <module>task-ui</module>
     </modules>
@@ -33,6 +35,7 @@
     </parent>
 
     <properties>
+        <revision>v1.1.0</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <pagehelper-starter.version>1.4.5</pagehelper-starter.version>
@@ -49,9 +52,12 @@
         <junit-jupiter>5.8.2</junit-jupiter>
         <commons-pool2.version>2.11.1</commons-pool2.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
+        <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <maven-surefire-report.version>2.19.1</maven-surefire-report.version>
         <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+        <curator.version>4.2.0</curator.version>
+        <zookeeper.version>3.7.1</zookeeper.version>
         <kafka-clients.version>3.4.0</kafka-clients.version>
         <fastjson2.version>2.0.23</fastjson2.version>
         <guava.version>31.1-jre</guava.version>
@@ -64,15 +70,6 @@
         <spotless.version>2.27.2</spotless.version>
         <elasticsearch.version>7.17.9</elasticsearch.version>
         <java-jwt.version>4.2.2</java-jwt.version>
-
-        <task-common.version>1.0-SNAPSHOT</task-common.version>
-        <task-mbg.version>1.0-SNAPSHOT</task-mbg.version>
-        <task-syncer.version>1.0-SNAPSHOT</task-syncer.version>
-        <task-detect.version>1.0-SNAPSHOT</task-detect.version>
-        <task-portal.version>1.0-SNAPSHOT</task-portal.version>
-        <task-ui.version>1.0-SNAPSHOT</task-ui.version>
-        <task-metadata.version>1.0-SNAPSHOT</task-metadata.version>
-        <task-parser.version>1.0-SNAPSHOT</task-parser.version>
 
         <!--Vulnerability version fixes-->
         <velocity.version>1.7</velocity.version>
@@ -97,49 +94,54 @@
             <dependency>
                 <groupId>com.oppo.cloud</groupId>
                 <artifactId>task-common</artifactId>
-                <version>${task-common.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.oppo.cloud</groupId>
                 <artifactId>task-mbg</artifactId>
-                <version>${task-mbg.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.oppo.cloud</groupId>
                 <artifactId>task-detect</artifactId>
-                <version>${task-detect.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.oppo.cloud</groupId>
                 <artifactId>task-metadata</artifactId>
-                <version>${task-metadata.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.oppo.cloud</groupId>
                 <artifactId>task-portal</artifactId>
-                <version>${task-portal.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.oppo.cloud</groupId>
                 <artifactId>task-ui</artifactId>
-                <version>${task-ui.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.oppo.cloud</groupId>
                 <artifactId>task-syncer</artifactId>
-                <version>${task-syncer.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.oppo.cloud</groupId>
                 <artifactId>task-parser</artifactId>
-                <version>${task-parser.version}</version>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.oppo.cloud</groupId>
+                <artifactId>task-flink-core</artifactId>
+                <version>${revision}</version>
             </dependency>
 
             <dependency>
@@ -200,6 +202,18 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jjwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
             </dependency>
 
             <dependency>
@@ -425,6 +439,31 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

@@ -12,7 +12,7 @@ The key features:
 
 - Supports multiple scheduling platforms(DolphinScheduler 2.x or 3.x, Airflow, or self-developed etc.)
 
-- Supports Spark 2.x or 3.x, Hadoop 2.x or 3.x troubleshooting.
+- Supports Spark 2.x or 3.x,Flink, Hadoop 2.x or 3.x troubleshooting.
 
 - Supports workflow layer exception diagnosis, identifies various failures and baseline time-consuming abnormal
   problems.
@@ -23,15 +23,19 @@ The key features:
 - Supports various log matching rule writing and abnormal threshold adjustment, and can be optimized according to actual
   scenarios.
 
+- Supports Flink engine layer resource and exception diagnosis,such as low memory utilization,low cpu utilization.
+
 Compass has supported the concept of diagnostic types:
 
 <table>
      <tr>
+         <td>Engine</td>
          <td>Diagnostic Dimensions</td>
          <td>Diagnostic Type</td>
          <td>Type Description</td>
      </tr>
      <tr>
+         <td rowspan="20">Spark</td>
          <td rowspan="3">Failure analysis</td>
          <td>Run failure</td>
          <td>Tasks that ultimately fail to run</td>
@@ -116,6 +120,61 @@ Compass has supported the concept of diagnostic types:
          <td>Global sorting abnormality</td>
          <td>Tasks with long running time due to global sorting</td>
      </tr>
+    <tr>
+          <td rowspan="20">Flink</td>
+          <td rowspan="10">Resource analysis</td>
+          <td>High memory utilization</td>
+          <td>Calculates the utilization of memory, if it's higher than threshold,then increase the memory config</td>
+    </tr>
+    <tr>
+          <td>Low memory utilization</td>
+          <td>Calculates the utilization of memory, if it's lower than threshold,then decrease the memory config</td>
+    </tr>
+    <tr>
+          <td>Job manager memory</td>
+          <td>Calculates the memory of job manager according to tm numbers</td>
+    </tr>
+    <tr>
+          <td>Job no data flow</td>
+          <td>Calculates if the job has no data flow</td>
+    </tr>
+    <tr>
+          <td>Task manager manage memory optimization</td>
+          <td>Calculates manage memory utilization of job, give the advice of manage memory config</td>
+    </tr>
+    <tr>
+          <td>Task managers run without data flow</td>
+          <td>Calculates if a part of task managers running without data flow</td>
+    </tr>
+    <tr>
+          <td>Parallel not enough</td>
+          <td>Calculates whether the parallel of job is not enough</td>
+    </tr>
+    <tr>
+          <td>Cpu utilization high</td>
+          <td>Calculates the cpu utilization of job, if it's higher than threshold then increase the cpu config</td>
+    </tr>
+    <tr>
+          <td>Cpu utilization low</td>
+          <td>Calculates the cpu utilization of job, if it's lower than threshold then decrease the cpu config</td>
+    </tr>
+    <tr>
+          <td>Cpu peek utilization high</td>
+          <td>Calculates the peek cpu utilization of job, if it's higher than threshold then increase the cpu config</td>
+    </tr>
+    <tr>
+          <td rowspan="3">Exception analysis</td>
+          <td>Slow vertices</td>
+          <td>Calculates if the job has slow vertices</td>
+    </tr>
+    <tr>
+          <td>Back pressure</td>
+          <td>Calculates if the job has back pressure</td>
+    </tr>
+    <tr>
+          <td>High delay</td>
+          <td>Calculates if the job has high data delay</td>
+    </tr>
 </table>
 
 ## Get Started
@@ -154,6 +213,10 @@ export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
 # Elasticsearch (default version: 7.17.9)
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
+# Flink metric prometheus
+export FLINK_PROMETHEUS_HOST="host"
+export FLINK_PROMETHEUS_TOKEN=""
+export FLINK_PROMETHEUS_DATABASE=""
 ```
 ```shell
 vi conf/application-hadoop.yml
@@ -204,6 +267,66 @@ The Compass table structure consists of two parts, one is compass.sql, and the o
 ./bin/start_all.sh
 ```
 
+### 5. Flink Custom metadata
+Third party system can send flink metadata to compass by kafka stream or http API, user do not have to run canal to capture 
+metadata from scheduler. the format of metadata as following: 
+
+format parameter:
+```json
+{
+    // fields required
+    "startTime":"2023-06-01", // job startrd time
+    "projectName":"test", // project name
+    "flowName":"test", // flow name
+    "taskName":"test", // task name
+    "jobName":"job_name", // job name
+    "username":"test",  // user name
+    "flinkTrackUrl":"tracking url", // job tracking url
+    "taskState":"RUNNING", // running state
+    "parallel":150, // job parallel
+    "tmSlot":1, // tm slot
+    "tmCore":2, // tm core
+    "jmMem":1024, // jobmanager memory MB
+    "tmMem":4096, // taskmanager memory MB
+  
+    // fields optionally required 
+    "userId":1,  // user id from scheduler
+    "projectId":1, // project id
+    "flowId":1, // flow id
+    "taskId":1, // task id
+    "taskInstanceId":1, // task instance id
+    "executionTime":"2023-06-01", // execution time
+    "allocatedMb":1, // yarn allocated memory
+    "allocatedVcores":1, // yarn allocated core
+    "runningContainers":1, // running containers
+    "engineType":"flink", // engine type
+    "duration":"1", // job duration time
+    "endTime":"2023-06-01", // job end time
+    "vcoreSeconds":1, // job vcore seconds
+    "memorySeconds":1, // job memory seconds
+    "queue":"flink", // yarn queue
+    "clusterName":"flink", // yarn cluster name 
+    "retryTimes":1, // retry times
+    "executeUser":"user", // execute user
+    "createTime":"2023-06-01", // created time
+    "updateTime":"2023-06-01", // updated time
+    "diagnosis":"1", // yarn diagnosis
+    "applicationId":"app id" // app id
+  
+}
+```
+
+Kafka:  
+Send the json content to flink-task-app topic. If you want to change the topic
+ name,then modify the spring.kafka.flinkTaskApp property of application.yml file in
+task-flink module.
+
+Http:  
+Fill the json content to http body and send the post request to 
+http://[compass_host]/compass/api/flink/saveRealtimeTaskApp,
+
+
+
 ## Documents
 
 [architecture document](document/manual/architecture.md)
@@ -212,6 +335,7 @@ The Compass table structure consists of two parts, one is compass.sql, and the o
 
 ## User Interface
 
+Spark:
 ![overview](document/manual/img/overview.png)
 ![overview-1](document/manual/img/overview-1.png)
 ![tasks](document/manual/img/tasks.png)
@@ -220,6 +344,11 @@ The Compass table structure consists of two parts, one is compass.sql, and the o
 ![cpu](document/manual/img/cpu.png)
 ![memory](document/manual/img/memory.png)
 
+Flink:
+![overview](document/manual/img/flink-overview-1.png)
+![overview-1](document/manual/img/flink-overview-2.png)
+![tasks](document/manual/img/flink-list.png)
+![report](document/manual/img/flink-report.png)
 ## Community
 Welcome to join the community for the usage or development of Compass. Here is the way to get help:
 - Submit an [issue](https://github.com/cubefs/compass/issues).

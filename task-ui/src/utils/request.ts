@@ -19,13 +19,14 @@ axios.defaults.validateStatus = function (status) {
 
 function getBaseURL():string {
   let backend = import.meta.env.MODE === 'development' ? import.meta.env.VITE_APP_DEV_BACKEND : import.meta.env.VITE_APP_PROD_BACKEND;
-  if(backend === ''){
+  if(backend === '') {
     return window.location.origin + '/compass';
   }
-  return backend +  '/compass';
+  return backend + '/compass';
 }
 
 axios.defaults.baseURL = getBaseURL()
+
 axios.defaults.withCredentials = true
 axios.interceptors.request.use(
   (config:any) => {
@@ -92,11 +93,15 @@ const request = function (type: Method) {
       }
       const res = await axios(config)
       if ([500].includes(+res.data.code)) {
-        ElMessage.error(res.data.msg)
-        throw new Error('请求失败')
+        // ElMessage.error(res.data.msg)
+        // throw new Error('请求失败')
+        if(res.data && res.data.msg){
+          throw new Error(res.data.msg)
+        }else{
+          throw new Error('内部错误')
+        }
       }
 
-      // @ts-expect-error
       // if (!['0000', 0].includes((res.data as IAjaxResponse).status))
       //   throw res.data
 
@@ -105,18 +110,20 @@ const request = function (type: Method) {
       return allResponseData ? res.data : res.data.data
     }
     catch (error: any) {
-      console.log(error)
-      let errorMsg = error.response.data.message || '请求错误'
-
+      // console.log(error)
+      // console.log(error.message)
+      let errorMsg = '请求错误'
+      console.log(typeof error)
       if (typeof error === 'string')
         errorMsg = error
-
       if (error && typeof error === 'object') {
-        // @ts-expect-error
-        if (error.status && error.message)
+        if(error.cause)
+          errorMsg = error.cause
+        if (error.message)
           errorMsg = error.message
+        if(error.response && error.response.data)
+          errorMsg = error.response.data.message
       }
-
       !ignoreMsg && ElMessage.error(errorMsg)
       throw error
     }
