@@ -40,7 +40,17 @@ const option = {
   legend: {},
   series: [
     {
-      name: '',
+      name: '可优化量',
+      data: [],
+      type: 'bar',
+      itemStyle: {
+        normal: {
+          color: '#90EE90',
+        },
+      },
+    },
+    {
+      name: '总使用量',
       data: [],
       type: 'bar',
       itemStyle: {
@@ -58,12 +68,16 @@ const handleClick = (val) => {
 watch(
   () => props.data,
   () => {
-    const xData = props.data.map(item => item.date.slice(0, 10))
-    const yData = props.data.map(item => item.count)
+    console.log(props.data)
+    const xData = props.data.jobUsage.data.map(item => item.date.slice(0, 10))
+    const yData1 = props.data.jobUsage.data.map(item => item.count)
+    const yData2 = props.data.totalUsage.data.map(item => item.count)
     option.xAxis.data = xData
-    option.yAxis.name = props.unit ? `单位（${props.unit}）` : ''
-    option.series[0].data = yData
-    option.series[0].name = tabList.find(item => item.name === activeName)?.label
+    option.yAxis.name = props.data.unit ? `单位（${props.data.unit}）` : ''
+    option.series[0].data = yData1
+    option.series[1].data = yData2
+    option.series[0].name = props.data.jobUsage.name
+    option.series[1].name = props.data.totalUsage.name
     chart.setOption(option)
   },
 )

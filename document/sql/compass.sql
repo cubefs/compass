@@ -147,7 +147,7 @@ CREATE TABLE `blocklist` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_project_flow_task_category` (`project_name`,`flow_name`,`task_name`)
+  UNIQUE KEY `idx_project_flow_task_component` (`project_name`,`flow_name`,`task_name`,`component`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='任务白名单表';
 
 
@@ -212,7 +212,7 @@ CREATE TABLE `task_datum` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_project_flow_task` (`project_name`,`flow_name`,`task_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='实时任务表'
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='实时任务表';
 
 -- ----------------------------
 -- Flink: Table structure for flink_task_app
@@ -262,24 +262,7 @@ CREATE TABLE `task_datum` (
   KEY `idx_username` (`username`),
   KEY `idx_job_name` (`job_name`),
   KEY `idx_task_state` (`task_state`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='实时任务application表'
-
--- ----------------------------
--- Flink: Table structure for flink_task_diagnosis_rule_advice
--- ----------------------------
- CREATE TABLE `flink_task_diagnosis_rule_advice` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '实时任务诊断规则结果id',
-  `flink_task_diagnosis_id` int(11) DEFAULT NULL,
-  `rule_name` varchar(255) DEFAULT NULL COMMENT '规则名',
-  `rule_type` int(11) DEFAULT NULL COMMENT '规则编码',
-  `has_advice` smallint(1) unsigned DEFAULT '0' COMMENT '规则是否命中0未1有',
-  `description` varchar(512) DEFAULT NULL COMMENT '诊断规则描述',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  KEY `idx_realtime_task_diagnosis_id` (`flink_task_diagnosis_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=236082 DEFAULT CHARSET=utf8 COMMENT='实时任务诊断规则结果表'
-
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='实时任务application表';
 
 INSERT INTO `user` (`username`, `password`) values ('compass', 'compass');
 
