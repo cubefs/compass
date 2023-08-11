@@ -51,7 +51,7 @@ const search = () => {
   getTableData(params)
 }
 const getTableData = async (params: any) => {
-  const res = await post('/api/realtime/taskDiagnosis/pageMetadata', params)
+  const res = await post('/api/flink/pageMetadata', params)
   tableData.data = res.list
   tableData.count = res.total
   console.log(res)

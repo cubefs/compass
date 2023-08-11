@@ -434,10 +434,12 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         List<IndicatorData> totalData = elasticSearchService.countDocByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
                 "createTime");
 
-        cutMemData.forEach(d -> d.setCount(d.getCount() / 1024.0)); // GB
-        totalMemData.forEach(d -> d.setCount(d.getCount() / 1024.0)); // GB
-
-        log.info("cutCoreData=>" + cutCoreData);
+        if (cutMemData != null) {
+            cutMemData.forEach(d -> d.setCount(d.getCount() / 1024.0)); // GB
+        }
+        if (totalMemData != null) {
+            totalMemData.forEach(d -> d.setCount(d.getCount() / 1024.0)); // GB
+        }
         TrendGraph cpuTrend = new TrendGraph();
         cpuTrend.setName("CPU消耗趋势");
         cpuTrend.setUnit("core");

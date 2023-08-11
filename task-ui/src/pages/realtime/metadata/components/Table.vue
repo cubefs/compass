@@ -30,7 +30,7 @@ const findColor = (value: String) => {
   return result ? result.color : '#2dccc3'
 }
 const delMeta = async (row) => {
-  await post('/api/realtime/taskDiagnosis/deleteMetadata', row)
+  await post('/api/flink/deleteMetadata', row)
   ElMessage.success('删除成功')
   emit('search')
 }

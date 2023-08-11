@@ -273,13 +273,8 @@ public class FlinkTaskDiagnosisController {
 
     @PostMapping("/getReport")
     @ApiOperation(value = "获取诊断报告")
-    public CommonStatus<DiagnosisReportResp> getReport(@Validated @RequestBody ReportDetailReq request) {
-        try {
-            return CommonStatus.success(flinkTaskDiagnosisService.getReport(request));
-        } catch (Throwable t) {
-            log.error(t.getMessage(), t);
-            return CommonStatus.failed("内部错误");
-        }
+    public CommonStatus<DiagnosisReportResp> getReport(@Validated @RequestBody ReportDetailReq request) throws Exception {
+        return CommonStatus.success(flinkTaskDiagnosisService.getReport(request));
     }
 
     @PostMapping("/getGeneralViewNumber")
@@ -309,13 +304,8 @@ public class FlinkTaskDiagnosisController {
     @PostMapping("/getGeneralViewDistribute")
     @ApiOperation(value = "获取概览分布指标")
     public CommonStatus<DiagnosisGeneralVIewDistributeResp> getGeneralViewDistribute(@Validated @RequestBody DiagnosisGeneralViewReq request) {
-        try {
-            DiagnosisGeneralVIewDistributeResp generalViewDistribute = flinkTaskDiagnosisService.getGeneralViewDistribute(request);
-            return CommonStatus.success(generalViewDistribute);
-        } catch (Throwable t) {
-            log.error(t.getMessage(), t);
-            return CommonStatus.failed("内部错误请查看日志");
-        }
+        DiagnosisGeneralVIewDistributeResp generalViewDistribute = flinkTaskDiagnosisService.getGeneralViewDistribute(request);
+        return CommonStatus.success(generalViewDistribute);
     }
 
     @PostMapping("/diagnosis")
