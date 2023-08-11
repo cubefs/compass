@@ -29,14 +29,14 @@ interface Report {
 }
 onBeforeMount(async () => {
   // const res = await Promise.all([
-  //   post(`/api/realtime/taskDiagnosis/getReport`, { "id": `${route.query.id}` }),
+  //   post(`/api/flink/getReport`, { "id": `${route.query.id}` }),
   //   // get(`/api/v1/app/report/runError?applicationId=${route.query.applicationId}`),
   //   // get(`/api/v1/app/report/runInfo?applicationId=${route.query.applicationId}`),
   //   // get(`/api/v1/app/report/runResource?applicationId=${route.query.applicationId}`),
   //   // get(`/api/v1/app/report/runTime?applicationId=${route.query.applicationId}`),
   // ])
   // console.log(res[0])
-  let pr = post(`/api/realtime/taskDiagnosis/getReport`, { "id": `${route.query.id}` })
+  let pr = post(`/api/flink/getReport`, { "id": `${route.query.id}` })
   pr.then(res => {
     realtimeDiagnosis = res
   })
@@ -71,7 +71,7 @@ onBeforeMount(async () => {
     <div v-if="realtimeDiagnosis.flinkTaskDiagnosis">
       <ItemWrapper title="诊断类型" class="m-b-5">
         <div>
-          <span v-for="(item, index) in realtimeDiagnosis.flinkTaskDiagnosis.ruleNames" :key="item"
+          <span v-for="(item, index) in realtimeDiagnosis.flinkTaskDiagnosis.diagnosisTypes" :key="item"
             class="category-card" :title="item" :style="{ 'border-left': `3px solid ${cloudTheme[index]}` }">
             {{ item }}
           </span>

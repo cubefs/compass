@@ -33,8 +33,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class TurningMemDownBySpec implements TurningMemDownStrategy {
+
     @Autowired
     DiagnosisParamsConstants cons;
+
     @Autowired
     MemTurningByUsage memByUsage;
 

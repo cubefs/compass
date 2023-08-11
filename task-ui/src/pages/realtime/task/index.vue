@@ -39,20 +39,20 @@ const getChart = async (params: any, type: string) => {
   try {
     switch (type) {
       case 'memory':
-        res = await post('/api/realtime/taskDiagnosis/getGeneralViewTrend', {
+        res = await post('/api/flink/getGeneralViewTrend', {
           ...params,
         })
         chartData = res.memoryTrend
         break
       case 'cpu':
-        res = await post('/api/realtime/taskDiagnosis/getGeneralViewTrend', {
+        res = await post('/api/flink/getGeneralViewTrend', {
           ...params,
           graphType: 'cpuTrend',
         })
         chartData = res.cpuTrend
         break
       case 'num':
-        res = await post('/api/realtime/taskDiagnosis/getGeneralViewTrend', {
+        res = await post('/api/flink/getGeneralViewTrend', {
           ...params,
           graphType: 'numTrend',
         })
@@ -83,7 +83,7 @@ const getParams = () => {
   return params
 }
 const getCategory = async () => {
-  const res = await get('/api/realtime/taskDiagnosis/diagnosisRules')
+  const res = await get('/api/flink/diagnosisRules')
   diagnosisRule.data = res.map((item: any, index: number) => ({
     name: item.name,
     selected: false,
@@ -97,7 +97,7 @@ const search = () => {
   getChart(params, tabType)
 }
 const getTableData = async (params: any) => {
-  const res = await post('/api/realtime/taskDiagnosis/page', params)
+  const res = await post('/api/flink/page', params)
   tableData.data = res.list
   tableData.count = res.total
   console.log(res)

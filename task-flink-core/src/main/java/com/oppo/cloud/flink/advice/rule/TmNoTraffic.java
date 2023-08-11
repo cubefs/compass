@@ -43,8 +43,10 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.*;
 @Component
 @Slf4j
 public class TmNoTraffic extends BaseRule {
+
     @Autowired
     DiagnosisParamsConstants cons;
+
     @Autowired
     MonitorMetricUtil monitorMetricUtil;
 

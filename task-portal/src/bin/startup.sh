@@ -8,6 +8,7 @@ if [ -f $(dirname $0)/compass_env.sh ]; then
   source $(dirname $0)/compass_env.sh
 fi
 
+
 check() {
   if [ -f ${PID_FILE} ]; then
     local pid=$(cat ${PID_FILE})

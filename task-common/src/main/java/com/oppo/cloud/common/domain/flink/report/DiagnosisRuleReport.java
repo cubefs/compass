@@ -16,8 +16,10 @@
 
 package com.oppo.cloud.common.domain.flink.report;
 
+import com.oppo.cloud.common.domain.elasticsearch.EsInfo;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,13 +30,13 @@ public class DiagnosisRuleReport {
     /**
      * 诊断规则图表
      */
-    List<IDiagnosisRuleChart> IDiagnosisRuleCharts;
+    private List<IDiagnosisRuleChart> IDiagnosisRuleCharts;
     /**
      * 标题
      */
-    String title;
+    private String title;
     /**
      * 结论
      */
-    String conclusion;
+    private String conclusion;
 }

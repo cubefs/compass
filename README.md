@@ -10,7 +10,7 @@ The key features:
 - Non-invasive, instant diagnosis, you can experience the diagnostic effect without modifying the existing scheduling
   platform.
 
-- Supports multiple scheduling platforms(DolphinScheduler, Airflow, or self-developed etc.)
+- Supports multiple scheduling platforms(DolphinScheduler 2.x or 3.x, Airflow, or self-developed etc.)
 
 - Supports Spark 2.x or 3.x,Flink, Hadoop 2.x or 3.x troubleshooting.
 
@@ -206,13 +206,13 @@ export COMPASS_MYSQL_ADDRESS="ip:port"
 export COMPASS_MYSQL_DB="compass"
 export SPRING_DATASOURCE_USERNAME="user"
 export SPRING_DATASOURCE_PASSWORD="pwd"
-# Kafka
+# Kafka (default version: 3.4.0)
 export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
-# Redis
+# Redis (cluster mode)
 export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
-# Zookeeper
+# Zookeeper (default version: 3.4.5, used by canal)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
-# Elasticsearch
+# Elasticsearch (default version: 7.17.9)
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
 # Flink metric prometheus
 export FLINK_PROMETHEUS_HOST="host"
@@ -231,6 +231,16 @@ hadoop:
       port: 8020
       # scheduler platform hdfs log path keyword identification, used by task-application
       matchPathKeys: [ "flume" ]
+      # kerberos
+      enableKerberos: false
+      # /etc/krb5.conf
+      krb5Conf: ""
+      # hdfs/*@EXAMPLE.COM
+      principalPattern:  ""
+      # admin
+      loginUser: ""
+      # /var/kerberos/krb5kdc/admin.keytab
+      keytabPath: ""
 
   yarn:
     - clusterName: "bigdata"
@@ -248,7 +258,7 @@ The Compass table structure consists of two parts, one is compass.sql, and the o
 
 1. Please execute document/sql/compass.sql first
 
-2. If you are using the DolphinScheduler scheduling platform, please execute document/sql/dolphinscheduler.sql; if you are using the Airflow scheduling platform, please execute document/sql/airflow.sql
+2. If you are using the DolphinScheduler scheduling platform, please execute document/sql/dolphinscheduler.sql(It needs to be modified according to the actual version used); if you are using the Airflow scheduling platform, please execute document/sql/airflow.sql(It needs to be modified according to the actual version used)
 
 3. If you are using a self-developed scheduling platform, please refer to the [task-syncer](document/manual/deployment.md#task-syncer) module to determine the tables that need to be synchronized
 
@@ -258,13 +268,14 @@ The Compass table structure consists of two parts, one is compass.sql, and the o
 ./bin/start_all.sh
 ```
 
-### 5. Custom metadata report
-We can report flink metadata to compass system through kafka or http interface
+### 5. Flink Custom metadata
+Third party system can send flink metadata to compass by kafka stream or http API, user do not have to run canal to capture 
+metadata from scheduler. the format of metadata as following: 
 
-Content:
+format parameter:
 ```json
 {
-    // required
+    // fields required
     "startTime":"2023-06-01", // job startrd time
     "projectName":"test", // project name
     "flowName":"test", // flow name
@@ -276,16 +287,13 @@ Content:
     "parallel":150, // job parallel
     "tmSlot":1, // tm slot
     "tmCore":2, // tm core
-    "jmMem":1024, // jm memory MB
-    "tmMem":4096, // tm memory MB
+    "jmMem":1024, // jobmanager memory MB
+    "tmMem":4096, // taskmanager memory MB
   
-    // not required
-    "userId":1,  // user id
-    "projectName":"test", // project name
+    // fields optionally required 
+    "userId":1,  // user id from scheduler
     "projectId":1, // project id
-    "flowName":"test", // flow name
     "flowId":1, // flow id
-    "taskName":"test", // task name
     "taskId":1, // task id
     "taskInstanceId":1, // task instance id
     "executionTime":"2023-06-01", // execution time
@@ -304,22 +312,19 @@ Content:
     "createTime":"2023-06-01", // created time
     "updateTime":"2023-06-01", // updated time
     "diagnosis":"1", // yarn diagnosis
-    "taskId":1, // task id
-    "flowId":1, // flow id
-    "projectId":1, // project id
     "applicationId":"app id" // app id
   
 }
 ```
 
 Kafka:  
-Send the json content to flink-task-app topic.If you want to change the topic
+Send the json content to flink-task-app topic. If you want to change the topic
  name,then modify the spring.kafka.flinkTaskApp property of application.yml file in
 task-flink module.
 
 Http:  
 Fill the json content to http body and send the post request to 
-http://[compass_host]/compass/api/realtime/taskDiagnosis/saveRealtimeTaskApp,
+http://[compass_host]/compass/api/flink/saveRealtimeTaskApp,
 
 
 

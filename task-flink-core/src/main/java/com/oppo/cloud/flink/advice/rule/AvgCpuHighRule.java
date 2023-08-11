@@ -45,8 +45,10 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_AVG_CPU_USA
  */
 @Component
 public class AvgCpuHighRule extends BaseRule {
+
     @Autowired
     DoctorUtil doctorUtil;
+
     @Autowired
     TurningManager turningManager;
 

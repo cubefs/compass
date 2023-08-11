@@ -20,10 +20,14 @@ import com.alibaba.fastjson2.JSON;
 import com.github.pagehelper.PageHelper;
 import com.oppo.cloud.common.constant.ComponentEnum;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
+import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAdvice;
+import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
+import com.oppo.cloud.common.domain.elasticsearch.SimpleUser;
 import com.oppo.cloud.common.domain.flink.JobManagerConfigItem;
 import com.oppo.cloud.common.domain.flink.enums.*;
 import com.oppo.cloud.common.domain.flink.metric.MetricResult;
 import com.oppo.cloud.common.domain.flink.report.DiagnosisRuleReport;
+import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.common.util.elastic.BulkApi;
 import com.oppo.cloud.flink.advice.DiagnosisDoctor;
 import com.oppo.cloud.flink.config.EsConfig;
@@ -32,18 +36,20 @@ import com.oppo.cloud.flink.domain.diagnosis.DiagnosisContext;
 import com.oppo.cloud.flink.domain.diagnosis.RcJobDiagnosis;
 import com.oppo.cloud.flink.domain.diagnosis.RcJobDiagnosisAdvice;
 import com.oppo.cloud.flink.service.DiagnosisService;
+import com.oppo.cloud.flink.service.FlinkElasticSearchService;
 import com.oppo.cloud.flink.service.FlinkMetaService;
 import com.oppo.cloud.flink.util.MonitorMetricUtil;
 import com.oppo.cloud.mapper.BlocklistMapper;
 import com.oppo.cloud.mapper.FlinkTaskAppMapper;
-import com.oppo.cloud.mapper.FlinkTaskDiagnosisMapper;
 import com.oppo.cloud.mapper.FlinkTaskDiagnosisRuleAdviceMapper;
 import com.oppo.cloud.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -58,64 +64,74 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.JOB_UP_TIME;
 @Service
 @Slf4j
 public class DiagnosisServiceImpl implements DiagnosisService {
+
     @Autowired
-    FlinkDiagnosisMetricsServiceImpl flinkDiagnosisMetricsServiceImpl;
+    private FlinkDiagnosisMetricsServiceImpl flinkDiagnosisMetricsServiceImpl;
+
     @Autowired
-    DiagnosisDoctor diagnosisDoctor;
+    private DiagnosisDoctor diagnosisDoctor;
+
     @Autowired
-    FlinkMetaService flinkMetaService;
+    private FlinkMetaService flinkMetaService;
+
     @Autowired
-    FlinkTaskAppMapper flinkTaskAppMapper;
+    private FlinkTaskAppMapper flinkTaskAppMapper;
+
     @Autowired
-    BlocklistMapper blocklistMapper;
+    private BlocklistMapper blocklistMapper;
+
     @Autowired
-    FlinkTaskDiagnosisMapper flinkTaskDiagnosisMapper;
+    private FlinkTaskDiagnosisRuleAdviceMapper flinkTaskDiagnosisRuleAdviceMapper;
+
     @Autowired
-    FlinkTaskDiagnosisRuleAdviceMapper flinkTaskDiagnosisRuleAdviceMapper;
+    private MonitorMetricUtil monitorMetricUtil;
+
     @Autowired
-    MonitorMetricUtil monitorMetricUtil;
-    @Autowired
-    DiagnosisParamsConstants cons;
-    @Resource(name="flinkElasticClient")
+    private DiagnosisParamsConstants cons;
+
+    @Resource(name = "flinkElasticClient")
     private RestHighLevelClient elasticClient;
+
     @Autowired
-    EsConfig esConfig;
-    public static final String REALTIME_DIAGNOSIS_REPORT_ES_INDEX_PREFIX = "realtime-report-";
-    private static final String YARN_APP_URL = "http://%s:%s/ws/v1/cluster/apps/%s";
-    private static final String FLINK_JOB_MANAGER_CONFIG = "%s/jobmanager/config";
+    private EsConfig esConfig;
+
+    @Value("${custom.elasticsearch.flinkReportIndex.name}")
+    private String flinkReportIndex;
+
+    @Value("${custom.elasticsearch.flinkTaskAnalysisIndex.name}")
+    private String flinkTaskAnalysisIndex;
+
+    @Autowired
+    private FlinkElasticSearchService flinkElasticSearchService;
 
     /**
      * 添加诊断类型
      *
-     * @param flinkTaskDiagnosis
-     * @param code
+     * @param flinkTaskAnalysis
+     * @param ruleAlias
      */
-    private void addDiagnosisTypes(FlinkTaskDiagnosis flinkTaskDiagnosis, int code) {
-        String types = flinkTaskDiagnosis.getDiagnosisTypes();
-        List<Integer> typesList = JSON.parseArray(types, Integer.class);
-        if (typesList == null) {
-            typesList = new ArrayList<>();
+    private void addDiagnosisTypes(FlinkTaskAnalysis flinkTaskAnalysis, String ruleAlias) {
+        List<String> types = flinkTaskAnalysis.getDiagnosisTypes();
+        if (types == null) {
+            types = new ArrayList<>();
         }
-        typesList.add(code);
-        String newTypes = JSON.toJSONString(typesList);
-        flinkTaskDiagnosis.setDiagnosisTypes(newTypes);
+        types.add(ruleAlias);
+        flinkTaskAnalysis.setDiagnosisTypes(types);
     }
 
     /**
      * 添加诊断资源类型
      *
-     * @param flinkTaskDiagnosis
+     * @param flinkTaskAnalysis
      * @param code
      */
-    private void addDiagnosisResourceTypes(FlinkTaskDiagnosis flinkTaskDiagnosis, int code) {
-        String types = flinkTaskDiagnosis.getDiagnosisResourceType();
-        List<Integer> typesList = JSON.parseArray(types, Integer.class);
-        if (typesList == null) {
-            typesList = new ArrayList<>();
+    private void addDiagnosisResourceTypes(FlinkTaskAnalysis flinkTaskAnalysis, int code) {
+        List<Integer> types = flinkTaskAnalysis.getDiagnosisResourceType();
+        if (types == null) {
+            types = new ArrayList<>();
         }
-        typesList.add(code);
-        String newTypes = JSON.toJSONString(typesList);
-        flinkTaskDiagnosis.setDiagnosisResourceType(newTypes);
+        types.add(code);
+        flinkTaskAnalysis.setDiagnosisResourceType(types);
     }
 
     public void updateRealtimeTaskAppStatus(FlinkTaskApp flinkTaskApp) {
@@ -123,7 +139,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         List<JobManagerConfigItem> jobManagerConfigItems = flinkMetaService.reqFlinkConfig(flinkTaskApp.getFlinkTrackUrl());
         if (System.currentTimeMillis() - flinkTaskApp.getCreateTime().getTime() > 1000 * 60 * 30 && jobManagerConfigItems == null) {
             log.info("作业访问tracking url失败 {}", flinkTaskApp);
-            flinkTaskApp.setTaskState(RealtimeTaskAppState.FINISHED.getDesc());
+            flinkTaskApp.setTaskState(FlinkTaskAppState.FINISHED.getDesc());
             flinkTaskAppMapper.updateByPrimaryKey(flinkTaskApp);
             return;
         }
@@ -141,7 +157,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
                         app.getState().equalsIgnoreCase(YarnApplicationState.FAILED.getDesc()) ||
                         app.getState().equalsIgnoreCase(YarnApplicationState.KILLED.getDesc())
         ) {
-            flinkTaskApp.setTaskState(RealtimeTaskAppState.FINISHED.getDesc());
+            flinkTaskApp.setTaskState(FlinkTaskAppState.FINISHED.getDesc());
             flinkTaskAppMapper.updateByPrimaryKey(flinkTaskApp);
             log.info(" app 已经停止 {}", appId);
         }
@@ -151,115 +167,150 @@ public class DiagnosisServiceImpl implements DiagnosisService {
      * 诊断作业
      *
      * @param flinkTaskApp
-     * @param start           秒
-     * @param end             秒
+     * @param start        秒
+     * @param end          秒
      * @param from
      * @return
      */
     @Override
-    public FlinkTaskDiagnosis diagnosisApp(FlinkTaskApp flinkTaskApp, long start, long end,
-                                           DiagnosisFrom from) {
-        try {
-            // 黑名单检查
-            BlocklistExample blocklistExample = new BlocklistExample();
-            BlocklistExample.Criteria criteria = blocklistExample.createCriteria()
-                    .andTaskNameEqualTo(flinkTaskApp.getTaskName())
-                    .andFlowNameEqualTo(flinkTaskApp.getFlowName())
-                    .andProjectNameEqualTo(flinkTaskApp.getProjectName())
-                    .andComponentEqualTo(ComponentEnum.Realtime.getDes())
-                    .andDeletedEqualTo(0);
-            List<Blocklist> blockLists = blocklistMapper.selectByExample(blocklistExample);
-            log.debug(blocklistExample.getOredCriteria().toString());
-            if (blockLists != null && blockLists.size() > 0) {
-                log.debug("白名单拦截:{}", flinkTaskApp);
-                return null;
-            } else {
-                log.debug("白名单通过:{}", flinkTaskApp);
-            }
-            RcJobDiagnosis rcJobDiagnosis = new RcJobDiagnosis();
-            FlinkTaskDiagnosis flinkTaskDiagnosis = new FlinkTaskDiagnosis();
-            // 元数据填到诊断结果中
-            fillRealtimeTaskDiagnosisWithTaskMeta(flinkTaskDiagnosis, flinkTaskApp);
-            // 从flink ui config 获取 jobName,运行配置参数,如果访问不到，说明作业有问题
-            List<JobManagerConfigItem> flinkConfigItems = flinkMetaService.reqFlinkConfig(flinkTaskApp.getFlinkTrackUrl());
-            if (flinkConfigItems == null) {
-                log.info("flink ui无法访问 {}", flinkTaskApp.getFlinkTrackUrl());
-                return null;
-            }
-            String jobId = flinkMetaService.getJobId(flinkTaskApp.getFlinkTrackUrl());
-            if (jobId == null) {
-                log.info("flink jobid 获取失败 {}", flinkTaskApp.getFlinkTrackUrl());
-                return null;
-            }
-            List<String> tmIds = flinkMetaService.getTmIds(flinkTaskApp.getFlinkTrackUrl());
-            // 通过flink job manager的配置更新元数据
-            flinkMetaService.fillFlinkMetaWithFlinkConfigOnYarn(flinkTaskApp, flinkConfigItems, jobId);
-            // 更新元数据
-            flinkTaskAppMapper.updateByPrimaryKeySelective(flinkTaskApp);
-            // 元数据更新后填到诊断结果中
-            fillRealtimeTaskDiagnosisWithTaskMeta(flinkTaskDiagnosis, flinkTaskApp);
-            // 构造诊断上下文，元数据填到上下文中
-            fillRcJobDiagnosisWithTaskMeta(rcJobDiagnosis, flinkTaskApp);
-            // 构造context
-            DiagnosisContext context = new DiagnosisContext(rcJobDiagnosis, start, end, flinkDiagnosisMetricsServiceImpl, from);
-            context.getMessages().put(DiagnosisParam.JobId, jobId);
-            context.getMessages().put(DiagnosisParam.TmIds, tmIds);
-            // 执行诊断
-            diagnosisDoctor.diagnosis(context);
-            if (context.getStopResourceDiagnosis()) {
-                log.info("不满足诊断条件，返回null");
-                return null;
-            }
-            // 诊断结果回填到realtimeTaskDiagnosis中
-            fillRealtimeTaskDiagnosisWithDiagnosisContext(flinkTaskDiagnosis, context);
-            // 存储数据
-            // 存储realtimeTaskDiagnosis
-            flinkTaskDiagnosisMapper.insertSelective(flinkTaskDiagnosis);
-            // 构造 RealtimeTaskDiagnosisRuleAdvice,填入realtimeTaskDiagnosis的id
-            List<RcJobDiagnosisAdvice> advices = context.getAdvices();
-            List<Map<String, Object>> reportEsList = new ArrayList<>();
-            for (RcJobDiagnosisAdvice advice : advices) {
-                FlinkTaskDiagnosisRuleAdvice flinkTaskDiagnosisRuleAdvice = new FlinkTaskDiagnosisRuleAdvice();
-                flinkTaskDiagnosisRuleAdvice.setFlinkTaskDiagnosisId(flinkTaskDiagnosis.getId());
-                flinkTaskDiagnosisRuleAdvice.setRuleName(advice.getRuleName());
-                flinkTaskDiagnosisRuleAdvice.setRuleType(advice.getAdviceType().getCode());
-                flinkTaskDiagnosisRuleAdvice.setHasAdvice(advice.getHasAdvice() ? (short) 1 : (short) 0);
-                flinkTaskDiagnosisRuleAdvice.setDescription(advice.getAdviceDescription());
-                flinkTaskDiagnosisRuleAdvice.setCreateTime(new Date());
-                flinkTaskDiagnosisRuleAdvice.setUpdateTime(new Date());
-                flinkTaskDiagnosisRuleAdviceMapper.insertSelective(flinkTaskDiagnosisRuleAdvice);
-                DiagnosisRuleReport diagnosisRuleReport = advice.getDiagnosisRuleReport();
-                String reportJson = "";
-                if (diagnosisRuleReport != null) {
-                    reportJson = JSON.toJSONString(diagnosisRuleReport);
-                }
-                Map<String, Object> reportDoc = new HashMap<>();
-                reportDoc.put("doc_id", flinkTaskDiagnosisRuleAdvice.getId().toString());
-                reportDoc.put("report", reportJson);
-                reportDoc.put("ts", LocalDateTime.now());
-                reportEsList.add(reportDoc);
-            }
-            BulkResponse response;
-            try {
-                log.info("es config:{} {} {}", esConfig.getHosts(), esConfig.getUsername(), esConfig.getPassword());
-                response = BulkApi.bulk(elasticClient, REALTIME_DIAGNOSIS_REPORT_ES_INDEX_PREFIX, reportEsList);
-                BulkItemResponse[] responses = response.getItems();
-                for (BulkItemResponse r : responses) {
-                    if (r.isFailed()) {
-                        log.info("failedInsertApp:{},{}", r.getId(), r.status());
-                    }
-                }
-                log.info("realtime diagnosis save count:,{}", reportEsList.size());
-            } catch (Throwable e) {
-                log.error(e.getMessage(), e);
-            }
+    public FlinkTaskAnalysis diagnosisApp(FlinkTaskApp flinkTaskApp, long start, long end,
+                                          DiagnosisFrom from) throws Exception {
+        // 白名单检查
+        BlocklistExample example = new BlocklistExample();
+        example.createCriteria()
+                .andTaskNameEqualTo(flinkTaskApp.getTaskName())
+                .andFlowNameEqualTo(flinkTaskApp.getFlowName())
+                .andProjectNameEqualTo(flinkTaskApp.getProjectName())
+                .andComponentEqualTo(ComponentEnum.Realtime.getDes())
+                .andDeletedEqualTo(0);
 
-            // 返回数据
-            return flinkTaskDiagnosis;
-        } catch (Throwable t) {
-            log.error(t.getMessage(), t);
+        List<Blocklist> blockLists = blocklistMapper.selectByExample(example);
+        log.debug(example.getOredCriteria().toString());
+        if (blockLists != null && blockLists.size() > 0) {
+            log.debug("白名单拦截:{}", flinkTaskApp);
+            return null;
+        } else {
+            log.debug("白名单通过:{}", flinkTaskApp);
+        }
+        RcJobDiagnosis rcJobDiagnosis = new RcJobDiagnosis();
+        FlinkTaskAnalysis flinkTaskAnalysis = new FlinkTaskAnalysis();
+        flinkTaskAnalysis.setDiagnosisResourceType(new ArrayList<>());
+
+        // 1、元数据填到诊断结果中
+        // 从flink ui config 获取 jobName,运行配置参数,如果访问不到，说明作业有问题
+        List<JobManagerConfigItem> flinkConfigItems = flinkMetaService.reqFlinkConfig(flinkTaskApp.getFlinkTrackUrl());
+        if (flinkConfigItems == null) {
+            log.info("flink ui无法访问 {}", flinkTaskApp.getFlinkTrackUrl());
             return null;
         }
+        String jobId = flinkMetaService.getJobId(flinkTaskApp.getFlinkTrackUrl());
+        if (jobId == null) {
+            log.info("flink jobid 获取失败 {}", flinkTaskApp.getFlinkTrackUrl());
+            return null;
+        }
+        List<String> tmIds = flinkMetaService.getTmIds(flinkTaskApp.getFlinkTrackUrl());
+        // 通过flink job manager的配置更新元数据
+        flinkMetaService.fillFlinkMetaWithFlinkConfigOnYarn(flinkTaskApp, flinkConfigItems, jobId);
+        // 更新元数据
+        flinkTaskAppMapper.updateByPrimaryKeySelective(flinkTaskApp);
+        // 元数据更新后填到诊断结果中
+        fillFlinkTaskAnalysisWithTaskMeta(flinkTaskAnalysis, flinkTaskApp);
+        // 构造诊断上下文，元数据填到上下文中
+        fillRcJobDiagnosisWithTaskMeta(rcJobDiagnosis, flinkTaskApp);
+        // 构造context
+        DiagnosisContext context = new DiagnosisContext(rcJobDiagnosis, start, end, flinkDiagnosisMetricsServiceImpl, from);
+        context.getMessages().put(DiagnosisParam.JobId, jobId);
+        context.getMessages().put(DiagnosisParam.TmIds, tmIds);
+
+        // 2、执行诊断阶段
+        diagnosisDoctor.diagnosis(context);
+        if (context.getStopResourceDiagnosis()) {
+            log.info("不满足诊断条件，返回null");
+            return null;
+        }
+        // 诊断结果回填到FlinkTaskDiagnosis中
+        fillFlinkTaskAnalysisWithDiagnosisContext(flinkTaskAnalysis, context);
+        // 3、存储数据阶段
+        // 3.1 存储flinkTaskAnalysis
+        // 构造 FlinkTaskDiagnosisRuleAdvice, 填入FlinkTaskDiagnosis的id
+        List<RcJobDiagnosisAdvice> advices = context.getAdvices();
+        List<String> reports = new ArrayList<>();
+        List<FlinkTaskAdvice> flinkTaskAdvices = new ArrayList<>();
+
+        String index = flinkTaskAnalysis.genIndex(flinkTaskAnalysisIndex);
+        String id = flinkTaskAnalysis.genDocId();
+
+        for (RcJobDiagnosisAdvice advice : advices) {
+            FlinkTaskAdvice flinkTaskAdvice = new FlinkTaskAdvice();
+
+            flinkTaskAdvice.setRuleName(advice.getRuleName());
+            flinkTaskAdvice.setRuleCode(advice.getAdviceType().getCode());
+            flinkTaskAdvice.setRuleAlias(advice.getAdviceType().getName());
+            flinkTaskAdvice.setHasAdvice(advice.getHasAdvice() ? 1 : 0);
+            flinkTaskAdvice.setDescription(advice.getAdviceDescription());
+            flinkTaskAdvices.add(flinkTaskAdvice);
+
+            DiagnosisRuleReport diagnosisRuleReport = advice.getDiagnosisRuleReport();
+            if (diagnosisRuleReport == null) {
+                continue;
+            }
+
+            String reportJson = JSON.toJSONString(diagnosisRuleReport);
+            Map<String, Object> report = new HashMap<>();
+            report.put("flinkTaskAnalysisId", id);
+            report.put("reportJson", reportJson);
+            report.put("createTime", flinkTaskAnalysis.getCreateTime());
+
+            reports.add(JSON.toJSONString(report));
+        }
+
+        flinkTaskAnalysis.setAdvices(flinkTaskAdvices);
+        Set<Integer> resourceTypeSet = new HashSet<>();
+        resourceTypeSet.addAll(flinkTaskAnalysis.getDiagnosisResourceType());
+
+        int totalCores = flinkTaskAnalysis.getTmCore() * flinkTaskAnalysis.getTmNum();
+        int totalMem = flinkTaskAnalysis.getTmMemory() * flinkTaskAnalysis.getTmNum();
+
+        flinkTaskAnalysis.setTotalCoreNum((long) totalCores);
+        flinkTaskAnalysis.setTotalMemNum((long) totalMem);
+        flinkTaskAnalysis.setCutCoreNum(0L);
+        flinkTaskAnalysis.setCutMemNum(0L);
+
+        if (resourceTypeSet.contains(2)) { // 2缩减cpu
+            int cutCores = totalCores - flinkTaskAnalysis.getDiagnosisTmCoreNum() * flinkTaskAnalysis.getDiagnosisTmNum();
+            flinkTaskAnalysis.setCutCoreNum((long) cutCores);
+        }
+
+        if (resourceTypeSet.contains(3)) { // 3缩减mem
+            int cutMemory = totalMem - flinkTaskAnalysis.getDiagnosisTmMemory() * flinkTaskAnalysis.getDiagnosisTmNum();
+            flinkTaskAnalysis.setCutMemNum((long) cutMemory);
+        }
+
+        log.info("result=>" + flinkTaskAnalysis);
+
+
+        UpdateResponse update = flinkElasticSearchService.insertOrUpDateEs(index, id, flinkTaskAnalysis.genDoc());
+        flinkTaskAnalysis.setDocId(id);
+        log.info("update:" + update);
+
+        BulkResponse response;
+        try {
+            String reportIndex = flinkReportIndex + "-" + DateUtil.format(
+                    flinkTaskAnalysis.getCreateTime(), "yyyy-MM-dd");
+            response = BulkApi.bulkJson(elasticClient, reportIndex, reports);
+        } catch (Exception e) {
+            log.error("failed to save reports:", e);
+            return flinkTaskAnalysis;
+        }
+
+        BulkItemResponse[] responses = response.getItems();
+        for (BulkItemResponse r : responses) {
+            if (r.isFailed()) {
+                log.info("saveGCReportsErr:", r.getFailure().getCause());
+            }
+        }
+        // 返回数据
+        return flinkTaskAnalysis;
     }
 
     /**
@@ -271,17 +322,17 @@ public class DiagnosisServiceImpl implements DiagnosisService {
      */
     @Override
     public void diagnosisAllApp(long start, long end, DiagnosisFrom from) {
-        FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
-        flinkTaskAppExample.createCriteria()
-                .andTaskStateEqualTo(RealtimeTaskAppState.RUNNING.getDesc())
-        ;
-        long count = flinkTaskAppMapper.countByExample(flinkTaskAppExample);
+        FlinkTaskAppExample example = new FlinkTaskAppExample();
+        example.createCriteria()
+                .andTaskStateEqualTo(FlinkTaskAppState.RUNNING.getDesc());
+
+        long count = flinkTaskAppMapper.countByExample(example);
         int pageSize = 100;
         int pageNum = (int) Math.ceil((double) count / pageSize);
         for (int i = 1; i <= pageNum; i++) {
             PageHelper.startPage(i, pageSize);
             try {
-                List<FlinkTaskApp> flinkTaskApps = flinkTaskAppMapper.selectByExample(flinkTaskAppExample);
+                List<FlinkTaskApp> flinkTaskApps = flinkTaskAppMapper.selectByExample(example);
                 for (FlinkTaskApp flinkTaskApp : flinkTaskApps) {
                     diagnosisApp(flinkTaskApp, start, end, from);
                     updateRealtimeTaskAppStatus(flinkTaskApp);
@@ -347,21 +398,23 @@ public class DiagnosisServiceImpl implements DiagnosisService {
      */
     @Override
     public void diagnosisAppHourly(long start, long end, DiagnosisFrom from) {
-        FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
-        flinkTaskAppExample.createCriteria()
-                .andTaskStateEqualTo(RealtimeTaskAppState.RUNNING.getDesc())
-        ;
-        long count = flinkTaskAppMapper.countByExample(flinkTaskAppExample);
+        FlinkTaskAppExample example = new FlinkTaskAppExample();
+        example.createCriteria()
+                .andTaskStateEqualTo(FlinkTaskAppState.RUNNING.getDesc());
+
         int pageSize = 100;
+
+        long count = flinkTaskAppMapper.countByExample(example);
         int pageNum = (int) Math.ceil((double) count / pageSize);
+
         for (int i = 1; i <= pageNum; i++) {
             PageHelper.startPage(i, pageSize);
             try {
-                List<FlinkTaskApp> flinkTaskApps = flinkTaskAppMapper.selectByExample(flinkTaskAppExample);
+                List<FlinkTaskApp> flinkTaskApps = flinkTaskAppMapper.selectByExample(example);
                 for (FlinkTaskApp flinkTaskApp : flinkTaskApps) {
-                    if (checkNeedDiagnosisHourly(flinkTaskApp, start, end)) {
-                        diagnosisApp(flinkTaskApp, start, end, from);
-                    }
+//                    if (checkNeedDiagnosisHourly(flinkTaskApp, start, end)) {
+                    diagnosisApp(flinkTaskApp, start, end, from);
+//                    }
                 }
             } catch (Throwable t) {
                 log.error(t.getMessage(), t);
@@ -391,84 +444,87 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     /**
      * 填充元数据
      *
-     * @param flinkTaskDiagnosis
+     * @param flinkTaskAnalysis
      * @param flinkTaskApp
      */
-    private void fillRealtimeTaskDiagnosisWithTaskMeta(FlinkTaskDiagnosis flinkTaskDiagnosis, FlinkTaskApp flinkTaskApp) {
-        flinkTaskDiagnosis.setFlinkTaskAppId(flinkTaskApp.getId());
-        flinkTaskDiagnosis.setUsername(flinkTaskApp.getUsername());
-        flinkTaskDiagnosis.setUserId(flinkTaskApp.getUserId());
-        flinkTaskDiagnosis.setProjectName(flinkTaskApp.getProjectName());
-        flinkTaskDiagnosis.setProjectId(flinkTaskApp.getProjectId());
-        flinkTaskDiagnosis.setFlowName(flinkTaskApp.getFlowName());
-        flinkTaskDiagnosis.setFlowId(flinkTaskApp.getFlowId());
-        flinkTaskDiagnosis.setTaskName(flinkTaskApp.getTaskName());
-        flinkTaskDiagnosis.setTaskId(flinkTaskApp.getTaskId());
-        flinkTaskDiagnosis.setApplicationId(flinkTaskApp.getApplicationId());
-        flinkTaskDiagnosis.setFlinkTrackUrl(flinkTaskApp.getFlinkTrackUrl());
-        flinkTaskDiagnosis.setAllocatedMb(flinkTaskApp.getAllocatedMb());
-        flinkTaskDiagnosis.setAllocatedVcores(flinkTaskApp.getAllocatedVcores());
-        flinkTaskDiagnosis.setRunningContainers(flinkTaskApp.getRunningContainers());
-        flinkTaskDiagnosis.setEngineType(flinkTaskApp.getEngineType());
-        flinkTaskDiagnosis.setExecutionTime(flinkTaskApp.getExecutionTime());
-        flinkTaskDiagnosis.setDuration(flinkTaskApp.getDuration());
-        flinkTaskDiagnosis.setStartTime(flinkTaskApp.getStartTime());
-        flinkTaskDiagnosis.setEndTime(flinkTaskApp.getEndTime());
-        flinkTaskDiagnosis.setVcoreSeconds(flinkTaskApp.getVcoreSeconds());
-        flinkTaskDiagnosis.setMemorySeconds(flinkTaskApp.getMemorySeconds());
-        flinkTaskDiagnosis.setQueue(flinkTaskApp.getQueue());
-        flinkTaskDiagnosis.setClusterName(flinkTaskApp.getClusterName());
-        flinkTaskDiagnosis.setRetryTimes(flinkTaskApp.getRetryTimes());
-        flinkTaskDiagnosis.setExecuteUser(flinkTaskApp.getExecuteUser());
-        flinkTaskDiagnosis.setDiagnosis(flinkTaskApp.getDiagnosis());
-        flinkTaskDiagnosis.setJobName(flinkTaskApp.getJobName());
+    private void fillFlinkTaskAnalysisWithTaskMeta(FlinkTaskAnalysis flinkTaskAnalysis, FlinkTaskApp flinkTaskApp) {
+        SimpleUser simpleUser = new SimpleUser();
+        simpleUser.setUsername(flinkTaskApp.getUsername());
+        simpleUser.setUserId(flinkTaskApp.getUserId());
+
+        flinkTaskAnalysis.setFlinkTaskAppId(flinkTaskApp.getId());
+        flinkTaskAnalysis.setUsers(Collections.singletonList(simpleUser));
+        flinkTaskAnalysis.setProjectName(flinkTaskApp.getProjectName());
+        flinkTaskAnalysis.setProjectId(flinkTaskApp.getProjectId());
+        flinkTaskAnalysis.setFlowName(flinkTaskApp.getFlowName());
+        flinkTaskAnalysis.setFlowId(flinkTaskApp.getFlowId());
+        flinkTaskAnalysis.setTaskName(flinkTaskApp.getTaskName());
+        flinkTaskAnalysis.setTaskId(flinkTaskApp.getTaskId());
+        flinkTaskAnalysis.setApplicationId(flinkTaskApp.getApplicationId());
+        flinkTaskAnalysis.setFlinkTrackUrl(flinkTaskApp.getFlinkTrackUrl());
+        flinkTaskAnalysis.setAllocatedMB(flinkTaskApp.getAllocatedMb());
+        flinkTaskAnalysis.setAllocatedVcores(flinkTaskApp.getAllocatedVcores());
+        flinkTaskAnalysis.setRunningContainers(flinkTaskApp.getRunningContainers());
+        flinkTaskAnalysis.setEngineType(flinkTaskApp.getEngineType());
+        flinkTaskAnalysis.setExecutionDate(flinkTaskApp.getExecutionTime());
+        flinkTaskAnalysis.setDuration(flinkTaskApp.getDuration());
+        flinkTaskAnalysis.setStartTime(flinkTaskApp.getStartTime());
+        flinkTaskAnalysis.setEndTime(flinkTaskApp.getEndTime());
+        flinkTaskAnalysis.setVcoreSeconds(flinkTaskApp.getVcoreSeconds());
+        flinkTaskAnalysis.setMemorySeconds(flinkTaskApp.getMemorySeconds());
+        flinkTaskAnalysis.setQueue(flinkTaskApp.getQueue());
+        flinkTaskAnalysis.setClusterName(flinkTaskApp.getClusterName());
+        flinkTaskAnalysis.setRetryTimes(flinkTaskApp.getRetryTimes());
+        flinkTaskAnalysis.setExecuteUser(flinkTaskApp.getExecuteUser());
+        flinkTaskAnalysis.setDiagnosis(flinkTaskApp.getDiagnosis());
+        flinkTaskAnalysis.setJobName(flinkTaskApp.getJobName());
     }
 
     /**
-     * 填充数据
+     * 填充上下文诊断数据
      *
-     * @param flinkTaskDiagnosis
+     * @param flinkTaskAnalysis
      * @param context
      */
-    private void fillRealtimeTaskDiagnosisWithDiagnosisContext(FlinkTaskDiagnosis flinkTaskDiagnosis, DiagnosisContext context) {
+    private void fillFlinkTaskAnalysisWithDiagnosisContext(FlinkTaskAnalysis flinkTaskAnalysis, DiagnosisContext context) {
         RcJobDiagnosis rcJobDiagnosis = context.getRcJobDiagnosis();
-        flinkTaskDiagnosis.setParallel(rcJobDiagnosis.getParallel());
-        flinkTaskDiagnosis.setTmSlot(rcJobDiagnosis.getTmSlotNum());
-        flinkTaskDiagnosis.setTmCore(rcJobDiagnosis.getTmCore());
-        flinkTaskDiagnosis.setTmMem(rcJobDiagnosis.getTmMem());
-        flinkTaskDiagnosis.setJmMem(rcJobDiagnosis.getJmMem());
-        flinkTaskDiagnosis.setTmNum(rcJobDiagnosis.getTmNum());
-        flinkTaskDiagnosis.setDiagnosisEndTime(new Date(context.getEnd() * 1000));
-        flinkTaskDiagnosis.setDiagnosisStartTime(new Date(context.getStart() * 1000));
-        flinkTaskDiagnosis.setDiagnosisFrom(context.getFrom().getCode());
-        flinkTaskDiagnosis.setDiagnosisParallel(rcJobDiagnosis.getDiagnosisParallel());
-        flinkTaskDiagnosis.setDiagnosisJmMemSize(rcJobDiagnosis.getDiagnosisJmMem());
-        flinkTaskDiagnosis.setDiagnosisTmMemSize(rcJobDiagnosis.getDiagnosisTmMem());
-        flinkTaskDiagnosis.setDiagnosisTmSlotNum(rcJobDiagnosis.getDiagnosisTmSlot());
-        flinkTaskDiagnosis.setDiagnosisTmCoreNum(rcJobDiagnosis.getDiagnosisTmCore());
-        flinkTaskDiagnosis.setDiagnosisTmNum(rcJobDiagnosis.getDiagnosisTmNum());
-        flinkTaskDiagnosis.setCreateTime(new Date());
-        flinkTaskDiagnosis.setUpdateTime(new Date());
+        flinkTaskAnalysis.setParallel(rcJobDiagnosis.getParallel());
+        flinkTaskAnalysis.setTmSlot(rcJobDiagnosis.getTmSlotNum());
+        flinkTaskAnalysis.setTmCore(rcJobDiagnosis.getTmCore());
+        flinkTaskAnalysis.setTmMemory(rcJobDiagnosis.getTmMem());
+        flinkTaskAnalysis.setJmMemory(rcJobDiagnosis.getJmMem());
+        flinkTaskAnalysis.setTmNum(rcJobDiagnosis.getTmNum());
+        flinkTaskAnalysis.setDiagnosisEndTime(new Date(context.getEnd() * 1000));
+        flinkTaskAnalysis.setDiagnosisStartTime(new Date(context.getStart() * 1000));
+        flinkTaskAnalysis.setDiagnosisSource(context.getFrom().getCode());
+        flinkTaskAnalysis.setDiagnosisParallel(rcJobDiagnosis.getDiagnosisParallel());
+        flinkTaskAnalysis.setDiagnosisJmMemory(rcJobDiagnosis.getDiagnosisJmMem());
+        flinkTaskAnalysis.setDiagnosisTmMemory(rcJobDiagnosis.getDiagnosisTmMem());
+        flinkTaskAnalysis.setDiagnosisTmSlotNum(rcJobDiagnosis.getDiagnosisTmSlot());
+        flinkTaskAnalysis.setDiagnosisTmCoreNum(rcJobDiagnosis.getDiagnosisTmCore());
+        flinkTaskAnalysis.setDiagnosisTmNum(rcJobDiagnosis.getDiagnosisTmNum());
+        flinkTaskAnalysis.setCreateTime(new Date());
+        flinkTaskAnalysis.setUpdateTime(new Date());
         // 资源调优类型
-        if (flinkTaskDiagnosis.getTmNum() != null && flinkTaskDiagnosis.getTmCore() != null) {
-            int preCore = flinkTaskDiagnosis.getTmNum() * flinkTaskDiagnosis.getTmCore();
-            int newCore = flinkTaskDiagnosis.getDiagnosisTmNum() * flinkTaskDiagnosis.getDiagnosisTmCoreNum();
+        if (flinkTaskAnalysis.getTmNum() != null && flinkTaskAnalysis.getTmCore() != null) {
+            int preCore = flinkTaskAnalysis.getTmNum() * flinkTaskAnalysis.getTmCore();
+            int newCore = flinkTaskAnalysis.getDiagnosisTmNum() * flinkTaskAnalysis.getDiagnosisTmCoreNum();
             // 判断资源变化
             if (newCore > preCore) {
-                addDiagnosisResourceTypes(flinkTaskDiagnosis, DiagnosisResourceType.INCR_CPU.getCode());
+                addDiagnosisResourceTypes(flinkTaskAnalysis, DiagnosisResourceType.INCR_CPU.getCode());
             } else if (newCore < preCore) {
-                addDiagnosisResourceTypes(flinkTaskDiagnosis, DiagnosisResourceType.DECR_CPU.getCode());
+                addDiagnosisResourceTypes(flinkTaskAnalysis, DiagnosisResourceType.DECR_CPU.getCode());
             }
         }
         // 资源调优类型
-        if (flinkTaskDiagnosis.getTmNum() != null && flinkTaskDiagnosis.getTmMem() != null) {
-            int preMem = flinkTaskDiagnosis.getTmNum() * flinkTaskDiagnosis.getTmMem();
-            int newMem = flinkTaskDiagnosis.getDiagnosisTmNum() * flinkTaskDiagnosis.getDiagnosisTmMemSize();
+        if (flinkTaskAnalysis.getTmNum() != null && flinkTaskAnalysis.getTmMemory() != null) {
+            int preMem = flinkTaskAnalysis.getTmNum() * flinkTaskAnalysis.getTmMemory();
+            int newMem = flinkTaskAnalysis.getDiagnosisTmNum() * flinkTaskAnalysis.getDiagnosisTmMemory();
             // 判断资源变化
             if (newMem > preMem) {
-                addDiagnosisResourceTypes(flinkTaskDiagnosis, DiagnosisResourceType.INCR_MEM.getCode());
+                addDiagnosisResourceTypes(flinkTaskAnalysis, DiagnosisResourceType.INCR_MEM.getCode());
             } else if (newMem < preMem) {
-                addDiagnosisResourceTypes(flinkTaskDiagnosis, DiagnosisResourceType.DECR_MEM.getCode());
+                addDiagnosisResourceTypes(flinkTaskAnalysis, DiagnosisResourceType.DECR_MEM.getCode());
             }
         }
 
@@ -477,9 +533,9 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         for (RcJobDiagnosisAdvice rcJobDiagnosisAdvice : advices) {
             if (rcJobDiagnosisAdvice.getHasAdvice()) {
                 if (rcJobDiagnosisAdvice.getAdviceType().getCode() == DiagnosisRuleType.RuntimeExceptionRule.getCode()) {
-                    addDiagnosisResourceTypes(flinkTaskDiagnosis, DiagnosisResourceType.RUNTIME_EXCEPTION.getCode());
+                    addDiagnosisResourceTypes(flinkTaskAnalysis, DiagnosisResourceType.RUNTIME_EXCEPTION.getCode());
                 }
-                addDiagnosisTypes(flinkTaskDiagnosis, rcJobDiagnosisAdvice.getAdviceType().getCode());
+                addDiagnosisTypes(flinkTaskAnalysis, rcJobDiagnosisAdvice.getAdviceType().getName());
             }
         }
     }

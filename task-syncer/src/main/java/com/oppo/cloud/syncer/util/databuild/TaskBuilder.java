@@ -40,7 +40,7 @@ public class TaskBuilder implements DataBuilder<Task> {
         task.setTaskType(data.get("task_type"));
         task.setRetries(DataUtil.parseInteger(data.get("retries")));
         task.setCreateTime(DataUtil.parseDate(data.get("create_time")));
-        task.setCreateTime(DataUtil.parseDate(data.get("update_time")));
+        task.setUpdateTime(DataUtil.parseDate(data.get("update_time")));
         return task;
     }
 }

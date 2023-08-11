@@ -23,7 +23,7 @@ async function diagnosisSearch() {
   var startTs = time[0] / 1000
   var res
   try {
-    res = await post('/api/realtime/taskDiagnosis/diagnosis', {
+    res = await post('/api/flink/diagnosis', {
       appId: applicationId,
       start: startTs,
       end: endTs,

@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: flink-diagnosis
+    name: task-flink
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -87,9 +87,16 @@ custom:
       name: "compass-job-instance"
       shards: 10
       replicas: 2
-    realtimeReportIndex:
-      name: "stream-task-report"
+
+    flinkReportIndex:
+      name: "compass-flink-report"
       shards: 10
       replicas: 2
+
+    flinkTaskAnalysisIndex:
+      name: "compass-flink-task-analysis"
+      shards: 10
+      replicas: 2
+
   redis:
     logRecordKey: "{lua}:log:record"

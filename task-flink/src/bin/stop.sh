@@ -1,7 +1,7 @@
 #!/bin/sh
 
 HOME_DIR=$(cd $(dirname $0)/.. && pwd)
-APP_NAME="task-realtime-diagnosis"
+APP_NAME="task-flink"
 PID_FILE=${HOME_DIR}/tpid
 
 stop() {

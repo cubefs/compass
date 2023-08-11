@@ -134,16 +134,16 @@ const getHeight = () => {
               一键诊断
             </template>
           </el-menu-item>
-          <el-menu-item :index="`/${activeRoute}/task`">
+          <el-menu-item :index="`/${activeRoute}/scheduler`">
             <el-icon><el-image class="logo" :src="taskLogo" /></el-icon>
             <template #title>
-              任务运行
+              调度任务
             </template>
           </el-menu-item>
           <el-menu-item v-if="`${activeRoute}`=='offline'" :index="`/${activeRoute}/application`">
             <el-icon><el-image class="logo" :src="appLogo" /></el-icon>
             <template #title>
-              APP运行
+              计算任务
             </template>
           </el-menu-item>
           <el-menu-item v-if="`${activeRoute}`=='realtime'" :index="`/${activeRoute}/metadata`">

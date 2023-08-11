@@ -20,14 +20,12 @@ import com.oppo.cloud.common.domain.cluster.hadoop.NameNodeConf;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
+import org.apache.hadoop.security.UserGroupInformation;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +35,8 @@ import java.util.Objects;
  * Hdfs工具类
  */
 public class HDFSUtil {
+
+    private static final String HDFS_SCHEME = "hdfs://";
 
     /**
      * 获取Namnode, 根据配置matchPathKeys是否被包含在路径关键字中
@@ -56,14 +56,17 @@ public class HDFSUtil {
     /**
      * 获取FileSystem
      */
-    private static FileSystem getFileSystem(NameNodeConf nameNodeConf) throws URISyntaxException, IOException {
+    private static FileSystem getFileSystem(NameNodeConf nameNodeConf) throws Exception {
         Configuration conf = new Configuration(false);
         conf.setBoolean("fs.hdfs.impl.disable.cache", true);
 
         if (nameNodeConf.getNamenodes().length == 1) {
             String defaultFs =
-                    String.format("hdfs://%s:%s", nameNodeConf.getNamenodesAddr()[0], nameNodeConf.getPort());
+                    String.format("%s%s:%s", HDFS_SCHEME, nameNodeConf.getNamenodesAddr()[0], nameNodeConf.getPort());
             conf.set("fs.defaultFS", defaultFs);
+            if (nameNodeConf.isEnableKerberos()) {
+                return getAuthenticationFileSystem(nameNodeConf, conf);
+            }
             URI uri = new URI(defaultFs);
             return FileSystem.get(uri, conf);
         }
@@ -72,7 +75,7 @@ public class HDFSUtil {
 
         String nameservices = nameNodeConf.getNameservices();
 
-        conf.set("fs.defaultFS", "hdfs://" + nameservices);
+        conf.set("fs.defaultFS", HDFS_SCHEME + nameservices);
         conf.set("dfs.nameservices", nameservices);
         conf.set("dfs.client.failover.proxy.provider." + nameservices,
                 "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
@@ -80,20 +83,33 @@ public class HDFSUtil {
         for (int i = 0; i < nameNodeConf.getNamenodes().length; i++) {
             String r = nameNodeConf.getNamenodes()[i];
             conf.set("dfs.namenode.rpc-address." + nameNodeConf.getNameservices() + "." + r,
-                    nameNodeConf.getNamenodesAddr()[i]);
+                    nameNodeConf.getNamenodesAddr()[i] + ":" + nameNodeConf.getPort());
         }
 
         String nameNodes = String.join(",", nameNodeConf.getNamenodes());
         conf.set("dfs.ha.namenodes." + nameNodeConf.getNameservices(), nameNodes);
-        URI uri = new URI("hdfs://" + nameservices);
+        URI uri = new URI(HDFS_SCHEME + nameservices);
         if (StringUtils.isNotBlank(nameNodeConf.getUser())) {
             System.setProperty("HADOOP_USER_NAME", nameNodeConf.getUser());
         }
         if (StringUtils.isNotBlank(nameNodeConf.getPassword())) {
             System.setProperty("HADOOP_USER_PASSWORD", nameNodeConf.getPassword());
         }
-
+        if (nameNodeConf.isEnableKerberos()) {
+            return getAuthenticationFileSystem(nameNodeConf, conf);
+        }
         return FileSystem.get(uri, conf);
+    }
+
+    private static FileSystem getAuthenticationFileSystem(NameNodeConf nameNodeConf, Configuration conf) throws Exception {
+        conf.set("hadoop.security.authorization", "true");
+        conf.set("hadoop.security.authentication", "kerberos");
+        System.setProperty("java.security.krb5.conf", nameNodeConf.getKrb5Conf());
+        conf.set("dfs.namenode.kerberos.principal.pattern", nameNodeConf.getPrincipalPattern());
+        UserGroupInformation.setConfiguration(conf);
+        UserGroupInformation.loginUserFromKeytab(nameNodeConf.getLoginUser(), nameNodeConf.getKeytabPath());
+        UserGroupInformation ugi = UserGroupInformation.getLoginUser();
+        return ugi.doAs((PrivilegedExceptionAction<FileSystem>) () -> FileSystem.get(conf));
     }
 
     /**
@@ -128,8 +144,7 @@ public class HDFSUtil {
     /**
      * 通配符获取文件列表, 带*通配
      */
-    public static List<String> filesPattern(NameNodeConf nameNodeConf,
-                                            String filePath) throws URISyntaxException, IOException {
+    public static List<String> filesPattern(NameNodeConf nameNodeConf, String filePath) throws Exception {
         filePath = checkLogPath(nameNodeConf, filePath);
         FileSystem fs = HDFSUtil.getFileSystem(nameNodeConf);
         FileStatus[] fileStatuses = fs.globStatus(new Path(filePath));
@@ -147,9 +162,9 @@ public class HDFSUtil {
     }
 
     private static String checkLogPath(NameNodeConf nameNode, String logPath) {
-        if (logPath.split(":").length > 2) {
+        if (logPath.contains(HDFS_SCHEME)) {
             return logPath;
         }
-        return logPath.replace(nameNode.getNameservices(), nameNode.getNameservices() + ":" + nameNode.getPort());
+        return String.format("%s%s%s", HDFS_SCHEME, nameNode.getNameservices(), logPath);
     }
 }

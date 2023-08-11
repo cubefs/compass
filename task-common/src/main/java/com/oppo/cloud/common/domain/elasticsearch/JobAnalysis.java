@@ -112,9 +112,8 @@ public class JobAnalysis extends EsInfo {
     private Date updateTime;
 
     public Map<String, Object> genDoc() throws Exception {
-        Map<String, Object> res = new HashMap<>();
-        Field[] fileds = this.getClass().getDeclaredFields();
-        for (Field field : fileds) {
+        Map<String, Object> doc = new HashMap<>();
+        for (Field field : this.getClass().getDeclaredFields()) {
             String key = field.getName();
             String method = key.substring(0, 1).toUpperCase() + key.substring(1);
             Method getMethod = this.getClass().getMethod("get" + method);
@@ -128,14 +127,14 @@ public class JobAnalysis extends EsInfo {
                 case "createTime":
                     Date value = (Date) getMethod.invoke(this);
                     if (value != null) {
-                        res.put(key, DateUtil.timestampToUTCDate(value.getTime()));
+                        doc.put(key, DateUtil.timestampToUTCDate(value.getTime()));
                     }
                     break;
                 default:
-                    res.put(key, getMethod.invoke(this));
+                    doc.put(key, getMethod.invoke(this));
             }
         }
-        return res;
+        return doc;
     }
 
     public String genIndex(String baseIndex) {

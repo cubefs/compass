@@ -22,7 +22,7 @@ const props = defineProps({
         <span class="text">实例: &nbsp;{{ info?.taskName || '-' }}</span>
       </div>
       <div class="text-group">
-        <span class="text">运行耗时: &nbsp;{{ info?.timeCost || '-' }}</span>
+        <span class="text">运行耗时: &nbsp;{{ info?.duration || '-' }}</span>
         <span class="text">{{ `内存消耗: &nbsp;${info?.memCost}` || '-' }}</span>
         <span class="text">{{ `CPU消耗: &nbsp;${info?.resourceCost}` || '-' }}</span>
       </div>
@@ -37,7 +37,7 @@ const props = defineProps({
       <div class="text-group">
         <span class="text">集群名称: &nbsp;{{ info?.clusterName || '-' }}</span>
         <span class="text">执行队列: &nbsp;{{ info?.queue || '-' }}</span>
-        <span class="text">执行用户: &nbsp;{{ info?.executeUser || '-' }}</span>
+        <span class="text">执行用户: &nbsp;{{ info?.username || '-' }}</span>
       </div>
     </div>
     <div class="item-title">
@@ -65,12 +65,12 @@ const props = defineProps({
         <span class="text">建议并行度: &nbsp;{{ info?.diagnosisParallel || '-' }}</span>
       </div>
       <div class="text-group">
-        <span class="text">建议Tm Mem: &nbsp;{{ info?.diagnosisTmMemSize+'MB' || '-' }}</span>
+        <span class="text">建议Tm Mem: &nbsp;{{ info?.diagnosisTmMemory+'MB' || '-' }}</span>
         <span class="text">建议Tm Slot: &nbsp;{{ info?.diagnosisTmSlotNum || '-' }}</span>
         <span class="text">建议Tm Core: &nbsp;{{ info?.diagnosisTmCoreNum || '-' }}</span>
       </div>
       <div class="text-group">
-        <span class="text">建议Jm Mem: &nbsp;{{ info?.diagnosisJmMemSize+'MB' || '-' }}</span>
+        <span class="text">建议Jm Mem: &nbsp;{{ info?.diagnosisJmMemory+'MB' || '-' }}</span>
       </div>
       <div class="item-title">
         资源建议

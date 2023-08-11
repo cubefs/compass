@@ -23,14 +23,20 @@ export SPRING_KAFKA_BOOTSTRAPSERVERS="host1:port,host2:port"
 
 # Redis
 export SPRING_REDIS_CLUSTER_NODES="localhost:6379"
+# Optional
+export SPRING_REDIS_PASSWORD=""
 
 # Zookeeper
 export SPRING_ZOOKEEPER_NODES="localhost:2181"
 
 # Elasticsearch
 export SPRING_ELASTICSEARCH_NODES="localhost:19527"
+# Optional
+export SPRING_ELASTICSEARCH_USERNAME=""
+# Optional
+export SPRING_ELASTICSEARCH_PASSWORD=""
 
-# prom
+# Prometheus for flink, ignore it if you do not use flink.
 export FLINK_PROMETHEUS_HOST="http://localhost:9090"
 export FLINK_PROMETHEUS_TOKEN=""
 export FLINK_PROMETHEUS_DATABASE=""

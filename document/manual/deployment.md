@@ -30,9 +30,9 @@ compass
 
 初始化数据库和表，请先执行document/sql/compass.sql
 
-如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql
+如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql（需要根据实际使用版本修改，支持2.x和3.x）
 
-如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql
+如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql（需要根据实际使用版本修改）
 
 如果您使用的是自研调度平台，请参考[task-syncer](#task-syncer)模块，确定需要同步的表
 
@@ -84,16 +84,16 @@ export SPRING_DATASOURCE_URL="jdbc:mysql://${COMPASS_MYSQL_ADDRESS}/${COMPASS_MY
 export SPRING_DATASOURCE_USERNAME=""
 export SPRING_DATASOURCE_PASSWORD=""
 
-# Kafka
+# Kafka (默认版本: 3.4.0)
 export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
 
-# Redis
+# Redis (cluster 模式)
 export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
 
-# Zookeeper
+# Zookeeper (默认版本: 3.4.5, canal使用)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
 
-# Elasticsearch
+# Elasticsearch (默认版本: 7.17.9)
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
 
 # task-canal模块配置
@@ -126,6 +126,16 @@ hadoop:
       password:                             # 密码，如果没开启鉴权，则不需要
       port: 8020                            # 端口
       matchPathKeys: [ "flume" ]            # task-application模块使用，调度平台日志hdfs路径关键字
+      # kerberos
+      enableKerberos: false
+      # /etc/krb5.conf
+      krb5Conf: ""
+      # hdfs/*@EXAMPLE.COM
+      principalPattern:  ""
+      # admin
+      loginUser: ""
+      # /var/kerberos/krb5kdc/admin.keytab
+      keytabPath: ""
   
   # task-metadata 模块配置依赖
   yarn:
@@ -443,7 +453,7 @@ custom:
       logPathJoins: 
         # end_time: 2023-02-18 01:43:11
         # log_path: ../logs/6354680786144_1/3/4.log
-        - { "column": "", "data": "hdfs://log-hdfs:8020/flume/dolphinscheduler" } # 相当于根目录，常量
+        - { "column": "", "data": "/flume/dolphinscheduler" } # 配置存储调度日志的hdfs根目录
         - { "column": "end_time", "regex": "^.*(?<date>\\d{4}-\\d{2}-\\d{2}).+$", "name": "date" }
         - { "column": "log_path", "regex": "^.*logs/(?<logpath>.*)$", "name": "logpath" }
       extractLog: # 根据组装的日志路径解析日志
@@ -619,7 +629,7 @@ task-portal 与 task-ui 可视化前后端模块，提供诊断建议、报告�
 
 task-ui前端默认一起编译放在task-portal/portal目录下
 
-如果您需要单独部署前端，需要修改 task-ui/src/utils/request.ts 下 baseURL，指定您的后端地址或者域名即可
+如果您需要单独部署前端，需要修改 task-ui/.env.production 下 VITE_APP_PROD_BACKEND，指定您的后端地址或者域名即可
 
 web ui默认路径: http://localhost:7075/compass/
 

@@ -96,12 +96,16 @@ public enum FlinkRule {
     ;
     @JSONField(value = true)
     private final int code;
+
     @JSONField(value = true)
     private final String name;
+
     @JSONField(value = true)
     private final String color;
+
     @JSONField(value = true)
     private final String desc;
+
     @JSONField(value = true)
     private final int ruleType;
 

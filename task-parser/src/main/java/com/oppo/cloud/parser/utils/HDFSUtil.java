@@ -22,12 +22,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
+import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.security.PrivilegedExceptionAction;
 import java.util.*;
 
 /**
@@ -36,6 +38,8 @@ import java.util.*;
 @Slf4j
 public class HDFSUtil {
 
+    private static final String HDFS_SCHEME = "hdfs://";
+    
     /**
      * get hdfs NameNode
      */
@@ -48,14 +52,17 @@ public class HDFSUtil {
         return null;
     }
 
-    private static FileSystem getFileSystem(NameNodeConf nameNodeConf) throws Exception {
+     private static FileSystem getFileSystem(NameNodeConf nameNodeConf) throws Exception {
         Configuration conf = new Configuration(false);
         conf.setBoolean("fs.hdfs.impl.disable.cache", true);
 
         if (nameNodeConf.getNamenodes().length == 1) {
             String defaultFs =
-                    String.format("hdfs://%s:%s", nameNodeConf.getNamenodesAddr()[0], nameNodeConf.getPort());
+                    String.format("%s%s:%s", HDFS_SCHEME, nameNodeConf.getNamenodesAddr()[0], nameNodeConf.getPort());
             conf.set("fs.defaultFS", defaultFs);
+            if (nameNodeConf.isEnableKerberos()) {
+                return getAuthenticationFileSystem(nameNodeConf, conf);
+            }
             URI uri = new URI(defaultFs);
             return FileSystem.get(uri, conf);
         }
@@ -64,7 +71,7 @@ public class HDFSUtil {
 
         String nameservices = nameNodeConf.getNameservices();
 
-        conf.set("fs.defaultFS", "hdfs://" + nameservices);
+        conf.set("fs.defaultFS", HDFS_SCHEME + nameservices);
         conf.set("dfs.nameservices", nameservices);
         conf.set("dfs.client.failover.proxy.provider." + nameservices,
                 "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
@@ -77,23 +84,35 @@ public class HDFSUtil {
 
         String nameNodes = String.join(",", nameNodeConf.getNamenodes());
         conf.set("dfs.ha.namenodes." + nameNodeConf.getNameservices(), nameNodes);
-        URI uri = new URI("hdfs://" + nameservices + ":" + nameNodeConf.getPort());
+        URI uri = new URI(HDFS_SCHEME + nameservices);
         if (StringUtils.isNotBlank(nameNodeConf.getUser())) {
             System.setProperty("HADOOP_USER_NAME", nameNodeConf.getUser());
         }
         if (StringUtils.isNotBlank(nameNodeConf.getPassword())) {
             System.setProperty("HADOOP_USER_PASSWORD", nameNodeConf.getPassword());
         }
-
+        if (nameNodeConf.isEnableKerberos()) {
+            return getAuthenticationFileSystem(nameNodeConf, conf);
+        }
         return FileSystem.get(uri, conf);
     }
 
+    private static FileSystem getAuthenticationFileSystem(NameNodeConf nameNodeConf, Configuration conf) throws Exception {
+        conf.set("hadoop.security.authorization", "true");
+        conf.set("hadoop.security.authentication", "kerberos");
+        System.setProperty("java.security.krb5.conf", nameNodeConf.getKrb5Conf());
+        conf.set("dfs.namenode.kerberos.principal.pattern", nameNodeConf.getPrincipalPattern());
+        UserGroupInformation.setConfiguration(conf);
+        UserGroupInformation.loginUserFromKeytab(nameNodeConf.getLoginUser(), nameNodeConf.getKeytabPath());
+        UserGroupInformation ugi = UserGroupInformation.getLoginUser();
+        return ugi.doAs((PrivilegedExceptionAction<FileSystem>) () -> FileSystem.get(conf));
+    }
+
     public static String[] readLines(NameNodeConf nameNode, String logPath) throws Exception {
-        String filePath = checkLogPath(nameNode, logPath);
         FSDataInputStream fsDataInputStream = null;
         try {
             FileSystem fs = HDFSUtil.getFileSystem(nameNode);
-            fsDataInputStream = fs.open(new Path(filePath));
+            fsDataInputStream = fs.open(new Path(logPath));
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             // 64kb
             byte[] buffer = new byte[65536];
@@ -115,7 +134,6 @@ public class HDFSUtil {
     }
 
     public static ReaderObject getReaderObject(NameNodeConf nameNode, String path) throws Exception {
-        path = checkLogPath(nameNode, path);
         FileSystem fs = HDFSUtil.getFileSystem(nameNode);
         FSDataInputStream fsDataInputStream = fs.open(new Path(path));
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fsDataInputStream));
@@ -127,7 +145,6 @@ public class HDFSUtil {
     }
 
     public static List<String> listFiles(NameNodeConf nameNode, String path) throws Exception {
-        path = checkLogPath(nameNode, path);
         FileSystem fs = HDFSUtil.getFileSystem(nameNode);
         RemoteIterator<LocatedFileStatus> it = fs.listFiles(new Path(path), true);
         List<String> result = new ArrayList<>();
@@ -139,10 +156,4 @@ public class HDFSUtil {
         return result;
     }
 
-    public static String checkLogPath(NameNodeConf nameNode, String logPath) {
-        if (logPath.split(":").length > 2) {
-            return logPath;
-        }
-        return logPath.replace(nameNode.getNameservices(), nameNode.getNameservices() + ":" + nameNode.getPort());
-    }
 }

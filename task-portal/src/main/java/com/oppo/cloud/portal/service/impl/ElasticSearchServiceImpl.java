@@ -55,16 +55,13 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 @Service
 @Slf4j
 public class ElasticSearchServiceImpl implements ElasticSearchService {
 
-    @Resource(name="elasticsearch")
+    @Resource(name = "elasticsearch")
     private RestHighLevelClient restHighLevelClient;
 
     /**
@@ -96,7 +93,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
     }
 
     @Override
-    public List<IndicatorData> findValueByDayBuckets(SearchSourceBuilder builder, String... indexes) throws Exception {
+    public List<IndicatorData> findValueByDayBuckets(String dateHistogram, SearchSourceBuilder builder, String... indexes) throws Exception {
         List<IndicatorData> indicatorDataList = new ArrayList<>();
         SearchRequest searchRequest = new SearchRequest().indices(indexes).source(builder);
         Long startTime = System.currentTimeMillis();
@@ -104,7 +101,10 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
         Long endTime = System.currentTimeMillis();
         log.info("indexes:{}, duration:{}, condition:{}", indexes, (endTime - startTime) / 1000, builder.toString());
         Aggregations aggregations = searchResponse.getAggregations();
-        ParsedDateHistogram terms = aggregations.get("date");
+        if (aggregations == null) {
+            return null;
+        }
+        ParsedDateHistogram terms = aggregations.get(dateHistogram);
         List<? extends Histogram.Bucket> buckets = terms.getBuckets();
         for (Histogram.Bucket bucket : buckets) {
             IndicatorData indicatorData = new IndicatorData();
@@ -205,7 +205,10 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
                     boolQuery.mustNot(QueryBuilders.wildcardQuery(key, "*"));
                 } else if (value instanceof java.util.List) {
                     // 列表查询
-                    boolQuery.filter(QueryBuilders.termsQuery(key, (List<String>) value));
+                    boolQuery.filter(QueryBuilders.termsQuery(key, (List<Object>) value));
+                } else if (value instanceof Object[]) {
+                    // 列表数组
+                    boolQuery.filter(QueryBuilders.termsQuery(key, (Object[]) value));
                 } else {
                     // 单字符串查询
                     boolQuery.filter(QueryBuilders.termQuery(key, value));
@@ -286,29 +289,30 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
      * 按天聚合字段值和
      */
     @Override
-    public List<IndicatorData> sumAggregationByDay(SearchSourceBuilder builder, long start, long end, String index, String filed) throws Exception {
-
-        DateHistogramAggregationBuilder dateHistogramAggregationBuilder = AggregationBuilders.dateHistogram("date")
-                .field("executionDate").calendarInterval(DateHistogramInterval.DAY);
+    public List<IndicatorData> sumAggregationByDay(SearchSourceBuilder builder, long start, long end, String index, String aggField, String field) throws Exception {
+        String dateHistogram = String.format("date_%s", UUID.randomUUID().toString());
+//        DateHistogramAggregationBuilder dateHistogramAggregationBuilder = AggregationBuilders.dateHistogram("date")
+        DateHistogramAggregationBuilder dateHistogramAggregationBuilder = AggregationBuilders.dateHistogram(dateHistogram)
+                .field(aggField).calendarInterval(DateHistogramInterval.DAY);
         dateHistogramAggregationBuilder.timeZone(ZoneId.of("GMT+8"));
         dateHistogramAggregationBuilder.extendedBounds(new LongBounds(DateUtil.timestampToUTCStr(start),
                 DateUtil.timestampToUTCStr(end)));
 
-        SumAggregationBuilder sumAggregationBuilder = AggregationBuilders.sum("value").field(filed);
+        SumAggregationBuilder sumAggregationBuilder = AggregationBuilders.sum("value").field(field);
         dateHistogramAggregationBuilder.subAggregation(sumAggregationBuilder);
         builder.aggregation(dateHistogramAggregationBuilder).size(0);
 
-        return findValueByDayBuckets(builder, index + "-*");
+        return findValueByDayBuckets(dateHistogram, builder, index + "-*");
     }
 
     /**
      * 按天统计数量聚合
      */
     @Override
-    public List<IndicatorData> countDocByDay(SearchSourceBuilder builder, long start, long end, String index) throws Exception {
-
-        DateHistogramAggregationBuilder dateHistogramAggregationBuilder = AggregationBuilders.dateHistogram("date")
-                .field("executionDate").calendarInterval(DateHistogramInterval.DAY);
+    public List<IndicatorData> countDocByDay(SearchSourceBuilder builder, long start, long end, String index, String aggField) throws Exception {
+        String dateHistogram = String.format("date_%s", UUID.randomUUID().toString());
+        DateHistogramAggregationBuilder dateHistogramAggregationBuilder = AggregationBuilders.dateHistogram(dateHistogram)
+                .field(aggField).calendarInterval(DateHistogramInterval.DAY);
         dateHistogramAggregationBuilder.timeZone(ZoneId.of("GMT+8"));
         dateHistogramAggregationBuilder.extendedBounds(new LongBounds(DateUtil.timestampToUTCStr(start),
                 DateUtil.timestampToUTCStr(end)));
@@ -318,7 +322,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService {
 
         builder.aggregation(dateHistogramAggregationBuilder).size(0);
 
-        return findValueByDayBuckets(builder, index + "-*");
+        return findValueByDayBuckets(dateHistogram, builder, index + "-*");
     }
 
 }

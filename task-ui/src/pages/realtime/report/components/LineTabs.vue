@@ -12,7 +12,7 @@ const getLineChart = async () => {
     time = [dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millisecond(0).valueOf(), dayjs().valueOf()]
   }
   const res = await Promise.all([
-    post('/api/realtime/taskDiagnosis/getGeneralViewTrend', {
+    post('/api/flink/getGeneralViewTrend', {
       projectName: '',
       startTs: time[0] / 1000,
       endTs: time[1] / 1000,

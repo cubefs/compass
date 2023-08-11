@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class UpdateApi {
 
-    public UpdateResponse update(RestHighLevelClient client, final String index, final String id,
+    public static UpdateResponse update(RestHighLevelClient client, final String index, final String id,
                                  final Map<String, Object> doucment) throws IOException {
         final UpdateRequest request = new UpdateRequest(index, id).doc(doucment);
         return client.update(request, RequestOptions.DEFAULT);

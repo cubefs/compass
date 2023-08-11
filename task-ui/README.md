@@ -1,15 +1,26 @@
 # compass-ui
 
-> 开发须知
+> Prerequisites
 
-Node >=14.18
+- Node >=14.18
+- pnpm
+
+## Install Dependencies
 ```bash
-# 安装依赖
 pnpm i
+```
+## Run Project
 
-# 启动服务
+You can modify the `.env.development` `VITE_APP_DEV_BACKEND` to specify the backend before running.
+
+```bash
 pnpm run dev
+```
 
-# 打包构建
+## Build Project
+
+You can modify the `.env.production` `VITE_APP_PROD_BACKEND` to specify the backend before running.
+
+```bash
 pnpm run build
 ```

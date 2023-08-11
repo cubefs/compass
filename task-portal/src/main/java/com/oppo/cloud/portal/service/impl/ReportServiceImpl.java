@@ -129,6 +129,11 @@ public class ReportServiceImpl implements ReportService {
         } catch (Exception e) {
             log.error("get last week period failed,msg:", e);
         }
+        if (lastResult == null || lastWeekResult == null) {
+            log.error("search statistics data is null");
+            return result;
+        }
+
         // 异常任务数占比的环比
         double exceptionChainRatio = lastResult.getAbnormalJobNumRatio() == 0 ? 1
                 : (result.getAbnormalJobNumRatio() - lastResult.getAbnormalJobNumRatio())
@@ -248,7 +253,9 @@ public class ReportServiceImpl implements ReportService {
 
         Aggregations aggregationsGroupByCount =
                 elasticSearchService.findRawAggregations(searchSourceBuilder, jobIndex + "-*");
-
+        if (aggregationsGroupByCount == null) {
+            return null;
+        }
         Terms terms = aggregationsGroupByCount.get("groupByCount");
         int abnormalJobCount = terms.getBuckets().size();
         statisticsData.setAbnormalJobNum(abnormalJobCount);
@@ -278,6 +285,7 @@ public class ReportServiceImpl implements ReportService {
         searchSourceBuilder.aggregation(AggregationBuilders.sum("memory").field("memorySeconds"));
         Aggregations aggregationsAbnormalCpuAndMemory =
                 elasticSearchService.findRawAggregations(searchSourceBuilder, jobIndex + "-*");
+
         ParsedSum cpu = aggregationsAbnormalCpuAndMemory.get("cpu");
         ParsedSum memory = aggregationsAbnormalCpuAndMemory.get("memory");
         double abnormalJobInstanceCpu = cpu.getValue();
@@ -344,14 +352,18 @@ public class ReportServiceImpl implements ReportService {
     /**
      * 资源消耗趋势
      */
-    public TrendGraph getResourceTrendData(JobsRequest request, String filed) throws Exception {
+    public TrendGraph getResourceTrendData(JobsRequest request, String field) throws Exception {
 
         TrendGraph trendGraph = new TrendGraph();
         List<IndicatorData> jobUsageTrend = elasticSearchService.sumAggregationByDay(getBuilder(request),
-                request.getStart(), request.getEnd(), jobIndex, filed);
+                request.getStart(), request.getEnd(), jobIndex, "executionDate", field);
 
         List<IndicatorData> totalUsageTrend = elasticSearchService.sumAggregationByDay(getBuilder(request),
-                request.getStart(), request.getEnd(), jobInstanceIndex, filed);
+                request.getStart(), request.getEnd(), jobInstanceIndex, "executionDate", field);
+        if (totalUsageTrend == null) {
+            log.error("search totalUsageTrend is null");
+            return trendGraph;
+        }
         LineGraph jobGraph = new LineGraph();
         LineGraph totalGraph = new LineGraph();
 
@@ -363,7 +375,7 @@ public class ReportServiceImpl implements ReportService {
         }
 
         String timeUnit;
-        switch (filed) {
+        switch (field) {
             case "vcoreSeconds":
                 trendGraph.setName("CPU消耗趋势");
                 jobGraph.setName("诊断任务CPU消耗数");
@@ -399,9 +411,9 @@ public class ReportServiceImpl implements ReportService {
     public TrendGraph getNumTrendData(JobsRequest request) throws Exception {
         TrendGraph trendGraph = new TrendGraph();
         List<IndicatorData> jobNumTrend = elasticSearchService.countDocByDay(getBuilder(request), request.getStart(),
-                request.getEnd(), jobIndex);
+                request.getEnd(), jobIndex, "executionDate");
         List<IndicatorData> totalNumTrend = elasticSearchService.countDocByDay(getBuilder(request), request.getStart(),
-                request.getEnd(), jobInstanceIndex);
+                request.getEnd(), jobInstanceIndex, "executionDate");
         trendGraph.setName("数量趋势");
         LineGraph jobGraph = new LineGraph();
         jobGraph.setName("诊断任务数");
@@ -433,6 +445,10 @@ public class ReportServiceImpl implements ReportService {
         builder.aggregation(termsAggregationBuilder);
 
         Aggregations aggregations = elasticSearchService.findRawAggregations(builder, jobIndex + "-*");
+        if (aggregations == null) {
+            log.error("search {} aggregations is null", jobIndex);
+            return graph;
+        }
         Terms terms = aggregations.get("distribution");
         DistributionGraph cpuGraph = new DistributionGraph();
         cpuGraph.setName("CPU资源消耗分布");

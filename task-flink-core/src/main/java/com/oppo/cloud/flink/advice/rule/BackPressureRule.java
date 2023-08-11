@@ -48,6 +48,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.BACK_PRESSURE_
 @Component
 @Slf4j
 public class BackPressureRule extends BaseRule {
+
     @Autowired
     private MonitorMetricUtil monitorMetricUtil;
 

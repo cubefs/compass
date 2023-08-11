@@ -29,7 +29,7 @@ public class MonitorMetricConstant {
      * tm,整体平均cpu使用率,0-1
      */
     public static final String TM_AVG_CPU_USAGE_RATE = "avg(rate(flink_taskmanager_Status_JVM_CPU_Time"
-            + "{}[2m])/ ( 1000 * 1000 * 1000 ))";
+            + "{}[2m]) / ( 1000 * 1000 * 1000 ))";
     /**
      * 单个tm进程的cpu使用率,0-1
      */
@@ -50,7 +50,6 @@ public class MonitorMetricConstant {
      * tm数量
      */
     public static final String TOTAL_TM_COUNTS = "max(flink_jobmanager_numRegisteredTaskManagers{})";
-
     /**
      * 作业running时长,单位毫秒,伸缩后这个时间会从0开始
      */

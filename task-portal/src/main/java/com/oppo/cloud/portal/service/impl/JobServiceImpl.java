@@ -284,16 +284,16 @@ public class JobServiceImpl implements JobService {
             case "cpuTrend":
                 trendGraph.setName("CPU趋势");
                 data = elasticSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(), jobsIndex,
-                        "vcoreSeconds");
+                        "executionDate", "vcoreSeconds");
                 break;
             case "memoryTrend":
                 trendGraph.setName("内存趋势");
                 data = elasticSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(), jobsIndex,
-                        "memorySeconds");
+                        "executionDate", "memorySeconds");
                 break;
             case "numTrend":
                 trendGraph.setName("数量趋势");
-                data = elasticSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), jobsIndex);
+                data = elasticSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), jobsIndex, "executionDate");
                 break;
             default:
                 break;
@@ -372,9 +372,9 @@ public class JobServiceImpl implements JobService {
     @Override
     public JobInstance getJobInstance(String projectName, String flowName, String taskName, Date executionDate) throws Exception {
         HashMap<String, Object> termQuery = new HashMap<>();
-        termQuery.put("projectName", projectName);
-        termQuery.put("flowName", flowName);
-        termQuery.put("taskName", taskName);
+        termQuery.put("projectName.keyword", projectName);
+        termQuery.put("flowName.keyword", flowName);
+        termQuery.put("taskName.keyword", taskName);
         termQuery.put("executionDate", DateUtil.timestampToUTCDate(executionDate.getTime()));
         List<JobInstance> jobInstances = elasticSearchService.find(JobInstance.class, termQuery, jobIndexIndex + "-*");
         if (jobInstances.size() != 0) {

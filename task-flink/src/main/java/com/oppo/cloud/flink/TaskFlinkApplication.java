@@ -34,9 +34,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class TaskFlinkApplication {
 
     public static void main(String[] args) throws Exception {
-        log.info("########## diagnosis starting ############");
         SpringApplication.run(TaskFlinkApplication.class, args);
-        log.info("########## diagnosis started ############");
     }
 
 }

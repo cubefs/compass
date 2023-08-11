@@ -18,6 +18,7 @@ package com.oppo.cloud.common.domain.flink.metric;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

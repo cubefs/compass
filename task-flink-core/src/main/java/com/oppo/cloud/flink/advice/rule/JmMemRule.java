@@ -34,6 +34,7 @@ import java.util.Objects;
  */
 @Component
 public class JmMemRule extends BaseRule {
+
     @Autowired
     DiagnosisParamsConstants cons;
 

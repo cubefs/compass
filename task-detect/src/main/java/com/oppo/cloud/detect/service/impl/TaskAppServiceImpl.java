@@ -26,6 +26,7 @@ import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
 import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.common.util.DateUtil;
+import com.oppo.cloud.common.util.ui.TryNumberUtil;
 import com.oppo.cloud.detect.domain.AbnormalTaskAppInfo;
 import com.oppo.cloud.detect.service.*;
 import com.oppo.cloud.mapper.TaskApplicationMapper;
@@ -65,6 +66,9 @@ public class TaskAppServiceImpl implements TaskAppService {
     @Value("${custom.elasticsearch.app-index}")
     private String appIndex;
 
+    @Value("${custom.schedulerType}")
+    private String schedulerType;
+
     /**
      * 获取异常任务的App列表信息
      */
@@ -86,6 +90,7 @@ public class TaskAppServiceImpl implements TaskAppService {
                 jobAnalysis.getFlowName(), jobAnalysis.getTaskName(), jobAnalysis.getExecutionDate());
 
         for (TaskApplication taskApplication : taskApplicationList) {
+            taskApplication.setRetryTimes(TryNumberUtil.updateTryNumber(taskApplication.getRetryTimes(), schedulerType));
             try {
                 if (handledApps != null && handledApps.contains(taskApplication.getApplicationId())) {
                     // 该appId已经被处理
@@ -188,9 +193,9 @@ public class TaskAppServiceImpl implements TaskAppService {
     @Override
     public List<TaskApp> searchTaskApps(JobAnalysis jobAnalysis) throws Exception {
         HashMap<String, Object> termCondition = new HashMap<>();
-        termCondition.put("projectName", jobAnalysis.getProjectName());
-        termCondition.put("flowName", jobAnalysis.getFlowName());
-        termCondition.put("taskName", jobAnalysis.getTaskName());
+        termCondition.put("projectName.keyword", jobAnalysis.getProjectName());
+        termCondition.put("flowName.keyword", jobAnalysis.getFlowName());
+        termCondition.put("taskName.keyword", jobAnalysis.getTaskName());
         termCondition.put("executionDate", DateUtil.timestampToUTCDate(jobAnalysis.getExecutionDate().getTime()));
         SearchSourceBuilder searchSourceBuilder =
                 elasticSearchService.genSearchBuilder(termCondition, null, null, null);

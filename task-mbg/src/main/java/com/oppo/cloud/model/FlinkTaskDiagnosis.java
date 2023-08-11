@@ -25,8 +25,9 @@ import java.util.List;
 
 @Data
 public class FlinkTaskDiagnosis implements Serializable {
+
     @ApiModelProperty(value = "实时任务诊断结果id")
-    private Integer id;
+    private String id;
 
     private Integer flinkTaskAppId;
 
@@ -174,11 +175,11 @@ public class FlinkTaskDiagnosis implements Serializable {
     List<String> ruleNames;
     private static final long serialVersionUID = 1L;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

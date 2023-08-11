@@ -34,15 +34,6 @@ public class CommonCode {
     public static final String EXECUTOR_PARSER = ":executor";
 
     /**
-     * resourceManager对应jobHistoryServer
-     */
-    public static final String RM_JHS_MAP = "rm_jhs_map:";
-    /**
-     * jobHistoryServer hdfs路径
-     */
-    public static final String JHS_HDFS_PATH = "jhs_hdfs_path:";
-
-    /**
      * diagnose report-runInfo
      */
     public static final String DIAGNOSE_DETECTORSTORAGE = ":diagnose:detectorStorage";

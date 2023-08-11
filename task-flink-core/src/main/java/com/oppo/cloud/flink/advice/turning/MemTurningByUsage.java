@@ -40,14 +40,19 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.*;
 @Component
 @Slf4j
 public class MemTurningByUsage {
+
     @Autowired
     DiagnosisParamsConstants cons;
+
     @Autowired
     DoctorUtil doctorUtil;
+
     @Autowired
     TmManagedMemory tmManagedMemory;
+
     @Autowired
     MonitorMetricUtil monitorMetricUtil;
+
     public TurningAdvice turning(DiagnosisContext context, int newTmSlotNum) {
 
         if (context == null || context.getRcJobDiagnosis() == null) {

@@ -15,7 +15,7 @@ const getPieChart = async () => {
   if (time == null) {
     time = [dayjs().subtract(7, 'day').hour(0).minute(0).second(0).millisecond(0).valueOf(), dayjs().valueOf()]
   }
-  const res = await post('/api/realtime/taskDiagnosis/getGeneralViewDistribute', {
+  const res = await post('/api/flink/getGeneralViewDistribute', {
     projectName: '',
     startTs: time[0] / 1000,
     endTs: time[1] / 1000,

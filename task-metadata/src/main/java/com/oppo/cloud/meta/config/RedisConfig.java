@@ -17,6 +17,10 @@
 package com.oppo.cloud.meta.config;
 
 import com.oppo.cloud.common.config.RedisTemplateConfig;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,4 +28,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RedisConfig extends RedisTemplateConfig {
+
+    @Bean
+    public RedisScript<Object> releaseLockScript() {
+        Resource scriptSource = new ClassPathResource("scripts/releaseLock.lua");
+        return RedisScript.of(scriptSource, Object.class);
+    }
 }

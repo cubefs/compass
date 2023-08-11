@@ -6,12 +6,12 @@
     <parent>
         <artifactId>compass</artifactId>
         <groupId>com.oppo.cloud</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>task-syncer</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>jar</packaging>
 
     <dependencies>

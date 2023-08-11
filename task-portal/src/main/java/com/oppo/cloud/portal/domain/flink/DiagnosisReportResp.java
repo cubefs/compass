@@ -16,13 +16,12 @@
 
 package com.oppo.cloud.portal.domain.flink;
 
-import com.oppo.cloud.model.FlinkTaskDiagnosis;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class DiagnosisReportResp {
-    FlinkTaskDiagnosis flinkTaskDiagnosis;
+    FlinkTaskAnalysisInfo flinkTaskDiagnosis;
     List<String> reports;
 }
