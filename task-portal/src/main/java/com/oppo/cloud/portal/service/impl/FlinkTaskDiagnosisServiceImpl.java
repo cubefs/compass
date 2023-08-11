@@ -385,8 +385,8 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         generalViewNumber.setResourceTaskCntSum((int) thisStatisticsData.getResourceJobCount());
         generalViewNumber.setCutCoreNumSum((int) thisStatisticsData.getDecrCPUCount());
         generalViewNumber.setTotalCoreNumSum((int) thisStatisticsData.getTotalCPUCount());
-        generalViewNumber.setCutMemNumSum((int) thisStatisticsData.getDecrMemory()); // TODO: 单位?
-        generalViewNumber.setTotalMemNumSum((int) thisStatisticsData.getTotalMemory());
+        generalViewNumber.setCutMemNumSum((int) thisStatisticsData.getDecrMemory() / 1024); // 单位GB
+        generalViewNumber.setTotalMemNumSum((int) thisStatisticsData.getTotalMemory() / 1024);
 
         GeneralViewNumberDto generalViewNumberDay1Before = new GeneralViewNumberDto();
         generalViewNumberDay1Before.setBaseTaskCntSum((int) lastStatisticsData.getJobCount());
@@ -394,8 +394,8 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         generalViewNumberDay1Before.setResourceTaskCntSum((int) lastStatisticsData.getResourceJobCount());
         generalViewNumberDay1Before.setCutCoreNumSum((int) lastStatisticsData.getDecrCPUCount());
         generalViewNumberDay1Before.setTotalCoreNumSum((int) lastStatisticsData.getTotalCPUCount());
-        generalViewNumberDay1Before.setCutMemNumSum((int) lastStatisticsData.getDecrMemory()); // TODO: 单位?
-        generalViewNumberDay1Before.setTotalMemNumSum((int) lastStatisticsData.getTotalMemory());
+        generalViewNumberDay1Before.setCutMemNumSum((int) lastStatisticsData.getDecrMemory() / 1024); // 单位GB
+        generalViewNumberDay1Before.setTotalMemNumSum((int) lastStatisticsData.getTotalMemory() / 1024);
 
         GeneralViewNumberDto generalViewNumberDay7Before = new GeneralViewNumberDto();
         generalViewNumberDay7Before.setBaseTaskCntSum((int) lastWeekStatisticsData.getJobCount());
@@ -403,8 +403,8 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         generalViewNumberDay7Before.setResourceTaskCntSum((int) lastWeekStatisticsData.getResourceJobCount());
         generalViewNumberDay7Before.setCutCoreNumSum((int) lastWeekStatisticsData.getDecrCPUCount());
         generalViewNumberDay7Before.setTotalCoreNumSum((int) lastWeekStatisticsData.getTotalCPUCount());
-        generalViewNumberDay7Before.setCutMemNumSum((int) lastWeekStatisticsData.getDecrMemory()); // TODO: 单位?
-        generalViewNumberDay7Before.setTotalMemNumSum((int) lastWeekStatisticsData.getTotalMemory());
+        generalViewNumberDay7Before.setCutMemNumSum((int) lastWeekStatisticsData.getDecrMemory() / 1024); // 单位GB
+        generalViewNumberDay7Before.setTotalMemNumSum((int) lastWeekStatisticsData.getTotalMemory() / 1024);
 
         DiagnosisGeneralViewNumberResp diagnosisGeneralViewNumberResp = new DiagnosisGeneralViewNumberResp();
         diagnosisGeneralViewNumberResp.setGeneralViewNumberDto(generalViewNumber);
