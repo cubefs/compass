@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Tabs from '../application/components/ChartsTab.vue'
+import Tabs from './components/ChartsTab.vue'
 import Table from './components/Table.vue'
 import Categories from './components/CategoriesBar.vue'
 import PageBar from './components/PageBar.vue'
