@@ -60,7 +60,7 @@ compass/bin 和 compass/conf 是作为公共脚本和配置使用，方便统一
 
 启动之前需要先确定调度平台类型、调度平台MySQL订阅账号、Compass MySQL、Kafka、Redis、Zookeeper、Elasticsearch集群地址
 
-Kafka需要预先创建好topic: mysqldata,task-instance，按实际数据量设置分区
+Kafka需要预先创建好topic: mysqldata,task-instance,task-application按实际数据量设置分区
 
 ```bash
 #!/bin/bash
@@ -95,6 +95,11 @@ export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
 
 # Elasticsearch (默认版本: 7.17.9)
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
+
+# Flink metric prometheus
+export FLINK_PROMETHEUS_HOST="host"
+export FLINK_PROMETHEUS_TOKEN=""
+export FLINK_PROMETHEUS_DATABASE=""
 
 # task-canal模块配置
 
