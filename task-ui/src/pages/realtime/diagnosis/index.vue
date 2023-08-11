@@ -29,16 +29,8 @@ async function submit() {
 }
 function searchComplete(info: any) {
   taskAppInfo = info
-  let categoryCodes = JSON.parse(taskAppInfo.diagnosisTypes)
-  console.log(categoryCodes)
-  categories = []
-  for (var code of categoryCodes) {
-    for (var rule of rules) {
-      if (rule.code == code) {
-        categories.push(rule.name)
-      }
-    }
-  }
+  let categories = taskAppInfo.diagnosisTypes
+  console.log(categories)
   console.log('category :' + categories)
 }
 const goReport = () => {

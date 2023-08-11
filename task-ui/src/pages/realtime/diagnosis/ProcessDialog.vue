@@ -23,11 +23,12 @@ async function diagnosisSearch() {
   var startTs = time[0] / 1000
   var res
   try {
-    res = await post('/api/flink/diagnosis', {
+    resp = await post('/api/flink/diagnosis', {
       appId: applicationId,
       start: startTs,
       end: endTs,
     })
+    res = resp.data
   } catch (error) {
     loading = false
     setTimeout(() => {
@@ -48,10 +49,10 @@ async function diagnosisSearch() {
     // }, 5000)
   } else {
     loading = false
-    if (res.flinkTaskDiagnosis == null) {
+    if (res.flinkTaskAnalysis == null) {
       ElMessage.error("诊断失败")
     } else {
-      emit('searchComplete', res.flinkTaskDiagnosis)
+      emit('searchComplete', res.flinkTaskAnalysis)
     }
     setTimeout(() => {
       dialogVisible = false
