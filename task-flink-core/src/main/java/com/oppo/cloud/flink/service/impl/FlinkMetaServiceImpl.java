@@ -28,7 +28,6 @@ import com.oppo.cloud.common.domain.flink.enums.FlinkTaskAppState;
 import com.oppo.cloud.common.domain.flink.enums.YarnApplicationState;
 import com.oppo.cloud.flink.config.FlinkYarnConfig;
 import com.oppo.cloud.flink.service.FlinkMetaService;
-import com.oppo.cloud.flink.service.IClusterMetaService;
 import com.oppo.cloud.flink.util.MemorySize;
 import com.oppo.cloud.mapper.FlinkTaskAppMapper;
 import com.oppo.cloud.mapper.FlinkTaskMapper;
@@ -83,11 +82,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
      * flink api 获取tm
      */
     private static final String FLINK_TMS = "%s/taskmanagers";
-    @Resource
-    private IClusterMetaService iClusterMetaService;
 
-    @Resource
-    private ObjectMapper objectMapper;
 
     @Resource(name = "flinkRestTemplate")
     private RestTemplate restTemplate;

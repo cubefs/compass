@@ -20,16 +20,6 @@ spring:
       initial-size: 5 # 连接池初始化大小
       min-idle: 10 # 最小空闲连接数
       max-active: 20 # 最大连接数
-  redis:
-    password:
-    cluster:
-      nodes: localhost
-      max-redirects: 3
-    lettuce:
-      pool:
-        max-active: 32
-        max-idle: 16
-        min-idle: 8
   kafka:
     bootstrap-servers: "localhost:9095"
     taskApplicationTopic: "task-application"
@@ -48,7 +38,7 @@ mybatis:
   mapper-locations:
     - classpath:dao/*.xml
     - classpath*:com/**/mapper/*.xml
-  configuration:   #打印sql语句
+  configuration: #打印sql语句
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 diagnosis:
@@ -58,45 +48,9 @@ diagnosis:
 
 custom:
   elasticsearch:
-    logIndex:
-      name: "compass-log-summary"
-      shards: 10
-      replicas: 2
-    appIndex:
-      name: "compass-task-app"
-      shards: 10
-      replicas: 2
-    jobIndex:
-      name: "compass-job-analysis"
-      shards: 10
-      replicas: 2
-
-    detectIndex:
-      name: "compass-detector-app"
-
-    gcIndex:
-      name: "compass-gc-log"
-
     yarnIndex:
       name: "compass-yarn-app"
-
-    sparkIndex:
-      name: "compass-spark-app"
-
-    jobInstanceIndex:
-      name: "compass-job-instance"
-      shards: 10
-      replicas: 2
-
     flinkReportIndex:
       name: "compass-flink-report"
-      shards: 10
-      replicas: 2
-
     flinkTaskAnalysisIndex:
       name: "compass-flink-task-analysis"
-      shards: 10
-      replicas: 2
-
-  redis:
-    logRecordKey: "{lua}:log:record"

@@ -248,7 +248,8 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
      * @return
      * @throws Exception
      */
-    public DiagnosisGeneralViewNumberResp getGeneralViewNumberV1(DiagnosisGeneralViewReq request) throws Exception {
+    @Override
+    public DiagnosisGeneralViewNumberResp getGeneralViewNumber(DiagnosisGeneralViewReq request) throws Exception {
         UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
 
         // 本周期数据
@@ -427,145 +428,6 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         return diagnosisGeneralViewNumberResp;
     }
 
-    /**
-     * 获取概览数值
-     *
-     * @param request
-     * @return
-     */
-    @Override
-    public DiagnosisGeneralViewNumberResp getGeneralViewNumber(DiagnosisGeneralViewReq request) {
-        try {
-            return this.getGeneralViewNumberV1(request);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        LocalDateTime startDt = LocalDateTime.ofEpochSecond(request.getStartTs(), 0, ZoneOffset.ofHours(8));
-        LocalDateTime endDt = LocalDateTime.ofEpochSecond(request.getEndTs(), 0, ZoneOffset.ofHours(8));
-        GeneralViewNumberDto generalViewNumber = flinkTaskDiagnosisExtendMapper
-                .getGeneralViewNumber(getDiagnosisTime(startDt, endDt));
-        if (generalViewNumber == null) {
-            generalViewNumber = new GeneralViewNumberDto();
-        }
-        GeneralViewNumberDto generalViewNumberDay1Before = flinkTaskDiagnosisExtendMapper
-                .getGeneralViewNumber(getDiagnosisTime(startDt.minusDays(1), endDt.minusDays(1)));
-        if (generalViewNumberDay1Before == null) {
-            generalViewNumberDay1Before = new GeneralViewNumberDto();
-        }
-        GeneralViewNumberDto generalViewNumberDay7Before = flinkTaskDiagnosisExtendMapper
-                .getGeneralViewNumber(getDiagnosisTime(startDt.minusDays(7), endDt.minusDays(7)));
-        if (generalViewNumberDay7Before == null) {
-            generalViewNumberDay7Before = new GeneralViewNumberDto();
-        }
-        DiagnosisGeneralViewNumberResp diagnosisGeneralViewNumberResp = new DiagnosisGeneralViewNumberResp();
-        diagnosisGeneralViewNumberResp.setGeneralViewNumberDto(generalViewNumber);
-        diagnosisGeneralViewNumberResp.setGeneralViewNumberDtoDay1Before(generalViewNumberDay1Before);
-        diagnosisGeneralViewNumberResp.setGeneralViewNumberDtoDay7Before(generalViewNumberDay7Before);
-        if (generalViewNumber != null) {
-            if (generalViewNumber.getBaseTaskCntSum() == 0) {
-                diagnosisGeneralViewNumberResp.setAbnormalJobNumRatio(0f);
-            } else {
-                diagnosisGeneralViewNumberResp.setAbnormalJobNumRatio(
-                        (float) generalViewNumber.getExceptionTaskCntSum() /
-                                generalViewNumber.getBaseTaskCntSum());
-            }
-        }
-        if (generalViewNumberDay7Before != null && generalViewNumber != null) {
-            if (generalViewNumberDay7Before.getExceptionTaskCntSum() == 0) {
-                diagnosisGeneralViewNumberResp.setAbnormalJobNumChainRatio(0f);
-            } else {
-                diagnosisGeneralViewNumberResp.setAbnormalJobNumChainRatio(
-                        (float) (generalViewNumber.getExceptionTaskCntSum() - generalViewNumberDay7Before.getExceptionTaskCntSum())
-                                / generalViewNumberDay7Before.getExceptionTaskCntSum());
-            }
-        }
-        if (generalViewNumberDay1Before != null && generalViewNumber != null) {
-            if (generalViewNumberDay1Before.getExceptionTaskCntSum() == 0) {
-                diagnosisGeneralViewNumberResp.setAbnormalJobNumDayOnDay(0f);
-            } else {
-                diagnosisGeneralViewNumberResp.setAbnormalJobNumDayOnDay(
-                        (float) (generalViewNumber.getExceptionTaskCntSum() - generalViewNumberDay1Before.getExceptionTaskCntSum())
-                                / generalViewNumberDay1Before.getExceptionTaskCntSum());
-            }
-        }
-        if (generalViewNumber != null) {
-            if (generalViewNumber.getBaseTaskCntSum() == 0) {
-                diagnosisGeneralViewNumberResp.setResourceJobNumRatio(0f);
-            } else {
-                diagnosisGeneralViewNumberResp.setResourceJobNumRatio(
-                        (float) (generalViewNumber.getResourceTaskCntSum())
-                                / generalViewNumber.getBaseTaskCntSum());
-            }
-        }
-        if (generalViewNumberDay7Before.getResourceTaskCntSum() == 0) {
-            diagnosisGeneralViewNumberResp.setResourceJobNumChainRatio(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setResourceJobNumChainRatio(
-                    (float) (generalViewNumber.getResourceTaskCntSum() - generalViewNumberDay7Before.getResourceTaskCntSum())
-                            / generalViewNumberDay7Before.getResourceTaskCntSum());
-        }
-        if (generalViewNumberDay1Before.getResourceTaskCntSum() == 0) {
-            diagnosisGeneralViewNumberResp.setResourceJobNumDayOnDay(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setResourceJobNumDayOnDay(
-                    (float) (generalViewNumber.getResourceTaskCntSum() - generalViewNumberDay1Before.getResourceTaskCntSum())
-                            / generalViewNumberDay1Before.getResourceTaskCntSum());
-        }
-        if (generalViewNumber.getTotalCoreNumSum() == 0) {
-            diagnosisGeneralViewNumberResp.setResourceCpuNumRatio(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setResourceCpuNumRatio((float) generalViewNumber.getCutCoreNumSum() /
-                    generalViewNumber.getTotalCoreNumSum());
-        }
-        if (generalViewNumberDay7Before.getCutCoreNumSum() == 0) {
-            diagnosisGeneralViewNumberResp.setResourceCpuNumChainRatio(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setResourceCpuNumChainRatio(
-                    (float) (generalViewNumber.getCutCoreNumSum() - generalViewNumberDay7Before.getCutCoreNumSum()) /
-                            generalViewNumberDay7Before.getCutCoreNumSum());
-        }
-        if (generalViewNumberDay1Before.getCutCoreNumSum() == 0) {
-            diagnosisGeneralViewNumberResp.setResourceCpuNumDayOnDay(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setResourceCpuNumDayOnDay(
-                    (float) (generalViewNumber.getCutCoreNumSum() - generalViewNumberDay1Before.getCutCoreNumSum()) /
-                            generalViewNumberDay1Before.getCutCoreNumSum());
-        }
-        if (generalViewNumber.getTotalMemNumSum() == 0) {
-            diagnosisGeneralViewNumberResp.setResourceMemoryNumRatio(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setResourceMemoryNumRatio(
-                    (float) generalViewNumber.getCutMemNumSum() /
-                            generalViewNumber.getTotalMemNumSum());
-        }
-        if (generalViewNumberDay7Before.getCutMemNumSum() == 0) {
-            diagnosisGeneralViewNumberResp.setResourceMemoryNumChainRatio(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setResourceMemoryNumChainRatio(
-                    (float) (generalViewNumber.getCutMemNumSum() - generalViewNumberDay7Before.getCutMemNumSum()) /
-                            generalViewNumberDay7Before.getCutMemNumSum());
-        }
-        if (generalViewNumberDay1Before.getCutMemNumSum() == 0) {
-            diagnosisGeneralViewNumberResp.setResourceMemoryNumDayOnDay(0f);
-        } else {
-            diagnosisGeneralViewNumberResp.setResourceMemoryNumDayOnDay(
-                    (float) (generalViewNumber.getCutMemNumSum() - generalViewNumberDay1Before.getCutMemNumSum()) /
-                            generalViewNumberDay1Before.getCutMemNumSum());
-        }
-        if (diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().getCutMemNumSum() / 1024 >= 10
-                && diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().getTotalMemNumSum() / 1024 >= 10) {
-            diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().setCutMemNumSum(
-                    diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().getCutMemNumSum() / 1024
-            );
-            diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().setTotalMemNumSum(
-                    diagnosisGeneralViewNumberResp.getGeneralViewNumberDto().getTotalMemNumSum() / 1024
-            );
-            diagnosisGeneralViewNumberResp.setMemoryUnit("GB");
-        }
-        return diagnosisGeneralViewNumberResp;
-    }
-
     public List<LocalDateTime> getDiagnosisEndTimes(DiagnosisGeneralViewQuery req) {
         List<LocalDateTime> diagnosisDates = flinkTaskDiagnosisExtendMapper.getDiagnosisDates(req);
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -586,7 +448,14 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         return dtMap.values().stream().collect(Collectors.toList());
     }
 
-    public DiagnosisGeneralViewTrendResp getGeneralViewTrendv1(DiagnosisGeneralViewReq request) throws Exception {
+    /**
+     * 获取概览趋势（内存、CPU、数量）
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public DiagnosisGeneralViewTrendResp getGeneralViewTrend(DiagnosisGeneralViewReq request) throws Exception {
         Map<String, Object[]> rangeConditions = request.getRangeConditions();
         SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(null, rangeConditions, null, null);
 
@@ -666,144 +535,6 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
     }
 
     /**
-     * 获取概览趋势（内存、CPU、数量）
-     *
-     * @param request
-     * @return
-     */
-    @Override
-    public DiagnosisGeneralViewTrendResp getGeneralViewTrend(DiagnosisGeneralViewReq request) throws Exception {
-
-        DiagnosisGeneralViewQuery query = new DiagnosisGeneralViewQuery();
-        Long startTs, endTs;
-        if (request.getStartTs() == null || request.getEndTs() == null) {
-            endTs = System.currentTimeMillis() / 1000;
-            startTs = LocalDateTime.now().minus(30, ChronoUnit.DAYS).toEpochSecond(ZoneOffset.ofHours(8));
-        } else {
-            startTs = request.getStartTs();
-            endTs = request.getEndTs();
-        }
-        query.setStartTs(LocalDateTime.ofEpochSecond(startTs, 0, ZoneOffset.ofHours(8)));
-        query.setEndTs(LocalDateTime.ofEpochSecond(endTs, 0, ZoneOffset.ofHours(8)));
-        List<LocalDateTime> diagnosisEndTimes = getDiagnosisEndTimes(query);
-        DiagnosisGeneralViewTrendResp diagnosisGeneralViewTrendResp = new DiagnosisGeneralViewTrendResp();
-        if (diagnosisEndTimes == null || diagnosisEndTimes.size() == 0) {
-            return null;
-        }
-        List<GeneralViewNumberDto> initGeneralViewTrend = flinkTaskDiagnosisExtendMapper.getGeneralViewTrend(diagnosisEndTimes);
-        LocalDateTime curLdt = LocalDateTime.ofEpochSecond(startTs, 0, ZoneOffset.ofHours(8));
-        LocalDateTime endLdt = LocalDateTime.ofEpochSecond(endTs, 0, ZoneOffset.ofHours(8));
-        if (curLdt.isAfter(endLdt)) {
-            log.error("time wrong,{}.{}", curLdt, endLdt);
-            return null;
-        }
-        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String curDtStr = curLdt.format(dtFormatter);
-        List<GeneralViewNumberDto> generalViewTrend = new ArrayList<>();
-        do {
-            boolean dataMiss = true;
-            for (GeneralViewNumberDto generalViewNumberDto : initGeneralViewTrend) {
-                if (generalViewNumberDto.getDate().equals(curDtStr)) {
-                    generalViewTrend.add(generalViewNumberDto);
-                    dataMiss = false;
-                }
-            }
-            if (dataMiss) {
-                GeneralViewNumberDto stub = new GeneralViewNumberDto();
-                stub.setDate(curDtStr);
-                generalViewTrend.add(stub);
-            }
-            curLdt = curLdt.plusDays(1);
-            curDtStr = curLdt.format(dtFormatter);
-        } while (!curLdt.isAfter(endLdt));
-        diagnosisGeneralViewTrendResp.setTrend(generalViewTrend);
-        TrendGraph cpuTrend = new TrendGraph();
-        cpuTrend.setName("CPU消耗趋势");
-        cpuTrend.setUnit("core");
-        LineGraph cpuDecrLine = new LineGraph();
-        cpuDecrLine.setName("可优化CPU数");
-        List<IndicatorData> cpuDecrList = generalViewTrend.stream().map(x -> {
-            IndicatorData indicatorData = new IndicatorData();
-            indicatorData.setDate(x.getDate());
-            indicatorData.setCount(x.getCutCoreNumSum());
-            return indicatorData;
-        }).collect(Collectors.toList());
-        cpuDecrLine.setData(cpuDecrList);
-        cpuTrend.setJobUsage(cpuDecrLine);
-        LineGraph cpuTotalLine = new LineGraph();
-        cpuTotalLine.setName("总CPU消耗数");
-        List<IndicatorData> cpuTotalList = generalViewTrend.stream().map(x -> {
-            IndicatorData indicatorData = new IndicatorData();
-            indicatorData.setDate(x.getDate());
-            indicatorData.setCount(x.getTotalCoreNumSum());
-            return indicatorData;
-        }).collect(Collectors.toList());
-        cpuTotalLine.setData(cpuTotalList);
-        cpuTrend.setTotalUsage(cpuTotalLine);
-
-        TrendGraph memTrend = new TrendGraph();
-        memTrend.setName("内存消耗趋势");
-        memTrend.setUnit("GB");
-        LineGraph memoryDecrLine = new LineGraph();
-        memoryDecrLine.setName("可优化内存数");
-        List<IndicatorData> memoryDecrList = generalViewTrend.stream().map(x -> {
-            IndicatorData indicatorData = new IndicatorData();
-            indicatorData.setDate(x.getDate());
-            indicatorData.setCount((int) (x.getCutMemNumSum() / 1024f));
-            return indicatorData;
-        }).collect(Collectors.toList());
-        memoryDecrLine.setData(memoryDecrList);
-        memTrend.setJobUsage(memoryDecrLine);
-        LineGraph memoryTotalLine = new LineGraph();
-        memoryTotalLine.setName("总内存消耗数");
-        List<IndicatorData> memoryTotalList = generalViewTrend.stream().map(x -> {
-            IndicatorData indicatorData = new IndicatorData();
-            indicatorData.setDate(x.getDate());
-            indicatorData.setCount((int) (x.getTotalMemNumSum() / 1024f));
-            return indicatorData;
-        }).collect(Collectors.toList());
-        memoryTotalLine.setData(memoryTotalList);
-        memTrend.setTotalUsage(memoryTotalLine);
-
-        TrendGraph jobNumTrend = new TrendGraph();
-        jobNumTrend.setName("异常任务数趋势");
-        jobNumTrend.setUnit("个");
-        LineGraph exceptionNumberLine = new LineGraph();
-        exceptionNumberLine.setName("异常任务数");
-        List<IndicatorData> exceptionNumberList = generalViewTrend.stream().map(x -> {
-            IndicatorData indicatorData = new IndicatorData();
-            indicatorData.setDate(x.getDate());
-            indicatorData.setCount(x.getExceptionTaskCntSum());
-            return indicatorData;
-        }).collect(Collectors.toList());
-        exceptionNumberLine.setData(exceptionNumberList);
-        jobNumTrend.setJobUsage(exceptionNumberLine);
-        LineGraph jobNumberTotalLine = new LineGraph();
-        jobNumberTotalLine.setName("总任务数");
-        List<IndicatorData> jobNumberTotalList = generalViewTrend.stream().map(x -> {
-            IndicatorData indicatorData = new IndicatorData();
-            indicatorData.setDate(x.getDate());
-            indicatorData.setCount(x.getBaseTaskCntSum());
-            return indicatorData;
-        }).collect(Collectors.toList());
-        jobNumberTotalLine.setData(jobNumberTotalList);
-        jobNumTrend.setTotalUsage(jobNumberTotalLine);
-
-        diagnosisGeneralViewTrendResp.setCpuTrend(cpuTrend);
-        diagnosisGeneralViewTrendResp.setMemoryTrend(memTrend);
-        diagnosisGeneralViewTrendResp.setJobNumberTrend(jobNumTrend);
-        log.info("start=>" + startTs);
-        log.info("end=>" + endTs);
-
-//        this.getGeneralViewTrendv1(request);
-
-        log.info("start=>" + request.getStartTs());
-        log.info("end=>" + request.getEndTs());
-//        return diagnosisGeneralViewTrendResp;
-        return this.getGeneralViewTrendv1(request);
-    }
-
-    /**
      * 获取概览分布
      *
      * @param request
@@ -876,7 +607,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
      * @return
      */
 
-    public DiagnosisReportResp getReportV1(ReportDetailReq request) throws Exception {
+    public DiagnosisReportResp getReport(ReportDetailReq request) throws Exception {
         DiagnosisReportResp diagnosisReportResp = new DiagnosisReportResp();
 
         String id = request.getId(); // FlinkTaskAnalysisId
@@ -906,66 +637,6 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
 
         diagnosisReportResp.setReports(reports);
         return diagnosisReportResp;
-    }
-
-    @Override
-    public DiagnosisReportResp getReport(ReportDetailReq request) throws Exception {
-        return this.getReportV1(request);
-//        DiagnosisReportResp diagnosisReportResp = new DiagnosisReportResp();
-//        List<String> reports = new ArrayList<>();
-//        diagnosisReportResp.setReports(reports);
-////        FlinkTaskDiagnosis flinkTaskDiagnosis = flinkTaskDiagnosisMapper.selectByPrimaryKey(request.getId());
-//        FlinkTaskDiagnosis flinkTaskDiagnosis = flinkTaskDiagnosisMapper.selectByPrimaryKey(0);
-//        fillFlinkTaskDiagnosis(flinkTaskDiagnosis);
-////        diagnosisReportResp.setFlinkTaskDiagnosis(flinkTaskDiagnosis);
-//        FlinkTaskDiagnosisRuleAdviceExample example = new FlinkTaskDiagnosisRuleAdviceExample();
-////        example.createCriteria().andFlinkTaskDiagnosisIdEqualTo(request.getId());
-//        example.createCriteria().andFlinkTaskDiagnosisIdEqualTo(0);
-//        List<FlinkTaskDiagnosisRuleAdvice> flinkTaskDiagnosisRuleAdvices = flinkTaskDiagnosisRuleAdviceMapper.selectByExample(example);
-//
-//        // 查询诊断建议
-//        for (FlinkTaskDiagnosisRuleAdvice advice : flinkTaskDiagnosisRuleAdvices) {
-//            try {
-//                if (advice.getHasAdvice() == DiagnosisRuleHasAdvice.HAS_ADVICE.getCode()) {
-//                    HashMap<String, Object> termQuery = new HashMap<>();
-//                    termQuery.put("doc_id", advice.getId());
-//                    Map<String, SortOrder> sort = null;
-//                    Map<String, Object[]> rangeConditions = null;
-//                    SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, rangeConditions, sort, null);
-//                    SearchHits searchHits = elasticSearchService.find(builder, flinkReportIndex + "-*");
-//                    if (searchHits.getHits().length == 0) {
-//                        log.error("Can't find report {}", advice);
-//                    }
-//                    for (SearchHit hit : searchHits) {
-//                        log.info(hit.toString());
-//                        String report = hit.getSourceAsMap().get("report").toString();
-//                        reports.add(report);
-//                    }
-//
-//                }
-//
-//            } catch (Throwable t) {
-//                log.error(t.getMessage(), t);
-//            }
-//        }
-//        log.debug("报告 {}", reports.toString());
-//        log.debug("整体 {}", diagnosisReportResp);
-//        return diagnosisReportResp;
-    }
-
-
-    public CommonStatus<FlinkTaskDiagnosis> updateStatus(FlinkTaskDiagnosis flinkTaskDiagnosis) {
-        if (flinkTaskDiagnosis.getId() == null) {
-            return CommonStatus.failed("id为空");
-        }
-//        FlinkTaskDiagnosis flinkTaskDiagnosisSelect = flinkTaskDiagnosisMapper.selectByPrimaryKey(flinkTaskDiagnosis.getId());
-        FlinkTaskDiagnosis flinkTaskDiagnosisSelect = flinkTaskDiagnosisMapper.selectByPrimaryKey(0); // fix
-        if (flinkTaskDiagnosisSelect == null) {
-            return CommonStatus.failed("查不到该数据");
-        }
-        flinkTaskDiagnosisSelect.setProcessState(flinkTaskDiagnosis.getProcessState());
-        flinkTaskDiagnosisMapper.updateByPrimaryKey(flinkTaskDiagnosisSelect);
-        return CommonStatus.success(flinkTaskDiagnosisSelect);
     }
 
     /**

@@ -30,15 +30,13 @@ public interface FlinkTaskDiagnosisService {
 
     CommonStatus<?> pageJobs(DiagnosisAdviceListReq req) throws Exception;
 
-    DiagnosisGeneralViewNumberResp getGeneralViewNumber(@Validated @RequestBody DiagnosisGeneralViewReq request);
+    DiagnosisGeneralViewNumberResp getGeneralViewNumber(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception;
 
     DiagnosisGeneralViewTrendResp getGeneralViewTrend(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception;
 
     DiagnosisGeneralVIewDistributeResp getGeneralViewDistribute(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception;
 
     DiagnosisReportResp getReport(ReportDetailReq request) throws Exception;
-
-    CommonStatus<FlinkTaskDiagnosis> updateStatus(FlinkTaskDiagnosis flinkTaskDiagnosis);
 
     CommonStatus<?> batchMetadata(List<FlinkTaskApp> apps);
 }

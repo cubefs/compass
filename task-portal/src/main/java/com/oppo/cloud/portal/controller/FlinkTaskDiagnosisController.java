@@ -284,7 +284,7 @@ public class FlinkTaskDiagnosisController {
 
     @PostMapping("/getGeneralViewNumber")
     @ApiOperation(value = "获取概览数值指标")
-    public CommonStatus<?> getGeneralViewNumber(@Validated @RequestBody DiagnosisGeneralViewReq request) {
+    public CommonStatus<?> getGeneralViewNumber(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception {
         DiagnosisGeneralViewNumberResp generalViewNumber = flinkTaskDiagnosisService.getGeneralViewNumber(request);
         return CommonStatus.success(generalViewNumber);
     }
@@ -315,17 +315,6 @@ public class FlinkTaskDiagnosisController {
         } catch (Throwable t) {
             log.error(t.getMessage(), t);
             return CommonStatus.failed("内部错误请查看日志");
-        }
-    }
-
-    @PostMapping("/updateState")
-    @ApiOperation(value = "更新状态")
-    public CommonStatus<FlinkTaskDiagnosis> updateState(@Validated @RequestBody FlinkTaskDiagnosis flinkTaskDiagnosis) {
-        try {
-            return flinkTaskDiagnosisService.updateStatus(flinkTaskDiagnosis);
-        } catch (Throwable t) {
-            log.error(t.getMessage(), t);
-            return CommonStatus.failed("内部错误");
         }
     }
 

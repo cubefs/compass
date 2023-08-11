@@ -23,7 +23,7 @@ const tableInfo = $ref([
   { label: '运行开始时间', prop: 'startTime' },
   { label: '时间消耗', prop: 'timeCost' },
   { label: '资源消耗', prop: 'resourceCost' },
-  { label: '处理状态', prop: 'taskStatus' },
+//  { label: '处理状态', prop: 'taskStatus' },
   { label: '创建人', prop: 'username' },
   { label: '诊断开始时间', prop: 'diagnosisStartTime' },
   { label: '诊断结束时间', prop: 'diagnosisEndTime' },
@@ -83,11 +83,12 @@ const goReport = (row) => {
           <span v-if="item.copy">
             <Copy :value="scope.row[item.prop]" style="margin:15px 5px 15px 0px;" />{{ scope.row[item.prop] }}
           </span>
-          <span  v-else-if="item.label === '处理状态'"><el-tag class="pointer"
-              :type="scope.row.processState === 'processed' ? '' : 'success'" @click="handleState(scope.row)">{{
-                scope.row.processState === 'processed' ? '已处理' : '未处理' }}</el-tag></span>
+
+          <!-- <span  v-else-if="item.label === '处理状态'"><el-tag class="pointer" -->
+          <!-- :type="scope.row.processState === 'processed' ? '' : 'success'" @click="handleState(scope.row)">{{ -->
+          <!-- scope.row.processState === 'processed' ? '已处理' : '未处理' }}</el-tag></span> -->
           <!-- <span v-else-if="item.label === '其他信息'">{{ scope.row.others.length ? scope.row.others.join(',') : '-' }}</span> -->
-          <span v-else>{{ scope.row[item.prop] }}</span>
+          <!-- <span v-else>{{ scope.row[item.prop] }}</span> -->
         </template>
       </el-table-column>
       <el-table-column type="expand">
