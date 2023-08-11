@@ -335,6 +335,7 @@ http://[compass_host]/compass/api/flink/saveRealtimeTaskApp,
 
 ## User Interface
 
+Spark:
 ![overview](document/manual/img/overview.png)
 ![overview-1](document/manual/img/overview-1.png)
 ![tasks](document/manual/img/tasks.png)
@@ -343,6 +344,11 @@ http://[compass_host]/compass/api/flink/saveRealtimeTaskApp,
 ![cpu](document/manual/img/cpu.png)
 ![memory](document/manual/img/memory.png)
 
+Flink:
+![overview](document/manual/img/flink-overview-1.png)
+![overview-1](document/manual/img/flink-overview-2.png)
+![tasks](document/manual/img/flink-list.png)
+![report](document/manual/img/flink-report.png)
 ## Community
 Welcome to join the community for the usage or development of Compass. Here is the way to get help:
 - Submit an [issue](https://github.com/cubefs/compass/issues).

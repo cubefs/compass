@@ -136,7 +136,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         termQuery.put("diagnosisResourceType", new Integer[]{4});
         searchSourceBuilder = elasticSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
         long abnormalJobCount = elasticSearchService.count(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
-        log.info("abnormalJobCount=>" + abnormalJobCount);
+
         // 异常占比
         double abnormalJobRatio = jobCount == 0 ? 0 : (double) abnormalJobCount / jobCount;
 
@@ -152,7 +152,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         resourceTermQuery.put("diagnosisResourceType", new Integer[]{2, 3});
         searchSourceBuilder = elasticSearchService.genSearchBuilder(resourceTermQuery, rangeQuery, null, null);
         long resourceJobCount = elasticSearchService.count(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
-        log.info("resourceJobCount=>" + resourceJobCount);
+
         // 占比
         double resourceJobRatio = jobCount == 0 ? 0 : (double) resourceJobCount / jobCount;
 
@@ -169,7 +169,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         Aggregations aggregationTotalCpu = elasticSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
         ParsedSum totalCPU = aggregationTotalCpu.get("totalCPU");
         double totalCPUCount = totalCPU.getValue();
-        log.info("totalCPUCount=>" + totalCPUCount);
+
 
         // 可优化CPU数
         cpuTermQuery.put("diagnosisResourceType", new Integer[]{2});
@@ -179,11 +179,9 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
 
         ParsedSum decrCPU = aggregationCpu.get("decrCPU");
         double decrCPUCount = decrCPU.getValue();
-        log.info("decrCPUCount=>" + decrCPUCount);
 
         // 可优化CPU占比
         double decrCPURatio = totalCPUCount == 0 ? 0 : decrCPUCount / totalCPUCount;
-        log.info("decrCPURatio=>" + decrCPURatio);
 
         statisticsData.setTotalCPUCount(totalCPUCount);
         statisticsData.setDecrCPUCount(decrCPUCount);
@@ -200,7 +198,6 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
 
         ParsedSum totalMemory = aggregationTotalMemory.get("totalMemory");
         double totalMemoryNum = totalMemory.getValue();
-        log.info("totalMemoryNum=>" + totalMemoryNum);
 
         // 可优化内存数
         memTermQuery.put("diagnosisResourceType", new Integer[]{3});
@@ -210,11 +207,9 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
 
         ParsedSum decrMemory = aggregationMemory.get("dercMemory");
         double decrMemoryNum = decrMemory.getValue();
-        log.info("decrMemoryNum=>" + decrMemoryNum);
 
         // 可优化占比
         double decrMemoryRatio = totalMemoryNum == 0 ? 0 : decrMemoryNum / totalMemoryNum;
-        log.info("decrMemoryRatio=>" + decrMemoryRatio);
 
         statisticsData.setTotalMemory(totalMemoryNum);
         statisticsData.setDecrMemory(decrMemoryNum);
@@ -234,12 +229,12 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
 
         // 本周期数据
-//        PeriodTime periodTime = new PeriodTime(1);
-//        long thisEndTimestamp = periodTime.getEndTimestamp();
-//        long thisStartTimestamp = periodTime.getStartTimestamp();
-
-        long thisEndTimestamp = System.currentTimeMillis();
-        long thisStartTimestamp = thisEndTimestamp - 24 * 3600 * 1000L;
+        PeriodTime periodTime = new PeriodTime(1);
+        long thisEndTimestamp = periodTime.getEndTimestamp();
+        long thisStartTimestamp = periodTime.getStartTimestamp();
+        // debug for test
+//        long thisEndTimestamp = System.currentTimeMillis();
+//        long thisStartTimestamp = thisEndTimestamp - 24 * 3600 * 1000L;
         CompletableFuture<FlinkStatisticsData> thisPeriodCompletableFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return getStatisticsData(userInfo, thisStartTimestamp, thisEndTimestamp);

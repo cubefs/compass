@@ -57,8 +57,8 @@ public class TaskDetectScheduler {
     /**
      * 小时级别定时诊断
      */
-//    @Scheduled(cron = "1 0 * * * ?")
-    @Scheduled(cron = "0 0/1 * * * ?")
+    //    @Scheduled(cron = "0 0/1 * * * ?") // debug for 1 minutes
+    @Scheduled(cron = "1 0 * * * ?")
     public void detectHourly() {
         log.info("开始执行定时诊断任务");
         LocalDateTime now = LocalDateTime.now(ZoneOffset.ofHours(8));
