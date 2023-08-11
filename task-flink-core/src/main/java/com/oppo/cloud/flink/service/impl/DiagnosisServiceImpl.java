@@ -41,8 +41,10 @@ import com.oppo.cloud.flink.service.FlinkMetaService;
 import com.oppo.cloud.flink.util.MonitorMetricUtil;
 import com.oppo.cloud.mapper.BlocklistMapper;
 import com.oppo.cloud.mapper.FlinkTaskAppMapper;
-import com.oppo.cloud.mapper.FlinkTaskDiagnosisRuleAdviceMapper;
-import com.oppo.cloud.model.*;
+import com.oppo.cloud.model.Blocklist;
+import com.oppo.cloud.model.BlocklistExample;
+import com.oppo.cloud.model.FlinkTaskApp;
+import com.oppo.cloud.model.FlinkTaskAppExample;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -53,7 +55,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.oppo.cloud.flink.constant.MonitorMetricConstant.JOB_UP_TIME;
@@ -79,9 +80,6 @@ public class DiagnosisServiceImpl implements DiagnosisService {
 
     @Autowired
     private BlocklistMapper blocklistMapper;
-
-    @Autowired
-    private FlinkTaskDiagnosisRuleAdviceMapper flinkTaskDiagnosisRuleAdviceMapper;
 
     @Autowired
     private MonitorMetricUtil monitorMetricUtil;

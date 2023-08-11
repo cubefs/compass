@@ -16,10 +16,8 @@
 
 package com.oppo.cloud.portal.service;
 
-import com.oppo.cloud.common.api.CommonPage;
 import com.oppo.cloud.common.api.CommonStatus;
 import com.oppo.cloud.model.FlinkTaskApp;
-import com.oppo.cloud.model.FlinkTaskDiagnosis;
 import com.oppo.cloud.portal.domain.flink.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;

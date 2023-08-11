@@ -19,7 +19,6 @@ package com.oppo.cloud.flink.service;
 import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisFrom;
 import com.oppo.cloud.model.FlinkTaskApp;
-import com.oppo.cloud.model.FlinkTaskDiagnosis;
 
 public interface DiagnosisService {
     FlinkTaskAnalysis diagnosisApp(FlinkTaskApp flinkTaskApp, long start, long end, DiagnosisFrom from) throws Exception;

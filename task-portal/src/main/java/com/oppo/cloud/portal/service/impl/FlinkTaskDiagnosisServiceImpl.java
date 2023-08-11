@@ -25,11 +25,8 @@ import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisRuleHasAdvice;
 import com.oppo.cloud.common.domain.flink.enums.FlinkRule;
 import com.oppo.cloud.common.util.DateUtil;
-import com.oppo.cloud.mapper.FlinkTaskDiagnosisMapper;
-import com.oppo.cloud.mapper.FlinkTaskDiagnosisRuleAdviceMapper;
 import com.oppo.cloud.model.*;
 import com.oppo.cloud.portal.config.ThreadLocalUserInfo;
-import com.oppo.cloud.portal.dao.FlinkTaskDiagnosisExtendMapper;
 import com.oppo.cloud.portal.domain.flink.*;
 import com.oppo.cloud.portal.domain.report.*;
 import com.oppo.cloud.portal.domain.statistics.FlinkStatisticsData;
@@ -77,15 +74,6 @@ import java.util.stream.Collectors;
 public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService {
 
     @Autowired
-    FlinkTaskDiagnosisExtendMapper flinkTaskDiagnosisExtendMapper;
-
-    @Autowired
-    FlinkTaskDiagnosisMapper flinkTaskDiagnosisMapper;
-
-    @Autowired
-    FlinkTaskDiagnosisRuleAdviceMapper flinkTaskDiagnosisRuleAdviceMapper;
-
-    @Autowired
     ElasticSearchService elasticSearchService;
 
     @Autowired
@@ -123,17 +111,6 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         resp.put("total", count);
         resp.put("totalPage", (count + req.getPageSize()) / req.getPageSize());
         return CommonStatus.success(resp);
-    }
-
-    private DiagnosisGeneralViewQuery getDiagnosisTime(LocalDateTime startTs, LocalDateTime endTs) {
-        DiagnosisGeneralViewQuery query = new DiagnosisGeneralViewQuery();
-        query.setStartTs(startTs);
-        query.setEndTs(endTs);
-        LocalDateTime diagnosisTime = flinkTaskDiagnosisExtendMapper.getDiagnosisTime(query);
-        DiagnosisGeneralViewQuery realReq = new DiagnosisGeneralViewQuery();
-        realReq.setStartTs(diagnosisTime);
-        realReq.setEndTs(diagnosisTime);
-        return realReq;
     }
 
     public FlinkStatisticsData getStatisticsData(UserInfo userInfo, long startTimestamp, long endTimestamp) throws Exception {
@@ -430,26 +407,6 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         diagnosisGeneralViewNumberResp.setCpuUnit("个");
         diagnosisGeneralViewNumberResp.setMemoryUnit("GB");
         return diagnosisGeneralViewNumberResp;
-    }
-
-    public List<LocalDateTime> getDiagnosisEndTimes(DiagnosisGeneralViewQuery req) {
-        List<LocalDateTime> diagnosisDates = flinkTaskDiagnosisExtendMapper.getDiagnosisDates(req);
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        Map<String, LocalDateTime> dtMap = new HashMap<>();
-        diagnosisDates.forEach(x -> {
-            String dt = x.format(dateTimeFormatter);
-            if (dtMap.containsKey(dt)) {
-                LocalDateTime old = dtMap.get(dt);
-                if (old.isAfter(x)) {
-
-                } else {
-                    dtMap.put(dt, x);
-                }
-            } else {
-                dtMap.put(dt, x);
-            }
-        });
-        return dtMap.values().stream().collect(Collectors.toList());
     }
 
     /**
