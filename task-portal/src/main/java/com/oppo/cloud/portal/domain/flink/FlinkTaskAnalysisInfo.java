@@ -131,6 +131,11 @@ public class FlinkTaskAnalysisInfo {
         info.setQueue(item.getQueue());
         info.setParallel(item.getParallel());
         info.setFlinkTrackUrl(item.getFlinkTrackUrl());
+        info.setTmCore(item.getTmCore());
+        info.setTmMemory(item.getTmMemory());
+        info.setJmMemory(item.getJmMemory());
+        info.setTmSlot(item.getTmSlot());
+        info.setTmNum(item.getTmNum());
         info.setRuleNames(item.getDiagnosisTypes());
         info.setCreateTime(DateUtil.format(item.getCreateTime()));
         info.setUpdateTime(DateUtil.format(item.getUpdateTime()));

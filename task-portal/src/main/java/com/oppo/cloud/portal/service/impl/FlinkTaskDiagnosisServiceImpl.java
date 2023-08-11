@@ -884,9 +884,11 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         DiagnosisReportResp diagnosisReportResp = new DiagnosisReportResp();
 
         String id = request.getId(); // FlinkTaskAnalysisId
+
         Map<String, Object> termQuery = new HashMap<>();
         termQuery.put("_id", id);
         List<FlinkTaskAnalysis> flinkTaskAnalyses = elasticSearchService.find(FlinkTaskAnalysis.class, termQuery, flinkTaskAnalysisIndex + "-*");
+
         if (flinkTaskAnalyses.size() == 0) {
             return diagnosisReportResp;
         }
