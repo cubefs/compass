@@ -26,7 +26,6 @@ import com.oppo.cloud.common.domain.flink.enums.DiagnosisRuleHasAdvice;
 import com.oppo.cloud.common.domain.flink.enums.FlinkRule;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.mapper.FlinkTaskDiagnosisMapper;
-import com.oppo.cloud.mapper.FlinkTaskDiagnosisRuleAdviceMapper;
 import com.oppo.cloud.model.*;
 import com.oppo.cloud.portal.config.ThreadLocalUserInfo;
 import com.oppo.cloud.portal.dao.FlinkTaskDiagnosisExtendMapper;
@@ -81,9 +80,6 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
 
     @Autowired
     FlinkTaskDiagnosisMapper flinkTaskDiagnosisMapper;
-
-    @Autowired
-    FlinkTaskDiagnosisRuleAdviceMapper flinkTaskDiagnosisRuleAdviceMapper;
 
     @Autowired
     ElasticSearchService elasticSearchService;
