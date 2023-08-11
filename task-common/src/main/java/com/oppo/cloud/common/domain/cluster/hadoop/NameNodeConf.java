@@ -54,8 +54,19 @@ public class NameNodeConf {
      */
     private String port;
 
+
     /**
      * 匹配路径
      */
     private String[] matchPathKeys;
+
+    private boolean enableKerberos;
+
+    private String krb5Conf;
+
+    private String principalPattern;
+
+    private String loginUser;
+
+    private String keytabPath;
 }

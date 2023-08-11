@@ -70,7 +70,7 @@ abstract public class CommonService {
                             result = jdbcTemplate.queryForMap(query);
                             break;
                         } catch (Exception e) {
-                            log.error("table: {},queryForMap: {},", mapping.getTargetTable(), query, e);
+                            log.warn("table: {},queryForMap: {},", mapping.getTargetTable(), query, e);
                             try {
                                 TimeUnit.MILLISECONDS.sleep(300);
                             } catch (Exception ee) {
@@ -79,7 +79,7 @@ abstract public class CommonService {
                         }
                     }
                     if (result == null) {
-                        log.info("query: {}, result is null!", query);
+                        log.warn("query: {}, result is null!", query);
                         continue;
                     }
                     log.info("table: {},query:{}, result: {}", mapping.getTargetTable(), query, result);

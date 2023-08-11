@@ -21,7 +21,7 @@ const tableInfo = $ref([
   { label: '执行周期', prop: 'executionDate', width: 200 },
   { label: '运行耗时', prop: 'duration' },
   { label: '资源消耗', prop: 'resource' },
-  { label: '处理状态', prop: 'taskStatus' },
+  // { label: '处理状态', prop: 'taskStatus' },
   { label: '创建人', prop: 'users' },
   { label: '其他信息', prop: 'others' },
 ])
@@ -53,7 +53,7 @@ const handleState = async (row) => {
   emit('search')
 }
 const goReport = (row) => {
-  router.push({
+  const routeData = router.resolve({
     name: 'taskDetail',
     query: {
       flowName: row.flowName,
@@ -62,6 +62,7 @@ const goReport = (row) => {
       executionDate: row.executionDate,
     },
   })
+  window.open(routeData.href, '_blank');
 }
 </script>
 

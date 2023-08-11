@@ -15,7 +15,7 @@ spring:
       min-idle: 10 # 最小空闲连接数
       max-active: 20 # 最大连接数
   kafka:
-    bootstrap-servers: "10.177.176.72:9095,10.177.54.227:9095,10.177.54.226:9095"
+    bootstrap-servers: "localhost:9095"
     topics: "task-instance"
     consumer:
       group-id: "cp-task-application"
@@ -33,7 +33,7 @@ spring:
 
 custom:
   delayedTask:
-    enable: true
+    enable: false
     queue: "{lua}:task:application"
     processing: "{lua}:task-processing"
     delayedSeconds: 5
@@ -45,7 +45,7 @@ custom:
       logPathJoins: # 组成日志路径
         # end_time: 2023-02-18 01:43:11
         # log_path: ../logs/6354680786144_1/3/4.log
-        - { "column": "", "data": "hdfs://log-hdfs:8020/flume/dolphinscheduler" } # 相当于根目录，常量
+        - { "column": "", "data": "/flume/dolphinscheduler" } # 配置存储调度日志的hdfs根目录
         - { "column": "end_time", "regex": "^.*(?<date>\\d{4}-\\d{2}-\\d{2}).+$", "name": "date" }
         - { "column": "log_path", "regex": "^.*logs/(?<logpath>.*)$", "name": "logpath" }
       extractLog: # 根据组装的日志路径解析日志

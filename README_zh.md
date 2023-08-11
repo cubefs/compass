@@ -7,7 +7,7 @@
 其主要功能特性如下：
 
 - 非侵入式，即时诊断，无需修改已有的调度平台，即可体验诊断效果。
-- 支持多种主流调度平台，例如DolphinScheduler、Airflow或自研等。
+- 支持多种主流调度平台，例如DolphinScheduler 2.x和3.x、Airflow或自研等。
 - 支持多版本Spark、Flink、Hadoop 2.x和3.x 任务日志诊断和解析。
 - 支持工作流层异常诊断，识别各种失败和基线耗时异常问题。
 - 支持引擎层异常诊断，包含数据倾斜、大表扫描、内存浪费等14种异常类型。
@@ -194,13 +194,13 @@ export COMPASS_MYSQL_ADDRESS="ip:port"
 export COMPASS_MYSQL_DB="compass"
 export SPRING_DATASOURCE_USERNAME="user"
 export SPRING_DATASOURCE_PASSWORD="pwd"
-# Kafka
+# Kafka (默认版本: 3.4.0)
 export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
-# Redis
+# Redis (cluster 模式)
 export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
-# Zookeeper
+# Zookeeper (默认版本: 3.4.5, canal使用)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
-# Elasticsearch
+# Elasticsearch (默认版本: 7.17.9)
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
 # Flink metric prometheus
 export FLINK_PROMETHEUS_HOST="host"
@@ -220,6 +220,16 @@ hadoop:
       port: 8020
       # scheduler platform hdfs log path keyword identification, used by task-application
       matchPathKeys: [ "flume" ]
+      # kerberos
+      enableKerberos: false
+      # /etc/krb5.conf
+      krb5Conf: ""
+      # hdfs/*@EXAMPLE.COM
+      principalPattern:  ""
+      # admin
+      loginUser: ""
+      # /var/kerberos/krb5kdc/admin.keytab
+      keytabPath: ""      
 
   yarn:
     - clusterName: "bigdata"
@@ -237,7 +247,7 @@ Compass 表结构由两部分组成，一个是compass.sql，另一个是依赖�
 
 1. 请先执行document/sql/compass.sql
 
-2. 如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql； 如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql
+2. 如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql（需要根据实际使用版本修改）； 如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql（需要根据实际使用版本修改）
 
 3. 如果您使用的是自研调度平台，请参考[task-syncer](#task-syncer)模块，确定需要同步的表
 
@@ -353,11 +363,21 @@ Spark:
 ![application](document/manual/img/application.png)
 ![cpu](document/manual/img/cpu.png)
 ![memory](document/manual/img/memory.png)
+
 Flink:
 ![overview](document/manual/img/flink-overview-1.png)
 ![overview-1](document/manual/img/flink-overview-2.png)
 ![tasks](document/manual/img/flink-list.png)
 ![report](document/manual/img/flink-report.png)
+=======
+
+## 社区
+
+欢迎加入社区咨询使用或成为 Compass 开发者。以下是获得帮助的方法：
+
+- 提交 [issue](https://github.com/cubefs/compass/issues).
+- 加入微信群，搜索并添加微信号 **`daiwei_cn`** or **`zebozhuang`**。请在验证信息中注明您的意向。审核通过后，我们会邀请您加入社区群。
+
 
 ## 版权
 

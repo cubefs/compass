@@ -10,7 +10,7 @@ The key features:
 - Non-invasive, instant diagnosis, you can experience the diagnostic effect without modifying the existing scheduling
   platform.
 
-- Supports multiple scheduling platforms(DolphinScheduler, Airflow, or self-developed etc.)
+- Supports multiple scheduling platforms(DolphinScheduler 2.x or 3.x, Airflow, or self-developed etc.)
 
 - Supports Spark 2.x or 3.x,Flink, Hadoop 2.x or 3.x troubleshooting.
 
@@ -206,13 +206,13 @@ export COMPASS_MYSQL_ADDRESS="ip:port"
 export COMPASS_MYSQL_DB="compass"
 export SPRING_DATASOURCE_USERNAME="user"
 export SPRING_DATASOURCE_PASSWORD="pwd"
-# Kafka
+# Kafka (default version: 3.4.0)
 export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
-# Redis
+# Redis (cluster mode)
 export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
-# Zookeeper
+# Zookeeper (default version: 3.4.5, used by canal)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
-# Elasticsearch
+# Elasticsearch (default version: 7.17.9)
 export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
 # Flink metric prometheus
 export FLINK_PROMETHEUS_HOST="host"
@@ -231,6 +231,16 @@ hadoop:
       port: 8020
       # scheduler platform hdfs log path keyword identification, used by task-application
       matchPathKeys: [ "flume" ]
+      # kerberos
+      enableKerberos: false
+      # /etc/krb5.conf
+      krb5Conf: ""
+      # hdfs/*@EXAMPLE.COM
+      principalPattern:  ""
+      # admin
+      loginUser: ""
+      # /var/kerberos/krb5kdc/admin.keytab
+      keytabPath: ""
 
   yarn:
     - clusterName: "bigdata"
@@ -248,7 +258,7 @@ The Compass table structure consists of two parts, one is compass.sql, and the o
 
 1. Please execute document/sql/compass.sql first
 
-2. If you are using the DolphinScheduler scheduling platform, please execute document/sql/dolphinscheduler.sql; if you are using the Airflow scheduling platform, please execute document/sql/airflow.sql
+2. If you are using the DolphinScheduler scheduling platform, please execute document/sql/dolphinscheduler.sql(It needs to be modified according to the actual version used); if you are using the Airflow scheduling platform, please execute document/sql/airflow.sql(It needs to be modified according to the actual version used)
 
 3. If you are using a self-developed scheduling platform, please refer to the [task-syncer](document/manual/deployment.md#task-syncer) module to determine the tables that need to be synchronized
 

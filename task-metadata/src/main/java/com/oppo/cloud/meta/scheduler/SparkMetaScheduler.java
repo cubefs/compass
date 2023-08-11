@@ -16,15 +16,17 @@
 
 package com.oppo.cloud.meta.scheduler;
 
+import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.meta.service.ITaskSyncerMetaService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.annotation.Resource;
-import java.util.concurrent.TimeUnit;
+import java.util.Collections;
+import java.util.UUID;
 
 /**
  * SPARK任务app列表数据同步
@@ -34,33 +36,45 @@ import java.util.concurrent.TimeUnit;
 @ConditionalOnProperty(prefix = "scheduler.sparkMeta", name = "enable", havingValue = "true")
 public class SparkMetaScheduler {
 
-    @Resource(name = "sparkMetaLock")
-    private InterProcessMutex lock;
+    /**
+     * synchronize spark app redis distributed lock
+     */
+    private static final String LOCK_KEY = "compass:metadata:spark";
+
+    @Resource
+    private RedisService redisService;
+
+    @Resource
+    private RedisScript<Object> releaseLockScript;
+
     @Resource(name = "SparkMetaServiceImpl")
     private ITaskSyncerMetaService spark;
 
     @Scheduled(cron = "${scheduler.sparkMeta.cron}")
     private void run() {
         try {
-            lock();
+            syncer();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Exception: ", e);
         }
     }
-    /**
-     * zk锁，防止多实例同时同步数据
-     */
-    private void lock() throws Exception {
-        if (!lock.acquire(1, TimeUnit.SECONDS)) {
-            log.warn("cannot get {}", lock.getParticipantNodes());
+
+    private void syncer() throws Exception {
+        String lockValue = UUID.randomUUID().toString();
+        // Only one instance of the application can run the synchronization process at the same time.
+        Boolean acquire = redisService.acquireLock(LOCK_KEY, lockValue, 5L);
+        if (!acquire) {
+            log.info("can not get the lock: {}", LOCK_KEY);
             return;
         }
         try {
-            log.info("get {}", lock.getParticipantNodes());
+            log.info("lockKey: {}, lockValue: {}", LOCK_KEY, lockValue);
             spark.syncer();
+        } catch (Exception e) {
+            log.error("Exception: ", e);
         } finally {
-            log.info("release {}", lock.getParticipantNodes());
-            lock.release();
+            Object result = redisService.executeScript(releaseLockScript, Collections.singletonList(LOCK_KEY), lockValue);
+            log.info("release {}, result: {}", LOCK_KEY, result);
         }
     }
 

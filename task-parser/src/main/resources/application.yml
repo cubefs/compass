@@ -19,6 +19,7 @@ spring:
     cluster:
       nodes: localhost:6379
       max-redirects: 3
+    password:
     lettuce:
       pool:
         max-active: 32

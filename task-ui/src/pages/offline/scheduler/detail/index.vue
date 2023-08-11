@@ -73,6 +73,17 @@ const getSummary = async () => {
   })
   summary = res
 }
+// Compatible with the problem of missing base path in the case of frontend and backend integration
+const getFormattedItem = (item) => {
+  const url = window.location.href
+  const basePath = '/compass/portal'
+  if(url.includes(basePath)){
+    return item.replace(/(href=")([^"]+)/g, function(match, p1, p2) {
+      return p1 + basePath + p2
+    })
+  }
+  return item
+}
 const getJobInfo = async () => {
   const res = await post('/api/v1/job/jobDiagnoseInfo', {
     ...params,
@@ -85,7 +96,7 @@ const getJobInfo = async () => {
 const router = useRouter()
 const back = () => {
   router.push({
-    path: '/offline/task',
+    path: '/offline/scheduler',
   })
 }
 const refAppDetail: any = ref(null)
@@ -189,7 +200,7 @@ onMounted(async () => {
               诊断详情
             </div>
             <div class="detail-content-summary">
-              <div v-for="item in summary" :key="item" v-html="item" />
+              <div v-for="item in summary" :key="item" v-html="getFormattedItem(item)" />
             </div>
             <ItemWrapper v-if="errorLog.item" :title="errorLog.name" :conclusion="errorLog.conclusion" class="detail-content-component">
               <ErrorTable :data="errorLog.item?.tableList[0]" :width-list="[120, 180, 180, '', 270]" />

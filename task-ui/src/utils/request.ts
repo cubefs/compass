@@ -16,13 +16,17 @@ let loadingInstance: MessageHandler | null = null
 axios.defaults.validateStatus = function (status) {
   return status >= 200 && status <= 204 // default
 }
-console.log(window.location.origin)
-if(window.location.origin.includes('localhost')){
-  // axios.defaults.baseURL = 'http://10.176.249.189:7075' + '/compass'
-  axios.defaults.baseURL = 'http://localhost:7075' + '/compass'
-}else{
-  axios.defaults.baseURL = window.location.origin + '/compass'
+
+function getBaseURL():string {
+  let backend = import.meta.env.MODE === 'development' ? import.meta.env.VITE_APP_DEV_BACKEND : import.meta.env.VITE_APP_PROD_BACKEND;
+  if(backend === '') {
+    return window.location.origin + '/compass';
+  }
+  return backend + '/compass';
 }
+
+axios.defaults.baseURL = getBaseURL()
+
 axios.defaults.withCredentials = true
 axios.interceptors.request.use(
   (config:any) => {

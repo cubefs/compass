@@ -33,6 +33,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -85,9 +86,15 @@ public class TaskInstanceService extends CommonService implements ActionService 
 
         switch (action) {
             case "INSERT":
+                if (instance.getCreateTime() == null) {
+                    instance.setCreateTime(new Date());
+                }
                 taskInstanceMapper.saveSelective(instance);
                 break;
             case "UPDATE":
+                if (instance.getUpdateTime() == null) {
+                    instance.setUpdateTime(new Date());
+                }
                 if (instance.getId() != null) {
                     taskInstanceMapper.updateByPrimaryKeySelective(instance);
                 } else {

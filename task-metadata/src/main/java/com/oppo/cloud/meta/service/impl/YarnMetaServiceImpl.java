@@ -98,7 +98,7 @@ public class YarnMetaServiceImpl implements ITaskSyncerMetaService {
                 try {
                     pull(yarnCluster.getKey(), yarnCluster.getValue());
                 } catch (Exception e) {
-                    log.error(e.getMessage());
+                    log.error("Exception: ", e);
                 }
                 return null;
             }, yarnMetaExecutor);
@@ -108,7 +108,7 @@ public class YarnMetaServiceImpl implements ITaskSyncerMetaService {
         try {
             CompletableFuture.allOf(array).get();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Exception: ", e);
         }
     }
 
@@ -143,7 +143,7 @@ public class YarnMetaServiceImpl implements ITaskSyncerMetaService {
 
         for (BulkItemResponse r : responses) {
             if (r.isFailed()) {
-                log.info("failedInsertApp:{},{}", r.getId(), r.status());
+                log.error("failedInsertApp:{},{}", r.getId(), r.status());
             }
         }
 

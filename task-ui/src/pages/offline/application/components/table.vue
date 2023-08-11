@@ -35,12 +35,13 @@ const addWhite = async (row) => {
   ElMessage.success('添加成功')
 }
 const goReport = (row) => {
-  router.push({
+  const routeData = router.resolve({
     name: 'appDetail',
     query: {
       applicationId: row.applicationId,
     },
   })
+  window.open(routeData.href, '_blank');
 }
 </script>
 
