@@ -81,9 +81,6 @@ custom:
   redis:
     logRecordKey: "{lua}:log:record"
 
-  sparkUiProxy:
-    url: "http://localhost:18018/history/%s/1/jobs/?yarnhost=http://%s:18080"
-
   jwt:
     expireDay: 15
     secret: 8ff3bf2c8344
