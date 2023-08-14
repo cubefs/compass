@@ -12,17 +12,23 @@ import taskLogo from '~/access/icon/task.png'
 import appLogo from '~/access/icon/application.png'
 import whiteLogo from '~/access/icon/whitelist.png'
 import logo from '~/access/icon/logo.png'
-import { useStore } from '~/store/user.ts'
-import { get, post } from '~/utils/request'
+import { useStore } from '~/store/user'
+
 const currentRoute = useRoute()
+console.log(currentRoute)
+console.log(currentRoute.meta.name)
+console.log(currentRoute.path)
 const router = useRouter()
 const store = useStore()
 let activeRoute: string = $ref('offline')
+if(currentRoute.path.indexOf('realtime')!=-1){
+  activeRoute = 'realtime'
+}
 const handleSelect = (index: string) => {
   if (activeRoute !== index) {
     activeRoute = index
     router.push({
-      path: `/${activeRoute}/${currentRoute.meta.name}`,
+      path: `/${activeRoute}/report`,
     })
   }
 }
@@ -75,16 +81,16 @@ const getHeight = () => {
         @select="handleSelect"
       >
         <el-image class="title-logo" :src="logo" />
-        <!-- <el-menu-item index="offline">
+        <el-menu-item index="offline">
           <template #title>
             离线诊断
           </template>
-        </el-menu-item> -->
-        <!-- <el-menu-item index="realtime">
+        </el-menu-item>
+        <el-menu-item index="realtime">
           <template #title>
             实时诊断
           </template>
-        </el-menu-item> -->
+        </el-menu-item>
         <div class="flex-grow" />
         <el-dropdown class="user-box" @command="handleCommand">
           <span
@@ -128,16 +134,22 @@ const getHeight = () => {
               一键诊断
             </template>
           </el-menu-item>
-          <el-menu-item :index="`/${activeRoute}/task`">
+          <el-menu-item :index="`/${activeRoute}/scheduler`">
             <el-icon><el-image class="logo" :src="taskLogo" /></el-icon>
             <template #title>
-              任务运行
+              调度任务
             </template>
           </el-menu-item>
-          <el-menu-item :index="`/${activeRoute}/application`">
+          <el-menu-item v-if="`${activeRoute}`=='offline'" :index="`/${activeRoute}/application`">
             <el-icon><el-image class="logo" :src="appLogo" /></el-icon>
             <template #title>
-              APP运行
+              计算任务
+            </template>
+          </el-menu-item>
+          <el-menu-item v-if="`${activeRoute}`=='realtime'" :index="`/${activeRoute}/metadata`">
+            <el-icon><el-image class="logo" :src="appLogo" /></el-icon>
+            <template #title>
+              元数据
             </template>
           </el-menu-item>
           <el-menu-item :index="`/${activeRoute}/white`">
@@ -209,4 +221,9 @@ const getHeight = () => {
 :deep(.el-header) {
     z-index: 1;
 }
+
+
+
+
+
 </style>

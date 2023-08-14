@@ -21,8 +21,8 @@ import lombok.Getter;
 @Getter
 public enum ComponentEnum {
 
-    Offline(0, "离线模块"),
-    Realtime(1, "实时模块");
+    Offline(0, "offline"),
+    Realtime(1, "realtime");
 
     private final Integer code;
     private final String des;

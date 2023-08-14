@@ -7,12 +7,12 @@
     </selectKey>
     insert into task_instance (id, project_name, flow_name, task_name,
       start_time, end_time, execution_time,
-      task_state, retry_times, max_retry_times,
+      task_state, task_type, retry_times, max_retry_times,
       worker_group, trigger_type, create_time, update_time
       )
     values (#{id, jdbcType=INTEGER}, #{projectName,jdbcType=VARCHAR}, #{flowName,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR},
       #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{executionTime,jdbcType=TIMESTAMP},
-      #{taskState,jdbcType=VARCHAR}, #{retryTimes,jdbcType=INTEGER}, #{maxRetryTimes,jdbcType=INTEGER},
+      #{taskState,jdbcType=VARCHAR}, #{taskType,jdbcType=VARCHAR}, #{retryTimes,jdbcType=INTEGER}, #{maxRetryTimes,jdbcType=INTEGER},
       #{workerGroup,jdbcType=VARCHAR}, #{triggerType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -45,6 +45,9 @@
       </if>
       <if test="taskState != null">
         task_state,
+      </if>
+      <if test="taskType != null">
+        task_type,
       </if>
       <if test="retryTimes != null">
         retry_times,
@@ -89,6 +92,9 @@
       </if>
       <if test="taskState != null">
         #{taskState,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null">
+        #{taskType,jdbcType=VARCHAR},
       </if>
       <if test="retryTimes != null">
         #{retryTimes,jdbcType=INTEGER},

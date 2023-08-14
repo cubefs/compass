@@ -124,7 +124,7 @@ datasource:
         task_state:
           - { targetValue: "success", originValue: [ "7", "14" ] }
           - { targetValue: "fail", originValue: [ "6", "9" ] } # kill is also fail
-          - { targetValue: "other", originValue: [ "0", "1", "2", "3", "4", "5", "8", "10", "11", "12", "13" ] }
+          - { targetValue: "other", originValue: [ "0","1", "2", "3", "4", "5", "8", "10", "11", "12", "13" ] }
       columnDep:
         columns: [ "project_name", "flow_name", "execution_time" ]
         queries: [ "select t2.schedule_time as execution_time, t3.name as flow_name, t4.name as project_name from t_ds_task_instance as t1 inner join t_ds_process_instance as t2 on t1.process_instance_id = t2.id inner join t_ds_process_definition as t3 on t2.process_definition_code = t3.code inner join t_ds_project as t4 on t3.project_code=t4.code where t1.id=${id}" ]

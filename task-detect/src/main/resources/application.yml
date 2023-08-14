@@ -70,6 +70,3 @@ custom:
     durationWarning: 2
     # 长期失败配置，单位天
     alwaysFailedWarning: 10
-
-  sparkUiProxy:
-    url: "http://%s:18018/history/%s"

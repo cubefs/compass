@@ -17,6 +17,7 @@ fi
 cp /${HOME_DIR}/conf/application-hadoop.yml ${HOME_DIR}/task-application/conf
 cp /${HOME_DIR}/conf/application-hadoop.yml ${HOME_DIR}/task-metadata/conf
 cp /${HOME_DIR}/conf/application-hadoop.yml ${HOME_DIR}/task-parser/conf
+cp /${HOME_DIR}/conf/application-hadoop.yml ${HOME_DIR}/task-flink/conf
 
 start() {
   for dir in ${HOME_DIR}/task-*; do

@@ -192,7 +192,8 @@ public class TextParser implements ITextParser {
         ParserResult parserResult = new ParserResult();
         parserResult.setLines(this.blocks);
         extractGroupData(m);
-        parserResult.setGroupData(this.parsingAction.getGroupData());
+        Map<String, String> groupData = this.parsingAction.getGroupData();
+        parserResult.setGroupData(groupData == null ? null : new HashMap(groupData));
         int hashCode = this.blocks.toString().hashCode();
         Set<Integer> hashCodeSet = this.parsingAction.getHashCode();
 

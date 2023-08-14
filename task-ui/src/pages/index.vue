@@ -2,3 +2,5 @@
 redirect:
   name: report
 </route>
+<template>
+</template>

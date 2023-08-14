@@ -16,10 +16,7 @@
 
 package com.oppo.cloud.portal.initializer;
 
-import com.oppo.cloud.common.domain.elasticsearch.JobInstanceMapping;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysisMapping;
-import com.oppo.cloud.common.domain.elasticsearch.LogSummaryMapping;
-import com.oppo.cloud.common.domain.elasticsearch.TaskAppMapping;
+import com.oppo.cloud.common.domain.elasticsearch.*;
 import com.oppo.cloud.common.util.elastic.MappingApi;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
@@ -75,6 +72,24 @@ public class Initializer implements CommandLineRunner {
     @Value(value = "${custom.elasticsearch.jobInstanceIndex.replicas}")
     private Integer jobInstanceIndexReplicas;
 
+    @Value(value = "${custom.elasticsearch.flinkReportIndex.name}")
+    private String flinkReportIndex;
+
+    @Value(value = "${custom.elasticsearch.flinkReportIndex.shards}")
+    private Integer flinkReportIndexShards;
+
+    @Value(value = "${custom.elasticsearch.flinkReportIndex.replicas}")
+    private Integer flinkReportIndexReplicas;
+
+    @Value(value = "${custom.elasticsearch.flinkTaskAnalysisIndex.name}")
+    private String flinkTaskAnalysisIndex;
+
+    @Value(value = "${custom.elasticsearch.flinkTaskAnalysisIndex.shards}")
+    private Integer flinkTaskAnalysisIndexShards;
+
+    @Value(value = "${custom.elasticsearch.flinkTaskAnalysisIndex.replicas}")
+    private Integer flinkTaskAnalysisIndexReplicas;
+
     @Autowired
     @Qualifier("elasticsearch")
     private RestHighLevelClient client;
@@ -100,6 +115,21 @@ public class Initializer implements CommandLineRunner {
             log.info("Create elasticsearch template {}, result: {}", appIndex, response.isAcknowledged());
         }
 
+        if (!mappingApi.existsTemplate(client, flinkReportIndex)) {
+            Map<String, Object> mapping = FlinkReportMapping.build(true);
+            AcknowledgedResponse response = mappingApi.putTemplate(client, flinkReportIndex,
+                    new String[]{flinkReportIndex + "-*"}, mapping, flinkReportIndexShards, flinkReportIndexReplicas);
+            log.info("Create elasticsearch template {}, result: {}", flinkReportIndex, response.isAcknowledged());
+        }
+
+        if (!mappingApi.existsTemplate(client, flinkTaskAnalysisIndex)) {
+            Map<String, Object> mapping = FlinkTaskAnalysisMapping.build(true);
+            AcknowledgedResponse response = mappingApi.putTemplate(client, flinkTaskAnalysisIndex,
+                    new String[]{flinkTaskAnalysisIndex + "-*"}, mapping, flinkTaskAnalysisIndexShards, flinkTaskAnalysisIndexReplicas);
+            log.info("Create elasticsearch template {}, result: {}", flinkTaskAnalysisIndex, response.isAcknowledged());
+        }
+
+        // spark log summary
         if (!mappingApi.existsTemplate(client, logIndex)) {
             Map<String, Object> mapping = LogSummaryMapping.build(true);
             AcknowledgedResponse response = mappingApi.putTemplate(client, logIndex,

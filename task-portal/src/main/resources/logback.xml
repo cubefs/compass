@@ -94,7 +94,7 @@
 
     <logger name="net.sh.rgface.serive" level="INFO" />
 
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="console" />
         <appender-ref ref="warn"/>
         <appender-ref ref="info" />

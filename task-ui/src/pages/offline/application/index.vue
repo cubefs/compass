@@ -45,7 +45,7 @@ const getTableData = async (params: any) => {
 }
 // 获取被选择的标签
 const getSelect = () => {
-  return categories.data.reduce((acc, now) => {
+  return categories.data.reduce((acc:any, now:any) => {
     if (now.selected)
       acc.push(now.name)
     return acc

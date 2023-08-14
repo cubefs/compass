@@ -16,15 +16,14 @@
 
 package com.oppo.cloud.application.service.impl;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import com.oppo.cloud.application.config.CustomConfig;
 import com.oppo.cloud.application.config.HadoopConfig;
 import com.oppo.cloud.application.config.KafkaConfig;
 import com.oppo.cloud.application.constant.RetCode;
 import com.oppo.cloud.application.domain.LogPathJoin;
 import com.oppo.cloud.application.domain.ParseRet;
-import com.oppo.cloud.application.domain.RealtimeTaskInstance;
 import com.oppo.cloud.application.domain.Rule;
 import com.oppo.cloud.application.producer.MessageProducer;
 import com.oppo.cloud.application.service.LogParserService;
@@ -37,14 +36,12 @@ import com.oppo.cloud.model.TaskApplication;
 import com.oppo.cloud.model.TaskInstance;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -162,6 +159,7 @@ public class LogParserServiceImpl implements LogParserService {
      */
     @Override
     public ParseRet handle(TaskInstance taskInstance, Map<String, String> rawData) throws Exception {
+        log.debug("收到task instance,{}", taskInstance);
         if (skipTaskInstance(taskInstance)) {
             return new ParseRet(RetCode.RET_SKIP, null);
         }
@@ -249,7 +247,7 @@ public class LogParserServiceImpl implements LogParserService {
      */
     public void addTaskApplication(String applicationId, TaskInstance taskInstance, String logPath) {
         // 数据写回kafka订阅
-        log.info("application save: applicationId=" + applicationId + " task_instance=" + taskInstance + ",lopPath="
+        log.debug("application save: applicationId=" + applicationId + " task_instance=" + taskInstance + ",lopPath="
                 + logPath);
 
         TaskApplication taskApplication = new TaskApplication();
@@ -260,6 +258,7 @@ public class LogParserServiceImpl implements LogParserService {
         taskApplication.setExecuteTime(taskInstance.getExecutionTime());
         taskApplication.setRetryTimes(taskInstance.getRetryTimes());
         taskApplication.setLogPath(logPath);
+        taskApplication.setTaskType(taskInstance.getTaskType());
         taskApplication.setCreateTime(new Date());
         taskApplication.setUpdateTime(new Date());
 
@@ -272,6 +271,12 @@ public class LogParserServiceImpl implements LogParserService {
             log.error("insertErr:" + e.getMessage());
         }
 
+        try {
+            messageProducer.sendMessageSync(kafkaConfig.getTaskApplicationTopic(),
+                    JSON.toJSONString(taskApplication));
+        } catch (Exception ex) {
+            log.error("failed to send insert data to kafka, err: " + ex.getMessage());
+        }
     }
 
     /**
@@ -297,6 +302,8 @@ public class LogParserServiceImpl implements LogParserService {
          * 读取hadoop文件延迟时间
          */
         private final int[] SLEEP_TIME = new int[]{20, 40, 60, 80, 100};
+
+        private static final String TMP_EXTENSION = ".tmp";
 
         /**
          * task type
@@ -345,26 +352,20 @@ public class LogParserServiceImpl implements LogParserService {
                 log.error("logPath: {} does not have hadoop config", logPath);
                 return RetCode.RET_EXCEPTION;
             }
-            List<String> filePaths = null;
+            List<String> filePaths;
             try {
-                for (int i = 0; i < 10; i++) {
-                    filePaths = HDFSUtil.filesPattern(nameNodeConf, String.format("%s*", logPath));
-                    // flume文件未上传完成，有.tmp文件
-                    if (filePaths.size() != 0 && filePaths.get(filePaths.size() - 1).endsWith(".tmp")) {
-                        log.warn("tmp file retry times:{}, {}", i, filePaths.get(filePaths.size() - 1));
-                        // 等待完成
-                        TimeUnit.SECONDS.sleep(5);
-                    } else {
-                        break;
-                    }
-                }
+                filePaths = HDFSUtil.filesPattern(nameNodeConf, String.format("%s*", logPath));
             } catch (Exception e) {
-                log.error("filesPattern_error:" + e);
+                log.error("filesPattern {} error:", logPath, e);
                 return RetCode.RET_OP_NEED_RETRY;
             }
-
             if (filePaths.size() == 0) {
-                log.error("logPath: {} does not exist", logPath);
+                log.warn("logPath: {} does not exist", logPath);
+                return RetCode.RET_OP_NEED_RETRY;
+            }
+            String tmpFile = getTmpFile(filePaths);
+            if (tmpFile != null) {
+                log.warn("tmp file: {}", tmpFile);
                 return RetCode.RET_OP_NEED_RETRY;
             }
 
@@ -461,6 +462,18 @@ public class LogParserServiceImpl implements LogParserService {
          */
         public Map<String, Object> getData() {
             return this.data;
+        }
+
+        /**
+         * If it contains temporary file, need to retry and wait for completion.
+         */
+        private String getTmpFile(List<String> filePaths) {
+            for (String filePath : filePaths) {
+                if (filePath.endsWith(TMP_EXTENSION)) {
+                    return filePath;
+                }
+            }
+            return null;
         }
     }
 }

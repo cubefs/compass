@@ -28,7 +28,7 @@ scheduler:
     enable: true
     cron: "0/30 * * * * ?"
     # hour
-    startedTimeBegin: 24
+    startedTimeBegin: 6
   sparkMeta:
     enable: true
     cron: "0/30 * * * * ?"

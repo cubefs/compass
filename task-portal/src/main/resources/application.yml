@@ -33,6 +33,8 @@ spring:
     cluster:
       nodes: localhost:6379
     password:
+  jackson:
+    time-zone: Asia/Shanghai
 
 mybatis:
   mapper-locations:
@@ -55,30 +57,35 @@ custom:
       name: "compass-job-analysis"
       shards: 10
       replicas: 2
-
     detectIndex:
       name: "compass-detector-app"
-
     gcIndex:
       name: "compass-gc-log"
-
     yarnIndex:
       name: "compass-yarn-app"
-
     sparkIndex:
       name: "compass-spark-app"
-
     jobInstanceIndex:
       name: "compass-job-instance"
+      shards: 10
+      replicas: 2
+    flinkReportIndex:
+      name: "compass-flink-report"
+      shards: 10
+      replicas: 2
+    flinkTaskAnalysisIndex:
+      name: "compass-flink-task-analysis"
       shards: 10
       replicas: 2
 
   redis:
     logRecordKey: "{lua}:log:record"
 
-  sparkUiProxy:
-    url: "http://localhost:18018/history/%s/1/jobs/?yarnhost=http://%s:18080"
-
   jwt:
     expireDay: 15
     secret: 8ff3bf2c8344
+
+diagnosis:
+  flinkPrometheusHost: http://localhost:9090
+  flinkPrometheusToken:
+  flinkPrometheusDatabase:
