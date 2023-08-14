@@ -303,7 +303,7 @@ public class FlinkTaskDiagnosisController {
 
     @PostMapping("/getGeneralViewDistribute")
     @ApiOperation(value = "获取概览分布指标")
-    public CommonStatus<DiagnosisGeneralVIewDistributeResp> getGeneralViewDistribute(@Validated @RequestBody DiagnosisGeneralViewReq request) {
+    public CommonStatus<DiagnosisGeneralVIewDistributeResp> getGeneralViewDistribute(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception {
         DiagnosisGeneralVIewDistributeResp generalViewDistribute = flinkTaskDiagnosisService.getGeneralViewDistribute(request);
         return CommonStatus.success(generalViewDistribute);
     }
