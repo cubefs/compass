@@ -17,9 +17,16 @@
 package com.oppo.cloud.portal.util;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UnitUtil {
 
+    private static final long MilliSecond = 1;
+    private static final long Second = 1000 * MilliSecond;
+    private static final long Minute = 60 * Second;
+    private static final long Hour = 60 * Minute;
+    private static final long Day = 24 * Hour;
     private static final long HOUR = 3600000;
 
     private static final long DAY = 360000000;
@@ -56,6 +63,17 @@ public class UnitUtil {
             return String.format("%dvcore·h", data / 3600);
         } else {
             return String.format("%dvcore·s", data);
+        }
+    }
+
+    /**
+     * 资源消耗转换
+     */
+    public static String transferMemGbS(long data) {
+        if (data > 3600) {
+            return String.format("%dGB·h", data / 3600);
+        } else {
+            return String.format("%dGB·s", data);
         }
     }
 
@@ -188,4 +206,34 @@ public class UnitUtil {
         return String.format("<span style=\"color: #e24a4a;\">%.2f</span>", keyword);
     }
 
+    /**
+     * 毫秒数转换为自然时间
+     *
+     * @return
+     */
+    public static String transferTimeUnit(long millisecond) {
+        List<String> lists = new ArrayList<>();
+
+        if (millisecond > Day) {
+            lists.add("" + millisecond / Day + "d");
+            millisecond = millisecond % Day;
+        }
+        if (millisecond > Hour) {
+            lists.add("" + millisecond / Hour + "h");
+            millisecond = millisecond % Hour;
+        }
+        if (millisecond > Minute) {
+            lists.add("" + millisecond / Minute + "m");
+            millisecond = millisecond % Minute;
+        }
+        if (millisecond > Second) {
+            lists.add("" + millisecond / Second + "s");
+            millisecond = millisecond % Second;
+        }
+        if (lists.size() > 2) {
+            return String.join("", lists.subList(0, 2));
+        } else {
+            return String.join("", lists);
+        }
+    }
 }

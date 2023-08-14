@@ -42,17 +42,7 @@ public class Mapping {
     public static Map<String, Object> date() {
         return Stream.of(
                         new AbstractMap.SimpleEntry<>("type", "date"),
-                        new AbstractMap.SimpleEntry<>("format", "yyyy-MM-dd'T'HH:mm:ss.SSS"))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    /**
-     * 创建date类型字段
-     */
-    public static Map<String, Object> date1() {
-        return Stream.of(
-                        new AbstractMap.SimpleEntry<>("type", "date"),
-                        new AbstractMap.SimpleEntry<>("format", "yyyy-MM-dd HH:mm:ss"))
+                        new AbstractMap.SimpleEntry<>("format", "yyyy-MM-dd'T'HH:mm:ss.SSS||yyyy-MM-dd HH:mm:ss||yyyy-MM-dd HH:mm:ss.SSS||strict_date_optional_time||epoch_millis"))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 

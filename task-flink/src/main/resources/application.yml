@@ -1,0 +1,56 @@
+server:
+  port: 7001
+
+spring:
+  application:
+    name: task-flink
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  profiles:
+    active:
+    jackson:
+      time-zone: GMT+8
+      date-format: yyyy-MM-dd HH:mm:ss
+  datasource:
+    url: jdbc:mysql://localhost:33066/diagnose_data?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username:
+    password:
+    druid:
+      initial-size: 5 # 连接池初始化大小
+      min-idle: 10 # 最小空闲连接数
+      max-active: 20 # 最大连接数
+  kafka:
+    bootstrap-servers: "localhost:9095"
+    taskApplicationTopic: "task-application"
+    flinkTaskApp: "flink-task-app"
+    consumer:
+      group-id: "task-flink-diagnosis-local"
+      auto-offset-reset: "latest"  # 从提交offset开始消费，无提交offset,从头开始消费
+      max-poll-interval-ms: 300000  # 两次消费活跃时间间隔5min
+
+  elasticsearch:
+    hosts: localhost:19527
+    username:
+    password:
+
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
+  configuration: #打印sql语句
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+diagnosis:
+  flinkPrometheusHost: http://localhost:9090
+  flinkPrometheusToken:
+  flinkPrometheusDatabase:
+
+custom:
+  elasticsearch:
+    yarnIndex:
+      name: "compass-yarn-app"
+    flinkReportIndex:
+      name: "compass-flink-report"
+    flinkTaskAnalysisIndex:
+      name: "compass-flink-task-analysis"

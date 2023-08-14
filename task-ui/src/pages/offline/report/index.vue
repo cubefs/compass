@@ -5,7 +5,7 @@ import PieTabs from './components/PieTabs.vue'
 import LineTabs from './components/LineTabs.vue'
 import { get, post } from '~/utils/request'
 dayjs().format()
-const projectList = $ref([])
+let projectList = $ref([])
 const projectName = $ref('')
 const lineTab: string = $ref('first')
 let sData = $ref({

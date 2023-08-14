@@ -155,12 +155,14 @@
             "parserType": "DEFAULT",
             "parserTemplate": {
               "heads": [
-                "^.+org\\.apache\\.spark\\.SparkException.*Could not execute broadcast in.*secs.*$"
+                "^.+org\\.apache\\.spark\\.SparkException.*Could not execute broadcast in (<?threshold>.*) secs.*$"
               ],
               "middles": [],
               "tails": []
             },
-            "groupNames": [],
+            "groupNames": [
+              "threshold"
+            ],
             "children": []
           },
           {

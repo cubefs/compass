@@ -71,7 +71,7 @@ public class YarnMetaScheduler {
             log.info("lockKey: {}, lockValue: {}", LOCK_KEY, lockValue);
             yarn.syncer();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Exception: ", e);
         } finally {
             Object result = redisService.executeScript(releaseLockScript, Collections.singletonList(LOCK_KEY), lockValue);
             log.info("release {}, result: {}", LOCK_KEY, result);

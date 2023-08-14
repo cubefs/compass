@@ -21,6 +21,7 @@ import com.oppo.cloud.common.constant.Constant;
 import com.oppo.cloud.common.domain.cluster.hadoop.YarnConf;
 import com.oppo.cloud.common.domain.cluster.yarn.ClusterInfo;
 import com.oppo.cloud.common.service.RedisService;
+import com.oppo.cloud.common.util.YarnUtil;
 import com.oppo.cloud.meta.config.HadoopConfig;
 import com.oppo.cloud.meta.domain.YarnPathInfo;
 import com.oppo.cloud.meta.domain.Properties;
@@ -52,9 +53,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
 
     @Resource(name = "restTemplate")
     private RestTemplate restTemplate;
-
-    private static final String YARN_CLUSTER_INFO = "http://%s/ws/v1/cluster/info";
-
+    
     private static final String YARN_CONF = "http://%s/conf";
 
     private static final String DEFAULT_FS = "fs.defaultFS";
@@ -80,49 +79,9 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
     @Override
     public Map<String, String> getYarnClusters() {
         List<YarnConf> yarnConfList = config.getYarn();
-        Map<String, String> yarnClusters = new HashMap<>();
-        for (YarnConf yarnConf : yarnConfList) {
-            String activeHost = getRmActiveHost(yarnConf.getResourceManager());
-            if (StringUtils.isEmpty(activeHost)) {
-                continue;
-            }
-            yarnClusters.put(activeHost, yarnConf.getClusterName());
-        }
-        return yarnClusters;
+        return YarnUtil.getYarnClusters(yarnConfList);
     }
 
-    public String getRmActiveHost(List<String> list) {
-        for (String host : list) {
-            String clusterInfoUrl = String.format(YARN_CLUSTER_INFO, host);
-            ResponseEntity<String> responseEntity;
-            try {
-                responseEntity = restTemplate.getForEntity(clusterInfoUrl, String.class);
-            } catch (Exception e) {
-                log.error("Exception:", e);
-                continue;
-            }
-            if (responseEntity.getBody() == null) {
-                log.error("get active host null:{}", clusterInfoUrl);
-                continue;
-            }
-            ClusterInfo clusterInfo;
-            try {
-                clusterInfo = JSON.parseObject(responseEntity.getBody(), ClusterInfo.class);
-            } catch (Exception e) {
-                log.error("Exception:", e);
-                continue;
-            }
-            if (clusterInfo == null) {
-                log.error("get active host null:{}", clusterInfoUrl);
-                continue;
-            }
-            log.info("YarnRmInfo-->{}:{}", host, clusterInfo.getClusterInfo().getHaState());
-            if ("ACTIVE".equals(clusterInfo.getClusterInfo().getHaState())) {
-                return host;
-            }
-        }
-        return null;
-    }
 
     /**
      * 更新集群信息
