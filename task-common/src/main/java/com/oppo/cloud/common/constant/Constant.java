@@ -58,4 +58,8 @@ public class Constant {
 
     public static final String HDFS_SCHEME = "hdfs://";
 
+    public static final String SPARK_EVENT_LOG_COMPLETED_FORMAT = "%s/%s_%s";
+
+    public static final String SPARK_EVENT_LOG_RUNNING_FORMAT = "%s/%s_%s.inprogress";
+
 }

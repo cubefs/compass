@@ -19,6 +19,7 @@ package com.oppo.cloud.common.domain.elasticsearch;
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.constant.ApplicationType;
 import com.oppo.cloud.common.constant.Constant;
+import com.oppo.cloud.common.constant.YarnAppState;
 import com.oppo.cloud.common.domain.cluster.spark.SparkApp;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
 import com.oppo.cloud.common.domain.mr.MRJobHistoryLogPath;
@@ -196,7 +197,11 @@ public class TaskApp extends EsInfo {
         this.amHost = amHost[0];
         if (sparkApp != null) {
             String attemptId = StringUtils.isNotEmpty(sparkApp.getAttemptId()) ? sparkApp.getAttemptId() : "1";
-            this.eventLogPath = sparkApp.getEventLogDirectory() + "/" + this.applicationId + "_" + attemptId;
+            String eventLogFormat = Constant.SPARK_EVENT_LOG_COMPLETED_FORMAT;
+            if (YarnAppState.RUNNING.toString().equals(yarnApp.getState())) {
+                eventLogFormat = Constant.SPARK_EVENT_LOG_RUNNING_FORMAT;
+            }
+            this.eventLogPath = String.format(eventLogFormat, sparkApp.getEventLogDirectory(), this.applicationId, attemptId);
         }
         if (ApplicationType.MAPREDUCE.getValue().equals(yarnApp.getApplicationType())) {
             MRJobHistoryLogPath mrJobHistoryLogPath = LogPathUtil.getMRJobHistoryDoneLogPath(yarnApp, redisService);
