@@ -68,9 +68,6 @@ public class SparkApp {
 
     public SparkApp(String appId, String eventLogDirectory, Attempt attempt, String sparkHistoryInfo) {
         this.appId = appId;
-        if (StringUtils.isEmpty(attempt.getAttemptId())) {
-            attempt.setAttemptId("1");
-        }
         this.attemptId = attempt.getAttemptId();
         this.duration = attempt.getDuration();
         this.startTimeEpoch = attempt.getStartTimeEpoch();
