@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.parser.service.job.detector;
+package com.oppo.cloud.parser.service.job.detector.spark;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
@@ -23,6 +23,7 @@ import com.oppo.cloud.common.domain.eventlog.OOMTableInfo;
 import com.oppo.cloud.common.domain.eventlog.config.OOMWarnConfig;
 import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.domain.spark.eventlog.*;
+import com.oppo.cloud.parser.service.job.detector.IDetector;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -34,7 +35,7 @@ public class OOMWarnDetector implements IDetector {
 
     private final OOMWarnConfig config;
 
-    OOMWarnDetector(DetectorParam param) {
+    public OOMWarnDetector(DetectorParam param) {
         this.param = param;
         this.config = param.getConfig().getOomWarnConfig();
     }

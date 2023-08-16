@@ -20,6 +20,7 @@ import com.oppo.cloud.common.domain.eventlog.config.*;
 import com.oppo.cloud.common.domain.mr.config.*;
 import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.service.job.detector.mr.*;
+import com.oppo.cloud.parser.service.job.detector.spark.*;
 
 import java.util.ArrayList;
 import java.util.List;

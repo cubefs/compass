@@ -37,7 +37,7 @@ const goReport = () => {
     <div flex="~" justify-center flex-col items-center>
       <div h-40 />
       <div flex="~" w-160 m-b-10>
-        <el-input v-model="applicationId" placeholder="请输入spark application id">
+        <el-input v-model="applicationId" placeholder="请输入spark/mapreduce application id">
           <template #append>
             <el-button @click="submit">
               一键诊断

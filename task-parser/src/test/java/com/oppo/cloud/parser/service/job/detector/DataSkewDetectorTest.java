@@ -19,10 +19,10 @@ package com.oppo.cloud.parser.service.job.detector;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
 import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.service.ParamUtil;
+import com.oppo.cloud.parser.service.job.detector.spark.DataSkewDetector;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class DataSkewDetectorTest {
 

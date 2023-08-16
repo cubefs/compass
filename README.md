@@ -75,7 +75,7 @@ Compass has supported the concept of diagnostic types:
          <td>Tasks that fail due to memory overflow issues</td>
      </tr>
      <tr>
-         <td rowspan="2">Cost analysis</td>
+         <td rowspan="2">Resource analysis</td>
          <td>Memory waste</td>
          <td>Tasks with a peak memory usage to total memory ratio that is too low</td>
      </tr>
@@ -120,6 +120,33 @@ Compass has supported the concept of diagnostic types:
          <td>Global sorting abnormality</td>
          <td>Tasks with long running time due to global sorting</td>
      </tr>
+    <tr>
+        <td rowspan="6">MapReduce</td>
+        <td rowspan="1">Resource analysis</td>
+        <td>Memory waste</td>
+        <td>Tasks with a peak memory usage to total memory ratio that is too low</td>
+    </tr>
+    <tr>
+        <td rowspan="5">Efficiency analysis</td>
+        <td>Large table scanning</td>
+        <td>Tasks with too many scanned rows</td>
+    </tr>
+    <tr>
+        <td>Task long tail</td>
+        <td>Tasks where the maximum running time of the task in the map/reduce is much larger than the median</td>
+    </tr>
+    <tr>
+        <td>Data skew</td>
+        <td>Tasks where the maximum amount of data processed by the task in the  map/reduce is much larger than the median</td>
+    </tr>
+    <tr>
+        <td>Too many speculative execution tasks</td>
+        <td>Tasks in which speculative execution of tasks frequently occurs in the map/reduce</td>
+    </tr>
+    <tr>
+        <td>GC abnormal</td>
+        <td>Tasks with a high ratio of GC time to CPU time</td>
+    </tr>
     <tr>
           <td rowspan="20">Flink</td>
           <td rowspan="10">Resource analysis</td>

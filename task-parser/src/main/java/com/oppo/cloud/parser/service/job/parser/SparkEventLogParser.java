@@ -18,7 +18,6 @@ package com.oppo.cloud.parser.service.job.parser;
 
 import com.oppo.cloud.common.constant.ApplicationType;
 import com.oppo.cloud.common.constant.ProgressState;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
 import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.domain.eventlog.config.SparkEnvironmentConfig;
@@ -35,11 +34,10 @@ import com.oppo.cloud.parser.service.job.oneclick.OneClickSubject;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
 import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
-import com.oppo.cloud.parser.utils.ReplayEventLogs;
+import com.oppo.cloud.parser.utils.ReplaySparkEventLogs;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileNotFoundException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,7 +87,7 @@ public class SparkEventLogParser extends OneClickSubject implements IParser {
     }
 
     private CommonResult<SparkEventLogParserResult> parse(ReaderObject readerObject) {
-        ReplayEventLogs replayEventLogs = new ReplayEventLogs();
+        ReplaySparkEventLogs replayEventLogs = new ReplaySparkEventLogs();
         try {
             replayEventLogs.replay(readerObject);
         } catch (Exception e) {
@@ -100,7 +98,7 @@ public class SparkEventLogParser extends OneClickSubject implements IParser {
         return detect(replayEventLogs, readerObject.getLogPath());
     }
 
-    private CommonResult<SparkEventLogParserResult> detect(ReplayEventLogs replayEventLogs, String logPath) {
+    private CommonResult<SparkEventLogParserResult> detect(ReplaySparkEventLogs replayEventLogs, String logPath) {
         Map<String, Object> env = getSparkEnvironmentConfig(replayEventLogs);
 
         Long appDuration = replayEventLogs.getApplication().getAppDuration();
@@ -134,7 +132,7 @@ public class SparkEventLogParser extends OneClickSubject implements IParser {
         return result;
     }
 
-    private Map<String, Object> getSparkEnvironmentConfig(ReplayEventLogs replayEventLogs) {
+    private Map<String, Object> getSparkEnvironmentConfig(ReplaySparkEventLogs replayEventLogs) {
         Map<String, Object> env = new HashMap<>();
         SparkEnvironmentConfig envConfig = config.getSparkEnvironmentConfig();
         if (envConfig != null) {
@@ -158,7 +156,7 @@ public class SparkEventLogParser extends OneClickSubject implements IParser {
     }
 
 
-    public MemoryCalculateParam getMemoryCalculateParam(ReplayEventLogs replayEventLogs) {
+    public MemoryCalculateParam getMemoryCalculateParam(ReplaySparkEventLogs replayEventLogs) {
         SparkApplication application = replayEventLogs.getApplication();
         long appTotalTime = application.getAppEndTimestamp() - application.getAppStartTimestamp();
         MemoryCalculateParam memoryCalculateParam = new MemoryCalculateParam();

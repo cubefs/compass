@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.parser.service.job.detector;
+package com.oppo.cloud.parser.service.job.detector.spark;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.domain.eventlog.CpuWasteAbnormal;
@@ -24,6 +24,7 @@ import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.domain.job.ExecutorTimeSpan;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkApplication;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkJob;
+import com.oppo.cloud.parser.service.job.detector.IDetector;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class CpuWasteDetector implements IDetector {
 
     private final CpuWasteConfig config;
 
-    CpuWasteDetector(DetectorParam param) {
+    public CpuWasteDetector(DetectorParam param) {
         this.param = param;
         this.config = param.getConfig().getCpuWasteConfig();
     }

@@ -35,7 +35,7 @@ import java.util.Map;
  */
 @Slf4j
 @Data
-public class ReplayEventLogs {
+public class ReplaySparkEventLogs {
 
     private SparkApplication application;
     private Map<Integer, SparkJob> jobs;
@@ -53,7 +53,7 @@ public class ReplayEventLogs {
     private Map<Integer, Integer> stageIDToJobID;
     private long logSize;
 
-    public ReplayEventLogs() {
+    public ReplaySparkEventLogs() {
         application = new SparkApplication();
         jobs = new HashMap<>();
         jobSQLExecIDMap = new HashMap<>();

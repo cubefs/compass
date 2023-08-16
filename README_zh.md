@@ -8,7 +8,7 @@
 
 - 非侵入式，即时诊断，无需修改已有的调度平台，即可体验诊断效果。
 - 支持多种主流调度平台，例如DolphinScheduler 2.x和3.x、Airflow或自研等。
-- 支持多版本Spark、Flink、Hadoop 2.x和3.x 任务日志诊断和解析。
+- 支持多版本Spark、MapReduce、Flink、Hadoop 2.x和3.x 任务日志诊断和解析。
 - 支持工作流层异常诊断，识别各种失败和基线耗时异常问题。
 - 支持引擎层异常诊断，包含数据倾斜、大表扫描、内存浪费等14种异常类型。
 - 支持各种日志匹配规则编写和异常阈值调整，可自行根据实际场景优化。
@@ -63,7 +63,7 @@
         <td>因内存溢出问题而导致失败的任务</td>
     </tr>
     <tr>
-        <td rowspan="2">成本分析</td>
+        <td rowspan="2">资源分析</td>
         <td>内存浪费</td>
         <td>内存使用峰值与总内存占比过低的任务</td>
     </tr>
@@ -107,6 +107,33 @@
     <tr>
         <td>全局排序异常</td>
         <td>全局排序导致运行耗时过长的任务</td>
+    </tr>
+    <tr>
+        <td rowspan="6">MapReduce</td>
+        <td rowspan="1">资源分析</td>
+        <td>内存浪费</td>
+        <td>内存使用峰值与总内存占比过低的任务</td>
+    </tr>
+    <tr>
+        <td rowspan="5">效率分析</td>
+        <td>大表扫描</td>
+        <td>扫描行数过多的任务</td>
+    </tr>
+    <tr>
+        <td>Task长尾</td>
+        <td>map/reduce task最大运行耗时远大于中位数的任务</td>
+    </tr>
+    <tr>
+        <td>数据倾斜</td>
+        <td>map/reduce task处理的最大数据量远大于中位数的任务</td>
+    </tr>
+    <tr>
+        <td>推测执行Task过多</td>
+        <td>map/reduce task中频繁出现推测执行的任务</td>
+    </tr>
+    <tr>
+        <td>GC异常</td>
+        <td>GC时间相对CPU时间占比过高的任务</td>
     </tr>
     <tr>
         <td rowspan="20">Flink</td>
@@ -341,7 +368,7 @@ Compass 表结构由两部分组成，一个是compass.sql，另一个是依赖�
 ```
 
 Kafka上报方式:  
-发送上述元数据内容到flink-task-app主题。若想修改主题名称，可以修改 task-flink模块，application.yml文件中的spring.kafka.flinkTaskApp属性。
+发送上述元数据内容到flink-task-app主题。若想修改主题名称，可以修改task-flink模块，application.yml文件中的spring.kafka.flinkTaskApp属性。
 
 Http接口上报方式:  
 发送post请求到http://[compass_host]/compass/api/flink/saveRealtimeTaskApp, http请求body填入上述元数据内容。
@@ -376,7 +403,6 @@ Flink:
 
 - 提交 [issue](https://github.com/cubefs/compass/issues).
 - 加入微信群，搜索并添加微信号 **`daiwei_cn`** or **`zebozhuang`**。请在验证信息中注明您的意向。审核通过后，我们会邀请您加入社区群。
-
 
 ## 版权
 

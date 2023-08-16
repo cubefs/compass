@@ -19,7 +19,7 @@ package com.oppo.cloud.parser.domain.job;
 import com.oppo.cloud.common.constant.ApplicationType;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.parser.domain.mr.MRAppInfo;
-import com.oppo.cloud.parser.utils.ReplayEventLogs;
+import com.oppo.cloud.parser.utils.ReplaySparkEventLogs;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -75,7 +75,7 @@ public class DetectorParam {
 
     private boolean isOneClick;
 
-    private ReplayEventLogs replayEventLogs;
+    private ReplaySparkEventLogs replayEventLogs;
 
     private MRAppInfo mrAppInfo;
 
