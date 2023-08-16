@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.parser.spark.eventlog;
 
-import com.oppo.cloud.parser.utils.ReplayEventLogs;
+import com.oppo.cloud.parser.utils.ReplaySparkEventLogs;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +33,7 @@ class ReplayEventLogsTest {
         File file = new File(ReplayEventLogsTest.class.getClassLoader().getResource("log/event/eventlog").getPath());
         String content = new String(Files.readAllBytes(file.toPath()));
         String[] lines = content.split("\n");
-        ReplayEventLogs replayEventLogs = new ReplayEventLogs();
+        ReplaySparkEventLogs replayEventLogs = new ReplaySparkEventLogs();
         replayEventLogs.replay(lines);
         log.info("{}", replayEventLogs.getApplication());
         log.info("{}", replayEventLogs.getJobs());

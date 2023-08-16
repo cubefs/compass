@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.parser.service.job.detector;
+package com.oppo.cloud.parser.service.job.detector.spark;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
@@ -26,6 +26,7 @@ import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkJob;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkStage;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkTask;
+import com.oppo.cloud.parser.service.job.detector.IDetector;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
@@ -38,7 +39,7 @@ public class TaskDurationDetector implements IDetector {
 
     private final TaskDurationConfig config;
 
-    TaskDurationDetector(DetectorParam param) {
+    public TaskDurationDetector(DetectorParam param) {
         this.param = param;
         this.config = param.getConfig().getTaskDurationConfig();
     }

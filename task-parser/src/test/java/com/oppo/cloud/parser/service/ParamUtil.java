@@ -28,7 +28,7 @@ import com.oppo.cloud.common.domain.job.LogRecord;
 import com.oppo.cloud.common.util.spring.SpringBeanUtil;
 import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
-import com.oppo.cloud.parser.utils.ReplayEventLogs;
+import com.oppo.cloud.parser.utils.ReplaySparkEventLogs;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,15 +43,15 @@ public class ParamUtil {
         return content.split("\n");
     }
 
-    public static ReplayEventLogs getReplayEventLogs() throws Exception {
+    public static ReplaySparkEventLogs getReplayEventLogs() throws Exception {
         String[] lines = readLines("log/event/eventlog");
-        ReplayEventLogs replayEventLogs = new ReplayEventLogs();
+        ReplaySparkEventLogs replayEventLogs = new ReplaySparkEventLogs();
         replayEventLogs.replay(lines);
         return replayEventLogs;
     }
 
     public static DetectorParam getDetectorParam() throws Exception {
-        ReplayEventLogs replayEventLogs = getReplayEventLogs();
+        ReplaySparkEventLogs replayEventLogs = getReplayEventLogs();
 
         Long appDuration = replayEventLogs.getApplication().getAppDuration();
         if (appDuration == null || appDuration < 0) {

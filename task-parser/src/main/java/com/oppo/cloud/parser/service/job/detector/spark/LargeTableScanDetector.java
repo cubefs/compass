@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.parser.service.job.detector;
+package com.oppo.cloud.parser.service.job.detector.spark;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
@@ -25,6 +25,7 @@ import com.oppo.cloud.parser.domain.spark.eventlog.AccumulableInfo;
 import com.oppo.cloud.parser.domain.spark.eventlog.SQLMetricInfo;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkListenerSQLExecutionStart;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkPlanInfo;
+import com.oppo.cloud.parser.service.job.detector.IDetector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public class LargeTableScanDetector implements IDetector {
 
     private final LargeTableScanConfig config;
 
-    LargeTableScanDetector(DetectorParam param) {
+    public LargeTableScanDetector(DetectorParam param) {
         this.param = param;
         this.config = param.getConfig().getLargeTableScanConfig();
     }

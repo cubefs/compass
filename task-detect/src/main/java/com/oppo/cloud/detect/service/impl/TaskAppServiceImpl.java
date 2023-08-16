@@ -205,6 +205,7 @@ public class TaskAppServiceImpl implements TaskAppService {
     public TaskApp buildAbnormalTaskApp(TaskApplication taskApplication) throws Exception {
         TaskApp taskApp = new TaskApp();
         BeanUtils.copyProperties(taskApplication, taskApp);
+        taskApp.setExecutionDate(taskApplication.getExecuteTime());
 
         YarnApp yarnApp = elasticSearchService.searchYarnApp(taskApplication.getApplicationId());
 

@@ -24,7 +24,7 @@ import com.oppo.cloud.common.util.spring.SpringBeanUtil;
 import com.oppo.cloud.parser.config.ThreadPoolConfig;
 import com.oppo.cloud.parser.domain.job.*;
 import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
-import com.oppo.cloud.parser.service.job.detector.MemWasteDetector;
+import com.oppo.cloud.parser.service.job.detector.spark.MemWasteDetector;
 import com.oppo.cloud.parser.service.job.parser.IParser;
 import com.oppo.cloud.parser.service.writer.ElasticWriter;
 import lombok.extern.slf4j.Slf4j;

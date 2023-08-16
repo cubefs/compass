@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.parser.service.job.detector;
+package com.oppo.cloud.parser.service.job.detector.spark;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
-import com.oppo.cloud.common.domain.eventlog.CpuWasteAbnormal;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
 import com.oppo.cloud.common.domain.eventlog.JobDurationAbnormal;
 import com.oppo.cloud.common.domain.eventlog.config.JobDurationConfig;
@@ -26,6 +25,7 @@ import com.oppo.cloud.parser.domain.job.StageDetectionInfo;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkJob;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkStage;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkTask;
+import com.oppo.cloud.parser.service.job.detector.IDetector;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class JobDurationDetector implements IDetector {
 
     private final JobDurationConfig config;
 
-    JobDurationDetector(DetectorParam param) {
+    public JobDurationDetector(DetectorParam param) {
         this.param = param;
         this.config = param.getConfig().getJobDurationConfig();
     }

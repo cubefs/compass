@@ -19,6 +19,7 @@ package com.oppo.cloud.parser.service.job.detector;
 import com.oppo.cloud.common.domain.eventlog.config.MemWasteConfig;
 import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.service.ParamUtil;
+import com.oppo.cloud.parser.service.job.detector.spark.MemWasteDetector;
 import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
