@@ -12,7 +12,7 @@ The key features:
 
 - Supports multiple scheduling platforms(DolphinScheduler 2.x or 3.x, Airflow, or self-developed etc.)
 
-- Supports Spark 2.x or 3.x,Flink, Hadoop 2.x or 3.x troubleshooting.
+- Supports Spark 2.x or 3.x, Flink 1.2~, Hadoop 2.x or 3.x troubleshooting.
 
 - Supports workflow layer exception diagnosis, identifies various failures and baseline time-consuming abnormal
   problems.
