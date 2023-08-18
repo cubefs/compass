@@ -31,6 +31,11 @@ public class YarnPathInfo {
     private String remoteDir;
 
     /**
+     * yarn.app.mapreduce.am.staging-dir
+     */
+    private String mapreduceStagingDir;
+
+    /**
      * mapreduce.jobhistory.done-dir
      */
     private String mapreduceDoneDir;

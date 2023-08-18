@@ -18,7 +18,6 @@ package com.oppo.cloud.parser.service.job.parser;
 
 import com.oppo.cloud.common.constant.ApplicationType;
 import com.oppo.cloud.common.constant.ProgressState;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
 import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.domain.job.LogPath;
@@ -39,7 +38,6 @@ import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
 import com.oppo.cloud.parser.utils.JobHistoryUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,11 +96,11 @@ public class MapReduceJobHistoryParser extends OneClickSubject implements IParse
             updateParserProgress(ProgressState.FAILED, 0, 0);
             return null;
         }
-        return detect(mrAppInfo, "");
+        return detect(mrAppInfo);
     }
 
 
-    private CommonResult detect(MRAppInfo mrAppInfo, String logPath) {
+    private CommonResult detect(MRAppInfo mrAppInfo) {
 
         long appDuration = mrAppInfo.getElapsedTime();
 
@@ -111,7 +109,7 @@ public class MapReduceJobHistoryParser extends OneClickSubject implements IParse
                 this.param.getLogRecord().getJobAnalysis().getTaskName(),
                 this.param.getLogRecord().getJobAnalysis().getExecutionDate(),
                 this.param.getLogRecord().getJobAnalysis().getRetryTimes(),
-                this.param.getApp().getAppId(), ApplicationType.MAPREDUCE, appDuration, logPath, config,
+                this.param.getApp().getAppId(), ApplicationType.MAPREDUCE, appDuration, "", config,
                 this.param.getLogRecord().getIsOneClick());
         detectorParam.setMrAppInfo(mrAppInfo);
 

@@ -61,6 +61,9 @@ public class SparkApplication {
     }
 
     public Long getAppDuration() {
+        if (this.appEndTimestamp == null) {
+            this.appEndTimestamp = System.currentTimeMillis();
+        }
         return this.appEndTimestamp - this.appStartTimestamp;
     }
 }

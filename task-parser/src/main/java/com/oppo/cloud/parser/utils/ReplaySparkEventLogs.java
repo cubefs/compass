@@ -16,6 +16,7 @@
 
 package com.oppo.cloud.parser.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
@@ -102,7 +103,13 @@ public class ReplaySparkEventLogs {
      * 按行解析
      */
     private void parseLine(String line) throws Exception {
-        SparkListenerEvent event = objectMapper.readValue(line, SparkListenerEvent.class);
+        SparkListenerEvent event;
+        try {
+            event = objectMapper.readValue(line, SparkListenerEvent.class);
+        } catch (JsonProcessingException e) {
+            log.error("parseSparkEventErr:{}", line);
+            return;
+        }
         switch (event.getEvent()) {
             case "SparkListenerApplicationStart":
                 SparkListenerApplicationStart sparkListenerApplicationStart = objectMapper.readValue(line,

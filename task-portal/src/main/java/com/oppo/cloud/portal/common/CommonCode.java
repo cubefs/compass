@@ -24,6 +24,11 @@ public class CommonCode {
     public static final String TASK_APP_TEMP = ":taskApp:temp";
 
     /**
+     * diagnosis cache running application state
+     */
+    public static final String TASK_APP_RUNNING = ":taskApp:running";
+
+    /**
      * diagnose report-runInfo
      */
     public static final String DIAGNOSE_DETECTORSTORAGE = ":diagnose:detectorStorage";

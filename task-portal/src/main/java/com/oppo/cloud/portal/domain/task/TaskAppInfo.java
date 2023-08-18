@@ -71,6 +71,9 @@ public class TaskAppInfo {
     @ApiModelProperty(value = "sparkUI")
     private String sparkUI;
 
+    @ApiModelProperty(value = "任务执行状态")
+    private String taskAppState;
+
     /**
      * 转换格式
      */
@@ -89,6 +92,7 @@ public class TaskAppInfo {
         taskAppInfo.setResource(TaskUtil.resourceSimplify(taskApp.getVcoreSeconds(), taskApp.getMemorySeconds()));
         taskAppInfo.setSparkUI(taskApp.getSparkUI());
         taskAppInfo.setTryNumber(taskApp.getRetryTimes() == null ? 0 : taskApp.getRetryTimes());
+        taskAppInfo.setTaskAppState(taskApp.getTaskAppState());
         return taskAppInfo;
     }
 }

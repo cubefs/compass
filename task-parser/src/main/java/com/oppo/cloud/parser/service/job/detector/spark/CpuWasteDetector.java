@@ -126,6 +126,9 @@ public class CpuWasteDetector implements IDetector {
                 cur = jobInfo;
             }
         }
+        if (cur.getEndTime() == null) {
+            return jobAcc;
+        }
         jobAcc += cur.getEndTime() - cur.getSubmissionTime();
         return jobAcc;
     }

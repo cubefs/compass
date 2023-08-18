@@ -38,6 +38,8 @@ public class LogPathUtil {
 
     private static final String MR_SUB_DIR_FORMAT = "%s/%s/";
 
+    private static final String MR_JOB_HISTORY_LOG_DIR_FORMAT = "%s/%s/.staging/%s/%s*";
+
     public static final String SPARK_EVENT_LOG_RUNNING_EXTENSION = ".inprogress";
 
 
@@ -54,6 +56,11 @@ public class LogPathUtil {
         String jobHistoryIntermediateDoneLogPathPrefix = getYarnLogPath(Constant.JHS_MAPREDUCE_INTERMEDIATE_DONE_PATH, yarnApp.getIp(), redisService);
         String jobHistoryIntermediateDoneLogPath = String.format("%s/%s/%s*", jobHistoryIntermediateDoneLogPathPrefix, yarnApp.getUser(), jobId);
         mrJobHistoryLogPath.setIntermediateDoneLogPath(jobHistoryIntermediateDoneLogPath);
+        if (YarnAppState.RUNNING.toString().equals(yarnApp.getState())) {
+            String stagingLogPathPrefix = getYarnLogPath(Constant.JHS_MAPREDUCE_STAGING_PATH, yarnApp.getIp(), redisService);
+            String stagingLogPath = String.format(MR_JOB_HISTORY_LOG_DIR_FORMAT, stagingLogPathPrefix, yarnApp.getUser(), jobId, jobId);
+            mrJobHistoryLogPath.setStagingLogPath(stagingLogPath);
+        }
         return mrJobHistoryLogPath;
     }
 

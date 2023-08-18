@@ -65,6 +65,10 @@ public class App {
         if (ApplicationType.MAPREDUCE.getValue().equals(taskApp.getApplicationType())) {
             logInfo.setLogGroup(LogGroupType.MAPREDUCE.getName());
             List<LogPath> logPathList = new ArrayList<>();
+            if(YarnAppState.RUNNING.toString().equals(taskApp.getTaskAppState())){
+                logPathList.add(new LogPath(ProtocolType.HDFS.getName(), LogType.MAPREDUCE_JOB_HISTORY.getName(),
+                        LogPathType.PATTERN, taskApp.getJobHistoryStagingLogPath()));
+            }
             logPathList.add(new LogPath(ProtocolType.HDFS.getName(), LogType.MAPREDUCE_JOB_HISTORY.getName(),
                     LogPathType.PATTERN, taskApp.getJobHistoryDoneLogPath()));
             logPathList.add(new LogPath(ProtocolType.HDFS.getName(), LogType.MAPREDUCE_JOB_HISTORY.getName(),

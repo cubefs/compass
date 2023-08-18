@@ -52,6 +52,9 @@ public class JobDurationDetector implements IDetector {
         List<JobDurationAbnormal> jobLists = new ArrayList<>();
         for (Map.Entry<Integer, SparkJob> job : param.getReplayEventLogs().getJobs().entrySet()) {
             long jobStartTime = job.getValue().getSubmissionTime();
+            if (job.getValue().getEndTime() == null) {
+                continue;
+            }
             long jobEndTime = job.getValue().getEndTime();
             long jobDuration = jobEndTime - jobStartTime;
 

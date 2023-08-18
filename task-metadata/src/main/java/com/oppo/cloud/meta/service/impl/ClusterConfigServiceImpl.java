@@ -60,6 +60,8 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
 
     private static final String YARN_REMOTE_APP_LOG_DIR = "yarn.nodemanager.remote-app-log-dir";
 
+    private static final String YARN_MAPREDUCE_STAGING_DIR = "yarn.app.mapreduce.am.staging-dir";
+
     private static final String MARREDUCE_DONE_DIR = "mapreduce.jobhistory.done-dir";
 
     private static final String MARREDUCE_INTERMEDIATE_DONE_DIR = "mapreduce.jobhistory.intermediate-done-dir";
@@ -120,12 +122,15 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
                 continue;
             }
             String yarnRemotePath = Constant.JHS_HDFS_PATH + host;
+            String mapreduceStagingPath = Constant.JHS_MAPREDUCE_STAGING_PATH + host;
             String mapreduceDonePath = Constant.JHS_MAPREDUCE_DONE_PATH + host;
             String mapreduceIntermediateDonePath = Constant.JHS_MAPREDUCE_INTERMEDIATE_DONE_PATH + host;
             log.info("cache yarnPathInfo:{},{}", yarnRemotePath, yarnPathInfo.getRemoteDir());
+            log.info("cache yarnPathInfo:{},{}", mapreduceStagingPath, yarnPathInfo.getMapreduceStagingDir());
             log.info("cache yarnPathInfo:{},{}", mapreduceDonePath, yarnPathInfo.getMapreduceDoneDir());
             log.info("cache yarnPathInfo:{},{}", mapreduceIntermediateDonePath, yarnPathInfo.getMapreduceIntermediateDoneDir());
             redisService.set(yarnRemotePath, yarnPathInfo.getRemoteDir());
+            redisService.set(mapreduceStagingPath, yarnPathInfo.getMapreduceStagingDir());
             redisService.set(mapreduceDonePath, yarnPathInfo.getMapreduceDoneDir());
             redisService.set(mapreduceIntermediateDonePath, yarnPathInfo.getMapreduceIntermediateDoneDir());
         }
@@ -160,6 +165,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
 
         String remoteDir = "";
         String defaultFS = "";
+        String mapreduceStagingDir = "";
         String mapreduceDoneDir = "";
         String mapreduceIntermediateDoneDir = "";
 
@@ -183,6 +189,10 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
                     log.info("yarnConfProperties key: {}, value: {}", MARREDUCE_INTERMEDIATE_DONE_DIR, value);
                     mapreduceIntermediateDoneDir = value;
                 }
+                if(YARN_MAPREDUCE_STAGING_DIR.equals(key)){
+                    log.info("yarnConfProperties key: {}, value: {}", YARN_MAPREDUCE_STAGING_DIR, value);
+                    mapreduceStagingDir = value;
+                }
             }
         }
         if (StringUtils.isEmpty(defaultFS)) {
@@ -194,11 +204,14 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
             return null;
         }
         if (StringUtils.isEmpty(mapreduceDoneDir)) {
-            log.error("mapreduceDoneDirrEmpty:{}", url);
+            log.error("mapreduceDoneDirEmpty:{}", url);
             return null;
         }
         if (!remoteDir.contains(Constant.HDFS_SCHEME)) {
             remoteDir = defaultFS + remoteDir;
+        }
+        if (!mapreduceStagingDir.contains(Constant.HDFS_SCHEME)) {
+            mapreduceStagingDir = defaultFS + mapreduceStagingDir;
         }
         if (!mapreduceDoneDir.contains(Constant.HDFS_SCHEME)) {
             mapreduceDoneDir = defaultFS + mapreduceDoneDir;
@@ -210,6 +223,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
         YarnPathInfo yarnPathInfo = new YarnPathInfo();
         yarnPathInfo.setDefaultFS(defaultFS);
         yarnPathInfo.setRemoteDir(remoteDir);
+        yarnPathInfo.setMapreduceStagingDir(mapreduceStagingDir);
         yarnPathInfo.setMapreduceDoneDir(mapreduceDoneDir);
         yarnPathInfo.setMapreduceIntermediateDoneDir(mapreduceIntermediateDoneDir);
         log.info("yarnPathInfo: {}, {}", url, yarnPathInfo);
