@@ -200,7 +200,7 @@ public class ElasticWriter {
      * 更新job categories信息
      */
     public void updateJob(JobAnalysis jobAnalysis, Map<String, Boolean> categoryMap) throws Exception {
-        if (jobAnalysis.getTaskName() == null) {
+        if (jobAnalysis == null || jobAnalysis.getTaskName() == null) {
             return;
         }
         UpdateApi api = new UpdateApi();

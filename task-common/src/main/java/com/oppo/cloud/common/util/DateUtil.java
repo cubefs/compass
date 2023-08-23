@@ -67,6 +67,9 @@ public class DateUtil {
 
 
     public static String formatToDay(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
         return getDateFormat("yyyy-MM-dd").format(date);
     }
 
