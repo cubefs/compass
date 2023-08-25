@@ -36,23 +36,23 @@ public class AppDiagnosisMetadata {
     @NotNull(message = "memorySeconds must not be null")
     private Double memorySeconds;
 
-    @NotNull(message = "startTime must not be null")
-    private Date startTime;
+    @NotNull(message = "startedTime must not be null")
+    private Long startedTime;
 
-    @NotNull(message = "finishTime must not be null")
-    private Date finishTime;
+    @NotNull(message = "finishedTime must not be null")
+    private Long finishedTime;
 
     @NotNull(message = "elapsedTime must not be null")
     private Double elapsedTime;
 
-    @NotNull(message = "amHost must not be null")
-    private String amHost;
+    @NotNull(message = "amHostHttpAddress must not be null")
+    private String amHostHttpAddress;
 
     private String sparkEventLogFile;
 
     private String sparkExecutorLogDirectory;
 
-    private String mapreduceEventLogFile;
+    private String mapreduceEventLogDirectory;
 
     private String mapreduceContainerLogDirectory;
 

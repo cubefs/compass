@@ -659,3 +659,61 @@ task-portal
 │   └── index.html
 
 ```
+
+## 离线任务上报元数据诊断
+
+支持第三方上报Spark/MapReduce任务application元数据进行诊断，如果不需要同步调度平台元数据和日志，只要启动task-portal和task-parser模块。
+
+请求接口：http://[compass_host]/compass/openapi/offline/app/metadata
+
+请求方式:  POST
+
+参数类型 ：JSON
+
+元数据来自http://rm-http-address:port/ws/v1/cluster/apps
+
+参数名称				| 类型		     | 是否必填	            |描述  
+:----				|:---------|:-----------------|:---	
+applicationId				| String		 | 是			             | YARN的application id
+applicationType				| String		 | 是			             | YARN的任务类型：SPARK或者MAPREDUCE
+vcoreSeconds			| Double		    | 是			             | YARN的vcoreSeconds
+memorySeconds			| Double		   | 是			             | YARN的memorySeconds
+startedTime			| Long		   | 是			             | YARN的startedTime
+finishedTime			| Long		   | 是			             | YARN的finishedTime
+elapsedTime			| Double		 | 是			             | YARN的elapsedTime
+amHostHttpAddress			| String		 | 是			             | YARN的amHostHttpAddress
+sparkEventLogFile			| String		 | SPARK任务必填			     | SparkEventLog绝对路径
+sparkExecutorLogDirectory			| String		 | SPARK任务必填			     | 到application id层级目录
+mapreduceEventLogDirectory			| String		 | MAPREDUCE任务必填			 | 到日期层级前缀目录
+mapreduceContainerLogDirectory			| String		 | MAPREDUCE任务必填			     | 到application id层级目录
+diagnostics			| String		 | 否			             | YARN的diagnostics
+queue			| String		 | 否			             | YARN的queue
+user			| String		 | 否			             | YARN的user
+clusterName			| String		 | 否			             | 集群名称
+
+请求参数示例：
+```json
+{
+    "applicationId": "application_1673850090992_30536",
+    "applicationType": "SPARK",
+    "vcoreSeconds": 550,
+    "memorySeconds": 77079,
+    "startedTime": 1692611101256,
+    "finishedTime": 1692617022920,
+    "elapsedTime": 35419,
+    "amHostHttpAddress": "dgtest01:8043",
+    "sparkEventLogFile": "hdfs://logs-cluster/user/spark/applicationHistory/application_1673850090992_30536_1",
+    "sparkExecutorLogDirectory": "hdfs://logs-cluster/tmp/logs/hdfs/logs/application_1673850090992_30536",
+    "mapreduceEventLogDirectory": "hdfs://logs-cluster/tmp/hadoop-yarn/staging/history/done", // MAPREDUCE任务必填
+    "mapreduceContainerLogDirectory": "hdfs://logs-cluster/tmp/logs/root/logs/application_1673850090992_30536", // MAPREDUCE任务必填
+    "diagnostics": "",
+    "queue": "root",
+    "user": "root",
+    "clusterName": "test"
+}
+```
+
+
+## 一键诊断功能
+
+离线诊断支持全量(包含非调度平台提交任务)Spark/MapReduce任务进行一键诊断，如果仅需要体验该功能，只要启动task-portal、task-metadata和task-parser模块。
