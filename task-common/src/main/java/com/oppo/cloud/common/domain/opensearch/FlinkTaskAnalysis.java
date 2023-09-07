@@ -2,7 +2,7 @@ package com.oppo.cloud.common.domain.opensearch;
 
 import com.oppo.cloud.common.util.DateUtil;
 import lombok.Data;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
