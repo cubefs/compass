@@ -18,14 +18,14 @@ package com.oppo.cloud.parser.service.job.task;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.constant.LogType;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.common.util.textparser.ParserManager;
 import com.oppo.cloud.parser.config.DiagnosisConfig;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.job.TaskParam;
 import com.oppo.cloud.parser.domain.job.TaskResult;
-import com.oppo.cloud.parser.service.writer.ElasticWriter;
+import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -72,7 +72,7 @@ public class YarnTask extends Task {
         ParserParam param = new ParserParam(LogType.YARN.getName(), this.taskParam.getLogRecord(),
                 this.taskParam.getApp(), null);
 
-        List<String> list = ElasticWriter.getInstance()
+        List<String> list = OpenSearchWriter.getInstance()
                 .saveParserActions(LogType.YARN.getName(), "", param, results);
 
         return new TaskResult(this.taskParam.getApp().getAppId(), new ArrayList<>(list));

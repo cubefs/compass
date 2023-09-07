@@ -18,15 +18,13 @@ package com.oppo.cloud.detect.detector;
 
 import com.oppo.cloud.common.constant.JobCategoryEnum;
 import com.oppo.cloud.common.constant.TaskStateEnum;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 import com.oppo.cloud.detect.service.TaskInstanceService;
 import com.oppo.cloud.detect.util.DetectorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 /**
  * 运行耗时异常检测器

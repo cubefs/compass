@@ -226,8 +226,8 @@ export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
 export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
 # Zookeeper (默认版本: 3.4.5, canal使用)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
-# Elasticsearch (默认版本: 7.17.9)
-export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
+# OpenSearch (默认版本: 1.3.12)
+export SPRING_OPENSEARCH_NODES="ip1:port,ip2:port"
 # Flink metric prometheus
 export FLINK_PROMETHEUS_HOST="host"
 export FLINK_PROMETHEUS_TOKEN=""

@@ -25,15 +25,15 @@ import com.oppo.cloud.common.domain.cluster.spark.SparkApplication;
 import com.oppo.cloud.common.domain.cluster.yarn.Attempt;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.common.util.DateUtil;
-import com.oppo.cloud.common.util.elastic.BulkApi;
+import com.oppo.cloud.common.util.opensearch.BulkApi;
 import com.oppo.cloud.meta.config.HadoopConfig;
 import com.oppo.cloud.meta.service.IClusterConfigService;
 import com.oppo.cloud.meta.service.ITaskSyncerMetaService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.action.bulk.BulkItemResponse;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.opensearch.action.bulk.BulkItemResponse;
+import org.opensearch.action.bulk.BulkResponse;
+import org.opensearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +59,7 @@ public class SparkMetaServiceImpl implements ITaskSyncerMetaService {
     @Value("${scheduler.sparkMeta.limitCount}")
     private long limitCount;
 
-    @Value("${spring.elasticsearch.spark-app-prefix}")
+    @Value("${spring.opensearch.spark-app-prefix}")
     private String sparkAppPrefix;
     @Resource
     private HadoopConfig config;

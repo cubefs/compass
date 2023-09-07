@@ -22,14 +22,14 @@ import com.oppo.cloud.common.constant.Constant;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnResponse;
 import com.oppo.cloud.common.util.DateUtil;
-import com.oppo.cloud.common.util.elastic.BulkApi;
+import com.oppo.cloud.common.util.opensearch.BulkApi;
 import com.oppo.cloud.meta.config.HadoopConfig;
 import com.oppo.cloud.meta.service.IClusterConfigService;
 import com.oppo.cloud.meta.service.ITaskSyncerMetaService;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.bulk.BulkItemResponse;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.opensearch.action.bulk.BulkItemResponse;
+import org.opensearch.action.bulk.BulkResponse;
+import org.opensearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -57,7 +57,7 @@ public class YarnMetaServiceImpl implements ITaskSyncerMetaService {
     @Value("${scheduler.yarnMeta.startedTimeBegin}")
     private long startedTimeBegin;
 
-    @Value("${spring.elasticsearch.yarn-app-prefix}")
+    @Value("${spring.opensearch.yarn-app-prefix}")
     private String yarnAppPrefix;
 
     @Resource

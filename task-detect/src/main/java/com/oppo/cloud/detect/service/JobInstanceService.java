@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.detect.service;
 
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 
 /**
  * @date 2022/11/1 20:23

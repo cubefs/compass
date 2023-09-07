@@ -18,8 +18,8 @@ package com.oppo.cloud.portal.service.impl;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.oppo.cloud.common.constant.*;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.domain.job.App;
 import com.oppo.cloud.common.domain.job.LogInfo;
 import com.oppo.cloud.common.domain.job.LogPath;

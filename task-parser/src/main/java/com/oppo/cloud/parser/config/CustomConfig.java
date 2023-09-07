@@ -34,21 +34,21 @@ import java.util.List;
 public class CustomConfig {
 
     /**
-     * es index prefix
+     * opensearch index prefix
      */
-    @Value("${spring.elasticsearch.log-prefix}")
+    @Value("${spring.opensearch.log-prefix}")
     private String logSummaryPrefix;
 
-    @Value("${spring.elasticsearch.detector-prefix}")
+    @Value("${spring.opensearch.detector-prefix}")
     private String detectorPrefix;
 
-    @Value("${spring.elasticsearch.gc-prefix}")
+    @Value("${spring.opensearch.gc-prefix}")
     private String gcPrefix;
 
-    @Value("${spring.elasticsearch.job-prefix}")
+    @Value("${spring.opensearch.job-prefix}")
     private String jobPrefix;
 
-    @Value("${spring.elasticsearch.task-app-prefix}")
+    @Value("${spring.opensearch.task-app-prefix}")
     private String taskAppPrefix;
 
     @Value("${custom.redisConsumer.enable}")

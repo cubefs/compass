@@ -21,7 +21,7 @@ import com.github.pagehelper.PageHelper;
 import com.oppo.cloud.common.api.CommonPage;
 import com.oppo.cloud.common.api.CommonStatus;
 import com.oppo.cloud.common.constant.ComponentEnum;
-import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
+import com.oppo.cloud.common.domain.opensearch.FlinkTaskAnalysis;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisFrom;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisResourceType;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisRuleType;

@@ -16,7 +16,6 @@
 
 package com.oppo.cloud.portal.domain.task;
 
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

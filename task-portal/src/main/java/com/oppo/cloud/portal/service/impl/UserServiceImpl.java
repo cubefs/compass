@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 用户登录
      */
+    @Override
     public UserInfo userLogin(HttpServletResponse httpServletResponse, String username, String password)
             throws Exception {
 

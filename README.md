@@ -238,8 +238,8 @@ export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
 export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
 # Zookeeper (default version: 3.4.5, used by canal)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
-# Elasticsearch (default version: 7.17.9)
-export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
+# OpenSearch (default version: 1.3.12)
+export SPRING_OPENSEARCH_NODES="ip1:port,ip2:port"
 # Flink metric prometheus
 export FLINK_PROMETHEUS_HOST="host"
 export FLINK_PROMETHEUS_TOKEN=""

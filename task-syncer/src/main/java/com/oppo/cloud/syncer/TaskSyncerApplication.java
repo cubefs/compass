@@ -17,17 +17,10 @@
 package com.oppo.cloud.syncer;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.elasticsearch.ElasticSearchRestHealthContributorAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(exclude = {
-        RedisAutoConfiguration.class,
-        ElasticsearchDataAutoConfiguration.class,
-        ElasticSearchRestHealthContributorAutoConfiguration.class
-}, scanBasePackages = "com.oppo.cloud")
+@SpringBootApplication(scanBasePackages = "com.oppo.cloud")
 @ComponentScan(basePackages = "com.oppo.cloud")
 public class TaskSyncerApplication {
 

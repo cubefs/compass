@@ -25,7 +25,7 @@ import com.oppo.cloud.model.TaskDiagnosisAdviceExample;
 import com.oppo.cloud.portal.domain.base.Conclusion;
 import com.oppo.cloud.portal.domain.diagnose.IsAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.Item;
-import com.oppo.cloud.portal.service.ElasticSearchService;
+import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.diagnose.Generate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +46,9 @@ public abstract class RunTimeBaseService<T extends IsAbnormal> implements Genera
     TaskDiagnosisAdviceMapper diagnoseAdviceMapper;
 
     @Autowired
-    ElasticSearchService elasticSearchService;
+    OpenSearchService openSearchService;
 
-    @Value(value = "${custom.elasticsearch.detectIndex.name}")
+    @Value(value = "${custom.opensearch.detectIndex.name}")
     String detectIndex;
 
     /**

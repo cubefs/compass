@@ -17,8 +17,8 @@
 package com.oppo.cloud.detect.task;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.domain.job.App;
 import com.oppo.cloud.common.domain.job.LogRecord;
 import com.oppo.cloud.common.service.RedisService;
@@ -83,8 +83,6 @@ public class DelayedTask implements CommandLineRunner {
     @Autowired
     private JobInstanceService jobInstanceService;
 
-    @Autowired
-    private ElasticSearchService elasticSearchService;
 
     @PostConstruct
     void init() {

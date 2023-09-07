@@ -20,23 +20,23 @@ import com.alibaba.fastjson2.JSON;
 import com.github.pagehelper.PageHelper;
 import com.oppo.cloud.common.constant.ComponentEnum;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
-import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAdvice;
-import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.SimpleUser;
 import com.oppo.cloud.common.domain.flink.JobManagerConfigItem;
 import com.oppo.cloud.common.domain.flink.enums.*;
 import com.oppo.cloud.common.domain.flink.metric.MetricResult;
 import com.oppo.cloud.common.domain.flink.report.DiagnosisRuleReport;
+import com.oppo.cloud.common.domain.opensearch.FlinkTaskAdvice;
+import com.oppo.cloud.common.domain.opensearch.FlinkTaskAnalysis;
+import com.oppo.cloud.common.domain.opensearch.SimpleUser;
 import com.oppo.cloud.common.util.DateUtil;
-import com.oppo.cloud.common.util.elastic.BulkApi;
+import com.oppo.cloud.common.util.opensearch.BulkApi;
 import com.oppo.cloud.flink.advice.DiagnosisDoctor;
-import com.oppo.cloud.flink.config.EsConfig;
+import com.oppo.cloud.flink.config.OpenSearchFlinkConfig;
 import com.oppo.cloud.flink.constant.DiagnosisParamsConstants;
 import com.oppo.cloud.flink.domain.diagnosis.DiagnosisContext;
 import com.oppo.cloud.flink.domain.diagnosis.RcJobDiagnosis;
 import com.oppo.cloud.flink.domain.diagnosis.RcJobDiagnosisAdvice;
 import com.oppo.cloud.flink.service.DiagnosisService;
-import com.oppo.cloud.flink.service.FlinkElasticSearchService;
+import com.oppo.cloud.flink.service.FlinkOpenSearchService;
 import com.oppo.cloud.flink.service.FlinkMetaService;
 import com.oppo.cloud.flink.util.MonitorMetricUtil;
 import com.oppo.cloud.mapper.BlocklistMapper;
@@ -46,10 +46,10 @@ import com.oppo.cloud.model.BlocklistExample;
 import com.oppo.cloud.model.FlinkTaskApp;
 import com.oppo.cloud.model.FlinkTaskAppExample;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.bulk.BulkItemResponse;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.update.UpdateResponse;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.opensearch.action.bulk.BulkItemResponse;
+import org.opensearch.action.bulk.BulkResponse;
+import org.opensearch.action.update.UpdateResponse;
+import org.opensearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -87,20 +87,17 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     @Autowired
     private DiagnosisParamsConstants cons;
 
-    @Resource(name = "flinkElasticClient")
-    private RestHighLevelClient elasticClient;
+    @Resource(name = OpenSearchFlinkConfig.SEARCH_CLIENT)
+    private RestHighLevelClient restClient;
 
-    @Autowired
-    private EsConfig esConfig;
-
-    @Value("${custom.elasticsearch.flinkReportIndex.name}")
+    @Value("${custom.opensearch.flinkReportIndex.name}")
     private String flinkReportIndex;
 
-    @Value("${custom.elasticsearch.flinkTaskAnalysisIndex.name}")
+    @Value("${custom.opensearch.flinkTaskAnalysisIndex.name}")
     private String flinkTaskAnalysisIndex;
 
     @Autowired
-    private FlinkElasticSearchService flinkElasticSearchService;
+    private FlinkOpenSearchService flinkOpenSearchService;
 
     /**
      * 添加诊断类型
@@ -287,7 +284,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         log.info("result=>" + flinkTaskAnalysis);
 
 
-        UpdateResponse update = flinkElasticSearchService.insertOrUpDateEs(index, id, flinkTaskAnalysis.genDoc());
+        UpdateResponse update = flinkOpenSearchService.insertOrUpDate(index, id, flinkTaskAnalysis.genDoc());
         flinkTaskAnalysis.setDocId(id);
         log.info("update:" + update);
 
@@ -295,7 +292,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         try {
             String reportIndex = flinkReportIndex + "-" + DateUtil.format(
                     flinkTaskAnalysis.getCreateTime(), "yyyy-MM-dd");
-            response = BulkApi.bulkJson(elasticClient, reportIndex, reports);
+            response = BulkApi.bulkJson(restClient, reportIndex, reports);
         } catch (Exception e) {
             log.error("failed to save reports:", e);
             return flinkTaskAnalysis;

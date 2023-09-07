@@ -16,27 +16,22 @@
 
 package com.oppo.cloud.detect.service.impl;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.TypeReference;
-import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.constant.ApplicationType;
-import com.oppo.cloud.common.constant.Constant;
 import com.oppo.cloud.common.domain.cluster.spark.SparkApp;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
-import com.oppo.cloud.common.domain.mr.MRJobHistoryLogPath;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.common.util.DateUtil;
-import com.oppo.cloud.common.util.LogPathUtil;
 import com.oppo.cloud.common.util.ui.TryNumberUtil;
 import com.oppo.cloud.detect.domain.AbnormalTaskAppInfo;
-import com.oppo.cloud.detect.service.*;
+import com.oppo.cloud.detect.service.OpenSearchService;
+import com.oppo.cloud.detect.service.TaskAppService;
 import com.oppo.cloud.mapper.TaskApplicationMapper;
-import com.oppo.cloud.model.*;
+import com.oppo.cloud.model.TaskApplication;
+import com.oppo.cloud.model.TaskApplicationExample;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,12 +50,12 @@ public class TaskAppServiceImpl implements TaskAppService {
     private TaskApplicationMapper taskApplicationMapper;
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
+    private OpenSearchService openSearchService;
 
     @Autowired
     private RedisService redisService;
 
-    @Value("${custom.elasticsearch.app-index}")
+    @Value("${custom.opensearch.app-index}")
     private String appIndex;
 
     @Value("${custom.schedulerType}")
@@ -183,7 +178,7 @@ public class TaskAppServiceImpl implements TaskAppService {
         for (TaskApp taskApp : taskAppList) {
             String index = taskApp.genIndex(appIndex);
             log.info("insertTaskApp {},{},{}", index, taskApp.getApplicationId(), taskApp.genDoc());
-            elasticSearchService.insertOrUpDateEs(index, taskApp.genDocId(), taskApp.genDoc());
+            openSearchService.insertOrUpDate(index, taskApp.genDocId(), taskApp.genDoc());
         }
     }
 
@@ -195,8 +190,8 @@ public class TaskAppServiceImpl implements TaskAppService {
         termCondition.put("taskName.keyword", jobAnalysis.getTaskName());
         termCondition.put("executionDate", DateUtil.timestampToUTCDate(jobAnalysis.getExecutionDate().getTime()));
         SearchSourceBuilder searchSourceBuilder =
-                elasticSearchService.genSearchBuilder(termCondition, null, null, null);
-        return elasticSearchService.find(TaskApp.class, searchSourceBuilder, appIndex + "-*");
+                openSearchService.genSearchBuilder(termCondition, null, null, null);
+        return openSearchService.find(TaskApp.class, searchSourceBuilder, appIndex + "-*");
     }
 
     /**
@@ -207,11 +202,11 @@ public class TaskAppServiceImpl implements TaskAppService {
         BeanUtils.copyProperties(taskApplication, taskApp);
         taskApp.setExecutionDate(taskApplication.getExecuteTime());
 
-        YarnApp yarnApp = elasticSearchService.searchYarnApp(taskApplication.getApplicationId());
+        YarnApp yarnApp = openSearchService.searchYarnApp(taskApplication.getApplicationId());
 
         SparkApp sparkApp = null;
         if (ApplicationType.SPARK.getValue().equals(yarnApp.getApplicationType())) {
-            sparkApp = elasticSearchService.searchSparkApp(taskApplication.getApplicationId());
+            sparkApp = openSearchService.searchSparkApp(taskApplication.getApplicationId());
         }
 
         taskApp.updateTaskApp(yarnApp, sparkApp, redisService);
@@ -226,7 +221,7 @@ public class TaskAppServiceImpl implements TaskAppService {
         taskApp.setExecutionDate(taskApplication.getExecuteTime());
         taskApp.setRetryTimes(taskApplication.getRetryTimes());
         try {
-            YarnApp yarnApp = elasticSearchService.searchYarnApp(taskApplication.getApplicationId());
+            YarnApp yarnApp = openSearchService.searchYarnApp(taskApplication.getApplicationId());
             taskApp.setStartTime(new Date(yarnApp.getStartedTime()));
             taskApp.setFinishTime(new Date(yarnApp.getFinishedTime()));
             taskApp.setElapsedTime((double) yarnApp.getElapsedTime());
@@ -246,7 +241,7 @@ public class TaskAppServiceImpl implements TaskAppService {
             log.error("try complete yarn info failed, msg:", e);
         }
         try {
-            SparkApp sparkApp = elasticSearchService.searchSparkApp(taskApplication.getApplicationId());
+            SparkApp sparkApp = openSearchService.searchSparkApp(taskApplication.getApplicationId());
             taskApp.setEventLogPath(sparkApp.getEventLogDirectory() + "/" + taskApplication.getApplicationId());
         } catch (Exception e) {
             log.error("try complete spark info failed, msg:", e);

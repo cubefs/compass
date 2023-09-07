@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.portal.domain.flink;
 
-import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
+import com.oppo.cloud.common.domain.opensearch.FlinkTaskAnalysis;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

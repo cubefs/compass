@@ -24,7 +24,7 @@ import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.TaskParam;
 import com.oppo.cloud.parser.domain.job.TaskResult;
 import com.oppo.cloud.parser.service.job.parser.IParser;
-import com.oppo.cloud.parser.service.writer.ElasticWriter;
+import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -95,13 +95,13 @@ public class MapReduceTask extends Task {
                 }
             }
             // save all detector results
-            ElasticWriter.getInstance().saveDetectorStorage(detectorStorage);
+            OpenSearchWriter.getInstance().saveDetectorStorage(detectorStorage);
         } else {
             // save mr conf
             if (detectorStorage.getDataList() != null) {
                 detectorStorage.setDataList(null);
             }
-            ElasticWriter.getInstance().saveDetectorStorage(detectorStorage);
+            OpenSearchWriter.getInstance().saveDetectorStorage(detectorStorage);
         }
 
         return new TaskResult(this.taskParam.getApp().getAppId(), categories);

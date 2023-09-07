@@ -1,8 +1,8 @@
 package com.oppo.cloud.portal.domain.flink;
 
-import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAdvice;
-import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.SimpleUser;
+import com.oppo.cloud.common.domain.opensearch.FlinkTaskAdvice;
+import com.oppo.cloud.common.domain.opensearch.FlinkTaskAnalysis;
+import com.oppo.cloud.common.domain.opensearch.SimpleUser;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import io.swagger.annotations.ApiModel;

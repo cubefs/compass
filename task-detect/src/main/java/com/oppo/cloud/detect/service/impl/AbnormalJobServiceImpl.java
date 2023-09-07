@@ -16,14 +16,14 @@
 
 package com.oppo.cloud.detect.service.impl;
 
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.detect.service.AbnormalJobService;
 import com.oppo.cloud.detect.service.TaskAppService;
-import com.oppo.cloud.detect.service.ElasticSearchService;
+import com.oppo.cloud.detect.service.OpenSearchService;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,12 +38,12 @@ import java.util.*;
 public class AbnormalJobServiceImpl implements AbnormalJobService {
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
+    private OpenSearchService openSearchService;
 
     @Autowired
     private TaskAppService taskAppService;
 
-    @Value("${custom.elasticsearch.job-index}")
+    @Value("${custom.opensearch.job-index}")
     private String jobIndex;
 
     /**
@@ -61,7 +61,7 @@ public class AbnormalJobServiceImpl implements AbnormalJobService {
         JobAnalysis jobAnalysisEs = this.searchJob(jobAnalysis);
         jobAnalysis.setVcoreSeconds(vcoreSeconds);
         jobAnalysis.setMemorySeconds(memorySeconds);
-        elasticSearchService.insertOrUpDateEs(jobAnalysisEs.getIndex(), jobAnalysisEs.getDocId(),
+        openSearchService.insertOrUpDate(jobAnalysisEs.getIndex(), jobAnalysisEs.getDocId(),
                 jobAnalysisEs.genDoc());
     }
 
@@ -87,9 +87,9 @@ public class AbnormalJobServiceImpl implements AbnormalJobService {
         termQuery.put("flowName.keyword", jobAnalysis.getFlowName());
         termQuery.put("taskName.keyword", jobAnalysis.getTaskName());
         termQuery.put("executionDate", DateUtil.timestampToUTCDate(jobAnalysis.getExecutionDate().getTime()));
-        SearchSourceBuilder searchSourceBuilder = elasticSearchService.genSearchBuilder(termQuery, null, null, null);
+        SearchSourceBuilder searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, null, null, null);
         List<JobAnalysis> jobAnalysisList =
-                elasticSearchService.find(JobAnalysis.class, searchSourceBuilder, jobIndex + "-*");
+                openSearchService.find(JobAnalysis.class, searchSourceBuilder, jobIndex + "-*");
         if (jobAnalysisList.size() != 0) {
             return jobAnalysisList.get(0);
         } else {
@@ -104,16 +104,16 @@ public class AbnormalJobServiceImpl implements AbnormalJobService {
         termQuery.put("flowName.keyword", jobAnalysis.getFlowName());
         termQuery.put("taskName.keyword", jobAnalysis.getTaskName());
         termQuery.put("executionDate", DateUtil.timestampToUTCDate(jobAnalysis.getExecutionDate().getTime()));
-        SearchSourceBuilder searchSourceBuilder = elasticSearchService.genSearchBuilder(termQuery, null, null, null);
+        SearchSourceBuilder searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, null, null, null);
         List<JobAnalysis> jobAnalysisList =
-                elasticSearchService.find(JobAnalysis.class, searchSourceBuilder, jobIndex + "-*");
+                openSearchService.find(JobAnalysis.class, searchSourceBuilder, jobIndex + "-*");
         if (jobAnalysisList.size() != 0) {
             JobAnalysis jobAnalysisEs = jobAnalysisList.get(0);
             jobAnalysis.setDocId(jobAnalysisEs.getDocId());
             jobAnalysis.setIndex(jobAnalysisEs.getIndex());
             jobAnalysis.setCategories(jobAnalysisEs.getCategories());
         }
-        elasticSearchService.insertOrUpDateEs(jobAnalysis.genIndex(jobIndex), jobAnalysis.genDocId(),
+        openSearchService.insertOrUpDate(jobAnalysis.genIndex(jobIndex), jobAnalysis.genDocId(),
                 jobAnalysis.genDoc());
     }
 }

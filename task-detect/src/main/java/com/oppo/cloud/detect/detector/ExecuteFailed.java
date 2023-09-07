@@ -18,12 +18,10 @@ package com.oppo.cloud.detect.detector;
 
 import com.oppo.cloud.common.constant.JobCategoryEnum;
 import com.oppo.cloud.common.constant.TaskStateEnum;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 
 /**
  * 执行失败检测器

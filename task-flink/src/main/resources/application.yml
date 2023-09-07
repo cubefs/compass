@@ -28,11 +28,12 @@ spring:
       group-id: "task-flink-diagnosis-local"
       auto-offset-reset: "latest"  # 从提交offset开始消费，无提交offset,从头开始消费
       max-poll-interval-ms: 300000  # 两次消费活跃时间间隔5min
-
-  elasticsearch:
+  opensearch:
     hosts: localhost:19527
     username:
     password:
+    truststore:
+    truststore-password:
 
 mybatis:
   mapper-locations:
@@ -47,7 +48,7 @@ diagnosis:
   flinkPrometheusDatabase:
 
 custom:
-  elasticsearch:
+  opensearch:
     yarnIndex:
       name: "compass-yarn-app"
     flinkReportIndex:

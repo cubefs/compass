@@ -27,6 +27,7 @@ import com.oppo.cloud.common.domain.flink.JobManagerConfigItem;
 import com.oppo.cloud.common.domain.flink.enums.FlinkTaskAppState;
 import com.oppo.cloud.common.domain.flink.enums.YarnApplicationState;
 import com.oppo.cloud.flink.config.FlinkYarnConfig;
+import com.oppo.cloud.flink.config.OpenSearchFlinkConfig;
 import com.oppo.cloud.flink.service.FlinkMetaService;
 import com.oppo.cloud.flink.util.MemorySize;
 import com.oppo.cloud.mapper.FlinkTaskAppMapper;
@@ -35,17 +36,17 @@ import com.oppo.cloud.mapper.TaskMapper;
 import com.oppo.cloud.mapper.UserMapper;
 import com.oppo.cloud.model.*;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeQueryBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
+import org.opensearch.action.search.SearchRequest;
+import org.opensearch.action.search.SearchResponse;
+import org.opensearch.client.RequestOptions;
+import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.index.query.RangeQueryBuilder;
+import org.opensearch.search.SearchHit;
+import org.opensearch.search.SearchHits;
+import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -102,10 +103,10 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
     @Autowired
     private FlinkYarnConfig flinkYarnConfig;
 
-    @Value("${custom.elasticsearch.yarnIndex.name}")
+    @Value("${custom.opensearch.yarnIndex.name}")
     private String yarnAppIndex;
 
-    @Resource(name = "flinkElasticClient")
+    @Resource(name = OpenSearchFlinkConfig.SEARCH_CLIENT)
     private RestHighLevelClient restHighLevelClient;
     /**
      * flink task type
@@ -339,6 +340,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         }
     }
 
+    @Override
     public List<String> getTmIds(String trackingUrl) {
         String tmsUrl = String.format(FLINK_TMS, trackingUrl);
         ResponseEntity<String> responseEntity = null;
@@ -368,6 +370,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
      * @param trackingUrl
      * @return
      */
+    @Override
     public String getJobId(String trackingUrl) {
         String jobsUrl = String.format(FLINK_JOBS, trackingUrl);
         ResponseEntity<String> responseEntity = null;
@@ -389,6 +392,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         }
     }
 
+    @Override
     public List<JobManagerConfigItem> reqFlinkConfig(String trackingUrl) {
         String jobManagerConfigUrl = String.format(FLINK_JOB_MANAGER_CONFIG, trackingUrl);
         ResponseEntity<String> responseEntity = null;
@@ -406,7 +410,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
             return null;
         }
     }
-
+    @Override
     public void fillFlinkMetaWithFlinkConfigOnYarn(FlinkTaskApp flinkTaskApp, List<JobManagerConfigItem> configItems, String jobId) {
         try {
 

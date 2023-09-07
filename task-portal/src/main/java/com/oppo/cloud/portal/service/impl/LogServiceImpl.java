@@ -17,19 +17,19 @@
 package com.oppo.cloud.portal.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oppo.cloud.common.domain.elasticsearch.LogSummary;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.LogSummary;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.mapper.TaskDiagnosisAdviceMapper;
 import com.oppo.cloud.model.TaskDiagnosisAdvice;
 import com.oppo.cloud.model.TaskDiagnosisAdviceExample;
 import com.oppo.cloud.portal.domain.log.LogInfo;
 import com.oppo.cloud.portal.domain.task.JobDetailRequest;
-import com.oppo.cloud.portal.service.ElasticSearchService;
+import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.LogService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
+import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -40,14 +40,14 @@ import java.util.*;
 @Slf4j
 public class LogServiceImpl implements LogService {
 
-    @Value(value = "${custom.elasticsearch.logIndex.name}")
+    @Value(value = "${custom.opensearch.logIndex.name}")
     private String logSumIndex;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
+    private OpenSearchService openSearchService;
 
     @Autowired
     private TaskDiagnosisAdviceMapper diagnoseAdviceMapper;
@@ -87,13 +87,13 @@ public class LogServiceImpl implements LogService {
         termQuery.put("action.keyword", actions);
         // todo:add: sort.put("logTimestamp", SortOrder.ASC);
         sort.put("logTimestamp", SortOrder.ASC);
-        SearchSourceBuilder searchSourceBuilder = elasticSearchService.genSearchBuilder(termQuery, null, sort, null);
+        SearchSourceBuilder searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, null, sort, null);
         searchSourceBuilder.size(1000);
         List<LogSummary> logSumList;
         try {
-            logSumList = elasticSearchService.find(LogSummary.class, searchSourceBuilder, logSumIndex + "-*");
+            logSumList = openSearchService.find(LogSummary.class, searchSourceBuilder, logSumIndex + "-*");
         } catch (Exception e) {
-            log.error("elasticSearchService.find failed:{}", e.getMessage());
+            log.error("openSearchService.find failed:{}", e.getMessage());
             return null;
         }
         Set<Integer> logSet = new HashSet<>();

@@ -18,9 +18,9 @@ package com.oppo.cloud.parser.service;
 
 import com.oppo.cloud.common.constant.ApplicationType;
 import com.oppo.cloud.common.constant.LogPathType;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
-import com.oppo.cloud.common.domain.elasticsearch.SimpleUser;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.SimpleUser;
 import com.oppo.cloud.common.domain.job.App;
 import com.oppo.cloud.common.domain.job.LogInfo;
 import com.oppo.cloud.common.domain.job.LogPath;

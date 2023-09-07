@@ -23,7 +23,7 @@ import com.oppo.cloud.common.constant.YarnAppState;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
 import com.oppo.cloud.common.domain.mr.MRJobHistoryLogPath;
 import com.oppo.cloud.common.service.RedisService;
-import org.elasticsearch.common.Strings;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Calendar;
 import java.util.Map;
@@ -121,7 +121,7 @@ public class LogPathUtil {
 
     public static String getSparkEventLogPath(String prefixDir, String appId, String attemptId, String state) {
         String eventLogPath = String.format("%s/%s", prefixDir, appId);
-        if (!Strings.isEmpty(attemptId)) {
+        if (!StringUtils.isEmpty(attemptId)) {
             eventLogPath = String.format("%s_%s", eventLogPath, attemptId);
         }
         if (YarnAppState.RUNNING.toString().equals(state)) {

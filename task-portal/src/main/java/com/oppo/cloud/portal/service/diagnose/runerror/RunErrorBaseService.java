@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.portal.service.diagnose.runerror;
 
-import com.oppo.cloud.common.domain.elasticsearch.LogSummary;
+import com.oppo.cloud.common.domain.opensearch.LogSummary;
 import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.mapper.TaskDiagnosisAdviceMapper;
 import com.oppo.cloud.model.TaskDiagnosisAdvice;
@@ -26,11 +26,11 @@ import com.oppo.cloud.portal.domain.diagnose.Item;
 import com.oppo.cloud.portal.domain.diagnose.Table;
 import com.oppo.cloud.portal.domain.diagnose.runerror.RunError;
 import com.oppo.cloud.portal.domain.log.LogInfo;
-import com.oppo.cloud.portal.service.ElasticSearchService;
+import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.diagnose.Generate;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
+import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -48,9 +48,9 @@ public abstract class RunErrorBaseService implements Generate {
     TaskDiagnosisAdviceMapper diagnosisAdviceMapper;
 
     @Autowired
-    ElasticSearchService elasticSearchService;
+    OpenSearchService openSearchService;
 
-    @Value(value = "${custom.elasticsearch.logIndex.name}")
+    @Value(value = "${custom.opensearch.logIndex.name}")
     String logIndex;
 
     /**
@@ -129,8 +129,8 @@ public abstract class RunErrorBaseService implements Generate {
         // sortConditions.put("timestamp", SortOrder.ASC);
         // 查询Es信息
         SearchSourceBuilder searchSourceBuilder =
-                elasticSearchService.genSearchBuilder(termQueryConditions, null, sortConditions, null);
-        List<LogSummary> logSumList = elasticSearchService.find(LogSummary.class, searchSourceBuilder, logIndex + "-*");
+                openSearchService.genSearchBuilder(termQueryConditions, null, sortConditions, null);
+        List<LogSummary> logSumList = openSearchService.find(LogSummary.class, searchSourceBuilder, logIndex + "-*");
         // 根据es产生诊断数据
         Set<Integer> logSet = new HashSet<>();
         for (LogSummary logSum : logSumList) {

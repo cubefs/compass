@@ -30,20 +30,20 @@ import com.oppo.cloud.portal.domain.statistics.StatisticsData;
 import com.oppo.cloud.portal.domain.task.IndicatorData;
 import com.oppo.cloud.portal.domain.task.JobsRequest;
 import com.oppo.cloud.portal.domain.task.UserInfo;
-import com.oppo.cloud.portal.service.ElasticSearchService;
+import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.ReportService;
 import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.script.Script;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
-import org.elasticsearch.search.aggregations.metrics.ParsedSum;
-import org.elasticsearch.search.aggregations.metrics.SumAggregationBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.script.Script;
+import org.opensearch.search.aggregations.AggregationBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.Aggregations;
+import org.opensearch.search.aggregations.bucket.terms.Terms;
+import org.opensearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.opensearch.search.aggregations.metrics.ParsedSum;
+import org.opensearch.search.aggregations.metrics.SumAggregationBuilder;
+import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -58,17 +58,17 @@ import static java.util.Comparator.comparing;
 @Service
 public class ReportServiceImpl implements ReportService {
 
-    @Value(value = "${custom.elasticsearch.jobIndex.name}")
+    @Value(value = "${custom.opensearch.jobIndex.name}")
     private String jobIndex;
 
-    @Value(value = "${custom.elasticsearch.jobInstanceIndex.name}")
+    @Value(value = "${custom.opensearch.jobInstanceIndex.name}")
     private String jobInstanceIndex;
 
     @Autowired
     private ProjectMapper projectMapper;
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
+    private OpenSearchService openSearchService;
 
     @Autowired
     private TaskInstanceExtendMapper taskInstanceExtendMapper;
@@ -241,7 +241,7 @@ public class ReportServiceImpl implements ReportService {
                 new Object[]{DateUtil.timestampToUTCDate(startTimestamp), DateUtil.timestampToUTCDate(endTimestamp)});
 
         SearchSourceBuilder searchSourceBuilder =
-                elasticSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
+                openSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
 
         // 诊断任务数
         AggregationBuilder aggregationBuilderAbnormalJobCount =
@@ -252,7 +252,7 @@ public class ReportServiceImpl implements ReportService {
         searchSourceBuilder.aggregation(aggregationBuilderAbnormalJobCount);
 
         Aggregations aggregationsGroupByCount =
-                elasticSearchService.findRawAggregations(searchSourceBuilder, jobIndex + "-*");
+                openSearchService.findRawAggregations(searchSourceBuilder, jobIndex + "-*");
         if (aggregationsGroupByCount == null) {
             return null;
         }
@@ -265,7 +265,7 @@ public class ReportServiceImpl implements ReportService {
         statisticsData.setJobNum(jobCount);
 
         // 诊断实例数
-        long abnormalJobInstanceCount = elasticSearchService.count(searchSourceBuilder, jobIndex + "-*");
+        long abnormalJobInstanceCount = openSearchService.count(searchSourceBuilder, jobIndex + "-*");
         statisticsData.setAbnormalJobInstanceNum((int) abnormalJobInstanceCount);
 
         // 运行实例数
@@ -280,11 +280,11 @@ public class ReportServiceImpl implements ReportService {
         statisticsData.setAbnormalJobInstanceNumRatio(abnormalJobInstanceRatio);
 
         // 异常任务CPU、内存统计
-        searchSourceBuilder = elasticSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
+        searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
         searchSourceBuilder.aggregation(AggregationBuilders.sum("cpu").field("vcoreSeconds"));
         searchSourceBuilder.aggregation(AggregationBuilders.sum("memory").field("memorySeconds"));
         Aggregations aggregationsAbnormalCpuAndMemory =
-                elasticSearchService.findRawAggregations(searchSourceBuilder, jobIndex + "-*");
+                openSearchService.findRawAggregations(searchSourceBuilder, jobIndex + "-*");
 
         ParsedSum cpu = aggregationsAbnormalCpuAndMemory.get("cpu");
         ParsedSum memory = aggregationsAbnormalCpuAndMemory.get("memory");
@@ -294,11 +294,11 @@ public class ReportServiceImpl implements ReportService {
         statisticsData.setAbnormalJobMemoryNum(abnormalJobInstanceMemory);
 
         // 全量任务CPU、内存统计
-        searchSourceBuilder = elasticSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
+        searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
         searchSourceBuilder.aggregation(AggregationBuilders.sum("cpu").field("vcoreSeconds"));
         searchSourceBuilder.aggregation(AggregationBuilders.sum("memory").field("memorySeconds"));
         Aggregations aggregationsJobCpuAndMemory =
-                elasticSearchService.findRawAggregations(searchSourceBuilder, jobInstanceIndex + "-*");
+                openSearchService.findRawAggregations(searchSourceBuilder, jobInstanceIndex + "-*");
         ParsedSum jobCpu = aggregationsJobCpuAndMemory.get("cpu");
         ParsedSum jobMemory = aggregationsJobCpuAndMemory.get("memory");
         double jobInstanceCpu = jobCpu.getValue();
@@ -355,10 +355,10 @@ public class ReportServiceImpl implements ReportService {
     public TrendGraph getResourceTrendData(JobsRequest request, String field) throws Exception {
 
         TrendGraph trendGraph = new TrendGraph();
-        List<IndicatorData> jobUsageTrend = elasticSearchService.sumAggregationByDay(getBuilder(request),
+        List<IndicatorData> jobUsageTrend = openSearchService.sumAggregationByDay(getBuilder(request),
                 request.getStart(), request.getEnd(), jobIndex, "executionDate", field);
 
-        List<IndicatorData> totalUsageTrend = elasticSearchService.sumAggregationByDay(getBuilder(request),
+        List<IndicatorData> totalUsageTrend = openSearchService.sumAggregationByDay(getBuilder(request),
                 request.getStart(), request.getEnd(), jobInstanceIndex, "executionDate", field);
         if (totalUsageTrend == null) {
             log.error("search totalUsageTrend is null");
@@ -410,9 +410,9 @@ public class ReportServiceImpl implements ReportService {
      */
     public TrendGraph getNumTrendData(JobsRequest request) throws Exception {
         TrendGraph trendGraph = new TrendGraph();
-        List<IndicatorData> jobNumTrend = elasticSearchService.countDocByDay(getBuilder(request), request.getStart(),
+        List<IndicatorData> jobNumTrend = openSearchService.countDocByDay(getBuilder(request), request.getStart(),
                 request.getEnd(), jobIndex, "executionDate");
-        List<IndicatorData> totalNumTrend = elasticSearchService.countDocByDay(getBuilder(request), request.getStart(),
+        List<IndicatorData> totalNumTrend = openSearchService.countDocByDay(getBuilder(request), request.getStart(),
                 request.getEnd(), jobInstanceIndex, "executionDate");
         trendGraph.setName("数量趋势");
         LineGraph jobGraph = new LineGraph();
@@ -433,7 +433,7 @@ public class ReportServiceImpl implements ReportService {
         ReportGraph graph = new ReportGraph();
         Map<String, Object> termQuery = reportRequest.getTermQuery();
         Map<String, Object[]> rangeConditions = reportRequest.getRangeConditions();
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, rangeConditions, null, null);
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, rangeConditions, null, null);
         TermsAggregationBuilder termsAggregationBuilder =
                 AggregationBuilders.terms("distribution").field("categories.keyword").size(100);
 
@@ -444,7 +444,7 @@ public class ReportServiceImpl implements ReportService {
 
         builder.aggregation(termsAggregationBuilder);
 
-        Aggregations aggregations = elasticSearchService.findRawAggregations(builder, jobIndex + "-*");
+        Aggregations aggregations = openSearchService.findRawAggregations(builder, jobIndex + "-*");
         if (aggregations == null) {
             log.error("search {} aggregations is null", jobIndex);
             return graph;
@@ -499,7 +499,7 @@ public class ReportServiceImpl implements ReportService {
     private SearchSourceBuilder getBuilder(JobsRequest request) {
         Map<String, Object> termQuery = request.getTermQuery();
         Map<String, Object[]> rangeConditions = request.getRangeConditions();
-        return elasticSearchService.genSearchBuilder(termQuery, rangeConditions, null, null);
+        return openSearchService.genSearchBuilder(termQuery, rangeConditions, null, null);
     }
 
     /**

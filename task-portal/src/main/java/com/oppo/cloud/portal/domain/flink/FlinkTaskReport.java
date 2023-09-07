@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * Elasticsearch Flink Report
+ * OpenSearch Flink Report
  */
 @Data
 public class FlinkTaskReport {

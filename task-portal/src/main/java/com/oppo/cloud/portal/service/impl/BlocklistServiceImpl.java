@@ -26,7 +26,6 @@ import com.oppo.cloud.portal.domain.blocklist.BlocklistAddReq;
 import com.oppo.cloud.portal.domain.blocklist.BlocklistReq;
 import com.oppo.cloud.portal.domain.task.UserInfo;
 import com.oppo.cloud.portal.service.BlocklistService;
-import com.oppo.cloud.portal.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -45,9 +44,6 @@ public class BlocklistServiceImpl implements BlocklistService {
 
     @Autowired
     private BlocklistMapper blocklistMapper;
-
-    @Autowired
-    private ElasticSearchService elasticSearchService;
 
     /**
      * 分页查询白名单列表

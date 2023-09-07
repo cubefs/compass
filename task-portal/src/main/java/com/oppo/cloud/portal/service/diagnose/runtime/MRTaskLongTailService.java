@@ -17,13 +17,10 @@
 package com.oppo.cloud.portal.service.diagnose.runtime;
 
 import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
 import com.oppo.cloud.common.constant.AppCategoryEnum;
-import com.oppo.cloud.common.constant.MRTaskType;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
 import com.oppo.cloud.common.domain.eventlog.TaskDurationGraph;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
-import com.oppo.cloud.common.domain.mr.MRMemWasteAbnormal;
 import com.oppo.cloud.common.domain.mr.MRTaskDurationAbnormal;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.common.util.ui.UIUtil;
@@ -31,10 +28,7 @@ import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.TaskLongTail;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
-import com.oppo.cloud.portal.service.ElasticSearchService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 

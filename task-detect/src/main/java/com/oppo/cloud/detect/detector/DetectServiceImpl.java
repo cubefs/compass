@@ -17,8 +17,8 @@
 package com.oppo.cloud.detect.detector;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.SimpleUser;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.SimpleUser;
 import com.oppo.cloud.common.domain.job.App;
 import com.oppo.cloud.common.domain.job.LogRecord;
 import com.oppo.cloud.common.service.RedisService;
@@ -42,9 +42,9 @@ import java.util.*;
 public abstract class DetectServiceImpl implements DetectService {
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
+    private OpenSearchService openSearchService;
 
-    @Value("${custom.elasticsearch.job-index}")
+    @Value("${custom.opensearch.job-index}")
     private String jobIndex;
 
     @Autowired
@@ -201,7 +201,7 @@ public abstract class DetectServiceImpl implements DetectService {
                 esJobAnalysis.setEndTimeBaseline(detectJobAnalysis.getEndTimeBaseline());
             }
             esJobAnalysis.setUpdateTime(new Date());
-            elasticSearchService.insertOrUpDateEs(esJobAnalysis.getIndex(), esJobAnalysis.getDocId(),
+            openSearchService.insertOrUpDate(esJobAnalysis.getIndex(), esJobAnalysis.getDocId(),
                     esJobAnalysis.genDoc());
         } else {
             // 新增操作
@@ -209,7 +209,7 @@ public abstract class DetectServiceImpl implements DetectService {
             detectJobAnalysis.setUpdateTime(new Date());
             String index = detectJobAnalysis.genIndex(jobIndex);
             String docId = detectJobAnalysis.genDocId();
-            elasticSearchService.insertOrUpDateEs(index, docId, detectJobAnalysis.genDoc());
+            openSearchService.insertOrUpDate(index, docId, detectJobAnalysis.genDoc());
             // 记录索引信息和Id
             detectJobAnalysis.setIndex(index);
             detectJobAnalysis.setDocId(docId);

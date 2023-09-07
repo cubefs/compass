@@ -27,7 +27,7 @@ import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
-import com.oppo.cloud.parser.service.writer.ElasticWriter;
+import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class SchedulerLogParser extends CommonTextParser implements IParser {
                     log.error("Exception:", e);
                     continue;
                 }
-                List<String> list = ElasticWriter.getInstance()
+                List<String> list = OpenSearchWriter.getInstance()
                         .saveParserActions(logType, readerObject.getLogPath(), this.param, results);
                 categories.addAll(list);
             }

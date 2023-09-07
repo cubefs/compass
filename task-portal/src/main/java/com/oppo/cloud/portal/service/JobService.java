@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.portal.service;
 
-import com.oppo.cloud.common.domain.elasticsearch.JobInstance;
+import com.oppo.cloud.common.domain.opensearch.JobInstance;
 import com.oppo.cloud.common.domain.job.Datum;
 import com.oppo.cloud.portal.domain.diagnose.Item;
 import com.oppo.cloud.portal.domain.diagnose.runtime.ChartData;
