@@ -35,7 +35,7 @@
     </parent>
 
     <properties>
-        <revision>v1.1.1</revision>
+        <revision>v1.1.2</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <pagehelper-starter.version>1.4.5</pagehelper-starter.version>
