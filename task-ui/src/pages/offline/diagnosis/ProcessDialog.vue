@@ -16,9 +16,10 @@ async function init(id: string) {
 const timer: any = null
 let loading: boolean = $ref(true)
 async function diagnosisSearch() {
+  processInfoList.length = 0;
   const res = await get('/api/v1/app/diagnose', { applicationId })
   processInfoList = res.processInfoList
-  if (res.status !== 'succeed') {
+  if (res.status === 'PROCESSING') {
     setTimeout(() => {
       diagnosisSearch()
     }, 5000)

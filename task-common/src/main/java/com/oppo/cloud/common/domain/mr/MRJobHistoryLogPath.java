@@ -28,4 +28,8 @@ public class MRJobHistoryLogPath {
      * mapreduce.jobhistory.intermediate-done-dir
      */
     private String intermediateDoneLogPath;
+    /**
+     * yarn.app.mapreduce.am.staging-dir
+     */
+    public String stagingLogPath;
 }

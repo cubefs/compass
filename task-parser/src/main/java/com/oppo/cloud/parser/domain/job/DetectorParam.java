@@ -17,6 +17,7 @@
 package com.oppo.cloud.parser.domain.job;
 
 import com.oppo.cloud.common.constant.ApplicationType;
+import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.parser.domain.mr.MRAppInfo;
 import com.oppo.cloud.parser.utils.ReplaySparkEventLogs;

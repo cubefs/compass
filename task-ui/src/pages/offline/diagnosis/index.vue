@@ -22,12 +22,13 @@ function searchComplete(info: any) {
   taskAppInfo = info
 }
 const goReport = () => {
-  router.push({
+  const routeData = router.resolve({
     name: 'appDetail',
     query: {
       applicationId: taskAppInfo.applicationId,
     },
   })
+  window.open(routeData.href, '_blank');
 }
 </script>
 
@@ -75,7 +76,8 @@ const goReport = () => {
           </div>
           <div>
             <span style="font-size:15px" m-r-10>运行耗时：{{ taskAppInfo.duration }}</span>
-            <span style="font-size:15px">资源消耗：{{ taskAppInfo.resource }}</span>
+            <span style="font-size:15px" m-r-10>资源消耗：{{ taskAppInfo.resource }}</span>
+            <span style="font-size:15px">任务状态：{{ taskAppInfo.taskAppState }}</span>
             <el-button text type="primary" style="float:right" @click="goReport">
               点击查看诊断报告
             </el-button>

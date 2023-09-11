@@ -48,6 +48,10 @@ public class Constant {
      */
     public static final String JHS_HDFS_PATH = "jhs:hdfs:path:";
     /**
+     * yarn.app.mapreduce.am.staging-dir
+     */
+    public static final String JHS_MAPREDUCE_STAGING_PATH = "jhs:mapreduce:staging:path:";
+    /**
      * mapreduce.jobhistory.done-dir
      */
     public static final String JHS_MAPREDUCE_DONE_PATH = "jhs:mapreduce:done:path:";

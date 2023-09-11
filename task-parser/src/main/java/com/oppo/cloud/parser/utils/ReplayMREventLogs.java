@@ -406,6 +406,9 @@ public class ReplayMREventLogs {
         this.mrAppInfo.setMapList(mapList);
         this.mrAppInfo.setReduceList(reduceList);
         this.mrAppInfo.setSpeculationInfo(speculationInfo);
+        if (mrAppInfo.getFinishTime() == null) {
+            mrAppInfo.setFinishTime(System.currentTimeMillis());
+        }
         long elapsedTime = mrAppInfo.getFinishTime() - mrAppInfo.getSubmitTime();
         if (elapsedTime < 0) {
             elapsedTime = 0L;

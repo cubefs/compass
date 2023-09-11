@@ -18,10 +18,7 @@ package com.oppo.cloud.portal.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.oppo.cloud.common.constant.AppCategoryEnum;
-import com.oppo.cloud.common.constant.ApplicationType;
-import com.oppo.cloud.common.constant.LogType;
-import com.oppo.cloud.common.constant.ProgressState;
+import com.oppo.cloud.common.constant.*;
 import com.oppo.cloud.common.domain.cluster.spark.SparkApp;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
 import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
@@ -90,9 +87,21 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
      */
     @Override
     public DiagnoseResult diagnose(String applicationId) throws Exception {
+
+        TaskApp taskApp = this.buildTaskApp(applicationId);
+        if (!taskApp.getApplicationType().equals(ApplicationType.SPARK.getValue()) &&
+                !taskApp.getApplicationType().equals(ApplicationType.MAPREDUCE.getValue())) {
+            throw new Exception(String.format("暂不支持%s类型的任务", taskApp.getApplicationType()));
+        }
+
         // Check if the application is diagnosing
-        DiagnoseResult diagnoseResult = checkDiagnoseProgress(applicationId);
+        DiagnoseResult diagnoseResult = checkDiagnoseProgress(taskApp);
         if (diagnoseResult != null) {
+            // Check the running state
+            if (YarnAppState.RUNNING.toString().equals(taskApp.getTaskAppState()) &&
+                    !ProgressState.PROCESSING.toString().equals(diagnoseResult.getStatus())) {
+                return checkRunningStateTask(diagnoseResult, taskApp);
+            }
             return diagnoseResult;
         }
 
@@ -101,8 +110,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
             return diagnoseResult;
         }
 
-        diagnoseResult = submitTask(applicationId);
-        return diagnoseResult;
+        return submitTask(taskApp);
 
     }
 
@@ -120,7 +128,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
             }
             TaskAppInfo taskAppInfo = TaskAppInfo.from(taskApp);
             DiagnoseResult diagnoseResult = new DiagnoseResult();
-            diagnoseResult.setStatus(ProgressState.SUCCEED.toString().toLowerCase());
+            diagnoseResult.setStatus(ProgressState.SUCCEED.toString());
             diagnoseResult.setTaskAppInfo(taskAppInfo);
             diagnoseResult.getProcessInfoList().add(new DiagnoseResult.ProcessInfo("该ApplicationId已经诊断完成", 100));
             return diagnoseResult;
@@ -128,13 +136,12 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
         return null;
     }
 
-    private DiagnoseResult checkDiagnoseProgress(String applicationId) throws Exception {
-        String taskAppTempKey = applicationId + CommonCode.TASK_APP_TEMP;
+    private DiagnoseResult checkDiagnoseProgress(TaskApp taskApp) throws Exception {
+        String taskAppTempKey = taskApp.getApplicationId() + CommonCode.TASK_APP_TEMP;
         if (!redisService.hasKey(taskAppTempKey)) {
             return null;
         }
 
-        TaskApp taskApp = JSON.parseObject((String) redisService.get(taskAppTempKey), TaskApp.class);
         DiagnoseResult diagnoseResult = new DiagnoseResult();
         TaskAppInfo taskAppInfo = new TaskAppInfo();
         List<DiagnoseResult.ProcessInfo> processInfoList = new ArrayList<>();
@@ -144,21 +151,28 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
         if (checkFinalProgressState(stateList)) {
             if (checkFailedProgressState(stateList)) {
                 // FAILED
-                diagnoseResult.setStatus(ProgressState.FAILED.toString().toLowerCase());
+                diagnoseResult.setStatus(ProgressState.FAILED.toString());
                 diagnoseResult.setTaskAppInfo(null);
                 diagnoseResult.setErrorMsg("");
             } else {
                 // SUCCEED
-                diagnoseResult.setStatus(ProgressState.SUCCEED.toString().toLowerCase());
+                diagnoseResult.setStatus(ProgressState.SUCCEED.toString());
                 List<TaskApp> taskAppList = findTaskApp(taskApp.getApplicationId());
                 if (taskAppList.size() != 0) {
-                    taskApp = taskAppList.get(0);
+                    TaskApp result = taskAppList.get(0);
+                    if (!taskApp.getTaskAppState().equals(result.getTaskAppState())) {
+                        log.info("resubmitTask {},old state:{},new state:{}", taskApp.getApplicationId(),
+                                result.getTaskAppState(), taskApp.getTaskAppState());
+                        clearProgressStateCache(taskApp);
+                        return submitTask(taskApp);
+                    }
+                    taskApp = result;
                 }
                 taskAppInfo = TaskAppInfo.from(taskApp);
             }
         } else {
             // PROCESSING
-            diagnoseResult.setStatus(ProgressState.PROCESSING.toString().toLowerCase());
+            diagnoseResult.setStatus(ProgressState.PROCESSING.toString());
             taskAppInfo = TaskAppInfo.from(taskApp);
             taskAppInfo.setCategories(new ArrayList<>());
         }
@@ -179,6 +193,31 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
             stateList.add(checkTaskParserProgress(LogType.MAPREDUCE_CONTAINER, taskApp.getApplicationId(), processInfoList));
         }
         return stateList;
+    }
+
+
+    private List<LogType> registerLogTypeList(TaskApp taskApp) {
+        List<LogType> list = new ArrayList<>();
+        if (ApplicationType.SPARK.getValue().equals(taskApp.getApplicationType())) {
+            list.add(LogType.SPARK_EVENT);
+            list.add(LogType.SPARK_EXECUTOR);
+        }
+        if (ApplicationType.MAPREDUCE.getValue().equals(taskApp.getApplicationType())) {
+            list.add(LogType.MAPREDUCE_JOB_HISTORY);
+            list.add(LogType.MAPREDUCE_CONTAINER);
+        }
+        return list;
+    }
+
+
+    private DiagnoseResult checkRunningStateTask(DiagnoseResult diagnoseResult, TaskApp taskApp) throws Exception {
+        if (redisService.hasKey(taskApp.getApplicationId() + CommonCode.TASK_APP_RUNNING)) {
+            return diagnoseResult;
+        }
+        clearProgressStateCache(taskApp);
+        // diagnose again
+        log.info("resubmitRunningTask {}", taskApp.getApplicationId());
+        return submitTask(taskApp);
     }
 
     /**
@@ -215,18 +254,12 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
                     break;
             }
         } else {
-            msg = String.format("%s 开始诊断", logType.getDesc());
-            processInfoList.add(new DiagnoseResult.ProcessInfo(msg, 10));
+            processInfoList.add(new DiagnoseResult.ProcessInfo(applicationId + "发送诊断中, 请稍后", 0));
         }
         return state;
     }
 
-    private DiagnoseResult submitTask(String applicationId) throws Exception {
-        TaskApp taskApp = this.buildTaskApp(applicationId);
-        if (!taskApp.getApplicationType().equals(ApplicationType.SPARK.getValue()) &&
-                !taskApp.getApplicationType().equals(ApplicationType.MAPREDUCE.getValue())) {
-            throw new Exception(String.format("暂不支持%s类型的任务", taskApp.getApplicationType()));
-        }
+    private DiagnoseResult submitTask(TaskApp taskApp) throws Exception {
 
         JobAnalysis jobAnalysis = new JobAnalysis();
         JobInstance jobInstance = jobService.getJobInstance(taskApp.getProjectName(), taskApp.getFlowName(), taskApp.getTaskName(), taskApp.getExecutionDate());
@@ -263,14 +296,17 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
         String taskAppStr = JSON.toJSONString(taskApp);
         String taskAppTempKey = taskApp.getApplicationId() + CommonCode.TASK_APP_TEMP;
         redisService.set(taskAppTempKey, taskAppStr, 3600 * 24);
+        if (YarnAppState.RUNNING.toString().equals(taskApp.getTaskAppState())) {
+            redisService.set(taskApp.getApplicationId() + CommonCode.TASK_APP_RUNNING, taskApp.getTaskAppState(), 30);
+        }
 
         TaskAppInfo taskAppInfo = TaskAppInfo.from(taskApp);
         taskAppInfo.setCategories(new ArrayList<>());
         DiagnoseResult diagnoseResult = new DiagnoseResult();
         diagnoseResult.setTaskAppInfo(taskAppInfo);
-        diagnoseResult.setStatus(ProgressState.PROCESSING.toString().toLowerCase());
+        diagnoseResult.setStatus(ProgressState.PROCESSING.toString());
         List<DiagnoseResult.ProcessInfo> processInfoList = new ArrayList<>();
-        processInfoList.add(new DiagnoseResult.ProcessInfo(applicationId + "发送诊断中, 请稍后", 0));
+        processInfoList.add(new DiagnoseResult.ProcessInfo(taskApp.getApplicationId() + "发送诊断中, 请稍后", 0));
         diagnoseResult.setProcessInfoList(processInfoList);
         return diagnoseResult;
     }
@@ -367,6 +403,14 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
         HashMap<String, Object> termQuery = new HashMap<>();
         termQuery.put("applicationId.keyword", applicationId);
         return elasticSearchService.find(TaskApp.class, termQuery, taskAppsIndex + "-*");
+    }
+
+    private void clearProgressStateCache(TaskApp taskApp) {
+        List<LogType> logTypeList = registerLogTypeList(taskApp);
+        for (LogType logType : logTypeList) {
+            // delete all progress state cache
+            redisService.del(String.format("%s:%s", taskApp.getApplicationId(), logType.getName()));
+        }
     }
 
 }

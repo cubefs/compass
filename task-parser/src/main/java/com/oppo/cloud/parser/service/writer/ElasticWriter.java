@@ -189,7 +189,7 @@ public class ElasticWriter {
         String index = detectorPrefix + DateUtil.formatToDay(detectionStorage.getExecutionTime());
         UpdateApi api = new UpdateApi();
         try {
-            UpdateResponse resp = api.upsertJson(client, index, UUID.randomUUID().toString(), JSON.toJSONString(detectionStorage));
+            UpdateResponse resp = api.upsertJson(client, index, detectionStorage.getApplicationId(), JSON.toJSONString(detectionStorage));
             log.info("saveDetectorStorage:{},{}", detectionStorage.getApplicationId(), resp);
         } catch (Exception e) {
             log.info("saveDetectorStorageErr:{},{}", detectionStorage.getApplicationId(), e);
@@ -200,7 +200,7 @@ public class ElasticWriter {
      * 更新job categories信息
      */
     public void updateJob(JobAnalysis jobAnalysis, Map<String, Boolean> categoryMap) throws Exception {
-        if (jobAnalysis.getTaskName() == null) {
+        if (jobAnalysis == null || jobAnalysis.getTaskName() == null) {
             return;
         }
         UpdateApi api = new UpdateApi();
@@ -410,6 +410,10 @@ public class ElasticWriter {
             // update task-app categories
             log.info("updateTaskApp:{},{}", logRecord.getId(), appCategories);
             if (appCategories.size() > 0) {
+                ElasticWriter.getInstance().updateTaskApp(taskApp, appCategories);
+                continue;
+            }
+            if (logRecord.getIsOneClick()) {
                 ElasticWriter.getInstance().updateTaskApp(taskApp, appCategories);
             }
 

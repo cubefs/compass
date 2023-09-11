@@ -14,34 +14,8 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.meta.domain;
+package com.oppo.cloud.common.constant;
 
-import lombok.Data;
-
-@Data
-public class YarnPathInfo {
-    /**
-     * fs.defaultFS
-     */
-    private String defaultFS;
-
-    /**
-     * yarn.nodemanager.remote-app-log-dir
-     */
-    private String remoteDir;
-
-    /**
-     * yarn.app.mapreduce.am.staging-dir
-     */
-    private String mapreduceStagingDir;
-
-    /**
-     * mapreduce.jobhistory.done-dir
-     */
-    private String mapreduceDoneDir;
-
-    /**
-     * mapreduce.jobhistory.intermediate-done-dir
-     */
-    private String mapreduceIntermediateDoneDir;
+public enum YarnAppState {
+    NEW, NEW_SAVING, SUBMITTED, ACCEPTED, RUNNING, FINISHED, FAILED, KILLED
 }

@@ -123,6 +123,9 @@ public class TaskApp extends EsInfo {
     @ApiModelProperty(value = "mr job history intermediate done path")
     private String jobHistoryIntermediateDoneLogPath;
 
+    @ApiModelProperty(value = "mr job history staging path")
+    private String jobHistoryStagingLogPath;
+
     @ApiModelProperty(value = "am 主机名")
     private String amHost;
 
@@ -178,7 +181,7 @@ public class TaskApp extends EsInfo {
         this.queue = yarnApp.getQueue();
         this.clusterName = yarnApp.getClusterName();
         this.startTime = new Date(yarnApp.getStartedTime());
-        this.finishTime = new Date(yarnApp.getFinishedTime());
+        this.finishTime = new Date(yarnApp.getFinishedTime() == 0 ? System.currentTimeMillis() : yarnApp.getFinishedTime());
         this.elapsedTime = (double) yarnApp.getElapsedTime();
         this.diagnostics = yarnApp.getDiagnostics();
         this.diagnoseResult = StringUtils.isNotBlank(yarnApp.getDiagnostics()) ? "abnormal" : "";
@@ -187,7 +190,7 @@ public class TaskApp extends EsInfo {
                 : new ArrayList<>();
         this.executeUser = yarnApp.getUser();
         this.vcoreSeconds = (double) yarnApp.getVcoreSeconds();
-        this.taskAppState = yarnApp.getFinalStatus();
+        this.taskAppState = yarnApp.getState();
         this.setMemorySeconds((double) Math.round(yarnApp.getMemorySeconds()));
         String[] amHost = yarnApp.getAmHostHttpAddress().split(":");
         if (amHost.length == 0) {
@@ -195,13 +198,14 @@ public class TaskApp extends EsInfo {
         }
         this.amHost = amHost[0];
         if (sparkApp != null) {
-            String attemptId = StringUtils.isNotEmpty(sparkApp.getAttemptId()) ? sparkApp.getAttemptId() : "1";
-            this.eventLogPath = sparkApp.getEventLogDirectory() + "/" + this.applicationId + "_" + attemptId;
+            this.eventLogPath = LogPathUtil.getSparkEventLogPath(sparkApp.getEventLogDirectory(), this.applicationId,
+                    sparkApp.getAttemptId(), yarnApp.getState());
         }
         if (ApplicationType.MAPREDUCE.getValue().equals(yarnApp.getApplicationType())) {
             MRJobHistoryLogPath mrJobHistoryLogPath = LogPathUtil.getMRJobHistoryDoneLogPath(yarnApp, redisService);
             this.jobHistoryDoneLogPath = mrJobHistoryLogPath.getDoneLogPath();
             this.jobHistoryIntermediateDoneLogPath = mrJobHistoryLogPath.getIntermediateDoneLogPath();
+            this.jobHistoryStagingLogPath = mrJobHistoryLogPath.getStagingLogPath();
         }
 
         String yarnLogPath = LogPathUtil.getYarnLogPath(Constant.JHS_HDFS_PATH, yarnApp.getIp(), redisService);

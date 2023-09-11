@@ -19,22 +19,28 @@ package com.oppo.cloud.common.util;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import com.oppo.cloud.common.constant.Constant;
+import com.oppo.cloud.common.constant.YarnAppState;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
 import com.oppo.cloud.common.domain.mr.MRJobHistoryLogPath;
 import com.oppo.cloud.common.service.RedisService;
+import org.elasticsearch.common.Strings;
 
 import java.util.Calendar;
 import java.util.Map;
 
 public class LogPathUtil {
 
-    public static final int SERIAL_NUMBER_DIRECTORY_DIGITS = 6;
+    public static final int MR_SERIAL_NUMBER_DIRECTORY_DIGITS = 6;
 
-    private static final String TIMESTAMP_DIR_FORMAT = "%04d/%02d/%02d";
+    private static final String MR_TIMESTAMP_DIR_FORMAT = "%04d/%02d/%02d";
 
-    private static final String SERIAL_NUMBER_FORMAT = "%09d";
+    private static final String MR_SERIAL_NUMBER_FORMAT = "%09d";
 
-    private static final String SUB_DIR_FORMAT = "%s/%s/";
+    private static final String MR_SUB_DIR_FORMAT = "%s/%s/";
+
+    private static final String MR_JOB_HISTORY_LOG_DIR_FORMAT = "%s/%s/.staging/%s/%s*";
+
+    public static final String SPARK_EVENT_LOG_RUNNING_EXTENSION = ".inprogress";
 
 
     public static MRJobHistoryLogPath getMRJobHistoryDoneLogPath(YarnApp yarnApp, RedisService redisService) throws Exception {
@@ -50,17 +56,22 @@ public class LogPathUtil {
         String jobHistoryIntermediateDoneLogPathPrefix = getYarnLogPath(Constant.JHS_MAPREDUCE_INTERMEDIATE_DONE_PATH, yarnApp.getIp(), redisService);
         String jobHistoryIntermediateDoneLogPath = String.format("%s/%s/%s*", jobHistoryIntermediateDoneLogPathPrefix, yarnApp.getUser(), jobId);
         mrJobHistoryLogPath.setIntermediateDoneLogPath(jobHistoryIntermediateDoneLogPath);
+        if (YarnAppState.RUNNING.toString().equals(yarnApp.getState())) {
+            String stagingLogPathPrefix = getYarnLogPath(Constant.JHS_MAPREDUCE_STAGING_PATH, yarnApp.getIp(), redisService);
+            String stagingLogPath = String.format(MR_JOB_HISTORY_LOG_DIR_FORMAT, stagingLogPathPrefix, yarnApp.getUser(), jobId, jobId);
+            mrJobHistoryLogPath.setStagingLogPath(stagingLogPath);
+        }
         return mrJobHistoryLogPath;
     }
 
     public static String getHistoryLogSubdirectory(String appId, long finishedTime) {
         String timestampComponent = timestampDirectoryComponent(finishedTime);
         String serialNumberDirectory = serialNumberDirectoryComponent(appId);
-        return String.format(SUB_DIR_FORMAT, timestampComponent, serialNumberDirectory);
+        return String.format(MR_SUB_DIR_FORMAT, timestampComponent, serialNumberDirectory);
     }
 
     public static String serialNumberDirectoryComponent(String appId) {
-        return String.format(SERIAL_NUMBER_FORMAT, jobSerialNumber(appId)).substring(0, SERIAL_NUMBER_DIRECTORY_DIGITS);
+        return String.format(MR_SERIAL_NUMBER_FORMAT, jobSerialNumber(appId)).substring(0, MR_SERIAL_NUMBER_DIRECTORY_DIGITS);
     }
 
     public static int jobSerialNumber(String appId) {
@@ -71,7 +82,7 @@ public class LogPathUtil {
         Calendar timestamp = Calendar.getInstance();
         timestamp.setTimeInMillis(millisecondTime);
         String dateString;
-        dateString = String.format(TIMESTAMP_DIR_FORMAT,
+        dateString = String.format(MR_TIMESTAMP_DIR_FORMAT,
                 timestamp.get(Calendar.YEAR),
                 timestamp.get(Calendar.MONTH) + 1,
                 timestamp.get(Calendar.DAY_OF_MONTH));
@@ -106,6 +117,17 @@ public class LogPathUtil {
                     key, rmJhsMap, rmIp));
         }
         return (String) redisService.get(key);
+    }
+
+    public static String getSparkEventLogPath(String prefixDir, String appId, String attemptId, String state) {
+        String eventLogPath = String.format("%s/%s", prefixDir, appId);
+        if (!Strings.isEmpty(attemptId)) {
+            eventLogPath = String.format("%s_%s", eventLogPath, attemptId);
+        }
+        if (YarnAppState.RUNNING.toString().equals(state)) {
+            eventLogPath = String.format("%s%s", eventLogPath, SPARK_EVENT_LOG_RUNNING_EXTENSION);
+        }
+        return eventLogPath;
     }
 
 }
