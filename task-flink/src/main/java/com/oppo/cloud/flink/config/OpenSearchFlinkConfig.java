@@ -54,13 +54,9 @@ public class OpenSearchFlinkConfig {
 
     @Value("${spring.opensearch.truststore-password}")
     private String truststorePassword;
-    /**
-     * bean名称
-     */
-    public final static String SEARCH_CLIENT = "flinkSearchClient";
 
-    @Bean(SEARCH_CLIENT)
-    public RestHighLevelClient flinkSearchClient() {
+    @Bean
+    public RestHighLevelClient searchClient() {
         return OpenSearchClient.create(hosts, username, password, truststore, truststorePassword);
     }
 
