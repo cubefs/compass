@@ -19,7 +19,7 @@ package com.oppo.cloud.detect.service.impl;
 import com.oppo.cloud.detect.domain.TaskStateHistory;
 import com.oppo.cloud.detect.mapper.TaskInstanceExtendMapper;
 import com.oppo.cloud.detect.service.TaskInstanceService;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,7 +46,7 @@ class TaskInstanceServiceImplTest {
         Mockito.when(taskInstanceExtendMapper.searchTaskState(Mockito.any())).thenReturn(taskStateHistories);
         List<TaskStateHistory> res =
                 taskInstanceService.searchTaskStateHistory("project", "flow", "task", new Date(), new Date(), 2);
-        Assert.assertNotNull(res);
+        Assertions.assertNotNull(res);
     }
 
     @Test
@@ -60,7 +60,7 @@ class TaskInstanceServiceImplTest {
         Mockito.when(taskInstanceExtendMapper.searchTaskDuration(Mockito.any())).thenReturn(taskStateHistories);
         List<Double> res =
                 taskInstanceService.searchTaskDurationHistory("project", "flow", "task", new Date(), new Date(), 2);
-        Assert.assertNotNull(res);
+        Assertions.assertNotNull(res);
 
     }
 
@@ -75,6 +75,6 @@ class TaskInstanceServiceImplTest {
         Mockito.when(taskInstanceExtendMapper.searchTaskRelativeEndTime(Mockito.any())).thenReturn(taskStateHistories);
         List<Double> res =
                 taskInstanceService.searchTaskRelativeEndTime("project", "flow", "task", new Date(), new Date(), 2);
-        Assert.assertNotNull(res);
+        Assertions.assertNotNull(res);
     }
 }

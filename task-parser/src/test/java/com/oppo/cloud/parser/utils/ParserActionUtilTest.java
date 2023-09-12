@@ -18,7 +18,7 @@ package com.oppo.cloud.parser.utils;
 
 import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.common.util.textparser.ParserActionUtil;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ class ParserActionUtilTest {
 
     @Test
     void containedAction() {
-        Assert.assertEquals(true, ParserActionUtil.containedAction(parserAction(), "child1"));
+        Assertions.assertTrue(ParserActionUtil.containedAction(parserAction(), "child1"));
     }
 
     @Test
