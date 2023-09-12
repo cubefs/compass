@@ -30,7 +30,6 @@ import com.oppo.cloud.common.domain.opensearch.SimpleUser;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.common.util.opensearch.BulkApi;
 import com.oppo.cloud.flink.advice.DiagnosisDoctor;
-import com.oppo.cloud.flink.config.OpenSearchFlinkConfig;
 import com.oppo.cloud.flink.constant.DiagnosisParamsConstants;
 import com.oppo.cloud.flink.domain.diagnosis.DiagnosisContext;
 import com.oppo.cloud.flink.domain.diagnosis.RcJobDiagnosis;
@@ -54,7 +53,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.*;
 
 import static com.oppo.cloud.flink.constant.MonitorMetricConstant.JOB_UP_TIME;
@@ -87,7 +85,8 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     @Autowired
     private DiagnosisParamsConstants cons;
 
-    @Resource(name = OpenSearchFlinkConfig.SEARCH_CLIENT)
+
+    @Autowired
     private RestHighLevelClient restClient;
 
     @Value("${custom.opensearch.flinkReportIndex.name}")

@@ -27,7 +27,6 @@ import com.oppo.cloud.common.domain.flink.JobManagerConfigItem;
 import com.oppo.cloud.common.domain.flink.enums.FlinkTaskAppState;
 import com.oppo.cloud.common.domain.flink.enums.YarnApplicationState;
 import com.oppo.cloud.flink.config.FlinkYarnConfig;
-import com.oppo.cloud.flink.config.OpenSearchFlinkConfig;
 import com.oppo.cloud.flink.service.FlinkMetaService;
 import com.oppo.cloud.flink.util.MemorySize;
 import com.oppo.cloud.mapper.FlinkTaskAppMapper;
@@ -106,7 +105,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
     @Value("${custom.opensearch.yarnIndex.name}")
     private String yarnAppIndex;
 
-    @Resource(name = OpenSearchFlinkConfig.SEARCH_CLIENT)
+    @Autowired
     private RestHighLevelClient restHighLevelClient;
     /**
      * flink task type

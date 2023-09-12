@@ -63,10 +63,10 @@ import java.util.stream.Collectors;
 public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService {
 
     @Autowired
-    OpenSearchService openSearchService;
+    private OpenSearchService openSearchService;
 
     @Autowired
-    HttpUtil httpUtil;
+    private HttpUtil httpUtil;
 
     @Value(value = "${custom.opensearch.flinkReportIndex.name}")
     private String flinkReportIndex;
