@@ -156,8 +156,8 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         searchSourceBuilder = openSearchService.genSearchBuilder(cpuTermQuery, rangeQuery, null, null);
         searchSourceBuilder.aggregation(AggregationBuilders.sum("totalCPU").field("totalCoreNum"));
         Aggregations aggregationTotalCpu = openSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
-        ParsedSum totalCPU = aggregationTotalCpu.get("totalCPU");
-        double totalCPUCount = totalCPU.getValue();
+        ParsedSum totalCPU = aggregationTotalCpu == null ? null : aggregationTotalCpu.get("totalCPU");
+        double totalCPUCount = totalCPU == null ? 0 : totalCPU.getValue();
 
 
         // 可优化CPU数
@@ -166,8 +166,8 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         searchSourceBuilder.aggregation(AggregationBuilders.sum("decrCPU").field("cutCoreNum"));
         Aggregations aggregationCpu = openSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
-        ParsedSum decrCPU = aggregationCpu.get("decrCPU");
-        double decrCPUCount = decrCPU.getValue();
+        ParsedSum decrCPU = aggregationCpu == null ? null : aggregationCpu.get("decrCPU");
+        double decrCPUCount = decrCPU == null ? 0 : decrCPU.getValue();
 
         // 可优化CPU占比
         double decrCPURatio = totalCPUCount == 0 ? 0 : decrCPUCount / totalCPUCount;
@@ -185,8 +185,8 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         searchSourceBuilder.aggregation(AggregationBuilders.sum("totalMemory").field("totalMemNum"));
         Aggregations aggregationTotalMemory = openSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
-        ParsedSum totalMemory = aggregationTotalMemory.get("totalMemory");
-        double totalMemoryNum = totalMemory.getValue();
+        ParsedSum totalMemory = aggregationTotalMemory == null ? null : aggregationTotalMemory.get("totalMemory");
+        double totalMemoryNum = totalMemory == null ? 0 : totalMemory.getValue();
 
         // 可优化内存数
         memTermQuery.put("diagnosisResourceType", new Integer[]{3});
@@ -194,8 +194,8 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         searchSourceBuilder.aggregation(AggregationBuilders.sum("dercMemory").field("cutMemNum"));
         Aggregations aggregationMemory = openSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
-        ParsedSum decrMemory = aggregationMemory.get("dercMemory");
-        double decrMemoryNum = decrMemory.getValue();
+        ParsedSum decrMemory = aggregationMemory == null ? null : aggregationMemory.get("dercMemory");
+        double decrMemoryNum = decrMemory == null ? 0 : decrMemory.getValue();
 
         // 可优化占比
         double decrMemoryRatio = totalMemoryNum == 0 ? 0 : decrMemoryNum / totalMemoryNum;
@@ -438,7 +438,6 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         cpuDecrLine.setData(cutCoreData);
         cpuTrend.setJobUsage(cpuDecrLine);
 
-        log.info("totalCoreNum=>" + totalCoreData);
         LineGraph cpuTotalLine = new LineGraph();
         cpuTotalLine.setName("总CPU消耗数");
         cpuTotalLine.setData(totalCoreData);
@@ -448,13 +447,11 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         memTrend.setName("内存消耗趋势");
         memTrend.setUnit("GB");
 
-        log.info("cutMemData=>" + cutMemData);
         LineGraph memDecrLine = new LineGraph();
         memDecrLine.setName("可优化内存数");
         memDecrLine.setData(cutMemData);
         memTrend.setJobUsage(memDecrLine);
 
-        log.info("totalMemNum=>" + totalMemData);
         LineGraph memTotalLine = new LineGraph();
         memTotalLine.setName("总内存消耗数");
         memTotalLine.setData(totalMemData);
@@ -502,7 +499,9 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         builder.aggregation(termsAggregationBuilder);
 
         Aggregations aggregations = openSearchService.findRawAggregations(builder, flinkTaskAnalysisIndex + "-*");
-        Terms terms = aggregations.get("distribution");
+        Terms terms = aggregations == null ? null : aggregations.get("distribution");
+        List<? extends Terms.Bucket> buckets = terms == null ? new ArrayList<>() : terms.getBuckets();
+
         DistributionGraph cpuGraph = new DistributionGraph();
         cpuGraph.setName("CPU资源消耗分布");
         DistributionGraph memGraph = new DistributionGraph();
@@ -514,7 +513,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         List<DistributionData> memList = new ArrayList<>();
         List<DistributionData> numList = new ArrayList<>();
 
-        for (Terms.Bucket bucket : terms.getBuckets()) {
+        for (Terms.Bucket bucket : buckets) {
             DistributionData cpuData = new DistributionData();
             DistributionData memData = new DistributionData();
             DistributionData numData = new DistributionData();

@@ -1,8 +1,17 @@
+
+
 # Compass(罗盘) 部署指南
 
 Compass 依赖了调度平台、Hadoop、Spark、Canal、MySQL、Kafka、Redis、Zookeeper、OpenSearch，需要提前准备好相关环境。
 
 Compass 支持单机和集群部署，可按模块弹性扩缩容。
+## 编译
+Use JDK 8 and maven 3.6.0+ to Compile
+```
+git clone https://github.com/cubefs/compass.git
+cd compass
+mvn package -DskipTests
+```
 
 ## 工程目录
 
