@@ -401,8 +401,7 @@ Flink:
 
 欢迎加入社区咨询使用或成为 Compass 开发者。以下是获得帮助的方法：
 
-- 提交 [issue](https://github.com/cubefs/compass/issues).
-- 加入微信群，搜索并添加微信号 **`daiwei_cn`** or **`zebozhuang`**。请在验证信息中注明您的意向。审核通过后，我们会邀请您加入社区群。
+- 提交 [issue](https://github.com/cubefs/compass/issues). 我们将会尽快做出回应。
 - 如果觉得我们产品不错，可以点赞star支持我们，你们的支持，将是我们打造更好产品的动力。
 
 ## 版权
