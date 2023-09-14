@@ -27,7 +27,7 @@ import com.oppo.cloud.parser.domain.job.TaskParam;
 import com.oppo.cloud.parser.domain.job.TaskResult;
 import com.oppo.cloud.parser.service.job.task.Task;
 import com.oppo.cloud.parser.service.job.task.TaskFactory;
-import com.oppo.cloud.parser.service.writer.ElasticWriter;
+import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -125,7 +125,7 @@ public class JobManager {
         }
 
         try {
-            ElasticWriter.getInstance().saveTaskResults(logRecord, taskResults);
+            OpenSearchWriter.getInstance().saveTaskResults(logRecord, taskResults);
         } catch (Exception e) {
             log.error("Exception:", e);
         }

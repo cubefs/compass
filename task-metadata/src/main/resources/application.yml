@@ -13,10 +13,12 @@ spring:
       nodes: localhost:6379
     password:
 
-  elasticsearch:
+  opensearch:
     nodes: localhost:19527
     username:
     password:
+    truststore:
+    truststore-password:
     yarn-app-prefix: "compass-yarn-app-"
     spark-app-prefix: "compass-spark-app-"
 

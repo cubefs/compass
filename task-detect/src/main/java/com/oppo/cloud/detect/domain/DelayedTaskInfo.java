@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.detect.domain;
 
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 import lombok.Data;
 
 import java.util.Date;

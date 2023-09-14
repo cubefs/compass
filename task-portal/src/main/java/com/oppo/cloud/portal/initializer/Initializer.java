@@ -16,11 +16,11 @@
 
 package com.oppo.cloud.portal.initializer;
 
-import com.oppo.cloud.common.domain.elasticsearch.*;
-import com.oppo.cloud.common.util.elastic.MappingApi;
+import com.oppo.cloud.common.domain.opensearch.*;
+import com.oppo.cloud.common.util.opensearch.MappingApi;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.support.master.AcknowledgedResponse;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.opensearch.action.support.master.AcknowledgedResponse;
+import org.opensearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,62 +36,62 @@ import java.util.Map;
 @Component
 public class Initializer implements CommandLineRunner {
 
-    @Value(value = "${custom.elasticsearch.appIndex.name}")
+    @Value(value = "${custom.opensearch.appIndex.name}")
     private String appIndex;
 
-    @Value(value = "${custom.elasticsearch.appIndex.shards}")
+    @Value(value = "${custom.opensearch.appIndex.shards}")
     private Integer appIndexShards;
 
-    @Value(value = "${custom.elasticsearch.appIndex.replicas}")
+    @Value(value = "${custom.opensearch.appIndex.replicas}")
     private Integer appIndexReplicas;
 
-    @Value(value = "${custom.elasticsearch.jobIndex.name}")
+    @Value(value = "${custom.opensearch.jobIndex.name}")
     private String jobIndex;
 
-    @Value(value = "${custom.elasticsearch.jobIndex.shards}")
+    @Value(value = "${custom.opensearch.jobIndex.shards}")
     private Integer jobIndexShards;
 
-    @Value(value = "${custom.elasticsearch.jobIndex.replicas}")
+    @Value(value = "${custom.opensearch.jobIndex.replicas}")
     private Integer jobIndexReplicas;
 
-    @Value(value = "${custom.elasticsearch.logIndex.name}")
+    @Value(value = "${custom.opensearch.logIndex.name}")
     private String logIndex;
 
-    @Value(value = "${custom.elasticsearch.logIndex.shards}")
+    @Value(value = "${custom.opensearch.logIndex.shards}")
     private Integer logIndexShards;
 
-    @Value(value = "${custom.elasticsearch.logIndex.replicas}")
+    @Value(value = "${custom.opensearch.logIndex.replicas}")
     private Integer logIndexReplicas;
 
-    @Value(value = "${custom.elasticsearch.jobInstanceIndex.name}")
+    @Value(value = "${custom.opensearch.jobInstanceIndex.name}")
     private String jobInstanceIndex;
 
-    @Value(value = "${custom.elasticsearch.jobInstanceIndex.shards}")
+    @Value(value = "${custom.opensearch.jobInstanceIndex.shards}")
     private Integer jobInstanceIndexShards;
 
-    @Value(value = "${custom.elasticsearch.jobInstanceIndex.replicas}")
+    @Value(value = "${custom.opensearch.jobInstanceIndex.replicas}")
     private Integer jobInstanceIndexReplicas;
 
-    @Value(value = "${custom.elasticsearch.flinkReportIndex.name}")
+    @Value(value = "${custom.opensearch.flinkReportIndex.name}")
     private String flinkReportIndex;
 
-    @Value(value = "${custom.elasticsearch.flinkReportIndex.shards}")
+    @Value(value = "${custom.opensearch.flinkReportIndex.shards}")
     private Integer flinkReportIndexShards;
 
-    @Value(value = "${custom.elasticsearch.flinkReportIndex.replicas}")
+    @Value(value = "${custom.opensearch.flinkReportIndex.replicas}")
     private Integer flinkReportIndexReplicas;
 
-    @Value(value = "${custom.elasticsearch.flinkTaskAnalysisIndex.name}")
+    @Value(value = "${custom.opensearch.flinkTaskAnalysisIndex.name}")
     private String flinkTaskAnalysisIndex;
 
-    @Value(value = "${custom.elasticsearch.flinkTaskAnalysisIndex.shards}")
+    @Value(value = "${custom.opensearch.flinkTaskAnalysisIndex.shards}")
     private Integer flinkTaskAnalysisIndexShards;
 
-    @Value(value = "${custom.elasticsearch.flinkTaskAnalysisIndex.replicas}")
+    @Value(value = "${custom.opensearch.flinkTaskAnalysisIndex.replicas}")
     private Integer flinkTaskAnalysisIndexReplicas;
 
     @Autowired
-    @Qualifier("elasticsearch")
+    @Qualifier("opensearch")
     private RestHighLevelClient client;
 
     /**
@@ -105,28 +105,28 @@ public class Initializer implements CommandLineRunner {
             Map<String, Object> mapping = JobAnalysisMapping.build(true);
             AcknowledgedResponse response = mappingApi.putTemplate(client, jobIndex,
                     new String[]{jobIndex + "-*"}, mapping, jobIndexShards, jobIndexReplicas);
-            log.info("Create elasticsearch template {}, result: {}", jobIndex, response.isAcknowledged());
+            log.info("Create opensearch template {}, result: {}", jobIndex, response.isAcknowledged());
         }
 
         if (!mappingApi.existsTemplate(client, appIndex)) {
             Map<String, Object> mapping = TaskAppMapping.build(true);
             AcknowledgedResponse response = mappingApi.putTemplate(client, appIndex,
                     new String[]{appIndex + "-*"}, mapping, appIndexShards, appIndexReplicas);
-            log.info("Create elasticsearch template {}, result: {}", appIndex, response.isAcknowledged());
+            log.info("Create opensearch template {}, result: {}", appIndex, response.isAcknowledged());
         }
 
         if (!mappingApi.existsTemplate(client, flinkReportIndex)) {
             Map<String, Object> mapping = FlinkReportMapping.build(true);
             AcknowledgedResponse response = mappingApi.putTemplate(client, flinkReportIndex,
                     new String[]{flinkReportIndex + "-*"}, mapping, flinkReportIndexShards, flinkReportIndexReplicas);
-            log.info("Create elasticsearch template {}, result: {}", flinkReportIndex, response.isAcknowledged());
+            log.info("Create opensearch template {}, result: {}", flinkReportIndex, response.isAcknowledged());
         }
 
         if (!mappingApi.existsTemplate(client, flinkTaskAnalysisIndex)) {
             Map<String, Object> mapping = FlinkTaskAnalysisMapping.build(true);
             AcknowledgedResponse response = mappingApi.putTemplate(client, flinkTaskAnalysisIndex,
                     new String[]{flinkTaskAnalysisIndex + "-*"}, mapping, flinkTaskAnalysisIndexShards, flinkTaskAnalysisIndexReplicas);
-            log.info("Create elasticsearch template {}, result: {}", flinkTaskAnalysisIndex, response.isAcknowledged());
+            log.info("Create opensearch template {}, result: {}", flinkTaskAnalysisIndex, response.isAcknowledged());
         }
 
         // spark log summary
@@ -134,14 +134,14 @@ public class Initializer implements CommandLineRunner {
             Map<String, Object> mapping = LogSummaryMapping.build(true);
             AcknowledgedResponse response = mappingApi.putTemplate(client, logIndex,
                     new String[]{logIndex + "-*"}, mapping, logIndexShards, logIndexReplicas);
-            log.info("Create elasticsearch template {}, result: {}", logIndex, response.isAcknowledged());
+            log.info("Create opensearch template {}, result: {}", logIndex, response.isAcknowledged());
         }
 
         if (!mappingApi.existsTemplate(client, jobInstanceIndex)) {
             Map<String, Object> mapping = JobInstanceMapping.build(true);
             AcknowledgedResponse response = mappingApi.putTemplate(client, jobInstanceIndex,
                     new String[]{jobInstanceIndex + "-*"}, mapping, jobInstanceIndexShards, jobInstanceIndexReplicas);
-            log.info("Create elasticsearch template {}, result: {}", jobInstanceIndex, response.isAcknowledged());
+            log.info("Create opensearch template {}, result: {}", jobInstanceIndex, response.isAcknowledged());
         }
     }
 }

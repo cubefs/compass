@@ -16,8 +16,8 @@
 
 package com.oppo.cloud.common.domain.job;
 
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import lombok.Data;
 
 import java.util.HashMap;

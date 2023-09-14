@@ -17,16 +17,11 @@
 package com.oppo.cloud.application;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.elasticsearch.ElasticSearchRestHealthContributorAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(exclude = {
-        ElasticsearchDataAutoConfiguration.class,
-        ElasticSearchRestHealthContributorAutoConfiguration.class
-}, scanBasePackages = "com.oppo.cloud")
+@SpringBootApplication(scanBasePackages = "com.oppo.cloud")
 @ComponentScan(basePackages = "com.oppo.cloud")
 @EnableScheduling
 public class TaskApplication {

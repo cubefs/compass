@@ -19,7 +19,7 @@ package com.oppo.cloud.portal.service.impl;
 import com.oppo.cloud.mapper.ProjectMapper;
 import com.oppo.cloud.model.Project;
 import com.oppo.cloud.portal.service.ProjectService;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +43,6 @@ class ProjectServiceImplTest {
     void getAllProject() {
         Mockito.when(projectMapper.selectByExample(Mockito.any())).thenReturn(new ArrayList<Project>());
         List<Project> projectList = projectService.getAllProject(1);
-        Assert.assertNotNull(projectList);
+        Assertions.assertNotNull(projectList);
     }
 }

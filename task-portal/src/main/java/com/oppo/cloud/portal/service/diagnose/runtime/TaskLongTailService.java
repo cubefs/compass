@@ -18,7 +18,7 @@ package com.oppo.cloud.portal.service.diagnose.runtime;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.oppo.cloud.common.constant.AppCategoryEnum;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.domain.eventlog.*;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.util.DateUtil;
@@ -27,7 +27,7 @@ import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.TaskLongTail;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
-import com.oppo.cloud.portal.service.ElasticSearchService;
+import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +46,8 @@ import java.util.Map;
 @Service
 public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
 
-    @Value(value = "${custom.elasticsearch.appIndex.name}")
+    @Value(value = "${custom.opensearch.appIndex.name}")
     String appIndex;
-
-    @Autowired
-    ElasticSearchService elasticSearchService;
 
     @Override
     public String getCategory() {
@@ -184,7 +181,7 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
         termQuery.put("applicationId", applicationId);
         List<String> categories = new ArrayList<>();
         try {
-            List<TaskApp> taskAppEsList = elasticSearchService.find(TaskApp.class, termQuery, appIndex);
+            List<TaskApp> taskAppEsList = openSearchService.find(TaskApp.class, termQuery, appIndex);
             if (taskAppEsList.size() > 0) {
                 categories = taskAppEsList.get(0).getCategories();
             }

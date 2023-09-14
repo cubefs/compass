@@ -34,7 +34,7 @@ import com.oppo.cloud.parser.domain.job.SparkExecutorLogParserResult;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
-import com.oppo.cloud.parser.service.writer.ElasticWriter;
+import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
 import com.oppo.cloud.parser.utils.GCReportUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -126,7 +126,7 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
             log.error("Exception:", e);
         }
         if (result != null && result.getActionMap() != null) {
-            List<String> categories = ElasticWriter.getInstance()
+            List<String> categories = OpenSearchWriter.getInstance()
                     .saveParserActions(logType, readerObject.getLogPath(), this.param, result.getActionMap());
             result.setCategories(categories);
         }

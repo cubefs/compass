@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.flink.service;
 
-import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
+import com.oppo.cloud.common.domain.opensearch.FlinkTaskAnalysis;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisFrom;
 import com.oppo.cloud.model.FlinkTaskApp;
 

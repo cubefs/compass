@@ -17,7 +17,7 @@
 package com.oppo.cloud.portal.service.diagnose.runerror;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.model.TaskDiagnosisAdvice;
 import com.oppo.cloud.model.TaskDiagnosisAdviceExample;
 import com.oppo.cloud.portal.domain.base.Conclusion;
@@ -32,7 +32,7 @@ import java.util.List;
 @Service
 public class OtherExceptionService extends RunErrorBaseService {
 
-    @Value(value = "${custom.elasticsearch.appIndex.name}")
+    @Value(value = "${custom.opensearch.appIndex.name}")
     String appIndex;
 
     @Override
@@ -59,7 +59,7 @@ public class OtherExceptionService extends RunErrorBaseService {
         // yarn日志
         HashMap<String, Object> termQuery = new HashMap<>();
         termQuery.put("applicationId.keyword", applicationId);
-        List<TaskApp> taskAppList = elasticSearchService.find(TaskApp.class, termQuery, appIndex + "-*");
+        List<TaskApp> taskAppList = openSearchService.find(TaskApp.class, termQuery, appIndex + "-*");
         TaskDiagnosisAdviceExample diagnoseAdviceExample = new TaskDiagnosisAdviceExample();
         diagnoseAdviceExample.createCriteria().andCategoryEqualTo("yarn");
         List<TaskDiagnosisAdvice> diagnoseAdviceList = diagnosisAdviceMapper.selectByExample(diagnoseAdviceExample);

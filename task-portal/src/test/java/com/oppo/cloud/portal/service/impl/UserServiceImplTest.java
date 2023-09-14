@@ -20,7 +20,7 @@ import com.oppo.cloud.mapper.UserMapper;
 import com.oppo.cloud.model.User;
 import com.oppo.cloud.portal.service.UserService;
 import com.oppo.cloud.portal.util.EncryptionUtils;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ class UserServiceImplTest {
         users.add(new User());
         Mockito.when(userMapper.selectByExample(Mockito.any())).thenReturn(users);
         User user = userService.getByUsername("username_test");
-        Assert.assertNotNull(user);
+        Assertions.assertNotNull(user);
     }
 
     /**
@@ -57,6 +57,6 @@ class UserServiceImplTest {
         String md5HashPassword = EncryptionUtils.getMd5(password);
         boolean check = md5HashPassword.equals("7ad2410b2f4c074479a8937a28a22b8f");
         System.out.println(check);
-        Assert.assertTrue(check);
+        Assertions.assertTrue(check);
     }
 }

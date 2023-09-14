@@ -18,21 +18,21 @@ package com.oppo.cloud.portal.controller;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.constant.JobCategoryEnum;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.LogSummary;
-import com.oppo.cloud.common.domain.elasticsearch.SimpleUser;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.LogSummary;
+import com.oppo.cloud.common.domain.opensearch.SimpleUser;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
 import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.portal.dao.TaskInstanceExtendMapper;
-import com.oppo.cloud.portal.service.ElasticSearchService;
-import org.elasticsearch.script.Script;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import com.oppo.cloud.portal.service.OpenSearchService;
+import org.opensearch.script.Script;
+import org.opensearch.search.aggregations.AggregationBuilder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.Aggregations;
+import org.opensearch.search.aggregations.bucket.terms.Terms;
+import org.opensearch.search.builder.SearchSourceBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,20 +43,20 @@ import java.util.*;
 @SpringBootTest
 class JobControllerTest {
 
-    @Value(value = "${custom.elasticsearch.jobIndex.name}")
+    @Value(value = "${custom.opensearch.jobIndex.name}")
     private String jobIndex;
 
-    @Value(value = "${custom.elasticsearch.appIndex.name}")
+    @Value(value = "${custom.opensearch.appIndex.name}")
     private String appIndex;
 
-    @Value(value = "${custom.elasticsearch.logIndex.name}")
+    @Value(value = "${custom.opensearch.logIndex.name}")
     private String logIndex;
 
-    @Value(value = "${custom.elasticsearch.detectIndex.name}")
+    @Value(value = "${custom.opensearch.detectIndex.name}")
     private String detectIndex;
 
     @Autowired
-    ElasticSearchService elasticSearchService;
+    OpenSearchService openSearchService;
 
     @Autowired
     TaskInstanceExtendMapper taskInstanceExtendMapper;
@@ -66,7 +66,7 @@ class JobControllerTest {
         HashMap<String, Object> termQuery = new HashMap<>();
         termQuery.put("_id", "7aa3fe22-2b34-4dd5-aa45-1ba84f1f7cf9");
         List<JobAnalysis> jobAnalyses =
-                elasticSearchService.find(JobAnalysis.class, termQuery, "compass-job-analysis-2022-11-22");
+                openSearchService.find(JobAnalysis.class, termQuery, "compass-job-analysis-2022-11-22");
         System.out.println(jobAnalyses);
     }
 
@@ -113,7 +113,7 @@ class JobControllerTest {
         indexName += DateUtil.format(jobAnalysis.getExecutionDate(), "yyyy-MM-dd");
         Map<String, Object> map = jobAnalysis.genDoc();
         System.out.println(map);
-        elasticSearchService.insertOrUpDateEs(indexName, UUID.randomUUID().toString(), jobAnalysis.genDoc());
+        openSearchService.insertOrUpDate(indexName, UUID.randomUUID().toString(), jobAnalysis.genDoc());
     }
 
     @Test
@@ -160,7 +160,7 @@ class JobControllerTest {
         appIndexName += DateUtil.format(taskApp.getExecutionDate(), "yyyy-MM-dd");
         Map<String, Object> map = taskApp.genDoc();
         System.out.println(map);
-        elasticSearchService.insertOrUpDateEs(appIndexName, "352c06de-a313-4e60-965a-5b2e3705b198", map);
+        openSearchService.insertOrUpDate(appIndexName, "352c06de-a313-4e60-965a-5b2e3705b198", map);
     }
 
     @Test
@@ -217,7 +217,7 @@ class JobControllerTest {
         logSummary.setApplicationId("");
         logSummary.setStep(0);
         logSummary.setLogTimestamp(1666713600);
-        elasticSearchService.insertOrUpDateEs(logIndex + "-" + "2022-10-26", UUID.randomUUID().toString(),
+        openSearchService.insertOrUpDate(logIndex + "-" + "2022-10-26", UUID.randomUUID().toString(),
                 logSummary.genDoc());
     }
 
@@ -225,12 +225,12 @@ class JobControllerTest {
     public void updateTaskAppEs() throws Exception {
         Map<String, Object> termQuery = new HashMap<>();
         termQuery.put("applicationId", "application_1662709492856_0271_1");
-        List<TaskApp> taskAppList = elasticSearchService.find(TaskApp.class, termQuery, appIndex + "-*");
+        List<TaskApp> taskAppList = openSearchService.find(TaskApp.class, termQuery, appIndex + "-*");
         for (TaskApp taskApp : taskAppList) {
             taskApp.setApplicationId("application_1662709492856_0271_1");
             taskApp.setCategories(
                     Arrays.asList("otherException", "stageDurationAbnormal", "speculativeTask", "cpuWaste"));
-            elasticSearchService.insertOrUpDateEs(taskApp.genIndex(appIndex), taskApp.genDocId(), taskApp.genDoc());
+            openSearchService.insertOrUpDate(taskApp.genIndex(appIndex), taskApp.genDocId(), taskApp.genDoc());
             break;
         }
     }
@@ -240,14 +240,14 @@ class JobControllerTest {
         Map<String, Object> termQuery = new HashMap<>();
         termQuery.put("applicationId", "application_1662709492856_0271_1");
         List<DetectorStorage> detectorStorageList =
-                elasticSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
+                openSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
         for (DetectorStorage detectorStorage : detectorStorageList) {
             for (DetectorResult detectorResult : detectorStorage.getDataList()) {
                 if (detectorResult.getAppCategory().equals(AppCategoryEnum.LARGE_TABLE_SCAN.getCategory())) {
                     detectorResult.setAbnormal(false);
                 }
             }
-            elasticSearchService.insertOrUpDateEs("compass-detector-app-2022-11-07",
+            openSearchService.insertOrUpDate("compass-detector-app-2022-11-07",
                     "bbde0eda-8888-4198-bda9-a92d4723ce31", detectorStorage);
             break;
         }
@@ -261,14 +261,14 @@ class JobControllerTest {
 
     @Test
     public void testSearchJob() throws Exception {
-        SearchSourceBuilder searchSourceBuilder = elasticSearchService.genSearchBuilder(null, null, null, null);
+        SearchSourceBuilder searchSourceBuilder = openSearchService.genSearchBuilder(null, null, null, null);
         AggregationBuilder aggregationBuilderAbnormalJobCount = AggregationBuilders.terms("groupByCount")
                 .script(new Script(
                         "doc['projectName.keyword'].value+'@@'+doc['flowName.keyword'].value+'@@'+doc['taskName.keyword'].value"))
                 .size(10000);
         searchSourceBuilder.aggregation(aggregationBuilderAbnormalJobCount);
         Aggregations aggregationsGroupByCount =
-                elasticSearchService.findRawAggregations(searchSourceBuilder, jobIndex + "-*");
+                openSearchService.findRawAggregations(searchSourceBuilder, jobIndex + "-*");
         Terms terms = aggregationsGroupByCount.get("groupByCount");
         int abnormalJobCount = terms.getBuckets().size();
         System.out.println(abnormalJobCount);

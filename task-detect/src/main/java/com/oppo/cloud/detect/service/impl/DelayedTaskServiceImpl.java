@@ -19,7 +19,7 @@ package com.oppo.cloud.detect.service.impl;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.detect.domain.DelayedTaskInfo;
 import com.oppo.cloud.detect.service.DelayedTaskService;

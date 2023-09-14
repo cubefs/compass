@@ -17,14 +17,13 @@
 package com.oppo.cloud.portal.service.diagnose.runinfo;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.portal.domain.diagnose.DiagnoseReport;
-import com.oppo.cloud.portal.domain.diagnose.info.AppInfo;
 import com.oppo.cloud.portal.domain.diagnose.info.ClusterInfo;
 import com.oppo.cloud.portal.domain.diagnose.info.TaskInfo;
-import com.oppo.cloud.portal.service.ElasticSearchService;
+import com.oppo.cloud.portal.service.OpenSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,12 +36,12 @@ import java.util.*;
 public class RunInfoService {
 
     @Autowired
-    ElasticSearchService elasticSearchService;
+    OpenSearchService openSearchService;
 
-    @Value(value = "${custom.elasticsearch.logIndex.name}")
+    @Value(value = "${custom.opensearch.logIndex.name}")
     String logIndex;
 
-    @Value(value = "${custom.elasticsearch.appIndex.name}")
+    @Value(value = "${custom.opensearch.appIndex.name}")
     String appIndex;
 
     /**
@@ -59,7 +58,7 @@ public class RunInfoService {
         try {
             runInfo.setClusterInfo(clusterInfo);
             runInfo.setTaskInfo(taskInfo);
-            List<TaskApp> taskApps = elasticSearchService.find(TaskApp.class, termQuery, appIndex + "-*");
+            List<TaskApp> taskApps = openSearchService.find(TaskApp.class, termQuery, appIndex + "-*");
             if (taskApps.size() == 0) {
                 return runInfo;
             }

@@ -29,12 +29,16 @@ export SPRING_REDIS_PASSWORD=""
 # Zookeeper
 export SPRING_ZOOKEEPER_NODES="localhost:2181"
 
-# Elasticsearch
-export SPRING_ELASTICSEARCH_NODES="localhost:19527"
+# OpenSearch
+export SPRING_OPENSEARCH_NODES="localhost:19527"
 # Optional
-export SPRING_ELASTICSEARCH_USERNAME=""
+export SPRING_OPENSEARCH_USERNAME=""
 # Optional
-export SPRING_ELASTICSEARCH_PASSWORD=""
+export SPRING_OPENSEARCH_PASSWORD=""
+# Optional
+export SPRING_OPENSEARCH_TRUSTSTORE=""
+# Optional
+export SPRING_OPENSEARCH_TRUSTSTOREPASSWORD=""
 
 # Prometheus for flink, ignore it if you do not use flink.
 export FLINK_PROMETHEUS_HOST="http://localhost:9090"

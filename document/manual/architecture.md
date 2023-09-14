@@ -19,7 +19,7 @@
 
 - 服务层：包括数据采集、元数据关联&模型标准化、异常检测、资源诊断、Portal模块；
 
-- 基础组件层：包括MySQL、 Elasticsearch、Kafka、Redis、Zookeeper等组件。
+- 基础组件层：包括MySQL、 OpenSearch、Kafka、Redis、Zookeeper等组件。
 
 具体模块流程阶段：
 

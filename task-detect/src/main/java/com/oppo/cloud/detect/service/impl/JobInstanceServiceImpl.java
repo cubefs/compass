@@ -16,12 +16,12 @@
 
 package com.oppo.cloud.detect.service.impl;
 
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.JobInstance;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.JobInstance;
 import com.oppo.cloud.common.util.DateUtil;
-import com.oppo.cloud.detect.service.ElasticSearchService;
+import com.oppo.cloud.detect.service.OpenSearchService;
 import com.oppo.cloud.detect.service.JobInstanceService;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,9 +39,9 @@ import java.util.Map;
 public class JobInstanceServiceImpl implements JobInstanceService {
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
+    private OpenSearchService openSearchService;
 
-    @Value("${custom.elasticsearch.job-instance-index}")
+    @Value("${custom.opensearch.job-instance-index}")
     private String jonInstanceIndex;
 
     @Override
@@ -55,15 +55,15 @@ public class JobInstanceServiceImpl implements JobInstanceService {
         termQuery.put("flowName.keyword", jobAnalysis.getFlowName());
         termQuery.put("taskName.keyword", jobAnalysis.getTaskName());
         termQuery.put("executionDate", DateUtil.timestampToUTCDate(jobAnalysis.getExecutionDate().getTime()));
-        SearchSourceBuilder searchSourceBuilder = elasticSearchService.genSearchBuilder(termQuery, null, null, null);
+        SearchSourceBuilder searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, null, null, null);
         List<JobInstance> jobInstanceList =
-                elasticSearchService.find(JobInstance.class, searchSourceBuilder, jonInstanceIndex + "-*");
+                openSearchService.find(JobInstance.class, searchSourceBuilder, jonInstanceIndex + "-*");
         if (jobInstanceList.size() != 0) {
             JobInstance jobInstanceEs = jobInstanceList.get(0);
             jobInstance.setDocId(jobInstanceEs.getDocId());
             jobInstance.setIndex(jobInstanceEs.getIndex());
         }
-        elasticSearchService.insertOrUpDateEs(jobInstance.genIndex(jonInstanceIndex), jobInstance.genDocId(),
+        openSearchService.insertOrUpDate(jobInstance.genIndex(jonInstanceIndex), jobInstance.genDocId(),
                 jobInstance.genDoc());
     }
 }

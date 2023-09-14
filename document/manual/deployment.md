@@ -1,8 +1,17 @@
+
+
 # Compass(罗盘) 部署指南
 
-Compass 依赖了调度平台、Hadoop、Spark、Canal、MySQL、Kafka、Redis、Zookeeper、Elasticsearch，需要提前准备好相关环境。
+Compass 依赖了调度平台、Hadoop、Spark、Canal、MySQL、Kafka、Redis、Zookeeper、OpenSearch，需要提前准备好相关环境。
 
 Compass 支持单机和集群部署，可按模块弹性扩缩容。
+## 编译
+Use JDK 8 and maven 3.6.0+ to Compile
+```
+git clone https://github.com/cubefs/compass.git
+cd compass
+mvn package -DskipTests
+```
 
 ## 工程目录
 
@@ -18,7 +27,7 @@ compass
 ├── task-canal                          订阅调度平台MySQL表元数据到Kafka
 ├── task-canal-adapter                  同步调度平台MySQL表元数据Compass平台
 ├── task-detect                         工作流层异常类型检测
-├── task-metadata                       同步Yarn、Spark任务元数据到Elasticsearch
+├── task-metadata                       同步Yarn、Spark任务元数据到OpenSearch
 ├── task-parser                         日志解析和Spark任务异常检测
 ├── task-portal                         异常任务的可视化服务
 ├── task-flink                          Flink任务资源及异常诊断
@@ -58,7 +67,7 @@ compass/bin 和 compass/conf 是作为公共脚本和配置使用，方便统一
 
 通过Environment属性绑定对应SpringBoot配置，只修改环境变量即可。
 
-启动之前需要先确定调度平台类型、调度平台MySQL订阅账号、Compass MySQL、Kafka、Redis、Zookeeper、Elasticsearch集群地址
+启动之前需要先确定调度平台类型、调度平台MySQL订阅账号、Compass MySQL、Kafka、Redis、Zookeeper、OpenSearch集群地址
 
 Kafka需要预先创建好topic: mysqldata,task-instance,task-application按实际数据量设置分区
 
@@ -93,8 +102,8 @@ export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
 # Zookeeper (默认版本: 3.4.5, canal使用)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
 
-# Elasticsearch (默认版本: 7.17.9)
-export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
+# OpenSearch (默认版本: 1.3.12)
+export SPRING_OPENSEARCH_NODES="ip1:port,ip2:port"
 
 # Flink metric prometheus
 export FLINK_PROMETHEUS_HOST="host"

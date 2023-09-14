@@ -22,7 +22,7 @@ import com.oppo.cloud.common.util.DateUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.search.sort.SortOrder;
+import org.opensearch.search.sort.SortOrder;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;

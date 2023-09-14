@@ -16,51 +16,40 @@
 
 package com.oppo.cloud.portal.service.impl;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
-import com.github.pagehelper.PageHelper;
-import com.oppo.cloud.common.api.CommonPage;
 import com.oppo.cloud.common.api.CommonStatus;
-import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
-import com.oppo.cloud.common.domain.flink.enums.DiagnosisRuleHasAdvice;
-import com.oppo.cloud.common.domain.flink.enums.FlinkRule;
+import com.oppo.cloud.common.domain.opensearch.FlinkTaskAnalysis;
 import com.oppo.cloud.common.util.DateUtil;
-import com.oppo.cloud.model.*;
+import com.oppo.cloud.model.FlinkTaskApp;
 import com.oppo.cloud.portal.config.ThreadLocalUserInfo;
 import com.oppo.cloud.portal.domain.flink.*;
-import com.oppo.cloud.portal.domain.report.*;
+import com.oppo.cloud.portal.domain.report.DistributionData;
+import com.oppo.cloud.portal.domain.report.DistributionGraph;
+import com.oppo.cloud.portal.domain.report.LineGraph;
+import com.oppo.cloud.portal.domain.report.TrendGraph;
 import com.oppo.cloud.portal.domain.statistics.FlinkStatisticsData;
 import com.oppo.cloud.portal.domain.statistics.PeriodTime;
 import com.oppo.cloud.portal.domain.task.IndicatorData;
 import com.oppo.cloud.portal.domain.task.UserInfo;
-import com.oppo.cloud.portal.service.ElasticSearchService;
+import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.FlinkTaskDiagnosisService;
 import com.oppo.cloud.portal.util.HttpUtil;
-import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.script.Script;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
-import org.elasticsearch.search.aggregations.metrics.ParsedSum;
-import org.elasticsearch.search.aggregations.metrics.SumAggregationBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
+import org.opensearch.search.aggregations.AggregationBuilders;
+import org.opensearch.search.aggregations.Aggregations;
+import org.opensearch.search.aggregations.bucket.terms.Terms;
+import org.opensearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.opensearch.search.aggregations.metrics.ParsedSum;
+import org.opensearch.search.aggregations.metrics.SumAggregationBuilder;
+import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
@@ -74,15 +63,15 @@ import java.util.stream.Collectors;
 public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService {
 
     @Autowired
-    ElasticSearchService elasticSearchService;
+    private OpenSearchService openSearchService;
 
     @Autowired
-    HttpUtil httpUtil;
+    private HttpUtil httpUtil;
 
-    @Value(value = "${custom.elasticsearch.flinkReportIndex.name}")
+    @Value(value = "${custom.opensearch.flinkReportIndex.name}")
     private String flinkReportIndex;
 
-    @Value(value = "${custom.elasticsearch.flinkTaskAnalysisIndex.name}")
+    @Value(value = "${custom.opensearch.flinkTaskAnalysisIndex.name}")
     private String flinkTaskAnalysisIndex;
 
 
@@ -98,12 +87,12 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         Map<String, SortOrder> sort = req.getSortOrder();
         Map<String, Object[]> rangeConditions = req.getRangeCondition();
 
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, rangeConditions, sort, null);
-        Long count = elasticSearchService.count(builder, flinkTaskAnalysisIndex + "-*");
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, rangeConditions, sort, null);
+        Long count = openSearchService.count(builder, flinkTaskAnalysisIndex + "-*");
 
         builder.from(req.getFrom()).size(req.getSize());
 
-        List<FlinkTaskAnalysis> items = elasticSearchService.find(FlinkTaskAnalysis.class, builder, flinkTaskAnalysisIndex + "-*");
+        List<FlinkTaskAnalysis> items = openSearchService.find(FlinkTaskAnalysis.class, builder, flinkTaskAnalysisIndex + "-*");
         List<FlinkTaskAnalysisInfo> infos = items.stream().map(FlinkTaskAnalysisInfo::from).collect(Collectors.toList());
 
         Map<String, Object> resp = new HashMap<>();
@@ -128,14 +117,14 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
                 new Object[]{DateUtil.timestampToUTCDate(startTimestamp), DateUtil.timestampToUTCDate(endTimestamp)});
 
         SearchSourceBuilder searchSourceBuilder =
-                elasticSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
+                openSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
         // 诊断作业数
-        long jobCount = elasticSearchService.count(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
+        long jobCount = openSearchService.count(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
         // 异常作业数
         termQuery.put("diagnosisResourceType", new Integer[]{4});
-        searchSourceBuilder = elasticSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
-        long abnormalJobCount = elasticSearchService.count(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
+        searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
+        long abnormalJobCount = openSearchService.count(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
         // 异常占比
         double abnormalJobRatio = jobCount == 0 ? 0 : (double) abnormalJobCount / jobCount;
@@ -150,8 +139,8 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             resourceTermQuery.put("users.username", userInfo.getUsername());
         }
         resourceTermQuery.put("diagnosisResourceType", new Integer[]{2, 3});
-        searchSourceBuilder = elasticSearchService.genSearchBuilder(resourceTermQuery, rangeQuery, null, null);
-        long resourceJobCount = elasticSearchService.count(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
+        searchSourceBuilder = openSearchService.genSearchBuilder(resourceTermQuery, rangeQuery, null, null);
+        long resourceJobCount = openSearchService.count(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
         // 占比
         double resourceJobRatio = jobCount == 0 ? 0 : (double) resourceJobCount / jobCount;
@@ -164,21 +153,21 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         if (!userInfo.isAdmin()) {
             cpuTermQuery.put("users.username", userInfo.getUsername());
         }
-        searchSourceBuilder = elasticSearchService.genSearchBuilder(cpuTermQuery, rangeQuery, null, null);
+        searchSourceBuilder = openSearchService.genSearchBuilder(cpuTermQuery, rangeQuery, null, null);
         searchSourceBuilder.aggregation(AggregationBuilders.sum("totalCPU").field("totalCoreNum"));
-        Aggregations aggregationTotalCpu = elasticSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
-        ParsedSum totalCPU = aggregationTotalCpu.get("totalCPU");
-        double totalCPUCount = totalCPU.getValue();
+        Aggregations aggregationTotalCpu = openSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
+        ParsedSum totalCPU = aggregationTotalCpu == null ? null : aggregationTotalCpu.get("totalCPU");
+        double totalCPUCount = totalCPU == null ? 0 : totalCPU.getValue();
 
 
         // 可优化CPU数
         cpuTermQuery.put("diagnosisResourceType", new Integer[]{2});
-        searchSourceBuilder = elasticSearchService.genSearchBuilder(cpuTermQuery, rangeQuery, null, null);
+        searchSourceBuilder = openSearchService.genSearchBuilder(cpuTermQuery, rangeQuery, null, null);
         searchSourceBuilder.aggregation(AggregationBuilders.sum("decrCPU").field("cutCoreNum"));
-        Aggregations aggregationCpu = elasticSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
+        Aggregations aggregationCpu = openSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
-        ParsedSum decrCPU = aggregationCpu.get("decrCPU");
-        double decrCPUCount = decrCPU.getValue();
+        ParsedSum decrCPU = aggregationCpu == null ? null : aggregationCpu.get("decrCPU");
+        double decrCPUCount = decrCPU == null ? 0 : decrCPU.getValue();
 
         // 可优化CPU占比
         double decrCPURatio = totalCPUCount == 0 ? 0 : decrCPUCount / totalCPUCount;
@@ -192,21 +181,21 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         if (!userInfo.isAdmin()) {
             memTermQuery.put("users.username", userInfo.getUsername());
         }
-        searchSourceBuilder = elasticSearchService.genSearchBuilder(memTermQuery, rangeQuery, null, null);
+        searchSourceBuilder = openSearchService.genSearchBuilder(memTermQuery, rangeQuery, null, null);
         searchSourceBuilder.aggregation(AggregationBuilders.sum("totalMemory").field("totalMemNum"));
-        Aggregations aggregationTotalMemory = elasticSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
+        Aggregations aggregationTotalMemory = openSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
-        ParsedSum totalMemory = aggregationTotalMemory.get("totalMemory");
-        double totalMemoryNum = totalMemory.getValue();
+        ParsedSum totalMemory = aggregationTotalMemory == null ? null : aggregationTotalMemory.get("totalMemory");
+        double totalMemoryNum = totalMemory == null ? 0 : totalMemory.getValue();
 
         // 可优化内存数
         memTermQuery.put("diagnosisResourceType", new Integer[]{3});
-        searchSourceBuilder = elasticSearchService.genSearchBuilder(memTermQuery, rangeQuery, null, null);
+        searchSourceBuilder = openSearchService.genSearchBuilder(memTermQuery, rangeQuery, null, null);
         searchSourceBuilder.aggregation(AggregationBuilders.sum("dercMemory").field("cutMemNum"));
-        Aggregations aggregationMemory = elasticSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
+        Aggregations aggregationMemory = openSearchService.findRawAggregations(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
-        ParsedSum decrMemory = aggregationMemory.get("dercMemory");
-        double decrMemoryNum = decrMemory.getValue();
+        ParsedSum decrMemory = aggregationMemory == null ? null : aggregationMemory.get("dercMemory");
+        double decrMemoryNum = decrMemory == null ? 0 : decrMemory.getValue();
 
         // 可优化占比
         double decrMemoryRatio = totalMemoryNum == 0 ? 0 : decrMemoryNum / totalMemoryNum;
@@ -413,25 +402,25 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
     @Override
     public DiagnosisGeneralViewTrendResp getGeneralViewTrend(DiagnosisGeneralViewReq request) throws Exception {
         Map<String, Object[]> rangeConditions = request.getRangeConditions();
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(null, rangeConditions, null, null);
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(null, rangeConditions, null, null);
 
 
-        List<IndicatorData> cutCoreData = elasticSearchService.sumAggregationByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
+        List<IndicatorData> cutCoreData = openSearchService.sumAggregationByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
                 "createTime", "cutCoreNum");
 
-        List<IndicatorData> totalCoreData = elasticSearchService.sumAggregationByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
+        List<IndicatorData> totalCoreData = openSearchService.sumAggregationByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
                 "createTime", "totalCoreNum");
 
-        List<IndicatorData> cutMemData = elasticSearchService.sumAggregationByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
+        List<IndicatorData> cutMemData = openSearchService.sumAggregationByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
                 "createTime", "cutMemNum");
 
-        List<IndicatorData> totalMemData = elasticSearchService.sumAggregationByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
+        List<IndicatorData> totalMemData = openSearchService.sumAggregationByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
                 "createTime", "totalMemNum");
 
-        List<IndicatorData> exceptionData = elasticSearchService.countDocByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
+        List<IndicatorData> exceptionData = openSearchService.countDocByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
                 "createTime");
 
-        List<IndicatorData> totalData = elasticSearchService.countDocByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
+        List<IndicatorData> totalData = openSearchService.countDocByDay(builder, request.getStartTs(), request.getEndTs(), flinkTaskAnalysisIndex,
                 "createTime");
 
         if (cutMemData != null) {
@@ -449,7 +438,6 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         cpuDecrLine.setData(cutCoreData);
         cpuTrend.setJobUsage(cpuDecrLine);
 
-        log.info("totalCoreNum=>" + totalCoreData);
         LineGraph cpuTotalLine = new LineGraph();
         cpuTotalLine.setName("总CPU消耗数");
         cpuTotalLine.setData(totalCoreData);
@@ -459,13 +447,11 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         memTrend.setName("内存消耗趋势");
         memTrend.setUnit("GB");
 
-        log.info("cutMemData=>" + cutMemData);
         LineGraph memDecrLine = new LineGraph();
         memDecrLine.setName("可优化内存数");
         memDecrLine.setData(cutMemData);
         memTrend.setJobUsage(memDecrLine);
 
-        log.info("totalMemNum=>" + totalMemData);
         LineGraph memTotalLine = new LineGraph();
         memTotalLine.setName("总内存消耗数");
         memTotalLine.setData(totalMemData);
@@ -500,7 +486,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
      */
     public DiagnosisGeneralVIewDistributeResp getGeneralViewDistribute(DiagnosisGeneralViewReq request) throws Exception {
         Map<String, Object[]> rangeConditions = request.getRangeConditions();
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(null, rangeConditions, null, null);
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(null, rangeConditions, null, null);
         TermsAggregationBuilder termsAggregationBuilder =
                 AggregationBuilders.terms("distribution").field("diagnosisTypes.keyword").size(100);
 
@@ -512,8 +498,10 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
 
         builder.aggregation(termsAggregationBuilder);
 
-        Aggregations aggregations = elasticSearchService.findRawAggregations(builder, flinkTaskAnalysisIndex + "-*");
-        Terms terms = aggregations.get("distribution");
+        Aggregations aggregations = openSearchService.findRawAggregations(builder, flinkTaskAnalysisIndex + "-*");
+        Terms terms = aggregations == null ? null : aggregations.get("distribution");
+        List<? extends Terms.Bucket> buckets = terms == null ? new ArrayList<>() : terms.getBuckets();
+
         DistributionGraph cpuGraph = new DistributionGraph();
         cpuGraph.setName("CPU资源消耗分布");
         DistributionGraph memGraph = new DistributionGraph();
@@ -525,7 +513,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         List<DistributionData> memList = new ArrayList<>();
         List<DistributionData> numList = new ArrayList<>();
 
-        for (Terms.Bucket bucket : terms.getBuckets()) {
+        for (Terms.Bucket bucket : buckets) {
             DistributionData cpuData = new DistributionData();
             DistributionData memData = new DistributionData();
             DistributionData numData = new DistributionData();
@@ -572,7 +560,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
 
         Map<String, Object> termQuery = new HashMap<>();
         termQuery.put("_id", id);
-        List<FlinkTaskAnalysis> flinkTaskAnalyses = elasticSearchService.find(FlinkTaskAnalysis.class, termQuery, flinkTaskAnalysisIndex + "-*");
+        List<FlinkTaskAnalysis> flinkTaskAnalyses = openSearchService.find(FlinkTaskAnalysis.class, termQuery, flinkTaskAnalysisIndex + "-*");
 
         if (flinkTaskAnalyses.size() == 0) {
             return diagnosisReportResp;
@@ -582,7 +570,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
 
         termQuery = new HashMap<>();
         termQuery.put("flinkTaskAnalysisId.keyword", id);
-        List<FlinkTaskReport> flinkTaskReports = elasticSearchService.find(FlinkTaskReport.class, termQuery, flinkReportIndex + "-*");
+        List<FlinkTaskReport> flinkTaskReports = openSearchService.find(FlinkTaskReport.class, termQuery, flinkReportIndex + "-*");
 
         if (flinkTaskReports.size() == 0) {
             return diagnosisReportResp;
