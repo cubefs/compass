@@ -19,7 +19,7 @@ package com.oppo.cloud.detect.service.impl;
 import com.oppo.cloud.detect.service.BlocklistService;
 import com.oppo.cloud.mapper.BlocklistMapper;
 import com.oppo.cloud.model.Blocklist;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,6 +44,6 @@ class BlocklistServiceImplTest {
         List<Blocklist> res = new ArrayList<>();
         Mockito.when(blocklistMapper.selectByExample(Mockito.any())).thenReturn(res);
         boolean result = blocklistService.isBlocklistTask("project", "flow", "task");
-        Assert.assertFalse(result);
+        Assertions.assertFalse(result);
     }
 }

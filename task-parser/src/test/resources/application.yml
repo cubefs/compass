@@ -24,10 +24,12 @@ spring:
         max-active: 32
         max-idle: 16
         min-idle: 8
-  elasticsearch:
-    nodes: localhost:19527
+  opensearch:
+    nodes: localhost:9200
     username:
     password:
+    truststore:
+    truststore-password:
     log-prefix: "compass-log-summary-"
     detector-prefix: "compass-detector-app-"
     gc-prefix: "compass-gc-log-"

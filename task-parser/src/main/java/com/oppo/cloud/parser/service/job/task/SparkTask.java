@@ -26,7 +26,7 @@ import com.oppo.cloud.parser.domain.job.*;
 import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
 import com.oppo.cloud.parser.service.job.detector.spark.MemWasteDetector;
 import com.oppo.cloud.parser.service.job.parser.IParser;
-import com.oppo.cloud.parser.service.writer.ElasticWriter;
+import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -136,11 +136,11 @@ public class SparkTask extends Task {
                 }
             }
             // save all detector results
-            ElasticWriter.getInstance().saveDetectorStorage(detectorStorage);
+            OpenSearchWriter.getInstance().saveDetectorStorage(detectorStorage);
         } else {
             // save event log env
             detectorStorage.setDataList(null);
-            ElasticWriter.getInstance().saveDetectorStorage(detectorStorage);
+            OpenSearchWriter.getInstance().saveDetectorStorage(detectorStorage);
         }
         eventLogCategories.addAll(executorCategories);
         // set all spark categories
@@ -157,10 +157,10 @@ public class SparkTask extends Task {
                     results.add(driverGc);
                 }
                 results.addAll(executorGcs);
-                ElasticWriter.getInstance().saveGCReports(results, detectorStorage.getExecutionTime(),
+                OpenSearchWriter.getInstance().saveGCReports(results, detectorStorage.getExecutionTime(),
                         detectorStorage.getApplicationId());
             } else {
-                ElasticWriter.getInstance().saveGCReports(gcReports, detectorStorage.getExecutionTime(),
+                OpenSearchWriter.getInstance().saveGCReports(gcReports, detectorStorage.getExecutionTime(),
                         detectorStorage.getApplicationId());
             }
         }

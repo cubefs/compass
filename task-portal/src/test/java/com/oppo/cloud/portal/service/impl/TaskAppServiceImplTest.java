@@ -20,8 +20,8 @@ import com.alibaba.fastjson2.JSONObject;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
 import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.domain.eventlog.SpeculativeTaskAbnormal;
-import com.oppo.cloud.portal.service.ElasticSearchService;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import com.oppo.cloud.portal.service.OpenSearchService;
+import org.opensearch.search.builder.SearchSourceBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,7 +35,7 @@ import java.util.Map;
 class TaskAppServiceImplTest {
 
     @Autowired
-    ElasticSearchService elasticSearchService;
+    OpenSearchService openSearchService;
 
 
     @Test
@@ -44,7 +44,7 @@ class TaskAppServiceImplTest {
             HashMap<String, Object> termQueryConditions = new HashMap<>(2);
             termQueryConditions.put("applicationId.keyword", "appid");
             List<DetectorStorage> detectorStorageList =
-                    elasticSearchService.find(DetectorStorage.class, termQueryConditions, "detector-log-2022-09-27");
+                    openSearchService.find(DetectorStorage.class, termQueryConditions, "detector-log-2022-09-27");
             if (detectorStorageList.size() != 0) {
                 DetectorStorage detectorStorage = detectorStorageList.get(0);
                 for (DetectorResult result : detectorStorage.getDataList()) {
@@ -67,12 +67,12 @@ class TaskAppServiceImplTest {
     void testUpdateDetectorEs() throws Exception {
         Map<String, Object> termQuery = new HashMap<>();
         termQuery.put("applicationId", "application_1662709492856_0124");
-        SearchSourceBuilder searchSourceBuilder = elasticSearchService.genSearchBuilder(termQuery, null, null, null);
+        SearchSourceBuilder searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, null, null, null);
         List<DetectorStorage> detectionStorageList =
-                elasticSearchService.find(DetectorStorage.class, searchSourceBuilder, "compass-detector-app" + "-*");
+                openSearchService.find(DetectorStorage.class, searchSourceBuilder, "compass-detector-app" + "-*");
         for (DetectorStorage detectorStorage : detectionStorageList) {
             detectorStorage.setApplicationId("application_1662709492856_1124");
-            elasticSearchService.insertOrUpDateEs("compass-detector-app-2022-10-24",
+            openSearchService.insertOrUpDate("compass-detector-app-2022-10-24",
                     "bacf1ef9-daf3-4c4d-806d-503546cecff2", detectorStorage);
         }
     }

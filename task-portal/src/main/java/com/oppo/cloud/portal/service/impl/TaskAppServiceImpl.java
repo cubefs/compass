@@ -19,24 +19,20 @@ package com.oppo.cloud.portal.service.impl;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
 import com.oppo.cloud.common.constant.AppCategoryEnum;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.domain.eventlog.DetectorResult;
 import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.domain.eventlog.MemWasteAbnormal;
 import com.oppo.cloud.common.domain.gc.GCReport;
 import com.oppo.cloud.common.service.RedisService;
-import com.oppo.cloud.mapper.TaskApplicationMapper;
-import com.oppo.cloud.mapper.TaskMapper;
-import com.oppo.cloud.mapper.UserMapper;
 import com.oppo.cloud.portal.common.CommonCode;
 import com.oppo.cloud.portal.domain.diagnose.DiagnoseReport;
 import com.oppo.cloud.portal.domain.diagnose.GCReportResp;
 import com.oppo.cloud.portal.domain.diagnose.IsAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.Item;
-import com.oppo.cloud.portal.domain.diagnose.oneclick.DiagnoseResult;
 import com.oppo.cloud.portal.domain.diagnose.runerror.RunError;
 import com.oppo.cloud.portal.domain.task.*;
-import com.oppo.cloud.portal.service.ElasticSearchService;
+import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.JobService;
 import com.oppo.cloud.portal.service.TaskAppService;
 import com.oppo.cloud.portal.service.diagnose.resource.ResourceBaseService;
@@ -45,8 +41,8 @@ import com.oppo.cloud.portal.service.diagnose.runinfo.RunInfoService;
 import com.oppo.cloud.portal.service.diagnose.runtime.RunTimeBaseService;
 import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
+import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -63,10 +59,10 @@ import static java.util.Comparator.comparing;
 @Service
 public class TaskAppServiceImpl implements TaskAppService {
 
-    @Value(value = "${custom.elasticsearch.appIndex.name}")
+    @Value(value = "${custom.opensearch.appIndex.name}")
     private String taskAppsIndex;
 
-    @Value(value = "${custom.elasticsearch.detectIndex.name}")
+    @Value(value = "${custom.opensearch.detectIndex.name}")
     private String detectIndex;
 
     @Autowired
@@ -88,7 +84,7 @@ public class TaskAppServiceImpl implements TaskAppService {
     private Executor executor;
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
+    private OpenSearchService openSearchService;
 
     @Autowired
     private RedisService redisService;
@@ -103,11 +99,11 @@ public class TaskAppServiceImpl implements TaskAppService {
         Map<String, SortOrder> sort = request.getSortOrder();
         Map<String, Object[]> rangeConditions = request.getRangeConditions();
 
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, rangeConditions, sort, null);
-        Long count = elasticSearchService.count(builder, taskAppsIndex + "-*");
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, rangeConditions, sort, null);
+        Long count = openSearchService.count(builder, taskAppsIndex + "-*");
         builder.from(request.getFrom()).size(request.getSize());
 
-        List<TaskApp> items = elasticSearchService.find(TaskApp.class, builder, taskAppsIndex + "-*");
+        List<TaskApp> items = openSearchService.find(TaskApp.class, builder, taskAppsIndex + "-*");
         List<TaskAppInfo> appInfoList = items.stream().map(TaskAppInfo::from).collect(Collectors.toList());
 
         TaskAppsResponse response = new TaskAppsResponse();
@@ -129,7 +125,7 @@ public class TaskAppServiceImpl implements TaskAppService {
         Map<String, Object> termQuery = new HashMap<>();
         termQuery.put("applicationId.keyword", applicationId);
         List<DetectorStorage> detectorStorageList =
-                elasticSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
+                openSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
         if (detectorStorageList.size() == 0) {
             detectorStorage = new DetectorStorage();
             detectorStorage.setApplicationId(applicationId);
@@ -224,7 +220,7 @@ public class TaskAppServiceImpl implements TaskAppService {
             Map<String, Object> termQuery = new HashMap<>();
             termQuery.put("applicationId.keyword", applicationId);
             List<DetectorStorage> detectorStorageList =
-                    elasticSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
+                    openSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
             if (detectorStorageList.size() == 0) {
                 detectorStorage = new DetectorStorage();
                 detectorStorage.setApplicationId(applicationId);
@@ -276,7 +272,7 @@ public class TaskAppServiceImpl implements TaskAppService {
             Map<String, Object> termQuery = new HashMap<>();
             termQuery.put("applicationId.keyword", applicationId);
             List<DetectorStorage> detectorStorageList =
-                    elasticSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
+                    openSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
             if (detectorStorageList.size() == 0) {
                 detectorStorage = new DetectorStorage();
                 detectorStorage.setApplicationId(applicationId);
@@ -333,7 +329,7 @@ public class TaskAppServiceImpl implements TaskAppService {
             Map<String, Object> termQuery = new HashMap<>();
             termQuery.put("applicationId.keyword", applicationId);
             List<DetectorStorage> detectorStorageList =
-                    elasticSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
+                    openSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
             if (detectorStorageList.size() == 0) {
                 detectorStorage = new DetectorStorage();
                 detectorStorage.setApplicationId(applicationId);
@@ -368,7 +364,7 @@ public class TaskAppServiceImpl implements TaskAppService {
         Map<String, Object> termQuery = request.getTermQuery();
         termQuery.put("diagnoseResult", "abnormal");
         Map<String, Object[]> rangeConditions = request.getRangeConditions();
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, rangeConditions, null, null);
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, rangeConditions, null, null);
 
         TrendGraph trendGraph = new TrendGraph();
         List<IndicatorData> data = null;
@@ -377,17 +373,17 @@ public class TaskAppServiceImpl implements TaskAppService {
         switch (request.getGraphType()) {
             case "cpuTrend":
                 trendGraph.setName("CPU趋势");
-                data = elasticSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(),
+                data = openSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(),
                         taskAppsIndex, "executionDate", "vcoreSeconds");
                 break;
             case "memoryTrend":
                 trendGraph.setName("内存趋势");
-                data = elasticSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(),
+                data = openSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(),
                         taskAppsIndex, "executionDate", "memorySeconds");
                 break;
             case "numTrend":
                 trendGraph.setName("数量趋势");
-                data = elasticSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), taskAppsIndex, "executionDate");
+                data = openSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), taskAppsIndex, "executionDate");
                 break;
             default:
                 break;
@@ -425,7 +421,7 @@ public class TaskAppServiceImpl implements TaskAppService {
         Map<String, Object> termQuery = new HashMap<>();
         termQuery.put("applicationId.keyword", applicationId);
         List<DetectorStorage> detectorStorageList =
-                elasticSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
+                openSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
         if (detectorStorageList.size() == 0) {
             detectorStorage = new DetectorStorage();
             detectorStorage.setApplicationId(applicationId);
@@ -504,7 +500,7 @@ public class TaskAppServiceImpl implements TaskAppService {
             Map<String, Object> termQuery = new HashMap<>();
             termQuery.put("applicationId.keyword", applicationId);
             List<DetectorStorage> detectorStorageList =
-                    elasticSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
+                    openSearchService.find(DetectorStorage.class, termQuery, detectIndex + "-*");
             if (detectorStorageList.size() > 0) {
                 detectorStorage = detectorStorageList.get(0);
             }

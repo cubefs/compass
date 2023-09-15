@@ -18,7 +18,7 @@ package com.oppo.cloud.detect.detector;
 
 import com.oppo.cloud.common.constant.JobCategoryEnum;
 import com.oppo.cloud.common.constant.TaskStateEnum;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.detect.domain.TaskStateHistory;
 import com.oppo.cloud.detect.service.TaskInstanceService;
@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

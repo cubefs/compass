@@ -16,12 +16,11 @@
 
 package com.oppo.cloud.detect.service.impl;
 
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
 import com.oppo.cloud.common.domain.job.App;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.detect.service.LogRecordService;
 import com.oppo.cloud.detect.service.SchedulerLogService;
-import com.oppo.cloud.detect.service.TaskInstanceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,8 +38,6 @@ public class LogRecordServiceImpl implements LogRecordService {
     @Autowired
     SchedulerLogService schedulerLogService;
 
-    @Autowired
-    TaskInstanceService taskInstanceService;
 
     @Override
     public List<App> getSchedulerLog(JobAnalysis detectJobAnalysis) {

@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.detect.service;
 
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 
 /**
  * 任务诊断接口

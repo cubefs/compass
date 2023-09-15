@@ -16,10 +16,8 @@
 
 package com.oppo.cloud.common.domain.flink.report;
 
-import com.oppo.cloud.common.domain.elasticsearch.EsInfo;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 /**

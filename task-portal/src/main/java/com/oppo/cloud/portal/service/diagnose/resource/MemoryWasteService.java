@@ -47,7 +47,7 @@ import java.util.*;
 @Slf4j
 public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
 
-    @Value(value = "${custom.elasticsearch.gcIndex.name}")
+    @Value(value = "${custom.opensearch.gcIndex.name}")
     String gcIndex;
 
     @Override
@@ -191,7 +191,7 @@ public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
     private List<GCReport> getGcReport(String applicationId) throws Exception {
         HashMap<String, Object> termQueryConditions = new HashMap<>(1);
         termQueryConditions.put("applicationId.keyword", applicationId);
-        return elasticSearchService.find(GCReport.class, termQueryConditions, gcIndex + "-*");
+        return openSearchService.find(GCReport.class, termQueryConditions, gcIndex + "-*");
     }
 
     /**
@@ -204,7 +204,7 @@ public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
         HashMap<String, Object> termQueryConditions = new HashMap<>(1);
         termQueryConditions.put("applicationId.keyword", applicationId);
         List<MemoryAnalyze> memoryAnalyzeList =
-                elasticSearchService.find(MemoryAnalyze.class, termQueryConditions, gcIndex + "-*");
+                openSearchService.find(MemoryAnalyze.class, termQueryConditions, gcIndex + "-*");
         if (memoryAnalyzeList.size() != 2) {
             log.error("get getMemoryAnalyze from es abnormal, applicationId:{}", applicationId);
         }
@@ -238,7 +238,7 @@ public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
         termQueryConditions.put("appCategory.keyword", AppCategoryEnum.MEMORY_WASTE.getCategory());
         // es查询元数据
         List<DetectionStorage> detectionStorageList =
-                elasticSearchService.find(DetectionStorage.class, termQueryConditions, detectIndex);
+                openSearchService.find(DetectionStorage.class, termQueryConditions, detectIndex);
         if (detectionStorageList.size() != 0) {
             DetectionStorage detectionStorage = detectionStorageList.get(0);
             return detectionStorage.getMemWasteAbnormal();

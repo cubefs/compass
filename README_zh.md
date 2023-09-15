@@ -192,194 +192,22 @@
     </tr>
 </table>
 
-## 如何使用
-
-### 1. 代码编译
-
-使用 JDK 8 and maven 3.6.0+ 编译
-
-```shell
-git clone https://github.com/cubefs/compass.git
-cd compass
-mvn package -DskipTests
-```
-
-### 2. 配置修改
-
-```shell
-cd dist/compass
-
-vi bin/compass_env.sh
-# Scheduler MySQL
-export SCHEDULER_MYSQL_ADDRESS="ip:port"
-export SCHEDULER_MYSQL_DB="scheduler"
-export SCHEDULER_DATASOURCE_USERNAME="user"
-export SCHEDULER_DATASOURCE_PASSWORD="pwd"
-# Compass MySQL
-export COMPASS_MYSQL_ADDRESS="ip:port"
-export COMPASS_MYSQL_DB="compass"
-export SPRING_DATASOURCE_USERNAME="user"
-export SPRING_DATASOURCE_PASSWORD="pwd"
-# Kafka (默认版本: 3.4.0)
-export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
-# Redis (cluster 模式)
-export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
-# Zookeeper (默认版本: 3.4.5, canal使用)
-export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
-# Elasticsearch (默认版本: 7.17.9)
-export SPRING_ELASTICSEARCH_NODES="ip1:port,ip2:port"
-# Flink metric prometheus
-export FLINK_PROMETHEUS_HOST="host"
-export FLINK_PROMETHEUS_TOKEN=""
-export FLINK_PROMETHEUS_DATABASE=""
-```
-
-```shell
-vi conf/application-hadoop.yml
-hadoop:
-  namenodes:
-    - nameservices: logs-hdfs # the value of dfs.nameservices
-      namenodesAddr: [ "machine1.example.com", "machine2.example.com" ] # the value of dfs.namenode.rpc-address.[nameservice ID].[name node ID]
-      namenodes: [ "nn1", "nn2" ] # the value of dfs.ha.namenodes.[nameservice ID]
-      user: hdfs
-      password:
-      port: 8020
-      # scheduler platform hdfs log path keyword identification, used by task-application
-      matchPathKeys: [ "flume" ]
-      # kerberos
-      enableKerberos: false
-      # /etc/krb5.conf
-      krb5Conf: ""
-      # hdfs/*@EXAMPLE.COM
-      principalPattern:  ""
-      # admin
-      loginUser: ""
-      # /var/kerberos/krb5kdc/admin.keytab
-      keytabPath: ""      
-
-  yarn:
-    - clusterName: "bigdata"
-      resourceManager: [ "machine1:8088", "machine2:8088" ] # the value of yarn.resourcemanager.webapp.address
-      jobHistoryServer: "machine3:19888" # the value of mapreduce.jobhistory.webapp.address
-
-  spark:
-    sparkHistoryServer: [ "machine4:18080" ] # the value of spark.history.ui
-
-```
-
-### 3. 初始化数据库和表
-
-Compass 表结构由两部分组成，一个是compass.sql，另一个是依赖调度平台的表（dolphinscheduler.sql 或者 airflow.sql等）
-
-1. 请先执行document/sql/compass.sql
-
-2. 如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql（需要根据实际使用版本修改）； 如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql（需要根据实际使用版本修改）
-
-3. 如果您使用的是自研调度平台，请参考[task-syncer](#task-syncer)模块，确定需要同步的表
-
-### 4. 一键部署
-
-```
-./bin/start_all.sh
-```
-
-### 5. 自定义上报元数据
-
-第三方系统可以通过kafka消息队列或者http接口的方式自定义上报Flink作业元数据到Compass系统, 用户无需运行canal相关组件抓取调度器元数据， 上报格式如下:
-
-上报内容:
-
-```json
-{
-  // 必填内容
-  "startTime": "2023-06-01",
-  // 作业开始时间
-  "projectName": "test",
-  // 项目名称
-  "flowName": "test",
-  // 数据流名称
-  "taskName": "test",
-  // 任务名称
-  "jobName": "job_name",
-  // 作业名称
-  "username": "test",
-  // 用户名
-  "flinkTrackUrl": "tracking url",
-  // 作业 trackingutl
-  "taskState": "RUNNING",
-  // 运行状态
-  "parallel": 150,
-  // 作业并行度
-  "tmSlot": 1,
-  // tm slot
-  "tmCore": 2,
-  // tm core
-  "jmMem": 1024,
-  // jm 内存MB
-  "tmMem": 4096,
-  // tm 内存MB
-
-  // 非必填内容
-  "userId": 1,
-  // 用户id
-  "projectId": 1,
-  // 项目id
-  "flowId": 1,
-  // 数据流id
-  "taskId": 1,
-  // 任务id
-  "taskInstanceId": 1,
-  // 任务实例id
-  "executionTime": "2023-06-01",
-  // 执行时间
-  "allocatedMb": 1,
-  // yarn分配的内存资源
-  "allocatedVcores": 1,
-  // yarn分配的core
-  "runningContainers": 1,
-  // 运行容器数量
-  "engineType": "flink",
-  // 引擎类别
-  "duration": "1",
-  // 作业持续时间
-  "endTime": "2023-06-01",
-  // 作业结束时间
-  "vcoreSeconds": 1,
-  // vcore时间
-  "memorySeconds": 1,
-  // 内存时间
-  "queue": "flink",
-  // 队列 flink
-  "clusterName": "flink",
-  // 集群名称 
-  "retryTimes": 1,
-  // 重试次数
-  "executeUser": "user",
-  // 执行用户
-  "createTime": "2023-06-01",
-  // 创建时间
-  "updateTime": "2023-06-01",
-  // 更新时间
-  "diagnosis": "1",
-  // yarn诊断
-  "applicationId": "app id"
-  // app id
-}
-```
-
-Kafka上报方式:  
-发送上述元数据内容到flink-task-app主题。若想修改主题名称，可以修改task-flink模块，application.yml文件中的spring.kafka.flinkTaskApp属性。
-
-Http接口上报方式:  
-发送post请求到http://[compass_host]/compass/api/flink/saveRealtimeTaskApp, http请求body填入上述元数据内容。
 
 ## 文档
 
+[部署指南](document/manual/deployment_zh.md)
+
 [架构文档](document/manual/architecture.md)
 
-[部署指南](document/manual/deployment.md)
+## 社区
 
-## 系统截图
+欢迎加入社区咨询使用或成为 Compass 开发者。以下是获得帮助的方法：
+
+- 提交 [issue](https://github.com/cubefs/compass/issues).
+- 讨论 [Idea & Question](https://github.com/cubefs/compass/discussions).
+- 可以使用中文或者英文交流
+
+## UI
 
 Spark:
 ![overview](document/manual/img/overview.png)
@@ -396,13 +224,6 @@ Flink:
 ![tasks](document/manual/img/flink-list.png)
 ![report](document/manual/img/flink-report.png)
 =======
-
-## 社区
-
-欢迎加入社区咨询使用或成为 Compass 开发者。以下是获得帮助的方法：
-
-- 提交 [issue](https://github.com/cubefs/compass/issues). 我们将会尽快做出回应。
-- 如果觉得我们产品不错，可以点赞star支持我们，你们的支持，将是我们打造更好产品的动力。
 
 ## 版权
 

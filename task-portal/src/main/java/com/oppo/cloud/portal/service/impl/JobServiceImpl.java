@@ -18,9 +18,9 @@ package com.oppo.cloud.portal.service.impl;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.constant.JobCategoryEnum;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.JobInstance;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.JobInstance;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.domain.job.Datum;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.common.util.DateUtil;
@@ -41,10 +41,10 @@ import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.script.Script;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
+import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.script.Script;
+import org.opensearch.search.builder.SearchSourceBuilder;
+import org.opensearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -59,17 +59,17 @@ import static java.util.Comparator.comparing;
 @Service
 public class JobServiceImpl implements JobService {
 
-    @Value(value = "${custom.elasticsearch.jobIndex.name}")
+    @Value(value = "${custom.opensearch.jobIndex.name}")
     private String jobsIndex;
 
-    @Value(value = "${custom.elasticsearch.jobInstanceIndex.name}")
+    @Value(value = "${custom.opensearch.jobInstanceIndex.name}")
     private String jobIndexIndex;
 
-    @Value(value = "${custom.elasticsearch.appIndex.name}")
+    @Value(value = "${custom.opensearch.appIndex.name}")
     private String taskAppIndex;
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
+    private OpenSearchService openSearchService;
 
     @Autowired
     private LogService logService;
@@ -92,11 +92,11 @@ public class JobServiceImpl implements JobService {
         Map<String, SortOrder> sort = request.getSortOrder();
         Map<String, Object[]> rangeConditions = request.getRangeConditions();
 
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, rangeConditions, sort, null);
-        Long count = elasticSearchService.count(builder, jobsIndex + "-*");
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, rangeConditions, sort, null);
+        Long count = openSearchService.count(builder, jobsIndex + "-*");
         builder.from(request.getFrom()).size(request.getSize());
 
-        List<JobAnalysis> items = elasticSearchService.find(JobAnalysis.class, builder, jobsIndex + "-*");
+        List<JobAnalysis> items = openSearchService.find(JobAnalysis.class, builder, jobsIndex + "-*");
         List<JobInfo> jobInfos = items.stream().map(data -> JobInfo.from(data, redisService.get(String.format("%s:%s:%s", data.getProjectName(), data.getFlowName(), data.getTaskName())))).collect(Collectors.toList());
 
         JobsResponse response = new JobsResponse();
@@ -110,15 +110,15 @@ public class JobServiceImpl implements JobService {
         UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
         JobAppsRespone jobAppsRespone = new JobAppsRespone();
         Map<String, Object> termQuery = jobDetailRequest.getTermQuery();
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, null, null, null);
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, null, null, null);
         builder.size(1000);
-        List<JobAnalysis> items = elasticSearchService.find(JobAnalysis.class, builder, jobsIndex + "-*");
+        List<JobAnalysis> items = openSearchService.find(JobAnalysis.class, builder, jobsIndex + "-*");
         if (items.size() == 0) {
             throw new Exception("Not Found this Job");
         }
         JobInfo jobInfo = JobInfo.from(items.get(0), null);
         jobInfo.setTryNumber(TryNumberUtil.updateTryNumber(jobInfo.getTryNumber(), userInfo.getSchedulerType()));
-        List<TaskApp> taskApps = elasticSearchService.find(TaskApp.class, builder, taskAppIndex + "-*");
+        List<TaskApp> taskApps = openSearchService.find(TaskApp.class, builder, taskAppIndex + "-*");
         Map<String, List<TaskAppInfo>> taskAppMap = this.formatJobApps(taskApps, userInfo.getSchedulerType());
         // 构造完整的taskApp
         for (int i = 0; i <= jobInfo.getTryNumber(); i++) {
@@ -147,13 +147,13 @@ public class JobServiceImpl implements JobService {
         List<String> res = new ArrayList<>();
         Map<String, Object> termQuery = jobDetailRequest.getTermQuery();
         Map<String, SortOrder> sortQuery = jobDetailRequest.getSortConditions();
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, null, sortQuery, null);
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, null, sortQuery, null);
         builder.size(1000);
-        List<JobAnalysis> items = elasticSearchService.find(JobAnalysis.class, builder, jobsIndex + "-*");
+        List<JobAnalysis> items = openSearchService.find(JobAnalysis.class, builder, jobsIndex + "-*");
         if (items.size() == 0) {
             return res;
         }
-        List<TaskApp> taskApps = elasticSearchService.find(TaskApp.class, builder, taskAppIndex + "-*");
+        List<TaskApp> taskApps = openSearchService.find(TaskApp.class, builder, taskAppIndex + "-*");
         // 获取Yarn异常日志
         CompletableFuture<String> completableFutureYarn = CompletableFuture.supplyAsync(() -> this.getDiagnosticDetectSum(taskApps));
         // 调度器异常汇总
@@ -215,9 +215,9 @@ public class JobServiceImpl implements JobService {
         ChartData chartData = null;
         Map<String, Object> termQuery = jobDetailRequest.getTermQuery();
         Map<String, SortOrder> sortQuery = jobDetailRequest.getSortConditions();
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, null, sortQuery, null);
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, null, sortQuery, null);
         builder.size(1000);
-        List<JobAnalysis> items = elasticSearchService.find(JobAnalysis.class, builder, jobsIndex + "-*");
+        List<JobAnalysis> items = openSearchService.find(JobAnalysis.class, builder, jobsIndex + "-*");
         if (items.size() == 0) {
             return res;
         }
@@ -251,9 +251,9 @@ public class JobServiceImpl implements JobService {
         res.setType("chart");
         Map<String, Object> termQuery = jobDetailRequest.getTermQuery();
         Map<String, SortOrder> sortQuery = jobDetailRequest.getSortConditions();
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, null, sortQuery, null);
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, null, sortQuery, null);
         builder.size(1000);
-        List<JobAnalysis> items = elasticSearchService.find(JobAnalysis.class, builder, jobsIndex + "-*");
+        List<JobAnalysis> items = openSearchService.find(JobAnalysis.class, builder, jobsIndex + "-*");
         if (items.size() == 0) {
             return res;
         }
@@ -274,7 +274,7 @@ public class JobServiceImpl implements JobService {
     public TrendGraph getGraph(JobsRequest request) throws Exception {
         Map<String, Object> termQuery = request.getTermQuery();
         Map<String, Object[]> rangeConditions = request.getRangeConditions();
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, rangeConditions, null, null);
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, rangeConditions, null, null);
 
         TrendGraph trendGraph = new TrendGraph();
         List<IndicatorData> data = null;
@@ -283,17 +283,17 @@ public class JobServiceImpl implements JobService {
         switch (request.getGraphType()) {
             case "cpuTrend":
                 trendGraph.setName("CPU趋势");
-                data = elasticSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(), jobsIndex,
+                data = openSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(), jobsIndex,
                         "executionDate", "vcoreSeconds");
                 break;
             case "memoryTrend":
                 trendGraph.setName("内存趋势");
-                data = elasticSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(), jobsIndex,
+                data = openSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(), jobsIndex,
                         "executionDate", "memorySeconds");
                 break;
             case "numTrend":
                 trendGraph.setName("数量趋势");
-                data = elasticSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), jobsIndex, "executionDate");
+                data = openSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), jobsIndex, "executionDate");
                 break;
             default:
                 break;
@@ -328,9 +328,9 @@ public class JobServiceImpl implements JobService {
     public List<Map<String, Item>> searchAppDiagnoseInfo(JobDetailRequest jobDetailRequest) throws Exception {
         Map<String, Object> termQuery = jobDetailRequest.getTermQuery();
         Map<String, SortOrder> sortQuery = jobDetailRequest.getSortConditions();
-        SearchSourceBuilder builder = elasticSearchService.genSearchBuilder(termQuery, null, sortQuery, null);
+        SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, null, sortQuery, null);
         builder.size(1000);
-        List<TaskApp> taskApps = elasticSearchService.find(TaskApp.class, builder, taskAppIndex + "-*");
+        List<TaskApp> taskApps = openSearchService.find(TaskApp.class, builder, taskAppIndex + "-*");
         Map<String, Map<String, Item>> temp = new HashMap<>();
         for (TaskApp taskApp : taskApps) {
             if (taskApp.getCategories() != null && taskApp.getCategories().size() != 0) {
@@ -360,11 +360,11 @@ public class JobServiceImpl implements JobService {
         HashMap<String, Object[]> rangeQuery = new HashMap<>();
         rangeQuery.put("executionDate", new Object[]{null, DateUtil.timestampToUTCDate(request.getExecutionDate().getTime())});
         termQuery.put("taskStatus", 0);
-        SearchSourceBuilder searchSourceBuilder = elasticSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
+        SearchSourceBuilder searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
         BoolQueryBuilder boolQueryBuilder = (BoolQueryBuilder) searchSourceBuilder.query();
         Script script = new Script(String.format("ctx._source['taskStatus']=%d", 1));
-        elasticSearchService.updateByQuery(boolQueryBuilder, script, jobsIndex + "-*");
-        elasticSearchService.updateByQuery(boolQueryBuilder, script, taskAppIndex + "-*");
+        openSearchService.updateByQuery(boolQueryBuilder, script, jobsIndex + "-*");
+        openSearchService.updateByQuery(boolQueryBuilder, script, taskAppIndex + "-*");
         String key = String.format("%s:%s:%s", request.getProjectName(), request.getFlowName(), request.getTaskName());
         redisService.set(key, String.valueOf(request.getExecutionDate().getTime()), 30 * 60);
     }
@@ -376,7 +376,7 @@ public class JobServiceImpl implements JobService {
         termQuery.put("flowName.keyword", flowName);
         termQuery.put("taskName.keyword", taskName);
         termQuery.put("executionDate", DateUtil.timestampToUTCDate(executionDate.getTime()));
-        List<JobInstance> jobInstances = elasticSearchService.find(JobInstance.class, termQuery, jobIndexIndex + "-*");
+        List<JobInstance> jobInstances = openSearchService.find(JobInstance.class, termQuery, jobIndexIndex + "-*");
         if (jobInstances.size() != 0) {
             return jobInstances.get(0);
         }

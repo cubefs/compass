@@ -17,9 +17,8 @@
 package com.oppo.cloud.detect.task;
 
 import com.alibaba.fastjson2.JSON;
-import com.oppo.cloud.common.constant.SchedulerType;
 import com.oppo.cloud.common.constant.TaskStateEnum;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 import com.oppo.cloud.common.domain.syncer.TableMessage;
 import com.oppo.cloud.common.util.ui.TryNumberUtil;
 import com.oppo.cloud.detect.config.ThreadPoolConfig;

@@ -16,8 +16,8 @@
 
 package com.oppo.cloud.detect.service;
 
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public interface AbnormalJobService {
     void updateResource(JobAnalysis jobAnalysis, List<TaskApp> taskAppList);
 
     /**
-     * 从Es中查询job
+     * 查询job
      */
     JobAnalysis searchJob(JobAnalysis jobAnalysis) throws Exception;
 

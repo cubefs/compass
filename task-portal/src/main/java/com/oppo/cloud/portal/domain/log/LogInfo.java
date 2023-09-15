@@ -16,8 +16,8 @@
 
 package com.oppo.cloud.portal.domain.log;
 
-import com.oppo.cloud.common.domain.elasticsearch.LogSummary;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.LogSummary;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.model.TaskDiagnosisAdvice;
 import io.swagger.annotations.ApiModel;

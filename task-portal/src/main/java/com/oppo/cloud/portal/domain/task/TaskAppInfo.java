@@ -17,8 +17,8 @@
 package com.oppo.cloud.portal.domain.task;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
-import com.oppo.cloud.common.domain.elasticsearch.SimpleUser;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.SimpleUser;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.portal.util.TaskUtil;
 import com.oppo.cloud.portal.util.UnitUtil;

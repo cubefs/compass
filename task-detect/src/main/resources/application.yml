@@ -27,10 +27,12 @@ spring:
         max-active: 32
         max-idle: 16
         min-idle: 8
-  elasticsearch:
-    nodes: localhost:19527
+  opensearch:
+    nodes: localhost:9200
     username:
     password:
+    truststore:
+    truststore-password:
 
   kafka:
     bootstrap-servers: localhost:9095
@@ -51,7 +53,7 @@ custom:
     enable: true
     delayedSeconds: 10
     tryTimes: 5
-  elasticsearch:
+  opensearch:
     yarn-app-index: "compass-yarn-app"
     spark-app-index: "compass-spark-app"
     job-index: "compass-job-analysis"

@@ -21,7 +21,7 @@ import com.github.pagehelper.PageHelper;
 import com.oppo.cloud.common.api.CommonPage;
 import com.oppo.cloud.common.api.CommonStatus;
 import com.oppo.cloud.common.constant.ComponentEnum;
-import com.oppo.cloud.common.domain.elasticsearch.FlinkTaskAnalysis;
+import com.oppo.cloud.common.domain.opensearch.FlinkTaskAnalysis;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisFrom;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisResourceType;
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisRuleType;
@@ -273,7 +273,7 @@ public class FlinkTaskDiagnosisController {
 
     @PostMapping("/getReport")
     @ApiOperation(value = "获取诊断报告")
-    public CommonStatus<DiagnosisReportResp> getReport(@Validated @RequestBody ReportDetailReq request) throws Exception {
+    public CommonStatus<?> getReport(@Validated @RequestBody ReportDetailReq request) throws Exception {
         return CommonStatus.success(flinkTaskDiagnosisService.getReport(request));
     }
 
@@ -292,7 +292,7 @@ public class FlinkTaskDiagnosisController {
      */
     @PostMapping("/getGeneralViewTrend")
     @ApiOperation(value = "获取概览趋势指标")
-    public CommonStatus<DiagnosisGeneralViewTrendResp> getGeneralViewTrend(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception {
+    public CommonStatus<?> getGeneralViewTrend(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception {
         DiagnosisGeneralViewTrendResp generalViewTrend = flinkTaskDiagnosisService.getGeneralViewTrend(request);
         if (generalViewTrend != null) {
             return CommonStatus.success(generalViewTrend);
@@ -303,14 +303,14 @@ public class FlinkTaskDiagnosisController {
 
     @PostMapping("/getGeneralViewDistribute")
     @ApiOperation(value = "获取概览分布指标")
-    public CommonStatus<DiagnosisGeneralVIewDistributeResp> getGeneralViewDistribute(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception {
+    public CommonStatus<?> getGeneralViewDistribute(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception {
         DiagnosisGeneralVIewDistributeResp generalViewDistribute = flinkTaskDiagnosisService.getGeneralViewDistribute(request);
         return CommonStatus.success(generalViewDistribute);
     }
 
     @PostMapping("/diagnosis")
     @ApiOperation(value = "即时诊断")
-    public CommonStatus<OneClickDiagnosisResponse> diagnosis(@RequestBody OneClickDiagnosisRequest req) {
+    public CommonStatus<?> diagnosis(@RequestBody OneClickDiagnosisRequest req) {
         try {
             req.setAppId(req.getAppId().trim().replace("\t", ""));
             FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();

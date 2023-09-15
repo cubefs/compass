@@ -24,7 +24,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Data
 @ApiModel("运行错误")

@@ -21,10 +21,10 @@ import com.alibaba.fastjson2.JSONObject;
 import com.oppo.cloud.common.constant.*;
 import com.oppo.cloud.common.domain.cluster.spark.SparkApp;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
-import com.oppo.cloud.common.domain.elasticsearch.JobAnalysis;
-import com.oppo.cloud.common.domain.elasticsearch.JobInstance;
-import com.oppo.cloud.common.domain.elasticsearch.SimpleUser;
-import com.oppo.cloud.common.domain.elasticsearch.TaskApp;
+import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
+import com.oppo.cloud.common.domain.opensearch.JobInstance;
+import com.oppo.cloud.common.domain.opensearch.SimpleUser;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import com.oppo.cloud.common.domain.job.App;
 import com.oppo.cloud.common.domain.job.LogRecord;
 import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
@@ -36,7 +36,7 @@ import com.oppo.cloud.model.*;
 import com.oppo.cloud.portal.common.CommonCode;
 import com.oppo.cloud.portal.domain.diagnose.oneclick.DiagnoseResult;
 import com.oppo.cloud.portal.domain.task.TaskAppInfo;
-import com.oppo.cloud.portal.service.ElasticSearchService;
+import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.JobService;
 import com.oppo.cloud.portal.service.OneClickDiagnosisService;
 import lombok.extern.slf4j.Slf4j;
@@ -52,23 +52,23 @@ import java.util.*;
 @Service
 public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
 
-    @Value(value = "${custom.elasticsearch.appIndex.name}")
+    @Value(value = "${custom.opensearch.appIndex.name}")
     private String taskAppsIndex;
 
     @Value("${custom.redis.logRecordKey}")
     private String logRecordKey;
 
-    @Value(value = "${custom.elasticsearch.yarnIndex.name}")
+    @Value(value = "${custom.opensearch.yarnIndex.name}")
     private String yarnAppIndex;
 
-    @Value(value = "${custom.elasticsearch.sparkIndex.name}")
+    @Value(value = "${custom.opensearch.sparkIndex.name}")
     private String sparkAppIndex;
 
     @Autowired
     private RedisService redisService;
 
     @Autowired
-    private ElasticSearchService elasticSearchService;
+    private OpenSearchService openSearchService;
 
     @Autowired
     private JobService jobService;
@@ -284,7 +284,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
                 categories.add(AppCategoryEnum.OTHER_EXCEPTION.getCategory());
             }
             taskApp.setCategories(categories);
-            elasticSearchService.insertOrUpDateEs(taskApp.genIndex(taskAppsIndex), taskApp.genDocId(), taskApp.genDoc());
+            openSearchService.insertOrUpDate(taskApp.genIndex(taskAppsIndex), taskApp.genDocId(), taskApp.genDoc());
         }
 
         logRecord.setIsOneClick(true);
@@ -326,7 +326,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
 
         HashMap<String, Object> termQueryYarn = new HashMap<>();
         termQueryYarn.put("id.keyword", applicationId);
-        List<YarnApp> yarnAppList = elasticSearchService.find(YarnApp.class, termQueryYarn, yarnAppIndex + "-*");
+        List<YarnApp> yarnAppList = openSearchService.find(YarnApp.class, termQueryYarn, yarnAppIndex + "-*");
         if (yarnAppList.size() == 0) {
             throw new Exception(String.format("can not find this applicationId from yarn-app, appId:%s", applicationId));
         }
@@ -335,7 +335,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
         if (ApplicationType.SPARK.getValue().equals(yarnApp.getApplicationType())) {
             HashMap<String, Object> termQuerySpark = new HashMap<>();
             termQuerySpark.put("appId.keyword", applicationId);
-            List<SparkApp> sparkAppList = elasticSearchService.find(SparkApp.class, termQuerySpark, sparkAppIndex + "-*");
+            List<SparkApp> sparkAppList = openSearchService.find(SparkApp.class, termQuerySpark, sparkAppIndex + "-*");
             if (sparkAppList.size() == 0) {
                 throw new Exception(String.format("can not find this applicationId from spark-app, appId:%s", applicationId));
             }
@@ -402,7 +402,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
     private List<TaskApp> findTaskApp(String applicationId) throws Exception {
         HashMap<String, Object> termQuery = new HashMap<>();
         termQuery.put("applicationId.keyword", applicationId);
-        return elasticSearchService.find(TaskApp.class, termQuery, taskAppsIndex + "-*");
+        return openSearchService.find(TaskApp.class, termQuery, taskAppsIndex + "-*");
     }
 
     private void clearProgressStateCache(TaskApp taskApp) {
