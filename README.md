@@ -9,7 +9,7 @@ runs with heuristic rules to provide both the labels of problem being detected a
 
 ### Feature
 1. Non-invasive, in-time diagnosis, no need to modify the original platform code
-2. Compatible with multiple version for different componts such Spark 2.x~3.x、Flink 1.2.x~1.7.x、Hadoop 2.x~3.x, DolphinScheduler 2.x~, Airflow, etc
+2. Compatible with multiple version for different componts such Spark 2.4+、Flink 1.2+、Hadoop 2.4+, DolphinScheduler 2.x+, Airflow, etc
 3. Supports diagnostics for kinds of scheduling job issues, such as failure, abnormal elapsed time, abnormal baseline, etc
 4. Supports diagnostics for kinds of engine task issues, such as data skew, big table scan,  memory waste, long tail task, etc
 5. Supports diagnostics for capturing log exception and offers advise or solution
