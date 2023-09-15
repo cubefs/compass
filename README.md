@@ -76,7 +76,8 @@ runs with heuristic rules to identify problem and offers tuning advice.
 ### Community
 Welcome to join the community for the usage or development of Compass.
 - Submit an [issue](https://github.com/cubefs/compass/issues).
-- Discuss [Idea & Question](https://github.com/cubefs/compass/discussions)
+- Submit a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/committing-changes-to-a-pull-request-branch-created-from-a-fork)
+- Discuss [idea & question](https://github.com/cubefs/compass/discussions)
 - Communicate in Chinese or English.
 
 We will response it as soon as possible.

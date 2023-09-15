@@ -505,7 +505,7 @@ task-metadata
 ├── lib
 ```
 
-### 核心配置
+### Configuration
 
 conf/application.yml
 
@@ -571,30 +571,33 @@ task-parser
 ### Configuration
 
 The `conf/rules.json` configuration is used to write log parsing rules.
-logType: scheduler/driver/executor/yarn 
+The fields are defined as following:
 
-action: Define the name of each matching rule.
+**logType**: scheduler/driver/executor/yarn 
 
-desc： Description for action
+**action**: Define the name of each matching rule.
 
-category： Definition of rule types, such as shuffleFailed/sqlFailed, etc.
+**desc**： Description for action
 
-step: order of matching action.
+**category**： Definition of rule types, such as shuffleFailed/sqlFailed, etc.
 
-parserType: Match type, DEFAULT(match by rows or blocks), JOIN(Merge results into one row before matching.)
+**step**: order of matching action.
 
-parserTemplate: Text parsing templates consist of the first line, middle lines, and ending lines.
+**parserType**: Match type, DEFAULT(match by rows or blocks), JOIN(Merge results into one row before matching.)
 
-如果只是简单按行匹配，则只需要填写parserTemplate.heads即可；
+**parserTemplate**: Text parsing templates consist of the first line, middle lines, and ending lines.
 
-如果需要按文本块匹配，例如异常栈，则需要填写parserTemplate.heads和parserTemplate.tails确定首行和结束行规则；
+If only simple line matching is required, it is sufficient to fill in **parserTemplate.heads**.
 
-如果需要在文本块中匹配某一行，则需要填写parserTemplate.middles中间行规则。
+If text block matching is required, such as for exception stacks, it is necessary to fill in **parserTemplate.heads** and **parserTemplate.tails** to determine the rules for the first line and the ending line.
 
-groupNames：用户提取正则匹配分组名称的值
+If a specific line needs to be matched within a text block, the middle line rule in **parserTemplate.middles** must be filled in.
 
-children: 用于嵌套规则，例如文本中有多个相同的异常栈(开始和结束标志一样)，如果需要区分成不同的action，那么就可以嵌套规则实现
+**groupNames**: Extracting values of named capturing groups in regular expression matching by users.
 
+**children**: Used for nested rules, for example, when there are multiple identical exception stacks in the text (with the same start and end markers), if it is necessary to differentiate them into different actions, nested rules can be used to achieve this
+
+For example:
 ```
   { 
     "logType": "scheduler",
@@ -620,9 +623,9 @@ children: 用于嵌套规则，例如文本中有多个相同的异常栈(开始
   }
 ```
 
-conf/application.yml
+`conf/application.yml`
 
-custom.detector用于配置检测Spark Event Log，比如Spark环境变量、内存浪费、大表扫描等异常检测类型
+"custom.detector" is used to configure custom detectors for monitoring Spark event logs, such as detecting abnormalities related to Spark environment variables, memory wastage, large table scans, etc.
 
 ```
 custom:
@@ -646,22 +649,21 @@ custom:
 
 ## task-portal 与 task-ui
 
-task-portal 与 task-ui 可视化前后端模块，提供诊断建议、报告总览、一键诊断、任务运行、APP运行、白名单等服务
+**task-portal** and **task-ui** are visual front-end and back-end modules that provide services such as diagnostic recommendations, report overviews, one-click diagnosis, task execution, APP execution, and whitelist.
 
-task-ui前端默认一起编译放在task-portal/portal目录下
+The task-ui front-end is compiled together by default and placed in the task-portal/portal directory.
 
-如果您需要单独部署前端，需要修改 task-ui/.env.production 下 VITE_APP_PROD_BACKEND，指定您的后端地址或者域名即可
+If you need to deploy the front-end separately, you need to modify VITE_APP_PROD_BACKEND in task-ui/.env.production to specify your backend address or domain name.
 
-web ui默认路径: http://localhost:7075/compass/
+WebUI default http path: http://localhost:7075/compass/
 
-swagger ui默认路径：http://localhost:7075/compass/swagger-ui/index.html
+SwaggerUI default http path：http://localhost:7075/compass/swagger-ui/index.html
 
-关于用户和密码问题：
+About the **username** and **password** ：
 
-如果您是使用DolphinScheduler或Airflow调度平台，即compass_env.sh中配置export SCHEDULER="dolphinscheduler / airflow"时，账号密码和调度平台相同（需要已经同步数据）
+If you are using DolphinScheduler or Airflow scheduling platform, that is configured in compass_env.sh using 'export SCHEDULER="dolphinscheduler/airflow"', the account password will be the same as the scheduling platform (data synchronization is required).
 
-如果您是自研调度或者测试，请设置 compass_env.sh 中 export SCHEDULER="custom"，执行 document/sql/compass.sql 之后，默认账密是compass,compass，该模式没进行账号密码校验，请注意数据安全
-
+If you are using a self-developed or testing scheduling platform, please set 'export SCHEDULER="custom"' in compass_env.sh. After executing document/sql/compass.sql, the default account and password are 'compass, compass'. This mode does not perform account and password verification. Please pay attention to data security.
 ```
 task-portal
 ├── bin
@@ -676,38 +678,38 @@ task-portal
 
 ```
 
-## 离线任务上报元数据诊断
+## Offline task metadata reporting diagnosis.
 
-支持第三方上报Spark/MapReduce任务application元数据进行诊断，如果不需要同步调度平台元数据和日志，只要启动task-portal和task-parser模块。
+Supports third-party reporting of Spark/MapReduce task application metadata for diagnosis. If you don't need to synchronize scheduling platform metadata and logs, simply start the task-portal and task-parser modules.
 
-请求接口：http://[compass_host]/compass/openapi/offline/app/metadata
+Request API：http://[compass_host]/compass/openapi/offline/app/metadata
 
-请求方式:  POST
+Request Method:  POST
 
-参数类型 ：JSON
+ContentType: application/json
 
-元数据来自http://rm-http-address:port/ws/v1/cluster/apps
+Metadata comes from **http://rm-http-address:port/ws/v1/cluster/apps**
 
-参数名称				| 类型		     | 是否必填	            |描述  
+parameter				| data type		     | optional	            | description  
 :----				|:---------|:-----------------|:---	
-applicationId				| String		 | 是			             | YARN的application id
-applicationType				| String		 | 是			             | YARN的任务类型：SPARK或者MAPREDUCE
-vcoreSeconds			| Double		    | 是			             | YARN的vcoreSeconds
-memorySeconds			| Double		   | 是			             | YARN的memorySeconds
-startedTime			| Long		   | 是			             | YARN的startedTime
-finishedTime			| Long		   | 是			             | YARN的finishedTime
-elapsedTime			| Double		 | 是			             | YARN的elapsedTime
-amHostHttpAddress			| String		 | 是			             | YARN的amHostHttpAddress
-sparkEventLogFile			| String		 | SPARK任务必填			     | SparkEventLog绝对路径
-sparkExecutorLogDirectory			| String		 | SPARK任务必填			     | 到application id层级目录
-mapreduceEventLogDirectory			| String		 | MAPREDUCE任务必填			 | 到日期层级前缀目录
-mapreduceContainerLogDirectory			| String		 | MAPREDUCE任务必填			     | 到application id层级目录
-diagnostics			| String		 | 否			             | YARN的diagnostics
-queue			| String		 | 否			             | YARN的queue
-user			| String		 | 否			             | YARN的user
-clusterName			| String		 | 否			             | 集群名称
+applicationId				| String		 | Yes			             | YARN application id
+applicationType				| String		 | Yes			             | YARN App Type：SPARK or MAPREDUCE
+vcoreSeconds			| Double		    | Yes			             | YARN vcoreSeconds
+memorySeconds			| Double		   | Yes			             | YARN memorySeconds
+startedTime			| Long		   | Yes			             | YARN startedTime
+finishedTime			| Long		   | Yes			             | YARN finishedTime
+elapsedTime			| Double		 | Yes			             | YARN elapsedTime
+amHostHttpAddress			| String		 | Yes			             | YARN amHostHttpAddress
+sparkEventLogFile			| String		 | Yes for SPARK			     | SparkEventLog absolutely log path
+sparkExecutorLogDirectory			| String		 | Yes for SPARK			     | application id folder
+mapreduceEventLogDirectory			| String		 | Yes for MAPREDUCE			 | folder 
+mapreduceContainerLogDirectory			| String		 |Yes for MAPREDUCE			     | application id folder
+diagnostics			| String		 | No			             | YARN diagnostics
+queue			| String		 | No			             | YARN queue
+user			| String		 | No			             | YARN user
+clusterName			| String		 | No			             | cluster name
 
-请求参数示例：
+For example：
 ```json
 {
     "applicationId": "application_1673850090992_30536",
@@ -720,8 +722,8 @@ clusterName			| String		 | 否			             | 集群名称
     "amHostHttpAddress": "dgtest01:8043",
     "sparkEventLogFile": "hdfs://logs-cluster/user/spark/applicationHistory/application_1673850090992_30536_1",
     "sparkExecutorLogDirectory": "hdfs://logs-cluster/tmp/logs/hdfs/logs/application_1673850090992_30536",
-    "mapreduceEventLogDirectory": "hdfs://logs-cluster/tmp/hadoop-yarn/staging/history/done", // MAPREDUCE任务必填
-    "mapreduceContainerLogDirectory": "hdfs://logs-cluster/tmp/logs/root/logs/application_1673850090992_30536", // MAPREDUCE任务必填
+    "mapreduceEventLogDirectory": "hdfs://logs-cluster/tmp/hadoop-yarn/staging/history/done", // for MAPREDUCE
+    "mapreduceContainerLogDirectory": "hdfs://logs-cluster/tmp/logs/root/logs/application_1673850090992_30536", // for MAPREDUCE
     "diagnostics": "",
     "queue": "root",
     "user": "root",
@@ -730,6 +732,6 @@ clusterName			| String		 | 否			             | 集群名称
 ```
 
 
-## 一键诊断功能
+## One-Click diagnosis
 
-离线诊断支持全量(包含非调度平台提交任务)Spark/MapReduce任务进行一键诊断，如果仅需要体验该功能，只要启动task-portal、task-metadata和task-parser模块。
+Offline diagnosis supports one-click diagnosis for all Spark/MapReduce tasks, including those not submitted to the scheduling platform. If you only want to experience this function, simply start the task-portal, task-metadata, and task-parser modules.
