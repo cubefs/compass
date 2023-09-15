@@ -3,9 +3,8 @@
 
 ### Abstract
 Compass is a platform to diagnose computing engines and schedulers around big data ecosystem, which aims to improve the 
-efficiency of troubleshooting and reduce the complexity of problem tuning. The engines being diagnosed are Spark, Flink,
-MapReduce while the schedulers being diagnosed are AirFlow, DolphinScheduler. It automatically gathers logs and metrics,
-runs with heuristic rules to provide both the labels of problem being detected and tuning advice.
+efficiency of troubleshooting and reduce the complexity of problem tuning. It automatically gathers logs and metrics,
+runs with heuristic rules to identify problem and offers tuning advice.
 
 ### Feature
 1. Non-invasive, in-time diagnosis, no need to modify the original platform code
@@ -19,12 +18,14 @@ runs with heuristic rules to provide both the labels of problem being detected a
 - [x] Flink
 - [x] Mapreduce
 - [ ] Trino
+- [ ] Other(Any suggestions are welcomed, high valued)...
 
 ### Scheduler Support
 - [x] Airflow
 - [x] DolphinScheduler
 - [ ] Azkaban
 - [ ] Oozie
+- [ ] Other(Any suggestions are welcomed, high valued)...
 
 ### Categories of Diagnosis
 
@@ -76,7 +77,7 @@ runs with heuristic rules to provide both the labels of problem being detected a
 Welcome to join the community for the usage or development of Compass.
 - Submit an [issue](https://github.com/cubefs/compass/issues).
 - Discuss [Idea & Question](https://github.com/cubefs/compass/discussions)
-- Communicate in English or Chinese.
+- Communicate in Chinese or English.
 
 We will response it as soon as possible.
 
