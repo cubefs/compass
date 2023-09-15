@@ -29,15 +29,15 @@ export SPRING_REDIS_PASSWORD=""
 # Zookeeper
 export SPRING_ZOOKEEPER_NODES="localhost:2181"
 
-# OpenSearch
+# OpenSearch (default version: 1.3.12) or Elasticsearch (7.x~)
 export SPRING_OPENSEARCH_NODES="localhost:19527"
 # Optional
 export SPRING_OPENSEARCH_USERNAME=""
 # Optional
 export SPRING_OPENSEARCH_PASSWORD=""
-# Optional
+# Optional, needed by OpenSearch, keep empty if OpenSearch does not use truststore.
 export SPRING_OPENSEARCH_TRUSTSTORE=""
-# Optional
+# Optional, needed by OpenSearch, keep empty if OpenSearch does not use truststore.
 export SPRING_OPENSEARCH_TRUSTSTOREPASSWORD=""
 
 # Prometheus for flink, ignore it if you do not use flink.

@@ -76,8 +76,9 @@ runs with heuristic rules to provide both the labels of problem being detected a
 Welcome to join the community for the usage or development of Compass.
 - Submit an [issue](https://github.com/cubefs/compass/issues).
 - Discuss [Idea & Question](https://github.com/cubefs/compass/discussions)
-  
-We will response it as soon as possible. If you like our product, please star compass, your support will be our motivation to create better product.
+- Communicate in English or Chinese.
+
+We will response it as soon as possible.
 
 ### UI
 

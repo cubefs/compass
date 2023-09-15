@@ -1,11 +1,19 @@
+# Compass Deployment
 
+Compass depends on Canal,MySQL,Kafka,Redis,Zookeeper,OpenSearch
+## Required Environment 
+|Dependency|Version|Optional|Description|
+|----------|-------|--------|----|
+|Canal|v1.1.6+|yes| needed by Airflow,DolphinScheduler|
+|MySQL|5.7+|no||
+|Kafka|all|no||
+|Redis|all|no|deployed in cluster mode|
+|Zookeeper|3.4.5|no|needed by canal|
+|OpenSearch(Elasticsearch)|1.3.12 (7.0+ for es)|no||
 
-# Compass(罗盘) 部署指南
+Compass supports single-machine and cluster deployment, with elastic scalability by module.
 
-Compass 依赖了调度平台、Hadoop、Spark、Canal、MySQL、Kafka、Redis、Zookeeper、OpenSearch，需要提前准备好相关环境。
-
-Compass 支持单机和集群部署，可按模块弹性扩缩容。
-## 编译
+## Compile
 Use JDK 8 and maven 3.6.0+ to Compile
 ```
 git clone https://github.com/cubefs/compass.git
@@ -13,110 +21,117 @@ cd compass
 mvn package -DskipTests
 ```
 
-## 工程目录
+## Workspaces
 
 ```
 compass
 ├── bin
-│   ├── compass_env.sh                  环境变量，基础组件配置
-│   ├── start_all.sh                    启动脚本
-│   └── stop_all.sh                     停止脚本
+│   ├── compass_env.sh                  global variable configuration
+│   ├── start_all.sh                    start script
+│   └── stop_all.sh                     stop script
 ├── conf
-│   └── application-hadoop.yml          hadoop相关配置
-├── task-application                    关联任务实例、applicationId、hdfs_log_path
-├── task-canal                          订阅调度平台MySQL表元数据到Kafka
-├── task-canal-adapter                  同步调度平台MySQL表元数据Compass平台
-├── task-detect                         工作流层异常类型检测
-├── task-metadata                       同步Yarn、Spark任务元数据到OpenSearch
-├── task-parser                         日志解析和Spark任务异常检测
-├── task-portal                         异常任务的可视化服务
-├── task-flink                          Flink任务资源及异常诊断
-├── task-flink-core                     Flink任务诊断规则逻辑
-├── task-portal                         异常任务的可视化服务
-└── task-syncer                         调度平台任务关系表的抽象和映射
+│   └── application-hadoop.yml          hadoop configuration
+├── task-application                    Related to task instance、applicationId、hdfs_log_path
+├── task-canal                          Synchronize scheduler metadata from MySQL to Kafka
+├── task-canal-adapter                  Synchronzie scheduler metadata from MySQL to Compass
+├── task-detect                         Detect the job from scheduler
+├── task-metadata                       Syncrhonize metadata from Yarn、Spark to OpenSearch
+├── task-parser                         Log parse and spark abnormal task detect
+├── task-portal                         Visualizaiton web service for analysis
+├── task-flink                          Flink task resources and exception diagnosis
+├── task-flink-core                     Flink task diagnosis rule
+└── task-syncer                         Abstract and map the task relationship table of the scheduling platform
 ```
-### 初始化数据库
+### Initialize database
 
-初始化数据库和表，请先执行document/sql/compass.sql
+Initialize the database and tables, please execute document/sql/compass.sql first
 
-如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql（需要根据实际使用版本修改，支持2.x和3.x）
+If you are using the DolphinScheduler, please execute document/sql/dolphinscheduler.sql (need to be modified according to the actual version used, supporting 2.x and 3.x).
 
-如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql（需要根据实际使用版本修改）
+If you are using the Airflow, please execute document/sql/airflow.sql (need to be modified according to the actual version used)
 
-如果您使用的是自研调度平台，请参考[task-syncer](#task-syncer)模块，确定需要同步的表
+If you are using a self-developed scheduling platform, please refer to the [task-syncer](#task-syncer) module to determine which tables need to be synchronized.
 
 
-### 关键脚本和配置
+### Configuration
 
-compass/bin 和 compass/conf 是作为公共脚本和配置使用，方便统一启停和配置管理。
+compass/bin and compass/conf are used as public scripts and configurations to facilitate unified startup and configuration management.
 
 ```
-# 启动所有模块
+# Start all modules
 ./bin/start_all.sh
-# 停止所有模块
+# Stop all modules
 ./bin/stop_all.sh
 ```
 
-**注意： 如果您没有使用./bin/start_all.sh，而是单独调整各模块配置，需要复制compass.env到各模块bin目录下，复制application-hadoop.yml到task-application, task-metadata, task-parser模块conf目录下**
+**Note: If you have not used ./bin/start_all.sh and have adjusted the configuration of each module separately, you need to copy compass_env.sh file to the bin directory of each module and copy application-hadoop.yml to the conf directory of the task-application, task-metadata, and task-parser modules.**
 
-**compass_env.sh 是什么？ 所有模块的公共配置项，如果您需要快速启动，只要修改该脚本，其他配置默认即可; 如果您需要配置调优，再修改具体配置**
+**What is compass_env.sh? It is a common configuration file for all modules. If you need to quickly start the modules, you only need to modify this script and leave the other configurations as default. If you need to adjust the configuration for optimization, then you can modify the specific configuration.**
 
-**application-hadoop.yml 是什么？ namenode, yarn, spark依赖配置项，会在star_all.sh执行时复制到依赖的模块**
+**What is application-hadoop.yml? It is a configuration file for dependencies (namenode, yarn, spark) and will be copied to the dependent modules when star_all.sh is executed.**
 
-#### compass_env.sh 配置说明
+#### compass_env.sh Explanation
 
-通过Environment属性绑定对应SpringBoot配置，只修改环境变量即可。
+Bind corresponding SpringBoot configuration through Environment properties, and modify only the environment variables.
 
-启动之前需要先确定调度平台类型、调度平台MySQL订阅账号、Compass MySQL、Kafka、Redis、Zookeeper、OpenSearch集群地址
+Before starting, you need to determine the scheduling platform type, the MySQL subscription account for the scheduling platform, Compass MySQL, Kafka, Redis, Zookeeper, and OpenSearch cluster addresses.
 
-Kafka需要预先创建好topic: mysqldata,task-instance,task-application按实际数据量设置分区
+Kafka needs to have the topics 'mysqldata', 'task-instance', and 'task-application' created in advance, and the number of partitions should be set according to the actual data volume.
 
 ```bash
 #!/bin/bash
 
-# 调度平台选择：dolphinscheduler or airflow or custom
+# Scheduling platform selection: Dolphinscheduler or Airflow or Custom
 export SCHEDULER="dolphinscheduler"
 export SPRING_PROFILES_ACTIVE="hadoop,${SCHEDULER}"
 
 
-# 调度平台所使用的MySQL配置
+# MySQL configuration used by the scheduling platform
 export SCHEDULER_MYSQL_ADDRESS="ip:port"
 export SCHEDULER_MYSQL_DB=""
 export SCHEDULER_DATASOURCE_URL="jdbc:mysql://${SCHEDULER_MYSQL_ADDRESS}/${SCHEDULER_MYSQL_DB}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
 export SCHEDULER_DATASOURCE_USERNAME=""
 export SCHEDULER_DATASOURCE_PASSWORD=""
 
-# 提供给Compass使用的MySQL数据库配置
+# MySQL database configuration provided for use by Compass
 export COMPASS_MYSQL_ADDRESS="ip:port"
 export COMPASS_MYSQL_DB=""
 export SPRING_DATASOURCE_URL="jdbc:mysql://${COMPASS_MYSQL_ADDRESS}/${COMPASS_MYSQL_DB}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
 export SPRING_DATASOURCE_USERNAME=""
 export SPRING_DATASOURCE_PASSWORD=""
 
-# Kafka (默认版本: 3.4.0)
+# Kafka (default version: 3.4.0)
 export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
 
-# Redis (cluster 模式)
+# Redis (cluster mode)
 export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
 
-# Zookeeper (默认版本: 3.4.5, canal使用)
+# Zookeeper (cluster: 3.4.5, needed by canal)
 export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
 
-# OpenSearch (默认版本: 1.3.12)
+# OpenSearch (default version: 1.3.12) or Elasticsearch (7.x~)
 export SPRING_OPENSEARCH_NODES="ip1:port,ip2:port"
+# Optional
+export SPRING_OPENSEARCH_USERNAME=""
+# Optional
+export SPRING_OPENSEARCH_PASSWORD=""
+# Optional, needed by OpenSearch, keep empty if OpenSearch does not use truststore.
+export SPRING_OPENSEARCH_TRUSTSTORE=""
+# Optional, needed by OpenSearch, keep empty if OpenSearch does not use truststore.
+export SPRING_OPENSEARCH_TRUSTSTOREPASSWORD=""
 
 # Flink metric prometheus
 export FLINK_PROMETHEUS_HOST="host"
 export FLINK_PROMETHEUS_TOKEN=""
 export FLINK_PROMETHEUS_DATABASE=""
 
-# task-canal模块配置
+# task-canal configuration
 
-# 调度平台MySQL订阅账号，确定是否已开启binlog
+# MySQL subscription account for the scheduling platform, and confirmation whether binlog has been enabled
 export CANAL_INSTANCE_MASTER_ADDRESS=${SCHEDULER_MYSQL_ADDRESS}
 export CANAL_INSTANCE_DBUSERNAME=${SCHEDULER_DATASOURCE_USERNAME}
 export CANAL_INSTANCE_DBPASSWORD=${SCHEDULER_DATASOURCE_PASSWORD}
-# 需要订阅的库表配置过滤
+# Filtering is required for the subscribed library and tables
 if [ ${SCHEDULER} == "dolphinscheduler" ]; then
   export CANAL_INSTANCE_FILTER_REGEX="${SCHEDULER_MYSQL_DB}.t_ds_user,${SCHEDULER_MYSQL_DB}.t_ds_project,${SCHEDULER_MYSQL_DB}.t_ds_task_definition,${SCHEDULER_MYSQL_DB}.t_ds_task_instance,${SCHEDULER_MYSQL_DB}.t_ds_process_definition,${SCHEDULER_MYSQL_DB}.t_ds_process_instance,${SCHEDULER_MYSQL_DB}.t_ds_process_task_relation"
 elif [ ${SCHEDULER} == "airflow" ]; then
@@ -127,19 +142,19 @@ fi
 
 ```
 
-#### application-hadoop.yml 说明
+#### application-hadoop.yml configuration
 
 ```
 hadoop:
-  # task-applicaiton & task-parser 模块配置依赖
+  # Configuration dependency for task-application & task-parser modules
   namenodes:
-    - nameservices: logs-hdfs               # dfs.nameservices 属性值
-      namenodesAddr: [ "machine1.example.com", "machine2.example.com" ]   # dfs.namenode.rpc-address.[nameservice ID].[name node ID] 属性值
-      namenodes: ["nn1", "nn2"] # dfs.ha.namenodes.[nameservice ID] 属性值
-      user: hdfs                            # 用户
-      password:                             # 密码，如果没开启鉴权，则不需要
-      port: 8020                            # 端口
-      matchPathKeys: [ "flume" ]            # task-application模块使用，调度平台日志hdfs路径关键字
+    - nameservices: logs-hdfs               # dfs.nameservices value
+      namenodesAddr: [ "machine1.example.com", "machine2.example.com" ]   # dfs.namenode.rpc-address.[nameservice ID].[name node ID] value
+      namenodes: ["nn1", "nn2"] # dfs.ha.namenodes.[nameservice ID] value
+      user: hdfs                            # user
+      password:                             # password，empty if no password
+      port: 8020                            # port
+      matchPathKeys: [ "flume" ]            # Usage of the task-application module, keywords for the HDFS path of the scheduling platform log
       # kerberos
       enableKerberos: false
       # /etc/krb5.conf
@@ -151,44 +166,42 @@ hadoop:
       # /var/kerberos/krb5kdc/admin.keytab
       keytabPath: ""
   
-  # task-metadata 模块配置依赖
+  # Configuration dependency for the task-metadata module
   yarn:
     - clusterName: "bigdata"
-      resourceManager: [ "ip:port" ] # yarn.resourcemanager.webapp.address 属性值
-      jobHistoryServer: "ip:port" # mapreduce.jobhistory.webapp.address 属性值
+      resourceManager: [ "ip:port" ] # yarn.resourcemanager.webapp.address 
+      jobHistoryServer: "ip:port" # mapreduce.jobhistory.webapp.address 
   spark:
-    sparkHistoryServer: [ "ip:port" ] # spark history ui 地址
+    sparkHistoryServer: [ "ip:port" ] # spark history ui address
 ```
-
-
 
 ## task-canal
 
-如果您使用的是[DolphinScheduler](https://github.com/apache/dolphinscheduler)
-或者[Airflow](https://github.com/apache/airflow)或者自研的等调度平台，
-元数据存储在MySQL，可使用[canal.deployer](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.deployer-1.1.6.tar.gz)
-订阅MySQL binlog同步到Kafka，默认topic是mysqldata
+If you are using [DolphinScheduler](https://github.com/apache/dolphinscheduler)
+or [Airflow](https://github.com/apache/airflow) or self-developed scheduling platform,
+Metadata is stored in MySQL，use [canal.deployer](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.deployer-1.1.6.tar.gz)
+to subscribe to MySQL binlog and synchronize to Kafka. The default topic is 'mysqldata'.
 
 ```
 task-canal
 ├── bin
-│   ├── compass_env.sh           compass环境变量
-│   ├── init_canal.sh            下载canal.deployer依赖包
+│   ├── compass_env.sh           compass global variable
+│   ├── init_canal.sh            dwonload canal.deployer dependency
 │   ├── restart.sh         
 │   ├── startup.sh
 │   └── stop.sh
-├── canal.deployer-1.1.6.tar.gz   compass不提供canal依赖包，可通过init_canal.sh下载，若无网络则自行下载到task-canal根目录
+├── canal.deployer-1.1.6.tar.gz   Compass does not provide the Canal dependency package, which can be downloaded through init_canal.sh. If there is no network, it can be downloaded to the root directory of task-canal manually.
 ├── conf
 │   ├── example
-│   │   ├── instance.properties   源MySQL配置和库表配置
-│   ├── canal_local.properties    zk,kafka等配置
+│   │   ├── instance.properties   Source table configuration
+│   ├── canal_local.properties    zk,kafka configuration
 │   ├── canal.properties
 │   ├── logback.xml
 ├── lib
 └── plugin
 ```
 
-### 核心配置
+### core configuration
 
 conf/example/instance.properties
 
@@ -215,22 +228,21 @@ kafka.bootstrap.servers = localhost:9092
 
 ## task-canal-adapter
 
-[canal.adapter](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.adapter-1.1.6.tar.gz)模块作用:
-同步依赖调度平台的元数据表到compass，只同步任务相关和用户表，其他表按需同步
+[canal.adapter](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.adapter-1.1.6.tar.gz):
+Synchronize metadata tables from the scheduling platform to Compass, and only synchronize the task and user tables. Other tables can be synchronized as needed.
 
-例如对于DolphinScheduler： t_ds_project.yml 定义同步了 ds_project表，若需要同步其他表可参考conf/rdb下配置
+For example, for DolphinScheduler: the t_ds_project.yml defines the synchronization of the `ds_project` table. If you need to synchronize other tables, you can refer to the configuration in `conf/rdb`
 
-项目中已提供DolphinScheduler和Airflow平台同步模板，若使用其他平台可参考模板
-
+The project has provided synchronization templates for both DolphinScheduler and Airflow platforms. If you are using other platforms, you can refer to these templates.
 ```
 task-canal-adapter
 ├── bin
 │   ├── compass_env.sh
-│   ├── init_canal_adapter.sh       下载canal.adapter压缩包和解压相关lib和plugin
+│   ├── init_canal_adapter.sh       Download the Canal.adapter package and extract the relevant lib and plugin files.
 │   ├── restart.sh
 │   ├── startup.sh
 │   └── stop.sh
-├── canal.adapter-1.1.6.tar.gz      compass不提供canal依赖包，可通过init_canal.sh下载，若无网络则自行下载到task-canal-adapter根目录
+├── canal.adapter-1.1.6.tar.gz       Compass does not provide the Canal dependency package, which can be downloaded through init_canal.sh. If there is no network, it can be downloaded to the root directory of task-canal-adapter manually.
 ├── conf
 │   ├── application.yml
 │   └── rdb
@@ -250,13 +262,13 @@ task-canal-adapter
 └── plugin
 ```
 
-### 表数据全量同步接口
+### Full table data synchronization interface
 
-示例：curl "localhost:8181/etl/rdb/mysql1/template.yml" -X POST
+For example：curl "localhost:8181/etl/rdb/mysql1/template.yml" -X POST
 
-其中template.yml即为conf/rdb下的配置文件
+The `template.yml` is the configuration file under `conf/rdb`.
 
-### 核心配置
+### Conguration
 
 conf/application.yml
 
@@ -307,19 +319,19 @@ dbMapping:
 
 ## task-syncer
 
-task-syncer模块是关联调度平台和compass的抽象层，使得compass能够兼容和诊断不同的调度平台任务，该模块抽象定义了compass核心依赖的关系表：
+The task-syncer module is the abstraction layer that connects the scheduling platform and Compass, enabling Compass to be compatible with and diagnose different scheduling platform tasks. This module abstractly defines the relationship table that is the core dependency of Compass:
 
-user：登录和权限校验，隔离不同用户权限
+user：Login and permission verification, isolating different user permissions
 
-project：项目关系
+project：Project definition
 
-flow：工作流定义关系
+flow：Workflow definition 
 
-task：具体任务定义关系
+task：Task definition
 
-task_instance：任务运行实例
+task_instance：Task running instance
 
-其中关系是user -> project -> flow -> task -> task_instance，可根据实际调度平台自行定义关系
+The relationship: user -> project -> flow -> task -> task_instance, relationships can be defined according to the actual scheduling platform.
 
 ```
 task-syncer
@@ -335,21 +347,21 @@ task-syncer
 ├── lib
 ```
 
-### 核心配置
+### Configuraion
 
-conf/application-xxx.yml定义了数据同步表字段之间的映射关系，实现源表和目标表的转化，
+`conf/application-xxx.yml` defines the mapping relationship between the fields of data synchronization tables, which achieves the conversion between source tables and target tables,
 
-columnMapping 实现了字段之间的映射
+`columnMapping` achieves the mapping between fields.
 
-columnValueMapping 实现了字段值的映射
+`columnValueMapping` achieves the mapping of field values.
 
-constantColumn 实现了常量列的映射
+`constantColumn` achieves the mapping of constant columns.
 
-columnDep 实现了列字段值依赖查询，可自定义SQL实现表字段之间的关联
+`columnDep` implements the column value dependency query and allows custom SQL to establish associations between table columns.
 
-下面以同步DolphinScheduler调度平台示例说明
+Below is an example of synchronizing DolphinScheduler scheduling platform:
 
-user表映射：
+user table：
 
 ```
 # DolphinScheduler库名
@@ -376,7 +388,7 @@ user表映射：
     scheduler_type: "DolphinScheduler"
 ```
 
-task_instance表映射：
+task_instance table：
 
 ```
 - schema: "dolphinscheduler"
@@ -410,7 +422,7 @@ task_instance表映射：
 
 ## task-application
 
-task-application模块关联task_name、applicationId、hdfs_log_path，该模块需要读取调度平台日志，推荐使用flume收集到hdfs，方便统一做日志诊断和分析。
+The task-application module associates task_name, applicationId, and hdfs_log_path. This module needs to read the scheduling platform logs, and it is recommended to collect them to HDFS using Flume for the convenience of unified log diagnosis and analysis.
 
 ```
 task-application/
@@ -427,7 +439,7 @@ task-application/
 ├── lib
 ```
 
-### 核心配置
+### Configuraion
 
 conf/application-hadoop.yml
 
@@ -443,19 +455,19 @@ hadoop:
       matchPathKeys: [ "flume" ]
 ```
 
-conf/application-dolphinscheduler/airflow/custom.yml
+`conf/application-dolphinscheduler/airflow/custom.yml`
 
-该配置涉及日志路径规则的拼接，即日志绝对路径的确定。以flume收集dolphinscheduler到hdfs为例，airflow等同理。
-表t_ds_task_instance记录了日志路径log_path,但这个是worker主机中的目录，上传到hdfs的目录有所变化。
+This configuration involves the concatenation of log path rules, specifically determining the absolute path of the logs. Taking the example of collecting dolphinscheduler logs to HDFS using Flume, the same logic applies to Airflow.
 
-例如:
+The table t_ds_task_instance records the log path (log_path). However, this is the directory on the worker host, and the directory changes when uploading to HDFS.
+
+For example:
 
 scheduler worker log_path: /home/service/app/dolphinscheduler/logs/8590950992992_2/33552/33934.log
 
 hdfs log_path: hdfs://log-hdfs:8020/flume/dolphinscheduler/2023-03-30/8590950992992_2/33552/xxx
 
-因此需要根据上面的变化关系，通过逐级目录确定绝对路径，然后最终确定 task_name,application_id,hdfs_log_path
-之间的关系存储到表task_application中。
+Therefore, based on the above relationship changes, the absolute path is determined through step-by-step directory identification, and then the relationship between task_name, application_id, and hdfs_log_path is finally determined and stored in the task_application table.
 
 ```
 custom:
@@ -475,14 +487,12 @@ custom:
         name: "applicationId"      # 匹配文本名，最后必须有applicationId
 ```
 
-注意：原生flume-taildir-source插件是不支持递归遍历子目录文件的，需要进行改造。如果您日志已经收集，可忽略。
-如果您还没有收集，可修改TaildirMatcher.getMatchingFilesNoCache()方法实现。
-如果你使用的是Airflow，生成的日志目录可能包含不符合hdfs目录规则，sink to hdfs时需要修改替换目录特殊字符为下划线‘_’。
+Note: The native Flume-taildir-source plugin does not support recursively traversing subdirectory files, and requires modification. If your logs have already been collected, you can ignore this.
 
+If you have not collected logs, you can modify the TaildirMatcher.getMatchingFilesNoCache() method to implement this function. If you are using Airflow, the generated log directory may contain characters that do not comply with the HDFS directory rules. When sinking to HDFS, you need to modify and replace directory special characters with underscores ('_').
 ## task-metadata
 
-task-metadata模块是用于同步Yarn、Spark任务applicationId列表，关联applicationId的driver、executor、eventlog日志存储路径
-
+The task-metadata module is used to synchronize the Yarn and Spark task applicationId lists and associate the storage paths of driver, executor, and eventlog logs with applicationId.
 ```
 task-metadata
 ├── bin
@@ -512,8 +522,7 @@ hadoop:
 
 ## task-detect
 
-task-detect模块是针对工作流层异常检测，异常类型包括运行失败、基线时间异常、基线耗时异常、首次失败、长期失败、运行耗时长
-
+The task-detect module is designed for abnormal detection at the workflow level. The types of abnormalities include running failure, baseline time exception, baseline duration exception, first-time failure, long-term failure, and long running time.
 ```
 task-detect
 ├── bin
@@ -525,7 +534,7 @@ task-detect
 ├── lib
 ```
 
-### 核心配置
+### Configuration
 
 conf/application.yml
 
@@ -540,8 +549,7 @@ custom:
 
 ## task-parser
 
-task-parser模块是针对Spark任务和相关日志进行解析诊断，异常类型包括：SQL失败、Shuffle失败、内存溢出、内存浪费、CPU浪费、大表扫描、OOM预警、
-数据倾斜、Job耗时异常、Stage耗时异常、Task长尾、HDFS卡顿、推迟执行Task过多、全局排序异常等
+The task-parser module is designed to parse and diagnose Spark tasks and related logs. The types of exceptions include SQL failure, Shuffle failure, memory overflow, memory waste, CPU waste, large table scans, OOM warnings, data skewness, abnormal Job duration, abnormal Stage duration, long tail of tasks, HDFS lag, excessive delayed execution of tasks, and global sorting anomalies.
 
 ```
 task-parser
@@ -560,23 +568,22 @@ task-parser
 ├── lib
 ```
 
-### 核心配置
+### Configuration
 
-conf/rules.json 该配置是用于编写日志解析规则
+The `conf/rules.json` configuration is used to write log parsing rules.
+logType: scheduler/driver/executor/yarn 
 
-logType: scheduler/driver/executor/yarn 日志类型，若有其他日志，可自行实现
+action: Define the name of each matching rule.
 
-action: 定义每个匹配规则名称
+desc： Description for action
 
-desc： action描述
+category： Definition of rule types, such as shuffleFailed/sqlFailed, etc.
 
-category： 定义规则类型，例如shuffleFailed/sqlFailed等
+step: order of matching action.
 
-step: 匹配顺序，默认升序
+parserType: Match type, DEFAULT(match by rows or blocks), JOIN(Merge results into one row before matching.)
 
-parserType: 匹配类型，默认 DEFAULT(按行或者块匹配)，JOIN(把结果合并成一行再匹配)
-
-parserTemplate: 文本解析模板，由首行、中间行和结束行组成。
+parserTemplate: Text parsing templates consist of the first line, middle lines, and ending lines.
 
 如果只是简单按行匹配，则只需要填写parserTemplate.heads即可；
 
