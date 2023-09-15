@@ -41,6 +41,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.ParsedCardinality;
 import org.elasticsearch.search.aggregations.metrics.ParsedSum;
 import org.elasticsearch.search.aggregations.metrics.SumAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -245,9 +246,9 @@ public class ReportServiceImpl implements ReportService {
 
         // 诊断任务数
         AggregationBuilder aggregationBuilderAbnormalJobCount =
-                AggregationBuilders.terms("groupByCount")
+                AggregationBuilders.cardinality("groupByCount")
                         .script(new Script("doc['projectName.keyword'].value+'@@'+doc['flowName.keyword'].value+'@@'+doc['taskName.keyword'].value")
-                        ).size(10000);
+                        );
 
         searchSourceBuilder.aggregation(aggregationBuilderAbnormalJobCount);
 
@@ -256,9 +257,9 @@ public class ReportServiceImpl implements ReportService {
         if (aggregationsGroupByCount == null) {
             return null;
         }
-        Terms terms = aggregationsGroupByCount.get("groupByCount");
-        int abnormalJobCount = terms.getBuckets().size();
-        statisticsData.setAbnormalJobNum(abnormalJobCount);
+        ParsedCardinality cardinality = (ParsedCardinality)(aggregationsGroupByCount.getAsMap().get("groupByCount"));
+        Long abnormalJobCount = cardinality.getValue();
+        statisticsData.setAbnormalJobNum(abnormalJobCount.intValue());
 
         // 活跃任务数
         int jobCount = taskInstanceExtendMapper.searchJobCount(new Date(startTimestamp), new Date(endTimestamp));
