@@ -46,6 +46,10 @@ public class TextParser implements ITextParser {
      */
     private List<String> blocks;
     /**
+     * 匹配到的blocks结尾
+     */
+    private String blockEnd;
+    /**
      * 模板匹配位置
      */
     private PositionState state;
@@ -57,6 +61,7 @@ public class TextParser implements ITextParser {
         this.actions = newActions;
         matchActions = new HashMap<>();
         blocks = new ArrayList<>();
+        blockEnd = null;
     }
 
     public TextParser(List<ParserAction> actions) {
@@ -74,6 +79,14 @@ public class TextParser implements ITextParser {
      */
     @Override
     public void parse(String line) {
+        // 若blockEnd不为null，则需要首先处理上一次匹配的末尾行
+        if (blockEnd != null) {
+            parseInternal(blockEnd);
+        }
+        parseInternal(line);
+    }
+
+    private void parseInternal(String line) {
         switch (this.state) {
             case HEAD:
                 matchHeadsTemplate(line);
@@ -174,6 +187,8 @@ public class TextParser implements ITextParser {
                 if (m.matches()) {
                     // 不包含尾部行
                     this.blocks.remove(line);
+                    // 标志该行为block结尾
+                    this.blockEnd = line;
                     setParserResults(m);
                     return;
                 }
