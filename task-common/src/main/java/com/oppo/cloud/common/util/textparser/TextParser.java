@@ -80,8 +80,9 @@ public class TextParser implements ITextParser {
     @Override
     public void parse(String line) {
         // 若blockEnd不为null，则需要首先处理上一次匹配的末尾行
-        if (blockEnd != null) {
-            parseInternal(blockEnd);
+        if (this.blockEnd != null) {
+            parseInternal(this.blockEnd);
+            this.blockEnd = null;
         }
         parseInternal(line);
     }
