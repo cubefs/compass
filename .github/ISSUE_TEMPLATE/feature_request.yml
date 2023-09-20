@@ -1,7 +1,7 @@
 name: Feature request
 description: As a user, I want to request a feature for Compass
 title: "[Feature]: "
-labels: [enhancement]
+labels: [feature]
 assignees:
   - zebozhuang
 
