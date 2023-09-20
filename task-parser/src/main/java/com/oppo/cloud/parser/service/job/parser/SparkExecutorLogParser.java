@@ -21,13 +21,10 @@ import com.oppo.cloud.common.constant.ProgressState;
 import com.oppo.cloud.common.domain.job.LogPath;
 import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
 import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
-import com.oppo.cloud.common.util.spring.SpringBeanUtil;
 import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.common.util.textparser.ParserManager;
 import com.oppo.cloud.common.util.textparser.TextParser;
-import com.oppo.cloud.parser.config.CustomConfig;
 import com.oppo.cloud.parser.config.DiagnosisConfig;
-import com.oppo.cloud.parser.config.ThreadPoolConfig;
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.job.SparkExecutorLogParserResult;
@@ -59,12 +56,13 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
 
     private final List<String> jvmTypeList;
 
-    public SparkExecutorLogParser(ParserParam param) {
+    public SparkExecutorLogParser(ParserParam param,
+                                  ThreadPoolTaskExecutor threadPool,
+                                  List<String> jvmTypeList) {
         this.param = param;
         this.isOneClick = param.getLogRecord().getIsOneClick();
-        parserThreadPool = (ThreadPoolTaskExecutor) SpringBeanUtil.getBean(ThreadPoolConfig.PARSER_THREAD_POOL);
-        jvmTypeList = (List<String>) SpringBeanUtil.getBean(CustomConfig.GC_CONFIG);
-
+        this.parserThreadPool = threadPool;
+        this.jvmTypeList = jvmTypeList;
     }
 
     @Override
