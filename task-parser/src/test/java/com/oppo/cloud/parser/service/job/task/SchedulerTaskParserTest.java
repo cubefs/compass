@@ -41,7 +41,7 @@ class SchedulerTaskParserTest {
         LogPath scheduler = new LogPath();
         scheduler.setProtocol("hdfs");
         scheduler.setLogType("scheduler");
-        scheduler.setLogPath("hdfs://10.176.139.33/appid/schedul*");
+        scheduler.setLogPath("hdfs://localhost/appid/schedul*");
         List<LogPath> list = new ArrayList<>();
         list.add(scheduler);
         logPathMap.put("scheduler", list);

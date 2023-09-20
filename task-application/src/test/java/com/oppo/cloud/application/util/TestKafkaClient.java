@@ -27,7 +27,7 @@ public class TestKafkaClient {
     @Test
     public void testGetConsumers() {
         Properties props = new Properties();
-        props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "10.176.139.33:9092");
+        props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         try (AdminClient client = AdminClient.create(props)) {
             // List<String> groups = client.listConsumerGroups().all().get()
             // .stream().map(s -> s.groupId()).collect(Collectors.toList());

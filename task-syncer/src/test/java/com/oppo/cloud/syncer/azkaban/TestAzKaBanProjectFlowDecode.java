@@ -34,7 +34,7 @@ public class TestAzKaBanProjectFlowDecode {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection =
-                    DriverManager.getConnection("jdbc:mysql://10.176.10.151:3306/azkaban", "root", "Root@666");
+                    DriverManager.getConnection("jdbc:mysql://localhost:3306/azkaban", "root", "Root@666");
             PreparedStatement stmt = connection.prepareStatement(SELECT_ALL_PROJECT_FLOWS);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
