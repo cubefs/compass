@@ -1,2 +1,10 @@
 name: Question ask
 description: Ask questions and discuss with other community members
+title: "[Question]: "
+labels: [question]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to join Compass community!
