@@ -16,8 +16,14 @@
 
 package com.oppo.cloud.parser.service.job.parser;
 
+import com.oppo.cloud.common.util.spring.SpringBeanUtil;
+import com.oppo.cloud.parser.config.CustomConfig;
+import com.oppo.cloud.parser.config.ThreadPoolConfig;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.service.job.oneclick.IProgressListener;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.List;
 
 
 public class ParserFactory {
@@ -39,7 +45,9 @@ public class ParserFactory {
                 return sparkEventLogParser;
 
             case SPARK_EXECUTOR:
-                SparkExecutorLogParser sparkExecutorLogParser = new SparkExecutorLogParser(parserParam);
+                ThreadPoolTaskExecutor parserThreadPool = (ThreadPoolTaskExecutor) SpringBeanUtil.getBean(ThreadPoolConfig.PARSER_THREAD_POOL);
+                List<String> jvmTypeList = (List<String>) SpringBeanUtil.getBean(CustomConfig.GC_CONFIG);
+                SparkExecutorLogParser sparkExecutorLogParser = new SparkExecutorLogParser(parserParam, parserThreadPool, jvmTypeList);
                 sparkExecutorLogParser.addListener(listener);
                 return sparkExecutorLogParser;
 

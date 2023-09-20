@@ -19,11 +19,15 @@ package com.oppo.cloud.parser.service.job.parser;
 import com.oppo.cloud.common.constant.LogType;
 import com.oppo.cloud.common.domain.job.LogPath;
 import com.oppo.cloud.common.domain.job.LogRecord;
+import com.oppo.cloud.common.util.spring.SpringBeanUtil;
+import com.oppo.cloud.parser.config.CustomConfig;
+import com.oppo.cloud.parser.config.ThreadPoolConfig;
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.service.ParamUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +46,11 @@ class SparkExecutorLogParserTest {
                 logPathMap.get(LogType.SPARK_EXECUTOR.getName())
         );
 
-        SparkExecutorLogParser parser = new SparkExecutorLogParser(param);
+        ThreadPoolTaskExecutor parserThreadPool = (ThreadPoolTaskExecutor)
+                SpringBeanUtil.getBean(ThreadPoolConfig.PARSER_THREAD_POOL);
+        List<String> jvmTypeList = (List<String>) SpringBeanUtil.getBean(CustomConfig.GC_CONFIG);
+
+        SparkExecutorLogParser parser = new SparkExecutorLogParser(param, parserThreadPool, jvmTypeList);
         CommonResult commonResult = parser.run();
         System.out.println(commonResult);
     }
