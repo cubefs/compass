@@ -67,10 +67,11 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
 
     }
 
+    @Override
     public CommonResult run() {
         updateParserProgress(ProgressState.PROCESSING, 0, 0);
         CommonResult<List<SparkExecutorLogParserResult>> commonResult = new CommonResult<>();
-        List<SparkExecutorLogParserResult> gcReports = new ArrayList<>();
+        List<SparkExecutorLogParserResult> parserResults = new ArrayList<>();
         for (LogPath logPath : this.param.getLogPaths()) {
             List<ReaderObject> readerObjects;
             try {
@@ -82,13 +83,12 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
             }
             if (readerObjects.size() > 0) {
                 updateParserProgress(ProgressState.PROCESSING, 0, readerObjects.size());
-                List<SparkExecutorLogParserResult> results = handleReaderObjects(readerObjects);
-                gcReports.addAll(results);
+                parserResults.addAll(handleReaderObjects(readerObjects));
             }
         }
         updateParserProgress(ProgressState.SUCCEED, 0, 0);
         commonResult.setLogType(this.param.getLogType());
-        commonResult.setResult(gcReports);
+        commonResult.setResult(parserResults);
         return commonResult;
 
     }
