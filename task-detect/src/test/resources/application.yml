@@ -1,0 +1,65 @@
+server:
+  port: 7071
+
+spring:
+  application:
+    name: "task-detect"
+  profiles:
+    active:
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  datasource:
+    url: jdbc:derby:memory:compass;create=true
+    druid:
+      initial-size: 5
+      min-idle: 10
+      max-active: 20
+  redis:
+    host: localhost
+    port: 6379
+  opensearch:
+    nodes: localhost:9200
+    username:
+    password:
+    truststore:
+    truststore-password:
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    listener:
+      type: batch
+      ack-mode: MANUAL_IMMEDIATE
+    consumer:
+      enable-auto-commit: false
+      max-poll-records: 1
+
+custom:
+  schedulerType: ${SCHEDULER:dolphinscheduler}
+  redis:
+    logRecord: "{lua}:log:record"
+    delayedQueue: "{lua}:delayed:task"
+    processing: "{lua}:detected:processing"
+  delayedTaskQueue:
+    enable: true
+    delayedSeconds: 10
+    tryTimes: 5
+  opensearch:
+    yarn-app-index: "compass-yarn-app"
+    spark-app-index: "compass-spark-app"
+    job-index: "compass-job-analysis"
+    app-index: "compass-task-app"
+    job-instance-index: "compass-job-instance"
+
+  kafka:
+    consumer:
+      group-id: cp-detection-task
+      topic-name: task-instance
+      auto:
+        start: true
+
+  detectionRule:
+    # 运行耗时长配置，单位小时
+    durationWarning: 2
+    # 长期失败配置，单位天
+    alwaysFailedWarning: 10
