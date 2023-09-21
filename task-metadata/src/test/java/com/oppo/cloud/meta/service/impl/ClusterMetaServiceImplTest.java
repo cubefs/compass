@@ -19,6 +19,7 @@ package com.oppo.cloud.meta.service.impl;
 import com.oppo.cloud.common.constant.Constant;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.meta.service.IClusterConfigService;
+import com.oppo.cloud.test.redis.WithRedisServer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +28,7 @@ import javax.annotation.Resource;
 
 @Slf4j
 @SpringBootTest
-class ClusterMetaServiceImplTest {
+class ClusterMetaServiceImplTest implements WithRedisServer {
 
     @Resource
     RedisService redisService;
