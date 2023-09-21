@@ -5,6 +5,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 logs/
+derby.log
 ### STS ###
 .apt_generated
 .classpath
