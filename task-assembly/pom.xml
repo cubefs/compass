@@ -13,6 +13,7 @@
     <artifactId>task-assembly</artifactId>
     <groupId>com.oppo.cloud</groupId>
     <version>${revision}</version>
+    <packaging>pom</packaging>
 
     <properties>
         <assembly.name>compass-${revision}</assembly.name>
@@ -31,8 +32,10 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
+                            <skipAssembly>${assembly.skip}</skipAssembly>
                             <finalName>${assembly.name}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
+                            <attach>false</attach>
                             <descriptors>
                                 <descriptor>assembly/assembly.xml</descriptor>
                             </descriptors>

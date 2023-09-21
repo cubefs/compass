@@ -68,6 +68,7 @@
         <spotless.version>2.27.2</spotless.version>
         <opensearch.version>1.3.12</opensearch.version>
         <java-jwt.version>4.2.2</java-jwt.version>
+        <assembly.skip>true</assembly.skip>
         <derby.version>10.14.2.0</derby.version>
         <testcontainers.version>1.19.0</testcontainers.version>
 
@@ -442,6 +443,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>dist</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <assembly.skip>false</assembly.skip>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>

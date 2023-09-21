@@ -18,7 +18,7 @@ Use JDK 8 and maven 3.6.0+ to Compile
 ```
 git clone https://github.com/cubefs/compass.git
 cd compass
-mvn package -DskipTests
+mvn package -DskipTests -Pdist
 ```
 
 ## Workspaces
