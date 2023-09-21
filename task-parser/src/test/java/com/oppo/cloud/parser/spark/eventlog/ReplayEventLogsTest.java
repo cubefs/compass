@@ -25,7 +25,6 @@ import java.io.File;
 import java.nio.file.Files;
 
 @Slf4j
-@SpringBootTest
 class ReplayEventLogsTest {
 
     @Test

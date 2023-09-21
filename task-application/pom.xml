@@ -102,10 +102,16 @@
         </dependency>
         <dependency>
             <groupId>com.oppo.cloud</groupId>
-            <artifactId>task-mbg</artifactId>
+            <artifactId>task-common</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.springfox</groupId>
+                    <artifactId>springfox-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
