@@ -16,18 +16,17 @@
 
 package com.oppo.cloud.application.util;
 
-import lombok.val;
 import org.apache.kafka.clients.admin.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-public class TestKafkaClient {
+public class TestKafkaClient implements WithKafkaServer {
 
     @Test
     public void testGetConsumers() {
         Properties props = new Properties();
-        props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer.getBootstrapServers());
         try (AdminClient client = AdminClient.create(props)) {
             // List<String> groups = client.listConsumerGroups().all().get()
             // .stream().map(s -> s.groupId()).collect(Collectors.toList());

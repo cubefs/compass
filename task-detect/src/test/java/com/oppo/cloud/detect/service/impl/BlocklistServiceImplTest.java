@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@SpringBootTest
+@SpringBootTest(classes = BlocklistServiceImpl.class)
 class BlocklistServiceImplTest {
 
     @MockBean(name = "blocklistMapper")

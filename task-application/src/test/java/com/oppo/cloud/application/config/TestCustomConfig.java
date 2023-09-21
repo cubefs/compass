@@ -20,6 +20,7 @@ import com.alibaba.fastjson2.JSON;
 import com.oppo.cloud.application.domain.LogPathJoin;
 import com.oppo.cloud.application.domain.Rule;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
@@ -81,6 +82,7 @@ public class TestCustomConfig {
         Assertions.assertEquals(matcher.group("date"), "2022-02-18");
     }
 
+    @Disabled
     @Test
     public void testParseRuleLog3() {
         Map<String, Object> m = jdbcTemplate.queryForMap("select * from t_ds_task_instance where id=284");

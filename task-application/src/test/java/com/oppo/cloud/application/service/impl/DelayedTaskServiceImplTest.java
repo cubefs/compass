@@ -18,6 +18,7 @@ package com.oppo.cloud.application.service.impl;
 
 import com.oppo.cloud.application.domain.DelayedTaskInfo;
 import com.oppo.cloud.application.service.DelayedTaskService;
+import com.oppo.cloud.test.redis.WithRedisServer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ import java.util.UUID;
 
 @Slf4j
 @SpringBootTest
-class DelayedTaskServiceImplTest {
+class DelayedTaskServiceImplTest implements WithRedisServer {
 
     @Autowired
     private DelayedTaskService delayedTaskService;
