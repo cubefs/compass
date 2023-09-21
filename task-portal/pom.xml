@@ -103,6 +103,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <skipAssembly>${assembly.skip}</skipAssembly>
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
