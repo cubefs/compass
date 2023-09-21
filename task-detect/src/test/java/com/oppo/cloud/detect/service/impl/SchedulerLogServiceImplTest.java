@@ -16,9 +16,10 @@
 
 package com.oppo.cloud.detect.service.impl;
 
-import com.oppo.cloud.detect.mapper.TaskInstanceExtendMapper;
 import com.oppo.cloud.detect.service.SchedulerLogService;
-import com.oppo.cloud.model.TaskInstance;
+import com.oppo.cloud.mapper.TaskApplicationMapper;
+import com.oppo.cloud.model.TaskApplication;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,11 +30,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.*;
 
 
-@SpringBootTest
+@SpringBootTest(classes = SchedulerLogServiceImpl.class)
 class SchedulerLogServiceImplTest {
 
-    @MockBean(name = "taskInstanceExtendMapper")
-    TaskInstanceExtendMapper taskInstanceExtendMapper;
+    @MockBean(name = "taskApplicationMapper")
+    TaskApplicationMapper taskApplicationMapper;
 
     @MockBean
     private JdbcTemplate jdbcTemplate;
@@ -42,16 +43,17 @@ class SchedulerLogServiceImplTest {
     private SchedulerLogService schedulerLogService;
 
     @Test
-    void getDolphinLog() {
-        List<TaskInstance> taskInstances = new ArrayList<>();
-        TaskInstance taskInstance = new TaskInstance();
-        taskInstance.setId(10);
-        taskInstances.add(taskInstance);
-        Mockito.when(taskInstanceExtendMapper.selectByExample(Mockito.any())).thenReturn(taskInstances);
-        Map<String, Object> depData = new HashMap<>();
-        depData.put("end_time", new Date());
-        depData.put("log_path", "/home/service/logs/2045/2013.log");
-        Mockito.when(jdbcTemplate.queryForMap(Mockito.anyString())).thenReturn(depData);
+    void getSchedulerLog() {
+        List<TaskApplication> taskApplications = new ArrayList<>();
+        TaskApplication taskApp = new TaskApplication();
+        taskApp.setId(10);
+        taskApp.setRetryTimes(1);
+        taskApp.setLogPath("/home/service/logs/2045/2013.log");
+        taskApplications.add(taskApp);
+        Mockito.when(taskApplicationMapper.selectByExampleWithBLOBs(Mockito.any())).thenReturn(taskApplications);
+
+        List<String> schedulerLog = schedulerLogService.getSchedulerLog("project", "flow", "task", new Date(), 1);
+        Assertions.assertTrue(schedulerLog.size() == 1);
     }
 
 }

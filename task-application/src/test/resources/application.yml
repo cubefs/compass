@@ -7,9 +7,7 @@ spring:
   profiles:
     active: hadoop
   datasource:
-    url: jdbc:mysql://localhost:33066/diagnose_data?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-    username: root
-    password: root
+    url: jdbc:derby:memory:diagnose_data;create=true
     druid:
       initial-size: 5 # 连接池初始化大小
       min-idle: 10 # 最小空闲连接数
@@ -21,15 +19,10 @@ spring:
       group-id: "cp-task-application"
       auto-offset-reset: "earliest"  # 从提交offset开始消费，无提交offset,从头开始消费
       max-poll-interval-ms: 300000  # 两次消费活跃时间间隔5min
+    taskApplicationTopic: "task-application"
   redis:
-    cluster:
-      nodes: localhost:6379
-      max-redirects: 3
-    lettuce:
-      pool:
-        max-active: 32
-        max-idle: 16
-        min-idle: 8
+    host: localhost
+    port: 6379
 
 custom:
   delayedTask:
