@@ -18,7 +18,7 @@ package com.oppo.cloud.portal.dao;
 
 import com.oppo.cloud.mapper.TaskInstanceMapper;
 import com.oppo.cloud.model.Task;
-import io.lettuce.core.dynamic.annotation.Param;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
