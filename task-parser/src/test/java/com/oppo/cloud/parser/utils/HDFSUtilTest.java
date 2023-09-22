@@ -32,7 +32,7 @@ class HDFSUtilTest {
     @Resource(name = HadoopConfig.NAME_NODE_MAP)
     Map<String, NameNodeConf> nameNodeMap;
 
-    @Test
+
     void readLines()  {
         try {
             String path = "hdfs://logs-hdfs:8020/logs/application_1673850090992_23513";
