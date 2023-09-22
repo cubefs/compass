@@ -18,15 +18,10 @@ package com.oppo.cloud.portal.controller;
 
 import com.oppo.cloud.common.api.CommonStatus;
 import com.oppo.cloud.common.constant.AppCategoryEnum;
-import com.oppo.cloud.portal.domain.diagnose.DiagnoseReport;
 import com.oppo.cloud.portal.domain.diagnose.GCReportResp;
-import com.oppo.cloud.portal.domain.diagnose.Item;
 import com.oppo.cloud.portal.domain.diagnose.oneclick.DiagnoseResult;
-import com.oppo.cloud.portal.domain.diagnose.runerror.RunError;
 import com.oppo.cloud.portal.domain.task.JobsRequest;
 import com.oppo.cloud.portal.domain.task.TaskAppsRequest;
-import com.oppo.cloud.portal.domain.task.TaskAppsResponse;
-import com.oppo.cloud.portal.domain.task.TrendGraph;
 import com.oppo.cloud.portal.service.OneClickDiagnosisService;
 import com.oppo.cloud.portal.service.TaskAppService;
 import io.swagger.annotations.Api;
@@ -38,8 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * application interface
@@ -65,7 +58,7 @@ public class AppController {
     @PostMapping(value = "/list")
     @ApiOperation(value = "application list", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus<TaskAppsResponse> searchApplications(@Validated @RequestBody TaskAppsRequest request) throws Exception {
+    public CommonStatus<?> searchApplications(@Validated @RequestBody TaskAppsRequest request) throws Exception {
         return CommonStatus.success(taskAppService.searchTaskApps(request));
     }
 
@@ -74,7 +67,7 @@ public class AppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "applicationId name", required = true, dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<DiagnoseReport> getDiagnoseReport(@RequestParam(value = "applicationId") String applicationId) throws Exception {
+    public CommonStatus<?> getDiagnoseReport(@RequestParam(value = "applicationId") String applicationId) throws Exception {
         return CommonStatus.success(taskAppService.generateReport(applicationId));
     }
 
@@ -83,7 +76,7 @@ public class AppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "applicationId name", required = true, dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<List<Item<RunError>>> getDiagnoseReportRunError(@RequestParam(value = "applicationId") String applicationId) throws Exception {
+    public CommonStatus<?> getDiagnoseReportRunError(@RequestParam(value = "applicationId") String applicationId) throws Exception {
         return CommonStatus.success(taskAppService.diagnoseRunError(applicationId));
     }
 
@@ -92,7 +85,7 @@ public class AppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "applicationId name", required = true, dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<DiagnoseReport.RunInfo> getDiagnoseReportRunInfo(@RequestParam(value = "applicationId") String applicationId) throws Exception {
+    public CommonStatus<?> getDiagnoseReportRunInfo(@RequestParam(value = "applicationId") String applicationId) throws Exception {
         return CommonStatus.success(taskAppService.diagnoseRunInfo(applicationId));
     }
 
@@ -101,7 +94,7 @@ public class AppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "applicationId name", required = true, dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<List<Item>> getDiagnoseReportRunResource(@RequestParam(value = "applicationId") String applicationId) throws Exception {
+    public CommonStatus<?> getDiagnoseReportRunResource(@RequestParam(value = "applicationId") String applicationId) throws Exception {
         return CommonStatus.success(taskAppService.diagnoseRunResource(applicationId));
     }
 
@@ -110,40 +103,40 @@ public class AppController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "applicationId name", required = true, dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<List<Item>> getDiagnoseReportRunTime(@RequestParam(value = "applicationId") String applicationId) throws Exception {
+    public CommonStatus<?> getDiagnoseReportRunTime(@RequestParam(value = "applicationId") String applicationId) throws Exception {
         return CommonStatus.success(taskAppService.diagnoseRunTime(applicationId));
     }
 
     @GetMapping(value = "/categories")
     @ApiOperation(value = "app category type")
-    public CommonStatus<List<String>> getCategories() {
+    public CommonStatus<?> getCategories() {
         return CommonStatus.success(AppCategoryEnum.getAllAppCategoryOfChina());
     }
 
     @PostMapping(value = "/graph")
     @ApiOperation(value = "task graph")
-    public CommonStatus<TrendGraph> getGraph(@Validated @RequestBody JobsRequest request) throws Exception {
+    public CommonStatus<?> getGraph(@Validated @RequestBody JobsRequest request) throws Exception {
         return CommonStatus.success(taskAppService.getGraph(request));
     }
 
     @GetMapping(value = "/diagnose")
-    @ApiOperation(value = "一键诊断")
+    @ApiOperation(value = "one-click diagnosis")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "applicationId", value = "applicationId名称", required = true, dataType = "String", dataTypeClass = String.class)
+            @ApiImplicitParam(name = "applicationId", value = "applicationId", required = true, dataType = "String", dataTypeClass = String.class)
     })
     public CommonStatus<DiagnoseResult> getAppDiagnose(@RequestParam(value = "applicationId") String applicationId) throws Exception {
         if (StringUtils.isNotEmpty(applicationId)) {
             return CommonStatus.success(oneClickDiagnosisService.diagnose(applicationId));
         } else {
-            return CommonStatus.failed(String.format("请输入正确的applicationId[%s]信息", applicationId));
+            return CommonStatus.failed(String.format("Invalid applicationId: %s", applicationId));
         }
     }
 
     @GetMapping(value = "/gc")
-    @ApiOperation("GC日志分析")
+    @ApiOperation("GC log analysis")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "applicationId", value = "applicationId名称", required = true, dataType = "String", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "executorId", value = "executor名称", required = true, dataType = "String", dataTypeClass = String.class)})
+            @ApiImplicitParam(name = "applicationId", value = "applicationId", required = true, dataType = "String", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "executorId", value = "executor", required = true, dataType = "String", dataTypeClass = String.class)})
     public CommonStatus<GCReportResp> getGCReport(@RequestParam(value = "applicationId") String applicationId,
                                                   @RequestParam(value = "executorId") String executorId) throws Exception {
         return CommonStatus.success(taskAppService.getGcReport(applicationId, executorId));

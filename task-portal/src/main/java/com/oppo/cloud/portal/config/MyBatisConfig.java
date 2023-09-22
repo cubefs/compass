@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * MyBatis相关配置
+ * MyBatis Configuration
  */
 @Configuration
 @EnableTransactionManagement

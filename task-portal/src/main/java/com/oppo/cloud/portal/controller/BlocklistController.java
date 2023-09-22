@@ -38,11 +38,11 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * 白名单功能controller
+ * Block list controller
  */
 @Controller
 @RequestMapping(value = "/api/v1/blocklist")
-@Api(value = "AbnormalTaskController", description = "白名单接口")
+@Api(value = "AbnormalTaskController", description = "blocklist api")
 @Slf4j
 public class BlocklistController {
 
@@ -50,37 +50,36 @@ public class BlocklistController {
     BlocklistService blocklistService;
 
     @PostMapping(value = "/list")
-    @ApiOperation(value = "白名单列表信息", httpMethod = "POST")
+    @ApiOperation(value = "list items", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus list(@RequestBody BlocklistReq blocklistReq) throws Exception {
+    public CommonStatus<?> list(@RequestBody BlocklistReq blocklistReq) throws Exception {
         PageHelper.startPage(blocklistReq.getPage(), blocklistReq.getPageSize());
         List<Blocklist> blocklists = blocklistService.search(blocklistReq);
         return CommonStatus.success(CommonPage.restPage(blocklists));
     }
 
     @PostMapping(value = "/del")
-    @ApiOperation(value = "删除白名单", httpMethod = "POST")
+    @ApiOperation(value = "delete item", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus delete(@RequestBody BlocklistDelReq blocklistDelReq) throws Exception {
+    public CommonStatus<?> delete(@RequestBody BlocklistDelReq blocklistDelReq) throws Exception {
         blocklistService.deleteByIds(blocklistDelReq.getBlocklistIds());
         return CommonStatus.success("ok");
     }
 
     @PostMapping(value = "/searchTasks")
-    @ApiOperation(value = "添加白名单", httpMethod = "POST")
+    @ApiOperation(value = "search items", httpMethod = "POST")
     @ResponseBody
     @Transactional
-    public CommonStatus searchTasks(@RequestBody BlocklistAddReq blocklistAddReq) throws Exception {
+    public CommonStatus<?> searchTasks(@RequestBody BlocklistAddReq blocklistAddReq) throws Exception {
         return CommonStatus.success(blocklistService.searchTasks(blocklistAddReq));
     }
 
     @PostMapping(value = "/add")
-    @ApiOperation(value = "添加白名单", httpMethod = "POST")
+    @ApiOperation(value = "add items", httpMethod = "POST")
     @ResponseBody
     @Transactional
-    public CommonStatus add(@RequestBody @Valid BlocklistAddReq blocklistAddReq) throws Exception {
+    public CommonStatus<?> add(@RequestBody @Valid BlocklistAddReq blocklistAddReq) throws Exception {
         blocklistService.addBlocklist(blocklistAddReq);
         return CommonStatus.success("ok");
     }
-
 }

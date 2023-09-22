@@ -30,7 +30,7 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.*;
 
 /**
- * 安全配置
+ * Security Configuration
  */
 @Configuration
 @EnableWebSecurity
@@ -49,9 +49,8 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter implement
     }
 
     /**
-     * 跨域配置
+     * Cross domain configuration
      */
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -62,9 +61,8 @@ public class PortalSecurityConfig extends WebSecurityConfigurerAdapter implement
     }
 
     /**
-     * 拦截器配置
+     * Add interceptors
      */
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginCheckInterceptor).order(1);

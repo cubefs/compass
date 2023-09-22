@@ -20,7 +20,7 @@ import com.oppo.cloud.common.config.RedisTemplateConfig;
 import org.springframework.stereotype.Component;
 
 /**
- * redis配置
+ * Redis Configuration
  */
 @Component
 public class RedisConfig extends RedisTemplateConfig {

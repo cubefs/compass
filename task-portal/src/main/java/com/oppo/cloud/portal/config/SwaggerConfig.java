@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * swagger配置类
+ * swagger Configuration
  */
 @Configuration
 public class SwaggerConfig {
@@ -50,7 +50,7 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.oppo.cloud.portal.controller"))
                 .build().apiInfo(new ApiInfoBuilder()
-                        .title("罗盘接口文档")
+                        .title("Documentation")
                         .description("")
                         .version("1.0")
                         .build());
@@ -67,7 +67,7 @@ public class SwaggerConfig {
         String webEndPointBasePath = webEndpointProperties.getBasePath();
         Collection<ExposableWebEndpoint> endpointList = webEndpointsSupplier.getEndpoints();
 
-        // 解决集成Swagger不兼容SpringBoot2.7.x问题
+        // fix: integrate swagger which can not be compatible with SpringBoot2.7.x
         List<ExposableEndpoint<?>> allEndpointList = new ArrayList<>();
         allEndpointList.addAll(endpointList);
         allEndpointList.addAll(servletEndpointsSupplier.getEndpoints());

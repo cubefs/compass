@@ -19,7 +19,7 @@ package com.oppo.cloud.portal.common;
 public class CommonCode {
 
     /**
-     * 一键诊断暂存taskApp
+     * cache prefix of one-click diagnosis to entity `taskApp`
      */
     public static final String TASK_APP_TEMP = ":taskApp:temp";
 

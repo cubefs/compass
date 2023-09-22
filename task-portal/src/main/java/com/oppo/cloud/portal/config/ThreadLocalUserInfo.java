@@ -20,28 +20,28 @@ import com.oppo.cloud.portal.domain.task.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- *  同一个请求中保存用户信息到当前线程中
+ *  User info caches in ThreadLocal
  */
 public class ThreadLocalUserInfo {
 
     private static final ThreadLocal<UserInfo> USER_THREAD_LOCAL = new ThreadLocal<>();
 
     /**
-     * 清除用户信息
+     * clear userinfo
      */
     public static void clear() {
         USER_THREAD_LOCAL.remove();
     }
 
     /**
-     * 存储用户信息
+     * save userinfo
      */
     public static void set(UserInfo userInfo) {
         USER_THREAD_LOCAL.set(userInfo);
     }
 
     /**
-     * 获取当前用户信息
+     * get userinfo
      */
     public static UserInfo getCurrentUser() {
         return USER_THREAD_LOCAL.get();

@@ -65,7 +65,7 @@ public class GlobalExceptionConfig {
     @ResponseBody
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public CommonStatus parameterMissingExceptionHandler(MissingServletRequestParameterException e) {
-        return CommonStatus.failed("请求参数 " + e.getParameterName() + " 不能为空");
+        return CommonStatus.failed("parameter: " + e.getParameterName() + " can not be empty.");
     }
 
 }
