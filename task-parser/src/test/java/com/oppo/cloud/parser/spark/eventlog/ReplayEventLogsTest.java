@@ -18,6 +18,7 @@ package com.oppo.cloud.parser.spark.eventlog;
 
 import com.oppo.cloud.parser.utils.ReplaySparkEventLogs;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -34,10 +35,9 @@ class ReplayEventLogsTest {
         String[] lines = content.split("\n");
         ReplaySparkEventLogs replayEventLogs = new ReplaySparkEventLogs();
         replayEventLogs.replay(lines);
-        log.info("{}", replayEventLogs.getApplication());
-        log.info("{}", replayEventLogs.getJobs());
-        log.info("{}", replayEventLogs.getExecutors());
-        log.info("{}", replayEventLogs.getTasks());
-
+        Assertions.assertTrue(replayEventLogs.getApplication().getAppEndTimestamp() == 1657505955279L);
+        Assertions.assertTrue(replayEventLogs.getJobs().size() == 1);
+        Assertions.assertTrue(replayEventLogs.getExecutors().size() == 1);
+        Assertions.assertTrue(replayEventLogs.getTasks().size() == 4);
     }
 }
