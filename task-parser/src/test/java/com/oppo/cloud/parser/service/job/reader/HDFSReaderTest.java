@@ -20,6 +20,7 @@ import com.oppo.cloud.common.constant.ProtocolType;
 import com.oppo.cloud.common.domain.job.LogPath;
 import com.oppo.cloud.parser.service.reader.HDFSReader;
 import com.oppo.cloud.parser.utils.MiniHdfsCluster;
+import com.oppo.cloud.parser.utils.ResourcePreparer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -36,27 +37,9 @@ import java.util.List;
 
 @SpringBootTest
 @Slf4j
-class HDFSReaderTest extends MiniHdfsCluster {
-    private static String LOCAL_TEXT_LOG_DIR = "/log/text/";
-    private static String HDFS_TEXT_LOG_DIR = "/logs";
+class HDFSReaderTest extends ResourcePreparer {
+
     private static String PROTOCAL_TYPE = ProtocolType.HDFS.getName();
-
-    @BeforeAll
-    static void prepareResources() throws IOException {
-        final URL resourcesDir = HDFSReaderTest.class.getResource(LOCAL_TEXT_LOG_DIR);
-        final FileSystem fs = getFileSystem();
-        if (fs != null) {
-            fs.mkdirs(new Path(HDFS_TEXT_LOG_DIR));
-            fs.copyFromLocalFile(new Path(resourcesDir.getPath()), new Path(HDFS_TEXT_LOG_DIR));
-        } else {
-            log.error("Got filesystem is null, maybe miniDFSCluster is not ready.");
-            throw new IOException("Get FileSystem failed.");
-        }
-    }
-
-    private String getTextLogDir() {
-        return getNameNodeAddress() + HDFS_TEXT_LOG_DIR;
-    }
 
     @Test
     void listFiles() throws Exception {
