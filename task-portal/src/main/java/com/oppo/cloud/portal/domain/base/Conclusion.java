@@ -21,13 +21,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel("分析结论")
+@ApiModel("Conclusion of analysis")
 public class Conclusion {
 
-    @ApiModelProperty(value = "结论信息")
+    @ApiModelProperty(value = "conclusion")
     private String conclusion;
 
-    @ApiModelProperty(value = "结论说明")
+    @ApiModelProperty(value = "description")
     private String conclusionDesc;
 
     public Conclusion() {

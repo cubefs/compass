@@ -25,28 +25,28 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Data
-@ApiModel("查询白名单列表的请求参数")
+@ApiModel("Query blocklist request")
 public class BlocklistReq {
 
-    @ApiModelProperty(value = "模块")
+    @ApiModelProperty(value = "component: flink or spark")
     private String component;
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "task name")
     private String taskName;
 
-    @ApiModelProperty(value = "页码")
-    @Min(value = 1, message = "page 不能小于1")
-    @NotNull(message = "page 不能为空")
+    @ApiModelProperty(value = "page number")
+    @Min(value = 1, message = "page page is more than 0")
+    @NotNull(message = "page is not empty")
     private Integer page = 1;
 
-    @ApiModelProperty(value = "每页数据量")
-    @NotNull(message = "pageSize 不能为空")
-    @Max(value = 500, message = "pageSize 不能大于500")
+    @ApiModelProperty(value = "page size")
+    @NotNull(message = "pageSize is not empty")
+    @Max(value = 500, message = "pageSize less than 500")
     private Integer pageSize = 10;
 
 }

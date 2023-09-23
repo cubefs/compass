@@ -23,7 +23,8 @@ public class EventLogProgress {
 
     private Long logSize;
     /**
-     * 状态 0：processing 1：succeed 2：failed
+     * status 0：processing 1：succeed 2：failed
+     * (why integer value but string type?)
      */
     private String state;
     private String logPath;

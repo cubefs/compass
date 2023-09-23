@@ -25,7 +25,7 @@ import java.util.List;
 public interface FlinkTaskAppExtendMapper extends FlinkTaskAppMapper {
 
     /**
-     * 批量保存
+     * batch save
      * @param apps
      */
     void batchSave(@Param("apps") List<FlinkTaskApp> apps);

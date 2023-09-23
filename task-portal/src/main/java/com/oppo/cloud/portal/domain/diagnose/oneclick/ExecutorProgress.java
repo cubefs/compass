@@ -27,12 +27,12 @@ public class ExecutorProgress {
      */
     private Integer progress;
     /**
-     * 状态 0：诊断中 1：完成 2：失败
+     * status 0：processing 1：succeed 2：failed
      */
     private String state;
     private String logPath;
     /**
-     * 解析耗时
+     * processing duration
      */
     private Long time;
 }

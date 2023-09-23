@@ -17,9 +17,7 @@
 package com.oppo.cloud.portal.controller;
 
 import com.oppo.cloud.common.api.CommonStatus;
-import com.oppo.cloud.portal.domain.report.ReportGraph;
 import com.oppo.cloud.portal.domain.report.ReportRequest;
-import com.oppo.cloud.portal.domain.statistics.StatisticsData;
 import com.oppo.cloud.portal.service.ReportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -29,36 +27,34 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
-
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/report")
-@Api(value = "ReportController", description = "报告总览接口")
+@Api(value = "ReportController", description = "API for general report")
 public class ReportController {
 
     @Autowired
     private ReportService reportService;
 
     @GetMapping(value = "/statistics")
-    @ApiOperation(value = "获取任务的指标数据", httpMethod = "GET")
+    @ApiOperation(value = "get offline statistic of general report ", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "projectName", value = "项目名称", dataType = "String", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "projectName", value = "project name", dataType = "String", dataTypeClass = String.class),
     })
-    public CommonStatus<StatisticsData> getStatisticData(@RequestParam(value = "projectName", required = false) String projectName) throws Exception {
+    public CommonStatus<?> getStatisticData(@RequestParam(value = "projectName", required = false) String projectName) throws Exception {
         return CommonStatus.success(reportService.getStatisticsData(projectName));
     }
 
     @PostMapping(value = "/graph")
-    @ApiOperation("报告总览图表接口")
-    public CommonStatus<ReportGraph> getGraph(@RequestBody ReportRequest reportRequest) throws Exception {
+    @ApiOperation("report overview chart")
+    public CommonStatus<?> getGraph(@RequestBody ReportRequest reportRequest) throws Exception {
         return CommonStatus.success(reportService.getGraph(reportRequest));
     }
 
-    @ApiOperation("项目列表")
+    @ApiOperation("list of project")
     @RequestMapping(value = "/projects", method = RequestMethod.GET)
     @ResponseBody
-    public CommonStatus<Set<String>> getProjects() throws Exception {
+    public CommonStatus<?> getProjects() throws Exception {
         return CommonStatus.success(reportService.getProjects());
     }
 

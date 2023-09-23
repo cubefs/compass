@@ -23,9 +23,9 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@ApiOperation("删除白名单列表的请求参数")
+@ApiOperation("Delete blocklist request")
 public class BlocklistDelReq {
 
-    @ApiModelProperty(value = "黑名单Ids列表")
+    @ApiModelProperty(value = "block list ids")
     List<Integer> blocklistIds;
 }

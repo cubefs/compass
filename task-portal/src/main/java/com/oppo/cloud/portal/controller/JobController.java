@@ -19,12 +19,8 @@ package com.oppo.cloud.portal.controller;
 import com.oppo.cloud.common.api.CommonStatus;
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.common.constant.JobCategoryEnum;
-import com.oppo.cloud.common.domain.job.Datum;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.portal.domain.diagnose.Item;
-import com.oppo.cloud.portal.domain.diagnose.runtime.ChartData;
-import com.oppo.cloud.portal.domain.diagnose.runtime.TableData;
-import com.oppo.cloud.portal.domain.log.LogInfo;
 import com.oppo.cloud.portal.domain.task.*;
 import com.oppo.cloud.portal.service.JobService;
 import io.swagger.annotations.Api;
@@ -38,10 +34,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
- * 作业相关接口
+ * Api of jobs
  */
 @RestController
 @RequestMapping(value = "/api/v1/job")
@@ -53,7 +48,7 @@ public class JobController {
     private JobService jobService;
 
     /**
-     * 获取Job列表
+     * Get a list of jobs
      *
      * @param request
      * @return
@@ -61,12 +56,12 @@ public class JobController {
     @PostMapping(value = "/list")
     @ApiOperation(value = "Job list", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus<JobsResponse> searchJobs(@Validated @RequestBody JobsRequest request) throws Exception {
+    public CommonStatus<?> searchJobs(@Validated @RequestBody JobsRequest request) throws Exception {
         return CommonStatus.success(jobService.searchJobs(request));
     }
 
     /**
-     * 获取Job下面的app列表
+     * get app list of a job
      *
      * @return
      */
@@ -78,7 +73,7 @@ public class JobController {
             @ApiImplicitParam(name = "projectName", value = "projectName", dataType = "String", dataTypeClass = String.class),
             @ApiImplicitParam(name = "executionDate", value = "执行周期:2021-07-16 15:57:06", dataType = "String", dataTypeClass = String.class)
     })
-    public CommonStatus<JobAppsRespone> searchJobs(@RequestParam(value = "taskName") String taskName,
+    public CommonStatus<?> searchJobs(@RequestParam(value = "taskName") String taskName,
                                                    @RequestParam(value = "flowName") String flowName,
                                                    @RequestParam(value = "projectName") String projectName,
                                                    @RequestParam(value = "executionDate") String executionDate) throws Exception {
@@ -90,15 +85,15 @@ public class JobController {
     }
 
     @PostMapping(value = "/summary")
-    @ApiOperation(value = "诊断汇总")
-    public CommonStatus<List<String>> getTaskSummary(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
+    @ApiOperation(value = "diagnosis summary")
+    public CommonStatus<?> getTaskSummary(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
         List<String> res = jobService.searchJobDiagnose(jobDetailRequest);
         return CommonStatus.success(res);
     }
 
     @PostMapping(value = "/jobDiagnoseInfo")
-    @ApiOperation(value = "任务级别诊断信息")
-    public CommonStatus<List<Item>> getJobDiagnoseInfo(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
+    @ApiOperation(value = "job diagnosis information")
+    public CommonStatus<?> getJobDiagnoseInfo(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
         List<Item> res = new ArrayList<>();
         res.add(jobService.searchDurationTrend(jobDetailRequest));
         res.add(jobService.searchJobDatum(jobDetailRequest));
@@ -107,20 +102,20 @@ public class JobController {
     }
 
     @PostMapping(value = "/appDiagnoseInfo")
-    @ApiOperation(value = "app级别诊断信息")
-    public CommonStatus<List<Map<String, Item>>> getAppDiagnoseInfo(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
+    @ApiOperation(value = "application diagnosis information")
+    public CommonStatus<?> getAppDiagnoseInfo(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
         return CommonStatus.success(jobService.searchAppDiagnoseInfo(jobDetailRequest));
     }
 
     @PostMapping(value = "/graph")
     @ApiOperation(value = "job graph")
-    public CommonStatus<TrendGraph> getGraph(@Validated @RequestBody JobsRequest request) throws Exception {
+    public CommonStatus<?> getGraph(@Validated @RequestBody JobsRequest request) throws Exception {
         return CommonStatus.success(jobService.getGraph(request));
     }
 
     @GetMapping(value = "/categories")
     @ApiOperation(value = "app category type")
-    public CommonStatus<List<String>> getCategories() {
+    public CommonStatus<?> getCategories() {
         List<String> res = new ArrayList<>();
         res.addAll(JobCategoryEnum.getAllAppCategoryOfChina());
         res.addAll(AppCategoryEnum.getAllAppCategoryOfChina());
@@ -128,31 +123,31 @@ public class JobController {
     }
 
     @PostMapping(value = "/updateState")
-    @ApiOperation(value = "更新任务状态", httpMethod = "POST")
+    @ApiOperation(value = "update status of job", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus<String> updateTaskState(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
+    public CommonStatus<?> updateTaskState(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
         jobService.updateJobState(jobDetailRequest);
         return CommonStatus.success("ok");
     }
 
     @Deprecated
     @PostMapping(value = "/log")
-    @ApiOperation(value = "异常日志分析")
-    public CommonStatus<Item<TableData<LogInfo>>> getExceptionLogs(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
+    @ApiOperation(value = "exception analysis")
+    public CommonStatus<?> getExceptionLogs(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
         return CommonStatus.success(jobService.searchLogInfo(jobDetailRequest));
     }
 
     @Deprecated
     @PostMapping(value = "/durationTrend")
-    @ApiOperation(value = "运行耗时趋势图")
-    public CommonStatus<Item<ChartData>> getHistoryData(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
+    @ApiOperation(value = "time-consuming trend of runtime")
+    public CommonStatus<?> getHistoryData(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
         return CommonStatus.success(jobService.searchDurationTrend(jobDetailRequest));
     }
 
     @Deprecated
     @PostMapping(value = "/baseline")
-    @ApiOperation(value = "基线任务详情")
-    public CommonStatus<Item<Datum>> getBaseline(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
+    @ApiOperation(value = "baseline detail of a job")
+    public CommonStatus<?> getBaseline(@RequestBody JobDetailRequest jobDetailRequest) throws Exception {
         return CommonStatus.success(jobService.searchJobDatum(jobDetailRequest));
     }
 }

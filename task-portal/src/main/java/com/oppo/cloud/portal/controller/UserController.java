@@ -29,11 +29,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 用户管理
+ * user api
  */
 
 @Controller
-@Api(value = "UserController", description = "用户管理")
+@Api(value = "UserController", description = "user api")
 @RequestMapping("/user")
 public class UserController {
 
@@ -43,10 +43,10 @@ public class UserController {
     /**
      * 登录接口
      */
-    @ApiOperation("用户登录接口")
+    @ApiOperation("login")
     @PostMapping(value = "/login")
     @ResponseBody
-    public CommonStatus<UserInfo> login(HttpServletResponse httpServletResponse, @RequestBody LoginRequest loginRequest) throws Exception {
+    public CommonStatus<?> login(HttpServletResponse httpServletResponse, @RequestBody LoginRequest loginRequest) throws Exception {
         return CommonStatus.success(userService.userLogin(httpServletResponse, loginRequest.getUsername(),
                 loginRequest.getPassword()));
     }

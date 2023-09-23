@@ -25,28 +25,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ApiModel("一键诊断结果")
+@ApiModel("result of one-click diagnosis")
 public class DiagnoseResult {
 
-    @ApiModelProperty(value = "诊断状态(failed, success, processing)")
+    @ApiModelProperty(value = "diagnosing status(failed, success, processing)")
     private String status;
 
-    @ApiModelProperty(value = "过程信息")
+    @ApiModelProperty(value = "processing information")
     private List<ProcessInfo> processInfoList = new ArrayList<>();
 
-    @ApiModelProperty(value = "诊断结果")
+    @ApiModelProperty(value = "task information")
     private TaskAppInfo taskAppInfo;
 
-    @ApiModelProperty(value = "异常信息")
+    @ApiModelProperty(value = "exception")
     private String errorMsg;
 
     @Data
-    @ApiModel("过程信息")
+    @ApiModel("processing information")
     public static class ProcessInfo {
 
-        @ApiModelProperty(value = "信息")
+        @ApiModelProperty(value = "message")
         private String msg;
-        @ApiModelProperty(value = "进度")
+        @ApiModelProperty(value = "speed")
         private double speed;
         public ProcessInfo(String msg, double speed) {
             this.msg = msg;

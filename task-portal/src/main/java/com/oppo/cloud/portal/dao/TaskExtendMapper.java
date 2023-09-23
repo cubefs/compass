@@ -25,7 +25,7 @@ import java.util.List;
 public interface TaskExtendMapper extends TaskInstanceMapper {
 
     /**
-     * 任务模糊查询
+     * search tasks
      */
     List<Task> searchTasksLike(@Param("projectName") String projectName, @Param("flowName") String flowName,
                            @Param("taskName") String taskName);

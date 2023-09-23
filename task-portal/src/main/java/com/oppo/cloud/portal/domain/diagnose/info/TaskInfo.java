@@ -23,36 +23,33 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@ApiModel("任务运行信息")
+@ApiModel("information of task")
 public class TaskInfo {
 
-    @ApiModelProperty(value = "实例")
+    @ApiModelProperty(value = "task name")
     private String taskName;
 
-    @ApiModelProperty(value = "任务流")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @ApiModelProperty(value = "执行周期")
+    @ApiModelProperty(value = "execution time")
     private String executionTime;
 
-    @ApiModelProperty(value = "运行耗时")
+    @ApiModelProperty(value = "running duration of application")
     private String appTime;
 
     @ApiModelProperty(value = "applicationId")
     private String applicationId;
 
-    @ApiModelProperty(value = "异常类型")
+    @ApiModelProperty(value = "categories of exception")
     private List<String> categories;
 
-    @ApiModelProperty(value = "oflow链接")
-    private String oflowUrl;
-
-    @ApiModelProperty(value = "内存消耗")
+    @ApiModelProperty(value = "memory consuming")
     private String memorySeconds;
 
-    @ApiModelProperty(value = "CPU消耗")
+    @ApiModelProperty(value = "cpu consuming")
     private String vcoreSeconds;
 }

@@ -30,16 +30,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-@ApiModel("cpu浪费")
+@ApiModel("CpuWaste Information")
 public class CpuWasteInfo extends IsAbnormal {
 
-    @ApiModelProperty(value = "driver计算资源浪费")
+    @ApiModelProperty(value = "waste percent of driver")
     private double driverWastePercent;
 
-    @ApiModelProperty(value = "executor计算资源浪费")
+    @ApiModelProperty(value = "waste percent of executor")
     private double executorWastePercent;
 
-    @ApiModelProperty(value = "数据分类说明(不同数据展示不同颜色)")
+    @ApiModelProperty(value = "chart information")
     private Map<String, Chart.ChartInfo> dataCategory = new HashMap<>();
 
     private double driverThreshold;
@@ -47,7 +47,7 @@ public class CpuWasteInfo extends IsAbnormal {
     private double executorThreshold;
 
     /**
-     * 根据ES的元数据信息构建cpu浪费对象
+     * build the information from waste data
      * @param cpuWasteAbnormal
      */
 

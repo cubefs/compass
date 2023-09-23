@@ -23,20 +23,20 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 @Data
-@ApiModel("添加白名单请求参数")
+@ApiModel("Add Blocklist request")
 public class BlocklistAddReq {
 
-    @ApiModelProperty(value = "模块")
+    @ApiModelProperty(value = "component: spark or flink")
     private String component;
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @NotBlank(message = "flowName不能为空")
-    @ApiModelProperty(value = "工作流名称")
+    @NotBlank(message = "flowName is not empty")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "任务名称")
-    @NotBlank(message = "taskName不能为空")
+    @ApiModelProperty(value = "task name")
+    @NotBlank(message = "taskName is not empty")
     private String taskName;
 
 }

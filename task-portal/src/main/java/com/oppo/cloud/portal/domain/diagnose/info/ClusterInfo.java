@@ -21,16 +21,16 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel("集群信息")
+@ApiModel("Yarn cluster information")
 public class ClusterInfo {
 
-    @ApiModelProperty(value = "集群名称")
+    @ApiModelProperty(value = "cluster name")
     private String clusterName;
 
-    @ApiModelProperty(value = "执行队列")
+    @ApiModelProperty(value = "queue")
     private String executeQueue;
 
-    @ApiModelProperty(value = "执行用户")
+    @ApiModelProperty(value = "user")
     private String executeUser;
 
     @ApiModelProperty(value = "SparkUi")

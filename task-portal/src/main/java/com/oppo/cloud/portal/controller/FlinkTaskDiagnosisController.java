@@ -45,7 +45,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping(value = "/api/flink")
-@Api(value = "FlinkTaskDiagnosisController", description = "实时任务诊断查询接口")
+@Api(value = "FlinkTaskDiagnosisController", description = "Api for flink diagnosis")
 @Slf4j
 public class FlinkTaskDiagnosisController {
 
@@ -62,8 +62,8 @@ public class FlinkTaskDiagnosisController {
     BlocklistMapper blocklistMapper;
 
     @GetMapping(value = "/diagnosisRules")
-    @ApiOperation(value = "获取诊断规则信息")
-    public CommonStatus<List<DiagnosisRuleResp>> getDiagnosisRules() {
+    @ApiOperation(value = "get the rules of diagnosis")
+    public CommonStatus<?> getDiagnosisRules() {
         FlinkRule[] flinkRules = FlinkRule.values();
         List<DiagnosisRuleResp> list = new ArrayList<>();
         for (FlinkRule ediagnosisRule : flinkRules) {
@@ -77,8 +77,8 @@ public class FlinkTaskDiagnosisController {
     }
 
     @GetMapping(value = "/diagnosisFrom")
-    @ApiOperation(value = "获取诊断来源信息")
-    public CommonStatus<List<DiagnosisFromResp>> getDiagnosisFromTypes() {
+    @ApiOperation(value = "get the source of diagnosis")
+    public CommonStatus<?> getDiagnosisFromTypes() {
         DiagnosisFrom[] eDiagnosisRules = DiagnosisFrom.values();
         List<DiagnosisFromResp> list = new ArrayList<>();
         for (DiagnosisFrom diagnosisFrom : eDiagnosisRules) {
@@ -93,8 +93,8 @@ public class FlinkTaskDiagnosisController {
 
 
     @GetMapping(value = "/resourceDiagnosisRules")
-    @ApiOperation(value = "获取资源诊断规则信息")
-    public CommonStatus<List<DiagnosisRuleResp>> getResourceDiagnosisRules() {
+    @ApiOperation(value = "get the rule information")
+    public CommonStatus<?> getResourceDiagnosisRules() {
         FlinkRule[] flinkRules = FlinkRule.values();
         List<DiagnosisRuleResp> list = new ArrayList<>();
         for (FlinkRule ediagnosisRule : flinkRules) {
@@ -110,7 +110,7 @@ public class FlinkTaskDiagnosisController {
     }
 
     @GetMapping(value = "/runtimeExceptionDiagnosisTypes")
-    @ApiOperation(value = "获取运行异常诊断信息")
+    @ApiOperation(value = "get runtime exception")
     public CommonStatus<List<DiagnosisRuleResp>> getRuntimeExceptionDiagnosisRules() {
         FlinkRule[] flinkRules = FlinkRule.values();
         List<DiagnosisRuleResp> list = new ArrayList<>();
@@ -127,7 +127,7 @@ public class FlinkTaskDiagnosisController {
     }
 
     @GetMapping(value = "/resourceDiagnosisTypes")
-    @ApiOperation(value = "获取诊断类别信息")
+    @ApiOperation(value = "get rule type of diagnosis resource")
     public CommonStatus<List<DiagnosisResourceTypeResp>> getResourceRuleTypes() {
         DiagnosisResourceType[] diagnosisResourceTypes = DiagnosisResourceType.values();
         List<DiagnosisResourceTypeResp> list = new ArrayList<>();
@@ -141,13 +141,12 @@ public class FlinkTaskDiagnosisController {
     }
 
     /**
-     * 获取Job列表
+     * Get a list of jobs
      *
-     * @param request
      * @return
      */
     @PostMapping(value = "/page")
-    @ApiOperation(value = "诊断作业列表", httpMethod = "POST")
+    @ApiOperation(value = "list of diagnosis jobs", httpMethod = "POST")
     @ResponseBody
     public CommonStatus<?> pageJobs(@Validated @RequestBody DiagnosisAdviceListReq request) throws Exception {
         List<String> includeCategories = request.getIncludeCategories();
@@ -166,15 +165,15 @@ public class FlinkTaskDiagnosisController {
     }
 
     /**
-     * 获取元数据Job列表
+     * get metadata list
      *
      * @param request
      * @return
      */
     @PostMapping(value = "/pageMetadata")
-    @ApiOperation(value = "元数据列表", httpMethod = "POST")
+    @ApiOperation(value = "page metadata", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus<CommonPage<FlinkTaskApp>> pageMetadata(@Validated @RequestBody DiagnosisAdviceListReq request) {
+    public CommonStatus<?> pageMetadata(@Validated @RequestBody DiagnosisAdviceListReq request) {
         try {
             FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
             FlinkTaskAppExample.Criteria criteria = flinkTaskAppExample.createCriteria();
@@ -205,12 +204,12 @@ public class FlinkTaskDiagnosisController {
     }
 
     @PostMapping(value = "/deleteMetadata")
-    @ApiOperation(value = "删除元数据", httpMethod = "POST")
+    @ApiOperation(value = "del metadata", httpMethod = "POST")
     @ResponseBody
-    public CommonStatus<FlinkTaskApp> deleteMetadata(@Validated @RequestBody FlinkTaskApp flinkTaskApp) {
+    public CommonStatus<?> deleteMetadata(@Validated @RequestBody FlinkTaskApp flinkTaskApp) {
         try {
             if (flinkTaskApp.getId() == null) {
-                return CommonStatus.failed("id为空");
+                return CommonStatus.failed("id is empty");
             }
             flinkTaskAppMapper.deleteByPrimaryKey(flinkTaskApp.getId());
             return CommonStatus.success(flinkTaskApp);
@@ -220,8 +219,8 @@ public class FlinkTaskDiagnosisController {
     }
 
     @GetMapping("/orderMap")
-    @ApiOperation(value = "排序列")
-    public CommonStatus<Map<String, String>> getOrderMap() {
+    @ApiOperation(value = "order map")
+    public CommonStatus<?> getOrderMap() {
         Map<String, String> orderMap = new HashMap<>();
         orderMap.put("tm_num * tm_mem - diagnosis_tm_num * diagnosis_tm_mem_size", "任务可优化总内存数");
         orderMap.put("tm_num * tm_container_vcore_num - diagnosis_tm_num * diagnosis_tm_core_num", "任务可优化总核数");
@@ -240,8 +239,8 @@ public class FlinkTaskDiagnosisController {
     }
 
     @GetMapping("/orderType")
-    @ApiOperation(value = "排序方式")
-    public CommonStatus<Map<String, String>> getOrderType() {
+    @ApiOperation(value = "sort type")
+    public CommonStatus<?> getOrderType() {
         Map<String, String> orderMap = new HashMap<>();
         orderMap.put("desc", "倒序");
         orderMap.put("asc", "正序");
@@ -249,8 +248,8 @@ public class FlinkTaskDiagnosisController {
     }
 
     @GetMapping("/tableColumn")
-    @ApiOperation(value = "获取table展示的可选列")
-    public CommonStatus<Map<String, String>> getTableColumns() {
+    @ApiOperation(value = "get optional column of a table")
+    public CommonStatus<?> getTableColumns() {
         Map<String, String> orderMap = new HashMap<>();
         orderMap.put("parallel", "并行度");
         orderMap.put("tmSlot", "TM的slot数量");
@@ -272,7 +271,7 @@ public class FlinkTaskDiagnosisController {
     }
 
     @PostMapping("/getReport")
-    @ApiOperation(value = "获取诊断报告")
+    @ApiOperation(value = "get the report of diagnosis")
     public CommonStatus<?> getReport(@Validated @RequestBody ReportDetailReq request) throws Exception {
         return CommonStatus.success(flinkTaskDiagnosisService.getReport(request));
     }
@@ -291,7 +290,7 @@ public class FlinkTaskDiagnosisController {
      * @return
      */
     @PostMapping("/getGeneralViewTrend")
-    @ApiOperation(value = "获取概览趋势指标")
+    @ApiOperation(value = "get trend statistic")
     public CommonStatus<?> getGeneralViewTrend(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception {
         DiagnosisGeneralViewTrendResp generalViewTrend = flinkTaskDiagnosisService.getGeneralViewTrend(request);
         if (generalViewTrend != null) {
@@ -302,61 +301,53 @@ public class FlinkTaskDiagnosisController {
     }
 
     @PostMapping("/getGeneralViewDistribute")
-    @ApiOperation(value = "获取概览分布指标")
+    @ApiOperation(value = "get general view distribution")
     public CommonStatus<?> getGeneralViewDistribute(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception {
         DiagnosisGeneralVIewDistributeResp generalViewDistribute = flinkTaskDiagnosisService.getGeneralViewDistribute(request);
         return CommonStatus.success(generalViewDistribute);
     }
 
     @PostMapping("/diagnosis")
-    @ApiOperation(value = "即时诊断")
-    public CommonStatus<?> diagnosis(@RequestBody OneClickDiagnosisRequest req) {
-        try {
-            req.setAppId(req.getAppId().trim().replace("\t", ""));
-            FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
-            flinkTaskAppExample.createCriteria()
-                    .andApplicationIdEqualTo(req.getAppId());
-            Optional<FlinkTaskApp> task = flinkTaskAppMapper.selectByExample(flinkTaskAppExample)
-                    .stream()
-                    .max(Comparator.comparing(FlinkTaskApp::getStartTime));
-            if (task.isPresent()) {
-                // 黑名单检查
-                BlocklistExample blocklistExample = new BlocklistExample();
-                BlocklistExample.Criteria criteria = blocklistExample.createCriteria()
-                        .andTaskNameEqualTo(task.get().getTaskName())
-                        .andFlowNameEqualTo(task.get().getFlowName())
-                        .andProjectNameEqualTo(task.get().getProjectName())
-                        .andComponentEqualTo(ComponentEnum.Realtime.getDes())
-                        .andDeletedEqualTo(0);
-                List<Blocklist> blockLists = blocklistMapper.selectByExample(blocklistExample);
-                log.debug(blocklistExample.getOredCriteria().toString());
-                if (blockLists != null && blockLists.size() > 0) {
-                    log.debug("白名单拦截:{}", task.get());
-                    return CommonStatus.failed("该任务在白名单中");
-                } else {
-                    log.debug("白名单通过:{}", task.get());
-                }
-                Long endTime = req.getEnd();
-                Long startTime = req.getStart();
-                if (req.getStart() == null || req.getEnd() == null) {
-                    endTime = LocalDateTime.now(ZoneOffset.ofHours(8)).toEpochSecond(ZoneOffset.ofHours(8));
-                    startTime = LocalDateTime.now(ZoneOffset.ofHours(8)).minusDays(1).toEpochSecond(ZoneOffset.ofHours(8));
-                }
-                FlinkTaskAnalysis flinkTaskAnalysis = diagnosisService.diagnosisApp(task.get(),
-                        startTime, endTime, DiagnosisFrom.Manual);
-                if (flinkTaskAnalysis == null) {
-                    return CommonStatus.failed("诊断失败");
-                }
-                OneClickDiagnosisResponse res = new OneClickDiagnosisResponse();
-                res.setFlinkTaskAnalysis(flinkTaskAnalysis);
-                res.setStatus("succeed");
-                return CommonStatus.success(res);
-            } else {
-                return CommonStatus.failed(String.format("没有找到该任务:%s", req.getAppId()));
+    @ApiOperation(value = "in-time diagnosis")
+    public CommonStatus<?> diagnosis(@RequestBody OneClickDiagnosisRequest req) throws Exception {
+        req.setAppId(req.getAppId().trim().replace("\t", ""));
+        FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
+        flinkTaskAppExample.createCriteria()
+                .andApplicationIdEqualTo(req.getAppId());
+        Optional<FlinkTaskApp> task = flinkTaskAppMapper.selectByExample(flinkTaskAppExample)
+                .stream()
+                .max(Comparator.comparing(FlinkTaskApp::getStartTime));
+        if (task.isPresent()) {
+            // block list check
+            BlocklistExample blocklistExample = new BlocklistExample();
+            BlocklistExample.Criteria criteria = blocklistExample.createCriteria()
+                    .andTaskNameEqualTo(task.get().getTaskName())
+                    .andFlowNameEqualTo(task.get().getFlowName())
+                    .andProjectNameEqualTo(task.get().getProjectName())
+                    .andComponentEqualTo(ComponentEnum.Realtime.getDes())
+                    .andDeletedEqualTo(0);
+            List<Blocklist> blockLists = blocklistMapper.selectByExample(blocklistExample);
+            log.debug(blocklistExample.getOredCriteria().toString());
+            if (blockLists != null && blockLists.size() > 0) {
+                return CommonStatus.failed("The task is in the blocklist");
             }
-        } catch (Throwable t) {
-            log.error(t.getMessage(), t);
-            return CommonStatus.failed(t.getMessage());
+            Long endTime = req.getEnd();
+            Long startTime = req.getStart();
+            if (req.getStart() == null || req.getEnd() == null) {
+                endTime = LocalDateTime.now(ZoneOffset.ofHours(8)).toEpochSecond(ZoneOffset.ofHours(8));
+                startTime = LocalDateTime.now(ZoneOffset.ofHours(8)).minusDays(1).toEpochSecond(ZoneOffset.ofHours(8));
+            }
+            FlinkTaskAnalysis flinkTaskAnalysis = diagnosisService.diagnosisApp(task.get(),
+                    startTime, endTime, DiagnosisFrom.Manual);
+            if (flinkTaskAnalysis == null) {
+                return CommonStatus.failed("failed to diagnosis");
+            }
+            OneClickDiagnosisResponse res = new OneClickDiagnosisResponse();
+            res.setFlinkTaskAnalysis(flinkTaskAnalysis);
+            res.setStatus("succeed");
+            return CommonStatus.success(res);
+        } else {
+            return CommonStatus.failed(String.format("task not found: %s", req.getAppId()));
         }
     }
 }

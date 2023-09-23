@@ -23,14 +23,14 @@ import java.util.Date;
 public interface TaskInstanceExtendMapper extends TaskInstanceMapper {
 
     /**
-     * 查询运行的Job数量
+     * get the number of running job
      * @param startTime
      * @return
      */
     Integer searchJobCount(Date startTime, Date endTime);
 
     /**
-     * 查询运行的Job实例数量
+     * get the number of running job instances
      * @param startTime
      * @return
      */

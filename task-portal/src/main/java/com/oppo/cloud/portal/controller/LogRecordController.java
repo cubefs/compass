@@ -37,15 +37,10 @@ public class LogRecordController {
     private LogRecordService logRecordService;
 
     @PostMapping("/openapi/offline/app/metadata")
-    @ApiOperation(value = "离线任务上报app诊断元数据")
+    @ApiOperation(value = "report spark, may include scheduler information")
     @ResponseBody
-    public CommonStatus reportLogRecord(@RequestBody @Valid AppDiagnosisMetadata appInfo) throws Exception {
-        try {
-            logRecordService.reportLogRecord(appInfo);
-        } catch (Exception e) {
-            log.error("Exception:", e);
-            return CommonStatus.failed(e.getMessage());
-        }
+    public CommonStatus<?> reportLogRecord(@RequestBody @Valid AppDiagnosisMetadata appInfo) throws Exception {
+        logRecordService.reportLogRecord(appInfo);
         return CommonStatus.success("ok");
     }
 

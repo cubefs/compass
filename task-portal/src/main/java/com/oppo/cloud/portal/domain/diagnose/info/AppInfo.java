@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel("App运行参数")
+@ApiModel("Parameters of Spark application")
 public class AppInfo {
 
     @ApiModelProperty(value = "spark.driver.memoryOverhead")
