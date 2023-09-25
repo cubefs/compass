@@ -95,6 +95,8 @@ public class MapReduceJobHistoryParser extends OneClickSubject implements IParse
             log.error("Exception:", e);
             updateParserProgress(ProgressState.FAILED, 0, 0);
             return null;
+        }  finally {
+            readerObjects.forEach(ReaderObject::close);
         }
         return detect(mrAppInfo);
     }

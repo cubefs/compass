@@ -122,6 +122,8 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
             result = parseAction(logType, readerObject);
         } catch (Exception e) {
             log.error("Exception:", e);
+        } finally {
+            readerObject.close();
         }
         if (result != null && result.getActionMap() != null) {
             List<String> categories = OpenSearchWriter.getInstance()
@@ -195,9 +197,6 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
                 }
             }
 
-        }
-        if (readerObject.getFs() != null) {
-            readerObject.getFs().close();
         }
 
         SparkExecutorLogParserResult result = new SparkExecutorLogParserResult();
