@@ -86,9 +86,6 @@ public class ReplaySparkEventLogs {
             }
             parseLine(line);
         }
-        if (readerObject.getFs() != null) {
-            readerObject.getFs().close();
-        }
         this.correlate();
     }
 
