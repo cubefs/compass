@@ -40,7 +40,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * 异常任务App接口类
+ * Exception task App interface class.
  */
 @Service
 @Slf4j
@@ -62,17 +62,17 @@ public class TaskAppServiceImpl implements TaskAppService {
     private String schedulerType;
 
     /**
-     * 获取异常任务的App列表信息
+     * Get the list information of exception task Apps.
      */
     @Override
     public AbnormalTaskAppInfo getAbnormalTaskAppsInfo(JobAnalysis jobAnalysis, String handledApps) {
         AbnormalTaskAppInfo abnormalTaskAppInfo = new AbnormalTaskAppInfo();
         List<TaskApp> taskAppList = new ArrayList<>();
-        // 收集每个appId的异常信息
+        // Collect exception information for each appId.
         StringBuilder exceptionInfo = new StringBuilder();
-        // 本次新处理的taskApps
+        // Newly processed taskApps in this round.
         StringBuilder handledAppsNew = new StringBuilder();
-        // 判断任务每次重试的appId是否已经找到
+        // Determine whether the appId of each retry of the task has been found.
         Map<Integer, Boolean> needed = new HashMap<>();
         for (int i = 0; i <= jobAnalysis.getRetryTimes(); i++) {
             needed.put(i, false);
@@ -85,20 +85,20 @@ public class TaskAppServiceImpl implements TaskAppService {
             taskApplication.setRetryTimes(TryNumberUtil.updateTryNumber(taskApplication.getRetryTimes(), schedulerType));
             try {
                 if (handledApps != null && handledApps.contains(taskApplication.getApplicationId())) {
-                    // 该appId已经被处理
+                    // This appId has already been processed.
                     needed.put(taskApplication.getRetryTimes(), true);
                     continue;
                 }
                 if (needed.containsKey(taskApplication.getRetryTimes())) {
                     needed.put(taskApplication.getRetryTimes(), true);
                 } else {
-                    // 兼容手动执行的任务，所有的重试当成不同周期的第一次重试
+                    // Compatible with manually executed tasks, all retries are treated as the first retry of a different cycle.
                     taskApplication.setRetryTimes(0);
                     needed.put(0, true);
                 }
-                // 根据appId构造TaskApp(包括相关的日志路径)
+                // Construct a TaskApp (including related log paths) based on the appId.
                 TaskApp taskApp = this.buildAbnormalTaskApp(taskApplication);
-                // 将元数据信息更新到taskApp中
+                // Update the metadata information to the taskApp.
                 taskApp.setTaskId(jobAnalysis.getTaskId());
                 taskApp.setFlowId(jobAnalysis.getFlowId());
                 taskApp.setProjectId(jobAnalysis.getProjectId());
@@ -110,13 +110,13 @@ public class TaskAppServiceImpl implements TaskAppService {
             }
         }
         List<String> notFound = new ArrayList<>();
-        // 标志已经查询到的appId的重试次数
+        // Mark the number of retries for the appId that has been queried.
         for (Integer taskTryNum : needed.keySet()) {
             if (!needed.get(taskTryNum)) {
                 notFound.add(String.valueOf(taskTryNum));
             }
         }
-        // 判断是否查到所有重试次数下的appId
+        // Determine whether all appIds under all retry counts have been found.
         if (notFound.size() > 0) {
             exceptionInfo.append(String.format("can not find appId by tryNum: %s", String.join(",", notFound)));
         }
@@ -127,7 +127,7 @@ public class TaskAppServiceImpl implements TaskAppService {
     }
 
     /**
-     * 获取异常任务下的appId,包括有或没有的
+     * Get the appId under the exception task, including those with or without.
      */
 
     @Override
@@ -135,12 +135,12 @@ public class TaskAppServiceImpl implements TaskAppService {
         Map<Integer, List<TaskApp>> res = new HashMap<>();
         List<TaskApplication> taskApplicationList = getTaskApplications(jobAnalysis.getProjectName(),
                 jobAnalysis.getFlowName(), jobAnalysis.getTaskName(), jobAnalysis.getExecutionDate());
-        // 根据重试次数构建出所有的重试记录
+        // Construct all retry records based on the number of retries.
         for (int i = 0; i <= jobAnalysis.getRetryTimes(); i++) {
             List<TaskApp> temp = new ArrayList<>();
             res.put(i, temp);
         }
-        // 查询出来所有的appIds
+        // Query all appIds.
         for (TaskApplication taskApplication : taskApplicationList) {
             TaskApp taskApp = this.tryBuildAbnormalTaskApp(taskApplication);
             List<TaskApp> temp;
@@ -149,14 +149,14 @@ public class TaskAppServiceImpl implements TaskAppService {
                 temp.add(taskApp);
                 res.put(taskApplication.getRetryTimes(), temp);
             } else {
-                // 不包含则将这个appId放在第一次重试中
+                // If not included, place this appId in the first retry.
                 temp = new ArrayList<>();
                 taskApp.setRetryTimes(0);
                 temp.add(taskApp);
                 res.put(0, temp);
             }
         }
-        // 没有appId的构造为空的
+        // Construct an empty one if there is no appId.
         for (Integer tryTime : res.keySet()) {
             List<TaskApp> temp = res.get(tryTime);
             if (temp.size() == 0) {
@@ -195,7 +195,7 @@ public class TaskAppServiceImpl implements TaskAppService {
     }
 
     /**
-     * 根据基础的appId信息构建出AbnormalTaskApp,有异常则直接退出抛出异常
+     * Construct an AbnormalTaskApp based on the basic appId information. If there is an exception, exit directly and throw an exception.
      */
     public TaskApp buildAbnormalTaskApp(TaskApplication taskApplication) throws Exception {
         TaskApp taskApp = new TaskApp();

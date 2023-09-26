@@ -36,7 +36,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.*;
 
 /**
- * 任务诊断父类
+ * Job Detection Service
  */
 @Slf4j
 public abstract class DetectServiceImpl implements DetectService {
@@ -75,79 +75,79 @@ public abstract class DetectServiceImpl implements DetectService {
     private JobInstanceService jobInstanceService;
 
     /**
-     * 解析消息发送redis队列
+     * Parsing message transmission through a Redis queue.
      */
     @Value("${custom.redis.logRecord}")
     private String logRecordQueue;
 
     /**
-     * 任务诊断
+     * Task diagnosis
      */
     @Override
     public abstract void detect(JobAnalysis detectJobAnalysis) throws Exception;
 
     /**
-     * 正常作业任务处理
+     * Normal task processing.
      */
     @Override
     public void handleNormalJob(JobAnalysis detectJobAnalysis) throws Exception {
-        // 补充用户信息
+        // Update user information.
         updateUserInfo(detectJobAnalysis);
-        // 查询该任务下的appIds
+        // Query the appIds under this task.
         AbnormalTaskAppInfo abnormalTaskAppInfo = taskAppService.getAbnormalTaskAppsInfo(detectJobAnalysis, null);
         if (!"".equals(abnormalTaskAppInfo.getExceptionInfo())) {
-            // 完全构造完成再发送
+            // Send after constructed it.
             delayTaskService.pushDelayedQueue(detectJobAnalysis, abnormalTaskAppInfo.getHandleApps(),
                     abnormalTaskAppInfo.getExceptionInfo());
             return;
         }
-        // 引擎维度诊断必须要有appId
+        // An appId is required for engine-level diagnostic.
         if (abnormalTaskAppInfo.getTaskAppList().size() != 0) {
-            // 生成解析日志消息体logRecord
+            // Generate parsing log message body logRecord.
             abnormalJobService.updateResource(detectJobAnalysis, abnormalTaskAppInfo.getTaskAppList());
             LogRecord logRecord = this.genLogRecord(abnormalTaskAppInfo, detectJobAnalysis);
             this.sendLogRecordMsg(logRecord);
         }
-        // 保存jobInstance信息
+        // Save jobInstance information.
         jobInstanceService.insertOrUpdate(detectJobAnalysis);
     }
 
     /**
-     * 异常作业任务处理
+     * Exceptional task processing
      */
     @Override
     public void handleAbnormalJob(JobAnalysis detectJobAnalysis) throws Exception {
-        // 补充用户信息
+        // Update user information.
         updateUserInfo(detectJobAnalysis);
         sendAbnormalJobApp(detectJobAnalysis);
-        // 保存异常任务
+        // Save abnormal tasks.
         this.addOrUpdate(detectJobAnalysis);
     }
 
 
     public void sendAbnormalJobApp(JobAnalysis detectJobAnalysis) throws Exception {
-        // 查询该任务下的appIds
+        // Query the appIds under this task.
         AbnormalTaskAppInfo abnormalTaskAppInfo = taskAppService.getAbnormalTaskAppsInfo(detectJobAnalysis, null);
         if (abnormalTaskAppInfo.getTaskAppList().size() != 0) {
             taskAppService.insertTaskApps(abnormalTaskAppInfo.getTaskAppList());
-            // 更新vcoreSeconds 和 memorySeconds
+            // Update vcoreSeconds and memorySeconds
             abnormalJobService.updateResource(detectJobAnalysis, abnormalTaskAppInfo.getTaskAppList());
         }
-        // 生成解析日志消息体logRecord
+        // Generate parsing log message body logRecord.
         LogRecord logRecord = this.genLogRecord(abnormalTaskAppInfo, detectJobAnalysis);
 
-        // 有异常[某次重试的信息缺失、appId的日志路径没有获取到等]则暂存该任务,等待重试
+        // Push to the delay queue and retry if there is exception existing.
         if (!"".equals(abnormalTaskAppInfo.getExceptionInfo())) {
             delayTaskService.pushDelayedQueue(detectJobAnalysis, abnormalTaskAppInfo.getHandleApps(),
                     abnormalTaskAppInfo.getExceptionInfo());
         }
-        // 没有可发送的信息
+        // There is no message to send.
         if (logRecord.getApps().size() == 0) {
             return;
         }
-        // 发送解析消息
+        // Send a parsing message.
         this.sendLogRecordMsg(logRecord);
-        // 保存jobInstance信息
+        // Save jobInstance information.
         jobInstanceService.insertOrUpdate(detectJobAnalysis);
     }
 

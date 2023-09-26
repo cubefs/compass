@@ -22,7 +22,7 @@ import java.util.List;
 public interface TaskDependencyService {
 
     /**
-     * 获取任务的直接上游列表
+     * Get the direct upstream list of the task.
      */
     List<Integer> getDirectUpStreamTask(Integer taskId);
 }

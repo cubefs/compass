@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * 白名单
+ * Block list
  */
 @Slf4j
 @Service
@@ -38,7 +38,7 @@ public class BlocklistServiceImpl implements BlocklistService {
     private BlocklistMapper blocklistMapper;
 
     /**
-     * 判断待检测任务是否在白名单中
+     * Check if the task to be detected is in the block list.
      */
     @Override
     public Boolean isBlocklistTask(String projectName, String flowName, String taskName) {

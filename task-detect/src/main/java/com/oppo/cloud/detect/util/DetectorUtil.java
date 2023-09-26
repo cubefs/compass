@@ -25,14 +25,15 @@ import java.util.Arrays;
 import java.util.Date;
 
 /**
- * 诊断工具类
+ * Diagnostic tool.
  */
 @Slf4j
 public class DetectorUtil {
 
     /**
-     * 箱型图算法：根据一组历史数据的下四分位值、中位数据和上四分位值来判断某个数是否为异常数据
-     * 计算箱型图的中值、温和异常值范围和极端异常值范围
+     * Box plot algorithm: Judging whether a number is an anomalous data based on the lower quartile, median,
+     * and upper quartile of a set of historical data, and calculating the median, mildly anomalous value range,
+     * and extremely anomalous value range of the box plot.
      */
     public static double[] boxplotValue(Double[] simpleData) throws Exception {
         double[] res = new double[5];
@@ -44,7 +45,7 @@ public class DetectorUtil {
             q2 = medianValue[1];
             iQR = q3 - q1;
         } catch (Exception e) {
-            throw new Exception(String.format("计算中位值失败：%s, 样本：%s", Arrays.toString(e.getStackTrace()),
+            throw new Exception(String.format("Failed to calculate the median value：%s, Sample：%s", Arrays.toString(e.getStackTrace()),
                     Arrays.toString(simpleData)));
         }
         res[0] = q1 - 3 * iQR;
@@ -58,7 +59,7 @@ public class DetectorUtil {
     }
 
     /**
-     * 获取一组数据的下四分位值、中值和上四分位值
+     * Get the lower quartile, median, and upper quartile of a set of data.
      */
     public static double[] sampleMedian(Double[] data) {
         double[] res = new double[3];
@@ -84,7 +85,7 @@ public class DetectorUtil {
     }
 
     /**
-     * 将时间戳动态转换为秒、分钟、小时的字符串
+     * Dynamically convert the timestamp to a string of seconds, minutes, and hours.
      */
 
     public static String transferSecond(double timestamp) {
@@ -101,7 +102,7 @@ public class DetectorUtil {
     }
 
     /**
-     * 将时间戳根据给定的时间格式转换为时间字符串
+     * Convert the timestamp to a time string according to the given time format.
      */
 
     public static String timeStampToStr(long timeUnix, String format) {

@@ -23,30 +23,30 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 任务运行实例接口
+ * Task execution instance interface.
  */
 public interface TaskInstanceService {
 
     /**
-     * 查询近期任务执行情况数据
+     * Query the data of recent task execution.
      */
     List<TaskStateHistory> searchTaskStateHistory(String projectName, String flowName, String taskName,
                                                   Date executionTime, Date endExecutionTime, Integer sampleNum);
 
     /**
-     * 查询任务近期执行耗时数据
+     * Query the recent execution duration data of tasks.
      */
     List<Double> searchTaskDurationHistory(String projectName, String flowName, String taskName,
                                            Date executionTime, Date endExecutionTime, Integer sampleNum);
 
     /**
-     * 查询任务近期执行结束时间相对运行周期的差值数据
+     * Query the data of the difference between the end time of task execution and the running cycle in recent times.
      */
     List<Double> searchTaskRelativeEndTime(String projectName, String flowName, String taskName,
                                            Date executionTime, Date endExecutionTime, Integer sampleNum);
 
     /**
-     * 查询某个具体执行周期的聚合后的任务
+     * Query aggregated tasks for a specific execution cycle.
      */
     TaskInstance searchTaskSum(String projectName, String flowName, String taskName,
                                Date executionTime);

@@ -17,12 +17,12 @@
 package com.oppo.cloud.detect.service;
 
 /**
- * 白名单服务
+ * Block list service.
  */
 public interface BlocklistService {
 
     /**
-     * 判断待检测任务是否在白名单中
+     * Check if the task to be detected is in the block list.
      */
     Boolean isBlocklistTask(String projectName, String flowName, String taskName);
 

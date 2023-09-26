@@ -27,7 +27,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 /**
- * 运行耗时异常检测器
+ * Run the runtime duration anomaly detector.
  */
 @Order(1)
 @Service
@@ -39,7 +39,7 @@ public class DurationAbnormal extends DetectServiceImpl {
 
     @Override
     public void detect(JobAnalysis jobAnalysis) throws Exception {
-        // 失败任务不进行运行时长检测
+        // Failed tasks are not subject to runtime duration detection.
         if (jobAnalysis.getTaskState().equals(TaskStateEnum.fail.name())) {
             return;
         }
@@ -47,7 +47,7 @@ public class DurationAbnormal extends DetectServiceImpl {
         if (durationBeginAndEnd == null) {
             return;
         }
-        // 极端异常值
+        // Extremely abnormal values.
         double normalDurationBegin = durationBeginAndEnd[0];
         double normalDurationEnd = durationBeginAndEnd[4];
         double tailAvg = jobAnalysis.getDuration();

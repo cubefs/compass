@@ -24,7 +24,7 @@ import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 public interface JobInstanceService {
 
     /**
-     * 更新或插入jobInstance
+     * Add or update jobInstance
      * @param jobAnalysis
      */
     void insertOrUpdate(JobAnalysis jobAnalysis) throws Exception;

@@ -23,7 +23,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 /**
- * 任务首次失败检测器
+ * Task first failure detector.
  */
 @Order(4)
 @Service
@@ -31,7 +31,7 @@ public class FirstFailed extends DetectServiceImpl {
 
     @Override
     public void detect(JobAnalysis jobAnalysis) throws Exception {
-        // 失败任务不进行运行时长检测
+        // Failed tasks are not subject to runtime duration detection.
         if (jobAnalysis.getTaskState().equals(TaskStateEnum.fail.name())) {
             return;
         }

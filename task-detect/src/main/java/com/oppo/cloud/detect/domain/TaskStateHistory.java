@@ -21,21 +21,21 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * 任务执行历史状态结构
+ * Task execution history status information
  */
 @Data
 public class TaskStateHistory {
 
     /**
-     * 该任务执行的状态
+     * The status of the task execution.
      */
     private String state;
     /**
-     * 该任务执行的周期
+     * The period of the task execution.
      */
     private Date executionTime;
     /**
-     * 该任务执行的运行数据
+     * The running data of the task execution.
      */
     private Double value;
 }

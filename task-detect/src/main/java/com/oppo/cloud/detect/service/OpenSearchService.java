@@ -34,34 +34,34 @@ public interface OpenSearchService {
 
 
     /**
-     * 构建通用查询条件
+     * Construct a general query condition.
      */
     SearchSourceBuilder genSearchBuilder(Map<String, Object> termQuery, Map<String, Object[]> rangeConditions,
                                          Map<String, SortOrder> sort,
                                          Map<String, Object> or);
 
     /**
-     * 按条件查询记录, 分页查询
+     * Query records by condition, and query by page.
      */
     SearchHits find(SearchSourceBuilder builder, String... indexes) throws Exception;
 
     /**
-     * 查询YarnApp数据
+     * Query YarnApp data.
      */
     YarnApp searchYarnApp(String applicationId) throws Exception;
 
     /**
-     * 查询SparkApp数据
+     * Query SparkApp data.
      */
     SparkApp searchSparkApp(String applicationId) throws Exception;
 
     /**
-     * 插入或更新
+     * Insert or update.
      */
     UpdateResponse insertOrUpDate(String index, String id, Object document) throws Exception;
 
     /**
-     * 查询数据
+     * Query data.
      */
     <T extends OpenSearchInfo> List<T> find(Class<T> itemType, SearchSourceBuilder builder, String... indexes) throws Exception;
 }

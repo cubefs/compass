@@ -22,21 +22,21 @@ import com.oppo.cloud.detect.domain.DelayedTaskInfo;
 import java.util.List;
 
 /**
- *  延迟处理任务接口类
+ *  Delayed processing task service.
  */
 public interface DelayedTaskService {
 
     /**
-     * 添加延迟队列任务
+     * Add delayed queue task.
      */
     void pushDelayedQueue(JobAnalysis detectJobAnalysis, String handledApps, String exception);
 
     /**
-     * 重新添加延迟队列任务
+     * Re-add the delayed queue task.
      */
     void rePushDelayedQueue(DelayedTaskInfo delayedTaskInfo);
     /**
-     * 获取延迟队列重试任务
+     * Get the retried tasks from the delayed queue.
      */
     List<DelayedTaskInfo> getDelayedTasks();
 }

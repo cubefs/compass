@@ -22,7 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * 任务诊断启动类
+ * Task diagnosis startup.
  */
 @SpringBootApplication(scanBasePackages = "com.oppo.cloud")
 @ComponentScan(basePackages = "com.oppo.cloud")

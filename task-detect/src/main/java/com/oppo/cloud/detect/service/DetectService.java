@@ -19,12 +19,12 @@ package com.oppo.cloud.detect.service;
 import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 
 /**
- * 任务诊断接口
+ * Job diagnosis service.
  */
 public interface DetectService {
 
     /**
-     * 作业诊断
+     * Job diagnosis
      * @param jobAnalysis
      * @return
      * @throws Exception
@@ -32,14 +32,14 @@ public interface DetectService {
     void detect(JobAnalysis jobAnalysis) throws Exception;
 
     /**
-     * 异常作业任务处理
+     * Exceptional job task processing
      * @param jobAnalysis
      * @throws Exception
      */
     void handleAbnormalJob(JobAnalysis jobAnalysis) throws Exception;
 
     /**
-     * 正常作业任务处理
+     * Normal job task processing
      * @param jobAnalysis
      * @throws Exception
      */

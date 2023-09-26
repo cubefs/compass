@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 长期失败检测器
+ * Long-term failure detector.
  */
 @Order(3)
 @Service
@@ -51,7 +51,7 @@ public class AlwaysFailed extends DetectServiceImpl {
             return;
         }
         Date endExecutionTime = DateUtil.getOffsetDate(jobAnalysis.getExecutionDate(), -60);
-        // 查询该任务最近两个月的执行情况
+        // Query the execution status of this task in the past two months
         List<TaskStateHistory> taskStateHistories =
                 taskInstanceService.searchTaskStateHistory(jobAnalysis.getProjectName(),
                         jobAnalysis.getFlowName(), jobAnalysis.getTaskName(), jobAnalysis.getExecutionDate(),
@@ -64,20 +64,20 @@ public class AlwaysFailed extends DetectServiceImpl {
         Date lastSuccessDate = DateUtil.getOffsetDate(jobAnalysis.getExecutionDate(), -alwaysFailedWarning);
         if (taskStateHistories.get(taskStateHistories.size() - 1).getExecutionTime().getTime() > lastSuccessDate
                 .getTime()) {
-            // 未满足执行10天的任务直接过滤掉
+            // Filter out tasks that have not been executed for less than 10 days
             return;
         }
         long recentSuccess = 0L;
         for (TaskStateHistory taskStateHistory : taskStateHistories) {
             long executionTime = taskStateHistory.getExecutionTime().getTime() / 1000;
             String state = taskStateHistory.getState();
-            // 在指定时间内有成功任务
+            // Success tasks completed within a specified time.
             if (state.equals(TaskStateEnum.success.name())
                     && ((executionTime > jobAnalysis.getExecutionDate().getTime() / 1000
                             - alwaysFailedWarning * 24 * 3600))) {
                 return;
             }
-            // 在时间范围内记录最近一次成功的时间
+            // Record the most recent successful time within a time frame.
             if (state.equals(TaskStateEnum.success.name())) {
                 recentSuccess = executionTime;
                 break;

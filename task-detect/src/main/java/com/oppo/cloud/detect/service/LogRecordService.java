@@ -23,17 +23,17 @@ import com.oppo.cloud.common.domain.job.App;
 import java.util.List;
 
 /**
- * 日志解析消息接口
+ * Log parsing message interface.
  */
 public interface LogRecordService {
 
     /**
-     * 获取任务的调度日志
+     * Get the scheduling log of the task.
      */
     List<App> getSchedulerLog(JobAnalysis detectJobAnalysis);
 
     /**
-     * 获取appId的日志
+     * Get the log of the appId.
      */
     List<App> getAppLog(List<TaskApp> taskAppList);
 }
