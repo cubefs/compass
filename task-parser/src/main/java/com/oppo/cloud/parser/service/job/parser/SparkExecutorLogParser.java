@@ -157,7 +157,7 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
                 line = bufferedReader.readLine();
             } catch (IOException e) {
                 log.error(e.getMessage());
-                continue;
+                break;
             }
             if (line == null) {
                 break;

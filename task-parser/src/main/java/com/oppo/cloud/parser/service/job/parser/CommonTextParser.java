@@ -52,7 +52,7 @@ public abstract class CommonTextParser extends OneClickSubject {
                 line = bufferedReader.readLine();
             } catch (Exception e) {
                 log.error("Exception:", e);
-                continue;
+                break;
             }
             if (line == null) {
                 break;
