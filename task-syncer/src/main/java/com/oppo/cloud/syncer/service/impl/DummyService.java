@@ -22,26 +22,26 @@ import com.oppo.cloud.syncer.service.ActionService;
 import org.springframework.stereotype.Service;
 
 /**
- * Dummy服务，不做任务事情
+ * Dummy service, does not do tasks
  */
 public class DummyService implements ActionService {
 
     /**
-     * 插入操作
+     * insert operation
      */
     @Override
     public void insert(RawTable rawTable, Mapping mapping) {
         // log
     }
     /**
-     * 删除操作
+     * Delete operation
      */
     @Override
     public void update(RawTable rawTable, Mapping mapping) {
         // log
     }
     /**
-     * 更新操作
+     * update operation
      */
     @Override
     public void delete(RawTable rawTable, Mapping mapping) {

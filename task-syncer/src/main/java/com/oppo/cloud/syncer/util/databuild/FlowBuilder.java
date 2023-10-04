@@ -22,7 +22,7 @@ import com.oppo.cloud.syncer.util.DataUtil;
 import java.util.Map;
 
 /**
- * Dag流定义
+ * Dag flow definition
  */
 public class FlowBuilder implements DataBuilder<Flow> {
 

@@ -21,25 +21,25 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 字段值映射
+ * Field value mapping
  */
 @Data
 public class ValueMapping {
 
     /**
-     * 映射目标值
+     * map target value
      */
     private String targetValue;
     /**
-     * 映射目标值类型
+     * Map target value type
      */
     private String targetType;
     /**
-     * 映射原始值
+     * map original value
      */
     private List<String> originValue;
     /**
-     * 映射原始值类型
+     * Mapping primitive value types
      */
     private String originType;
 }

@@ -34,55 +34,52 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Spring Kafka配置
+ * Spring Kafka Configuration
  */
 @Configuration
 @EnableKafka
 public class KafkaConfig {
 
     /**
-     * 消费主题
+     * Consuming topic
      */
     @Value("${spring.kafka.topics}")
     private String topics;
     /**
-     * 消费组
+     * Consuming group
      */
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
     /**
-     * 消费模式: latest、earliest
+     * Consuming model: latest、earliest
      */
     @Value("${spring.kafka.consumer.auto-offset-reset}")
     private String autoOffsetReset;
     /**
-     * 消费Kafka集群地址
+     * Kafka cluster
      */
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
     /**
-     * 消费者自动提交
+     * Consuming auto-commit
      */
     @Value("${spring.kafka.consumer.enable-auto-commit}")
     private String enableAutoCommit;
     /**
-     * 两次消费最大间隔时间
+     * Maximum time between two consumptions
      */
     @Value("${spring.kafka.consumer.max-poll-interval-ms}")
     private String maxPollIntervalMs;
-    /**
-     * 最大消费数量
-     */
 
     /**
-     * 创建消费者
+     * Create consumer
      */
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new StringDeserializer());
     }
     /**
-     * 消费者配置
+     * Consumer configure
      */
     public Map<String, Object> consumerConfig() {
         Map<String, Object> config = new HashMap();
@@ -99,7 +96,7 @@ public class KafkaConfig {
     }
 
     /**
-     * 并发消费
+     * Concurrent consumption configure
      */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(ConsumerFactory<String, String> consumerFactory) {
@@ -111,7 +108,7 @@ public class KafkaConfig {
     }
 
     /**
-     * 生产者配置
+     * Producer configure
      */
     @Bean(name = "kafkaTemplate")
     public KafkaTemplate<String, String> kafkaTemplate() {
@@ -119,7 +116,7 @@ public class KafkaConfig {
     }
 
     /**
-     * 创建生产者
+     * Creator configure
      */
     @Bean
     public ProducerFactory<String, String> producerFactory() {
@@ -127,20 +124,21 @@ public class KafkaConfig {
     }
 
     /**
-     * 生产者配置
+     * Producer configure
      */
     public Map<String, Object> producerConfigs() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        // 重试次数，0为不启用重试机制
+        // Number of retries, 0 means disabling the retry mechanism
         config.put(ProducerConfig.RETRIES_CONFIG, 0);
-        // 控制批量处理，单位为字节
+        // Control batch processing, unit is bytes
         config.put(ProducerConfig.BATCH_SIZE_CONFIG, 4096);
-        // 批量发送，延迟为1毫秒，启用该功能能有效减少生产者发送消息次数，从而提高并发量
+        // Send in batches with a delay of 1 millisecond. Enabling this function can effectively
+        // reduce the number of times the producer sends messages, thereby increasing concurrency.
         config.put(ProducerConfig.LINGER_MS_CONFIG, 1);
-        // 健的序列化方式
+        // Key serialization
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        // 值的序列化方式
+        // Value serialization
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
         return config;

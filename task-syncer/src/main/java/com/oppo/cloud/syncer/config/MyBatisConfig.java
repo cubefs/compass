@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * 相关数据库配置
+ * MySql Configuration
  */
 @Configuration
 @EnableTransactionManagement

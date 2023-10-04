@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 用户表同步操作服务
+ * User table synchronization operation service
  */
 @Slf4j
 @Service
@@ -54,21 +54,21 @@ public class UserService extends CommonService implements ActionService {
     private JdbcTemplate jdbcTemplate;
 
     /**
-     * 插入数据
+     * Insert data
      */
     @Override
     public void insert(RawTable rawTable, Mapping mapping) {
         dataMapping(jdbcTemplate, rawTable, mapping, "INSERT");
     }
     /**
-     * 删除用户
+     * delete users
      */
     @Override
     public void delete(RawTable rawTable, Mapping mapping) {
         // do nothing
     }
     /**
-     * 更新用户
+     * Update user
      */
     @Override
     public void update(RawTable rawTable, Mapping mapping) {
@@ -76,7 +76,7 @@ public class UserService extends CommonService implements ActionService {
         // TODO: update other relative table
     }
     /**
-     * 数据保存
+     * Data saving
      */
     @Override
     public void dataSave(Map<String, String> data, Mapping mapping, String action) {
@@ -88,7 +88,7 @@ public class UserService extends CommonService implements ActionService {
         }
     }
     /**
-     * 构建更新查询条件
+     * Build update query conditions
      */
     public UserExample buildUserExample(Map<String, String> data) {
         UserExample example = new UserExample();

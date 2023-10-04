@@ -23,16 +23,16 @@ spring:
       max-poll-interval-ms: 300000
 
 
-# 从kafka同步mysql binlog数据
-# 必须映射表: user, project, flow, task, task_instance
+# Synchronize mysql binlog data from kafka
+# Required mapping table: user, project, flow, task, task_instance
 datasource:
   mappings:
-    # user 表映射
-    - schema: "dolphinscheduler" # 同步源数据库
-      table: "t_ds_user"         # 源表名
-      targetTable: "user"        # 目标表名
-      columnMapping: # 字段映射，将id,user_name...字段映射为user_id,username...
-        user_id: "id"            # 目标字段:源字段
+    # user table mapping
+    - schema: "dolphinscheduler" # Sync source database
+      table: "t_ds_user"         # Source table name
+      targetTable: "user"        # Target table name
+      columnMapping: # Field mapping, mapping id, user_name... fields to user_id, username...
+        user_id: "id"            # Target field: source field
         username: "user_name"
         password: "user_password"
         is_admin: "user_type"
@@ -40,12 +40,12 @@ datasource:
         phone: "phone"
         create_time: "create_time"
         update_time: "update_time"
-      columnValueMapping: # 字段值映射, 目标字段值, 源字段值, 字段类型
+      columnValueMapping: # Field value mapping, target field value, source field value, field type
         is_admin: [ { targetValue: "0", originValue: [ "0" ] }, { targetValue: "1", originValue: [ "1" ] } ]
       constantColumn:
         scheduler_type: "DolphinScheduler"
 
-    # project 表映射
+    # project table mapping
     - schema: "dolphinscheduler"
       table: "t_ds_project"
       targetTable: "project"
@@ -57,10 +57,10 @@ datasource:
         project_status: "flag"
         create_time: "create_time"
         update_time: "update_time"
-      columnValueMapping: # 字段值映射
+      columnValueMapping: # Field value mapping
         project_status: [ { targetValue: "0", originValue: [ "0" ] }, { targetValue: "1", originValue: [ "1" ] } ]
 
-    # flow 表映射
+    # flow table mapping
     - schema: "dolphinscheduler"
       table: "t_ds_process_definition"
       targetTable: "flow"
@@ -75,10 +75,10 @@ datasource:
         create_time: "create_time"
         update_time: "update_time"
       columnDep:
-        columns: [ "project_id", "project_name" ] # 依赖project_id, project_name, 需要从其他表抓取
+        columns: [ "project_id", "project_name" ] # Depends on project_id, project_name, needs to be fetched from other tables
         queries: [ "select project.id as project_id, project.name as project_name from t_ds_process_definition as process inner join t_ds_project as project on process.project_code=project.code where process.id=${id}" ]
 
-    # task 表映射
+    # task table mapping
     - schema: "dolphinscheduler"
       table: "t_ds_task_definition"
       targetTable: "task"
@@ -99,7 +99,7 @@ datasource:
         columns: [ "project_id","project_name","flow_name","flow_id" ] # t_ds_task_definition, t_ds_process_task_relation, t_ds_process_definition, t_ds_project
         queries: [ "select process.id as flow_id, process.name as flow_name, project.id as project_id, project.name as project_name from t_ds_task_definition as task inner join t_ds_process_task_relation as relation on task.code=relation.post_task_code inner join t_ds_process_definition as process on relation.process_definition_code=process.code inner join t_ds_project as project on task.project_code=project.code where task.id=${id}" ]
 
-    # task_instance 任务表映射
+    # task_instance table mapping
     - schema: "dolphinscheduler"
       table: "t_ds_task_instance"
       targetTable: "task_instance"
@@ -111,16 +111,16 @@ datasource:
         start_time: "start_time"
         end_time: "end_time"
         execution_time: ""
-        task_state: "state"  # 映射
+        task_state: "state"  # mapping
         task_type: "task_type"
         retry_times: "retry_times"
         max_retry_times: "max_retry_times"
         worker_group: "worker_group"
         create_time: "create_time"
         update_time: "update_time"
-      columnValueMapping: # 字段值映射
+      columnValueMapping: # Field value mapping
         # 0 commit succeeded, 1 running, 2 prepare to pause, 3 pause, 4 prepare to stop, 5 stop, 6 fail, 7 succeed, 8 need fault tolerance, 9 kill, 10 wait for thread, 11 wait for dependency to complete'
-        # 只需要关注成功和失败，其他状态为其他
+        # Only need to pay attention to success and failure, other states are other
         task_state:
           - { targetValue: "success", originValue: [ "7", "14" ] }
           - { targetValue: "fail", originValue: [ "6", "9" ] } # kill is also fail
@@ -128,5 +128,5 @@ datasource:
       columnDep:
         columns: [ "project_name", "flow_name", "execution_time" ]
         queries: [ "select t2.schedule_time as execution_time, t3.name as flow_name, t4.name as project_name from t_ds_task_instance as t1 inner join t_ds_process_instance as t2 on t1.process_instance_id = t2.id inner join t_ds_process_definition as t3 on t2.process_definition_code = t3.code inner join t_ds_project as t4 on t3.project_code=t4.code where t1.id=${id}" ]
-      # 写回 kafka topic
+      # Write back to kafka topic
       writeKafkaTopic: task-instance

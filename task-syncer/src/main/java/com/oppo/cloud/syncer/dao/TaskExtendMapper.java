@@ -20,16 +20,16 @@ import com.oppo.cloud.mapper.TaskMapper;
 import com.oppo.cloud.model.Task;
 
 /**
- * 扩展任务Mapper
+ * Task Extended Mapper
  */
 public interface TaskExtendMapper extends TaskMapper {
 
     /**
-     * 保存数据
+     * Save data
      */
     int save(Task record);
     /**
-     * 筛选保存数据
+     * Save selective data
      */
     int saveSelective(Task record);
 }

@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 任务定义或者job定义数据表同步服务
+ * Task definition or job definition data table synchronization service
  */
 @Service
 public class TaskService extends CommonService implements ActionService {
@@ -51,7 +51,7 @@ public class TaskService extends CommonService implements ActionService {
     private JdbcTemplate jdbcTemplate;
 
     /**
-     * 插入操作
+     * insert operation
      */
     @Override
     public void insert(RawTable rawTable, Mapping mapping) {
@@ -59,21 +59,21 @@ public class TaskService extends CommonService implements ActionService {
 
     }
     /**
-     * 删除操作
+     * Delete operation
      */
     @Override
     public void delete(RawTable rawTable, Mapping mapping) {
 
     }
     /**
-     * 更新操作
+     * update operation
      */
     @Override
     public void update(RawTable rawTable, Mapping mapping) {
         dataMapping(jdbcTemplate, rawTable, mapping, "UPDATE");
     }
     /**
-     * 数据保存
+     * Data saving
      */
     @Override
     public void dataSave(Map<String, String> data, Mapping mapping, String action) {

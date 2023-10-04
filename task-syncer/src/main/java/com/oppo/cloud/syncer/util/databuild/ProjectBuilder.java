@@ -22,7 +22,7 @@ import com.oppo.cloud.syncer.util.DataUtil;
 import java.util.Map;
 
 /**
- * 项目数据构建
+ * Project data construction
  */
 public class ProjectBuilder implements DataBuilder<Project> {
 

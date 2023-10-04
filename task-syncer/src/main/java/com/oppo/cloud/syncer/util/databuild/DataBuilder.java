@@ -19,7 +19,7 @@ package com.oppo.cloud.syncer.util.databuild;
 import java.util.Map;
 
 /**
- * 数据构建抽象接口
+ * Data construction abstract interface
  */
 public interface DataBuilder<U> {
 

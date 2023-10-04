@@ -22,17 +22,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Kafka同步数据表结构
+ * Kafka synchronizes data table
  */
 @Data
 public class RawTable {
 
     /**
-     * 当前数据
+     * current data
      */
     private List<Map<String, String>> data;
     /**
-     * 数据库
+     * database
      */
     private String database;
     /**
@@ -44,19 +44,20 @@ public class RawTable {
      */
     private Long id;
     /**
-     * 是否为ddl
+     * is ddl
      */
     private Boolean isDdl;
     /**
-     * 数据库表字段类型, 如 {"id":"int(11)","name":"varchar(32)","age":"int(11)"}
+     * Database table field type
+     * For example, {"id":"int(11)","name":"varchar(32)","age":"int(11)"}
      */
     private Map<String, String> mysqlType;
     /**
-     * 变更旧字段及值
+     * Change old fields and values
      */
     private List<Map<String, String>> old;
     /**
-     * 主键
+     * Primary key
      */
     private List<String> pkNames;
     /**
@@ -64,19 +65,19 @@ public class RawTable {
      */
     private String sql;
     /**
-     * sql字段类型
+     * sql Field Type
      */
     private Map<String, Object> sqlType;
     /**
-     * 变更数据表
+     * Change data table
      */
     private String table;
     /**
-     * 时间戳
+     * Timestamp
      */
     private Long ts;
     /**
-     * 变更操作类型: INSERT, UPDATE, DELETE...
+     * Operation: INSERT, UPDATE, DELETE...
      */
     private String type;
 }

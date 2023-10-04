@@ -22,7 +22,7 @@ import com.oppo.cloud.syncer.util.DataUtil;
 import java.util.Map;
 
 /**
- * 定义任务数据构建
+ * Define task data construction
  */
 public class TaskBuilder implements DataBuilder<Task> {
 

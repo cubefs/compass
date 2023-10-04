@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * mysql bin log 表解析测试
+ * mysql bin log table parsing test
  */
 public class TestRawTable {
 
