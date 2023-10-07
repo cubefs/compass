@@ -22,40 +22,40 @@ import java.util.Date;
 
 public class User implements Serializable {
 
-    @ApiModelProperty(value = "用户记录id")
+    @ApiModelProperty(value = "User record id")
     private Integer id;
 
-    @ApiModelProperty(value = "用户id,跟其他系统保持一致")
+    @ApiModelProperty(value = "User ID, consistent with other systems")
     private Integer userId;
 
-    @ApiModelProperty(value = "用户名")
+    @ApiModelProperty(value = "Username")
     private String username;
 
-    @ApiModelProperty(value = "用户密码")
+    @ApiModelProperty(value = "Password")
     private String password;
 
-    @ApiModelProperty(value = "是否为管理员")
+    @ApiModelProperty(value = "Is it an administrator")
     private Integer isAdmin;
 
-    @ApiModelProperty(value = "头像")
+    @ApiModelProperty(value = "Icon: avatar")
     private String icon;
 
-    @ApiModelProperty(value = "邮箱")
+    @ApiModelProperty(value = "Email")
     private String email;
 
-    @ApiModelProperty(value = "电话")
+    @ApiModelProperty(value = "Phone")
     private String phone;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "Create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "Update time")
     private Date updateTime;
 
-    @ApiModelProperty(value = "最后登录时间")
+    @ApiModelProperty(value = "Last login time")
     private Date loginTime;
 
-    @ApiModelProperty(value = "账号启用状态: 0->禁用; 1->启用")
+    @ApiModelProperty(value = "Account activation status: 0->disabled; 1->enabled")
     private Integer status;
 
     private String schedulerType;

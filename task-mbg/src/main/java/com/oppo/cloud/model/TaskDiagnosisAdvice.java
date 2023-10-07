@@ -26,36 +26,36 @@ import java.util.regex.Pattern;
 
 public class TaskDiagnosisAdvice implements Serializable {
 
-    @ApiModelProperty(value = "自增id")
+    @ApiModelProperty(value = "id")
     private Integer id;
 
-    @ApiModelProperty(value = "日志类型")
+    @ApiModelProperty(value = "Log type")
     private String logType;
 
-    @ApiModelProperty(value = "父节点异常事件")
+    @ApiModelProperty(value = "Parent node exception event")
     private String parentAction;
 
-    @ApiModelProperty(value = "异常事件")
+    @ApiModelProperty(value = "Exceptional event")
     private String action;
 
-    @ApiModelProperty(value = "异常事件描述")
+    @ApiModelProperty(value = "Exceptional description")
     private String description;
 
-    @ApiModelProperty(value = "变量名列表( , 为分割符)")
+    @ApiModelProperty(value = "Advice (variables are represented by {variable name})")
     private String variables;
 
-    @ApiModelProperty(value = "异常类型")
+    @ApiModelProperty(value = "Exception type")
     private String category;
 
-    @ApiModelProperty(value = "是否删除")
+    @ApiModelProperty(value = "Is deleted")
     private Integer deleted;
 
     private String normalAdvice;
 
-    @ApiModelProperty(value = "建议（其中的变量用 {变量名} 表示）")
+    @ApiModelProperty(value = "Advice (variables are represented by {variable name})")
     private String abnormalAdvice;
 
-    @ApiModelProperty(value = "匹配规则")
+    @ApiModelProperty(value = "Matching rule")
     private String rule;
 
     private static final long serialVersionUID = 1L;

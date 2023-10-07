@@ -21,40 +21,40 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class FlinkTask implements Serializable {
-    @ApiModelProperty(value = "实时任务id")
+    @ApiModelProperty(value = "id")
     private Integer id;
 
-    @ApiModelProperty(value = "用户名")
+    @ApiModelProperty(value = "Username")
     private String username;
 
-    @ApiModelProperty(value = "用户记录id")
+    @ApiModelProperty(value = "User id")
     private Integer userId;
 
-    @ApiModelProperty(value = "项目名")
+    @ApiModelProperty(value = "Project name")
     private String projectName;
 
-    @ApiModelProperty(value = "项目id")
+    @ApiModelProperty(value = "Project id")
     private Integer projectId;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "Flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "工作流id")
+    @ApiModelProperty(value = "Flow id")
     private Integer flowId;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "Task name")
     private String taskName;
 
-    @ApiModelProperty(value = "任务id")
+    @ApiModelProperty(value = "Task id")
     private Integer taskId;
 
-    @ApiModelProperty(value = "是否删除")
+    @ApiModelProperty(value = "Is deleted")
     private Integer deleted;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "Create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "Update time")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;

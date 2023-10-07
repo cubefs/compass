@@ -22,31 +22,31 @@ import java.util.Date;
 
 public class Blocklist implements Serializable {
 
-    @ApiModelProperty(value = "任务白名单id")
+    @ApiModelProperty(value = "Block list id")
     private Integer id;
 
-    @ApiModelProperty(value = "组件")
+    @ApiModelProperty(value = "Component(Spark, Flink etc)")
     private String component;
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "Project name")
     private String projectName;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "Flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "Task name")
     private String taskName;
 
-    @ApiModelProperty(value = "添加用户")
+    @ApiModelProperty(value = "Username")
     private String username;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "Create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "Update time")
     private Date updateTime;
 
-    @ApiModelProperty(value = "是否删除")
+    @ApiModelProperty(value = "Is deleted")
     private Integer deleted;
 
     private static final long serialVersionUID = 1L;

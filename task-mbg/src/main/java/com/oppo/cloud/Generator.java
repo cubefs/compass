@@ -26,27 +26,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 自动生成MySQL库表对应的MBG的代码
+ * Automatically generate the MBG code corresponding to the MySQL table
  */
 public class Generator {
 
     public static void main(String[] args) throws Exception {
-        // MBG 执行过程中的告警信息
+        // MBG Warning information during MBG execution
         List<String> warngins = new ArrayList<>();
-        // 当生成的代码重复是，覆盖原代码
+        // When the generated code is duplicated, the original code is overwritten
         boolean overwrite = true;
-        // 读取我们的MBG配置文件
+        // Read our MBG configuration file
         InputStream is = Generator.class.getResourceAsStream("/generatorConfig.xml");
         ConfigurationParser cp = new ConfigurationParser(warngins);
         Configuration config = cp.parseConfiguration(is);
         is.close();
 
         DefaultShellCallback callback = new DefaultShellCallback(overwrite);
-        // 创建 MBG
+        // Create MBG
         MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warngins);
-        // 执行生成代码
+        // Generate
         myBatisGenerator.generate(null);
-        // 输出告警信息
+        // Output warning information
         for (String warning : warngins) {
             System.out.println(warning);
         }

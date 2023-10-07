@@ -22,25 +22,25 @@ import java.util.Date;
 
 public class Project implements Serializable {
 
-    @ApiModelProperty(value = "项目id")
+    @ApiModelProperty(value = "Project id")
     private Integer id;
 
-    @ApiModelProperty(value = "项目名")
+    @ApiModelProperty(value = "Project name")
     private String projectName;
 
-    @ApiModelProperty(value = "项目描述")
+    @ApiModelProperty(value = "Description")
     private String description;
 
-    @ApiModelProperty(value = "创建者id")
+    @ApiModelProperty(value = "Creator id")
     private Integer userId;
 
-    @ApiModelProperty(value = "项目启用状态: 0->禁用; 1->启用")
+    @ApiModelProperty(value = "Project enable status: 0->disabled; 1->enabled")
     private Integer projectStatus;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "Create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "Update time")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;
