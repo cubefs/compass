@@ -29,95 +29,93 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@ApiModel("GC日志分析")
+@ApiModel("GC log analysis.")
 public class GCReport {
 
     /**
-     * gc日志对应的executor id
+     * Executor ID corresponding to the GC log.
      */
-    @ApiModelProperty(value = "gc日志对应的executor id")
+    @ApiModelProperty(value = "Executor ID corresponding to the GC log.")
     private Integer executorId;
     /**
-     * 最大分配内存
+     * Maximum allocated memory.
      */
-    @ApiModelProperty(value = "最大分配内存")
+    @ApiModelProperty(value = "Maximum allocated memory.")
     private Integer maxHeapAllocatedSize;
     /**
-     * 最大内存使用
+     * Maximum memory usage.
      */
-    @ApiModelProperty(value = "最大内存使用")
+    @ApiModelProperty(value = "Maximum memory usage.")
     private Integer maxHeapUsedSize;
     /**
-     * 运行时间
+     * Running time.
      */
-    @ApiModelProperty(value = "运行时间")
+    @ApiModelProperty(value = "Running time.")
     private String totalTime;
     /**
-     * young gc 次数
+     * Number of young GCs.
      */
-    @ApiModelProperty(value = "young gc 次数")
+    @ApiModelProperty(value = "Number of young GCs.")
     private Integer youngGCCount;
     /**
-     * young gc 时间
+     * Young GC time.
      */
-    @ApiModelProperty(value = "young gc 时间")
+    @ApiModelProperty(value = "Young GC time.")
     private Double youngGCTime;
     /**
-     * full gc 次数
+     * Number of full GCs.
      */
-    @ApiModelProperty(value = "full gc 次数")
+    @ApiModelProperty(value = "Number of full GCs.")
     private Integer fullGCCount;
     /**
-     * full gc 时间
+     * Full GC time.
      */
-    @ApiModelProperty(value = "full gc 时间")
+    @ApiModelProperty(value = "Full GC time.")
     private Double fullGCTime;
     /**
-     * gc 总次数
+     * Total number of GCs.
      */
-    @ApiModelProperty(value = "gc 总次数")
+    @ApiModelProperty(value = "Total number of GCs.")
     private Integer totalGCCount;
     /**
-     * gc 总时间
+     * Total GC time.
      */
-    @ApiModelProperty(value = "gc 总时间")
+    @ApiModelProperty(value = "Total GC time.")
     private Double totalGCTime;
     /**
-     * heap使用趋势图
+     * Heap usage trend chart.
      */
-    @ApiModelProperty(value = "heap使用趋势图")
+    @ApiModelProperty(value = "Heap usage trend chart.")
     private List<HeapUsed> heapUsed;
     /**
-     * tenured使用趋势图
+     * Tenured usage trend chart.
      */
-    @ApiModelProperty(value = "tenured使用趋势图")
+    @ApiModelProperty(value = "Tenured usage trend chart.")
     private List<TenuredUsed> tenuredUsed;
     /**
-     * young使用趋势图
+     * Young usage trend chart.
      */
-    @ApiModelProperty(value = "young使用趋势图")
+    @ApiModelProperty(value = "Young usage trend chart.")
     private List<YoungUsed> youngUsed;
     /**
      * appId
      */
     @ApiModelProperty(value = "appId")
     private String applicationId;
-
     /**
-     * 日志类型 driver executor
+     * Log type: driver executor.
      */
-    @ApiModelProperty(value = "日志类型 driver executor")
+    @ApiModelProperty(value = "Log type: driver executor.")
     private String logType;
     /**
-     * hdfs path
+     * Log path in hdfs
      */
-    @ApiModelProperty(value = "hdfs path")
+    @ApiModelProperty(value = "Log path in hdfs")
     private String logPath;
-
     /**
-     * executor的内存使用
+     * Executor's memory usage.
      */
-    @ApiModelProperty(value = "executor的内存使用")
+    @ApiModelProperty(value = "Executor's memory usage.")
     private List<ExecutorPeakMemory> executorPeakMemory;
 
     public Map<String, Object> genDoc() throws Exception {

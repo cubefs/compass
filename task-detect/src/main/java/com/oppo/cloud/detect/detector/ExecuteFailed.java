@@ -24,7 +24,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 /**
- * 执行失败检测器
+ * Execute the failure detector.
  */
 @Order(0)
 @Service

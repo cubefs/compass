@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.concurrent.Executor;
 
 /**
- * 延迟任务定时扫表处理
+ * Delayed task scheduled scanning and processing service.
  */
 @Slf4j
 @Configuration
@@ -86,7 +86,7 @@ public class DelayedTask implements CommandLineRunner {
 
     @PostConstruct
     void init() {
-        // 加载因重启而中断的任务
+        // Resume tasks interrupted by restart.
         Map<Object, Object> processingMap = null;
         try {
             processingMap = redisService.hGetAll(processingKey);
@@ -135,11 +135,11 @@ public class DelayedTask implements CommandLineRunner {
     }
 
     /**
-     * 异常任务的重试处理
+     * Processing retries for failed tasks
      */
     public void dealWithAbnormalTask(DelayedTaskInfo delayedTaskInfo) throws Exception {
-        // 大于重试次数则放弃重试，并保存相关的appId
-        // todo 可能spark任务没起来，直接发送am日志
+        // If the number of retries exceeds the limit, give up the retry and save the relevant appId.
+        // TODO: Possibly send AM logs directly if Spark tasks have not started.
         if (delayedTaskInfo.getProcessRetries() >= tryTimes) {
             try {
                 saveAllAbnormalTaskApp(delayedTaskInfo);
@@ -155,7 +155,7 @@ public class DelayedTask implements CommandLineRunner {
                 taskAppService.getAbnormalTaskAppsInfo(delayedTaskInfo.getJobAnalysis(),
                         delayedTaskInfo.getHandledApps());
 
-        // 保存appIds
+        // save appIds
         if (abnormalTaskAppInfo.getTaskAppList().size() != 0) {
             taskAppService.insertTaskApps(abnormalTaskAppInfo.getTaskAppList());
             abnormalJobService.updateResource(delayedTaskInfo.getJobAnalysis(), abnormalTaskAppInfo.getTaskAppList());
@@ -166,30 +166,30 @@ public class DelayedTask implements CommandLineRunner {
         LogRecord logRecord = buildLogRecord(delayedTaskInfo, abnormalTaskAppInfo);
 
         if (!delayedTaskInfo.getHandledApps().contains("scheduler")) {
-            // 首次发送需要带上调度日志
+            // The first sending needs to be accompanied by the scheduling log.
             List<App> schedulerLogApps = logRecordService.getSchedulerLog(delayedTaskInfo.getJobAnalysis());
             if (schedulerLogApps.size() != 0) {
                 logRecord.getApps().addAll(schedulerLogApps);
                 delayedTaskInfo.setHandledApps(delayedTaskInfo.getHandledApps() + "scheduler;");
             }
         }
-        // 处理延迟任务信息
+        // Process delayed task information.
         handleTryTask(abnormalTaskAppInfo, delayedTaskInfo);
 
         if (logRecord.getApps().size() == 0) {
             return;
         }
-        // 发送消息进行日志解析
+        // Send a message for log analysis
         String logRecordJson = JSONObject.toJSONString(logRecord);
         Long size = redisService.lLeftPush(logRecordQueue, logRecordJson);
         log.info("pushLogRecord: key:{}, size:{}, data:{}", logRecordQueue, size, logRecordJson);
     }
 
     /**
-     * 正常任务的重试处理
+     * Handling of retries for regular tasks
      */
     public void dealWithNormalTask(DelayedTaskInfo delayedTaskInfo) throws Exception {
-        // 大于重试次数则放弃重试
+        // If the retry count is greater than the specified limit, give up retrying.
         if (delayedTaskInfo.getProcessRetries() >= tryTimes) {
             log.warn("discard retry task:{}", delayedTaskInfo);
             redisService.hDel(processingKey, delayedTaskInfo.getKey());
@@ -200,7 +200,7 @@ public class DelayedTask implements CommandLineRunner {
                 .getAbnormalTaskAppsInfo(delayedTaskInfo.getJobAnalysis(), delayedTaskInfo.getHandledApps());
 
         if (!"".equals(abnormalTaskAppInfo.getExceptionInfo())) {
-            // 构造完整的appId信息再进行发送,或者最后一次重试需要保留兜底信息
+            // Construct the complete appId information before sending, or retain the fallback information for the last retry.
             if (delayedTaskInfo.getProcessRetries() != tryTimes - 1) {
                 delayedTaskInfo.setProcessRetries(delayedTaskInfo.getProcessRetries() + 1);
                 delayedTaskService.rePushDelayedQueue(delayedTaskInfo);
@@ -208,17 +208,17 @@ public class DelayedTask implements CommandLineRunner {
             }
         }
         if (abnormalTaskAppInfo.getTaskAppList().size() != 0) {
-            // 更新job的memorySeconds和vcoreSeconds
+            // Update job memorySeconds and vcoreSeconds
             abnormalJobService.updateResource(delayedTaskInfo.getJobAnalysis(), abnormalTaskAppInfo.getTaskAppList());
         }
-        // 保存任务实例
+        // Save job instance
         jobInstanceService.insertOrUpdate(delayedTaskInfo.getJobAnalysis());
 
         LogRecord logRecord = buildLogRecord(delayedTaskInfo, abnormalTaskAppInfo);
 
         boolean firstSend = StringUtils.isEmpty(delayedTaskInfo.getHandledApps());
         if (firstSend) {
-            // 首次发送需要带上调度日志
+            // The first sending needs to be accompanied by the scheduling log.
             List<App> schedulerLogApps = logRecordService.getSchedulerLog(delayedTaskInfo.getJobAnalysis());
             if (schedulerLogApps.size() != 0) {
                 logRecord.getApps().addAll(schedulerLogApps);
@@ -228,7 +228,7 @@ public class DelayedTask implements CommandLineRunner {
             }
         }
 
-        // 处理延迟任务信息
+        // Process delayed task information.
         handleTryTask(abnormalTaskAppInfo, delayedTaskInfo);
 
         if (logRecord.getApps().size() == 0) {
@@ -240,7 +240,7 @@ public class DelayedTask implements CommandLineRunner {
     }
 
     /**
-     * 处理延迟任务信息
+     * Process delayed task information.
      */
     public void handleTryTask(AbnormalTaskAppInfo abnormalTaskAppInfo, DelayedTaskInfo delayedTaskInfo) {
         if ("".equals(abnormalTaskAppInfo.getExceptionInfo())) {
@@ -258,21 +258,21 @@ public class DelayedTask implements CommandLineRunner {
     }
 
     /**
-     * 构建LogRecord
+     * Construct a LogRecord.
      */
 
     public LogRecord buildLogRecord(DelayedTaskInfo delayedTaskInfo, AbnormalTaskAppInfo abnormalTaskAppInfo) {
         LogRecord logRecord = new LogRecord();
         logRecord.setId(UUID.randomUUID().toString());
         logRecord.setJobAnalysis(delayedTaskInfo.getJobAnalysis());
-        logRecord.formatTaskAppList(abnormalTaskAppInfo.getTaskAppList());
+        logRecord.toTaskAppMap(abnormalTaskAppInfo.getTaskAppList());
         List<App> appLogPath = logRecordService.getAppLog(abnormalTaskAppInfo.getTaskAppList());
         logRecord.setApps(appLogPath);
         return logRecord;
     }
 
     /**
-     * 最后检查并保存所有的appId
+     * Finally, check and save all appIds.
      */
     public void saveAllAbnormalTaskApp(DelayedTaskInfo delayedTaskInfo) throws Exception {
         Map<Integer, List<TaskApp>> allAbnormalTaskApp =
@@ -283,7 +283,7 @@ public class DelayedTask implements CommandLineRunner {
             for (TaskApp taskApp : abnormalTaskAppList) {
                 if (taskApp.getApplicationId() != null) {
                     if (!delayedTaskInfo.getHandledApps().contains(taskApp.getApplicationId())) {
-                        // 已经处理的appId
+                        // Already processed appId.
                         needInsertTaskApp.add(taskApp);
                     }
                 }

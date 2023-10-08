@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 指标数据解析结构体
+ * Metrics data parsing structure.
  */
 @Data
 public class MetricResult {
@@ -45,7 +45,7 @@ public class MetricResult {
 
     @lombok.Data
     public static class KeyValue {
-        // 单位 second
+        // unit second
         private Integer ts;
         private Double value;
 

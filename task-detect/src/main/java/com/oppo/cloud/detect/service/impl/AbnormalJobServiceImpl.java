@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * 异常任务数据更新
+ * Exception job data processing service.
  */
 @Slf4j
 @Service
@@ -47,7 +47,7 @@ public class AbnormalJobServiceImpl implements AbnormalJobService {
     private String jobIndex;
 
     /**
-     * 更新内存数据和Vcore数据
+     * Update the memory data and Vcore data.
      */
     @Override
     public void updateVcoreAndMemory(JobAnalysis jobAnalysis) throws Exception {
@@ -66,7 +66,7 @@ public class AbnormalJobServiceImpl implements AbnormalJobService {
     }
 
     /**
-     * 增量更新内存数据和vCore数据
+     * Incrementally update memory data and vCore data
      */
     @Override
     public void updateResource(JobAnalysis jobAnalysis, List<TaskApp> taskAppList) {

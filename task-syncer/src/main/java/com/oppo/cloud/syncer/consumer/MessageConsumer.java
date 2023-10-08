@@ -48,7 +48,7 @@ public class MessageConsumer {
     private DataSourceConfig dataSourceConfig;
 
     /**
-     * 用户表服务注入
+     * Table service
      */
     @Autowired
     private Map<String, ActionService> serviceMap;
@@ -56,7 +56,7 @@ public class MessageConsumer {
     private MultiValueMap tableMapping;
 
     /**
-     * 接收数据
+     * Receive and handle sql data
      */
     @KafkaListener(topics = "${spring.kafka.topics}", containerFactory = "kafkaListenerContainerFactory")
     public void receive(@Payload String message,
@@ -66,7 +66,7 @@ public class MessageConsumer {
 
         log.debug(String.format("From partition %d: %s", partition, message));
 
-        // 解析数据表
+        // Parsing table data
         RawTable rawTable = JSON.parseObject(message, RawTable.class);
 
         List<Mapping> mappings = this.getTableMapping(rawTable.getTable());
@@ -82,7 +82,7 @@ public class MessageConsumer {
     }
 
     /**
-     * 消费消息
+     * Consuming data
      */
     public void consumeMessage(RawTable rawTable, Mapping mapping) {
         switch (rawTable.getType()) {
@@ -101,7 +101,7 @@ public class MessageConsumer {
     }
 
     /**
-     * 插入操作
+     * Insert operation
      */
     public void insertAction(RawTable rawTable, Mapping mapping) {
         ActionService service = serviceMap.getOrDefault(serviceKey(mapping.getTargetTable()), new DummyService());
@@ -109,7 +109,7 @@ public class MessageConsumer {
     }
 
     /**
-     * 更新操作
+     * Update operation
      */
     public void updateAction(RawTable rawTable, Mapping mapping) {
         ActionService service = serviceMap.getOrDefault(serviceKey(mapping.getTargetTable()), new DummyService());
@@ -117,7 +117,7 @@ public class MessageConsumer {
     }
 
     /**
-     * 删除操作
+     * Delete operation
      */
     public void deleteAction(RawTable rawTable, Mapping mapping) {
         ActionService service = serviceMap.getOrDefault(serviceKey(mapping.getTargetTable()), new DummyService());
@@ -125,7 +125,7 @@ public class MessageConsumer {
     }
 
     /**
-     * 获取表映射规则
+     * Get table mapping rules
      */
     public synchronized List<Mapping> getTableMapping(String table) {
         if (this.tableMapping == null) {
@@ -135,7 +135,7 @@ public class MessageConsumer {
     }
 
     /**
-     * 初始化表映射规则
+     * Initialization table mapping rules
      */
     public void initTableMapping() {
         // this.tableMapping = new HashMap<>();
@@ -146,14 +146,15 @@ public class MessageConsumer {
     }
 
     /**
-     * TODO: 验证Mapping
+     * TODO: Verify Mapping
      */
     public void validateMapping() {
 
     }
 
     /**
-     * 获取服务名称: targetTable+Service, 如userService=user表+Service
+     * Get service name: targetTable+Service
+     * For example, userService=user_Service
      */
     public String serviceKey(String targetTable) {
         return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, String.format("%s_Service", targetTable));

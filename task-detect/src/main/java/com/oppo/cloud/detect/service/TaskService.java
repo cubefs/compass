@@ -22,12 +22,12 @@ import com.oppo.cloud.model.Task;
 public interface TaskService {
 
     /**
-     *  获取任务元数据
+     *  Get task metadata.
      */
     Task getTask(String projectName, String flowName, String taskName);
 
     /**
-     * 获取任务元数据
+     * Get task metadata.
      */
     Task getTask(Integer id);
 }

@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * DAG或者任务流实体同步服务
+ * DAG or task flow entity synchronization service
  */
 @Service
 public class FlowService extends CommonService implements ActionService {
@@ -47,28 +47,28 @@ public class FlowService extends CommonService implements ActionService {
     @Qualifier("diagnoseJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
     /**
-     * 插入操作
+     * insert operation
      */
     @Override
     public void insert(RawTable rawTable, Mapping mapping) {
         dataMapping(jdbcTemplate, rawTable, mapping, "INSERT");
     }
     /**
-     * 删除操作
+     * Delete operation
      */
     @Override
     public void delete(RawTable rawTable, Mapping mapping) {
         // todo
     }
     /**
-     * 更新操作
+     * update operation
      */
     @Override
     public void update(RawTable rawTable, Mapping mapping) {
         dataMapping(jdbcTemplate, rawTable, mapping, "UPDATE");
     }
     /**
-     * 数据保存
+     * Data saving
      */
     @Override
     public void dataSave(Map<String, String> data, Mapping mapping, String action) {

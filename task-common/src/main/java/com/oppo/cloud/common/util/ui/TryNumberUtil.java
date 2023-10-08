@@ -21,9 +21,9 @@ import com.oppo.cloud.common.constant.SchedulerType;
 public class TryNumberUtil {
 
     /**
-     * 不同平台重试次数定义不一样，统一从0开始
-     * DolphinScheduler是从0开始
-     * Airflow是从1开始
+     * The definition of retry times varies on different platforms, starting from 0
+     * DolphinScheduler starts from 0
+     * Airflow starts from 1
      */
     public static int updateTryNumber(int tryNumber, String schedulerType) {
         if (SchedulerType.Airflow.toString().equalsIgnoreCase(schedulerType)) {

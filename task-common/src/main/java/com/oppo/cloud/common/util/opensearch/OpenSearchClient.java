@@ -26,7 +26,7 @@ import org.opensearch.client.RestClient;
 import org.opensearch.client.RestHighLevelClient;
 
 /**
- * es客户端配置
+ * Create a client connection endpoint
  */
 public class OpenSearchClient {
 
@@ -35,7 +35,7 @@ public class OpenSearchClient {
     public static final String SSL_SCHEME_NAME = "https";
 
     /**
-     * 创建客户连接端
+     * Create a client connection endpoint.
      */
     public static RestHighLevelClient create(HttpHost[] httpHosts, String username, String password, String truststore, String truststorePassword) {
         if (StringUtils.isNotBlank(truststore)) {
@@ -51,7 +51,7 @@ public class OpenSearchClient {
     }
 
     /**
-     * 创建客户连接端
+     * Create a client connection endpoint.
      */
     public static RestHighLevelClient create(String hosts, String username, String password, String truststore, String truststorePassword) {
         boolean ssl = StringUtils.isNotBlank(truststore);
@@ -59,7 +59,8 @@ public class OpenSearchClient {
     }
 
     /**
-     * 分隔处理，格式化hosts列表字符串, 如"10.23.232.23:9200,10.23.232.24:9200,10.23.232.25:9200"
+     * Split and format hosts list string
+     * For example.=, "10.23.232.23:9200,10.23.232.24:9200,10.23.232.25:9200"
      */
     public static HttpHost[] buildHosts(String hosts, String delimiter, boolean ssl) {
         String[] hostList = hosts.split(delimiter);
@@ -77,7 +78,7 @@ public class OpenSearchClient {
     }
 
     /**
-     * 默认逗号分割处理主机列表
+     * Default comma-separated processing of host list
      */
     public static HttpHost[] buildDefaultHosts(String hosts, boolean ssl) {
         return buildHosts(hosts, ",", ssl);

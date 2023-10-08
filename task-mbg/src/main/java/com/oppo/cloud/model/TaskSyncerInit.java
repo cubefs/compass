@@ -21,7 +21,7 @@ import java.io.Serializable;
 
 public class TaskSyncerInit implements Serializable {
 
-    @ApiModelProperty(value = "task_syncer应用是否已初始化： 0 -> 否, 1 -> 是")
+    @ApiModelProperty(value = "Whether the task_syncer application has been initialized: 0 -> No, 1 -> Yes")
     private Integer isInit;
 
     private static final long serialVersionUID = 1L;

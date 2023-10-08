@@ -17,15 +17,15 @@
 package com.oppo.cloud.common.api;
 
 /**
- * 常用API返回对象
+ * Common API response object.
  */
 public enum StatusCode implements IErrorCode {
 
-    SUCCESS(200, "操作成功"),
+    SUCCESS(200, "Succeed"),
 
-    UNAUTHORIZED(401,"未授权"),
-    FAILED(500, "操作失败"),
-    VALIDATE_FAILED(404, "参数检验失败");
+    UNAUTHORIZED(401,"Unauthorized"),
+    FAILED(500, "Failed"),
+    VALIDATE_FAILED(404, "Parameter validation failed");
 
     private int code;
     private String msg;

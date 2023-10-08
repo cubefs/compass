@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
- * 数据转换工具函数
+ * Data conversion tool
  */
 @Slf4j
 public class DataUtil {
@@ -34,7 +34,7 @@ public class DataUtil {
     public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     /**
-     * 根据数据实例将map生成对应对象
+     * Generate map into corresponding objects based on data instances
      */
     public static Object parseInstance(Map<String, String> data, Class clazz) {
         DataFactory<DataBuilder> dataFactory = new GenericFactory<>();
@@ -42,7 +42,7 @@ public class DataUtil {
     }
 
     /**
-     * 字符串转化整形
+     * String conversion shaping
      */
     public static Integer parseInteger(String s) {
         if (s == null || s.isEmpty()) {
@@ -52,7 +52,7 @@ public class DataUtil {
     }
 
     /**
-     * 字符串转化浮点
+     * Convert string to floating point
      */
     public static Float parseFloat(String s) {
         if (s == null || s.isEmpty()) {
@@ -62,7 +62,7 @@ public class DataUtil {
     }
 
     /**
-     * 日期转化
+     * date conversion
      */
     public static Date parseDate(String s) {
         if (s == null || s.isEmpty()) {
@@ -79,7 +79,7 @@ public class DataUtil {
     }
 
     /**
-     * 检测数据是否为空
+     * Check if the data is empty
      */
     public static Boolean isEmpty(Map<String, String> data) {
         if (data == null || data.size() == 0) {
@@ -89,7 +89,7 @@ public class DataUtil {
     }
 
     /**
-     * 检测数据是否为空
+     * Check if the data is empty
      */
     public static Boolean isEmpty(List<Map<String, String>> data) {
         if (data == null || data.size() == 0) {
@@ -106,7 +106,7 @@ public class DataUtil {
     }
 
     /**
-     * 原始值和目标值映射匹配
+     * Original and target value mappings match
      */
     public static Map<String, String> mapData(Map<String, String> rawData, Map<String, String> columnMapping) {
         Map<String, String> data = new HashMap<>();
@@ -123,7 +123,7 @@ public class DataUtil {
     }
 
     /**
-     * 原始值和目标值映射匹配
+     * Original and target value mappings match
      */
     public static List<Map<String, String>> mapData(List<Map<String, String>> list, Map<String, String> columnMapping) {
         List<Map<String, String>> datas = new ArrayList<>();
@@ -137,7 +137,7 @@ public class DataUtil {
     }
 
     /**
-     * 字段值映射
+     * Field value mapping
      */
     public static List<Map<String, String>> mapColumnValue(List<Map<String, String>> datas,
                                                            Map<String, List<ValueMapping>> columanValueMapping) {
@@ -159,7 +159,7 @@ public class DataUtil {
     }
 
     /**
-     * 映射具体值
+     * Map specific values
      */
     public static String mapValue(String value, List<ValueMapping> valueMappings) {
         for (ValueMapping valueMapping : valueMappings) {
@@ -177,7 +177,7 @@ public class DataUtil {
     }
 
     /**
-     * 增加常数列
+     * Add constant column
      */
     public static List<Map<String, String>> constantColumnValue(List<Map<String, String>> datas,
                                                                 Map<String, String> constantColumn) {

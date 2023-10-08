@@ -17,7 +17,6 @@
 package com.oppo.cloud.common.domain.job;
 
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.Data;
 
 import java.util.List;
@@ -27,45 +26,45 @@ import java.util.Set;
 @Data
 public class Datum {
 
-    @ApiModelProperty(value = "节点")
+    @ApiModelProperty(value = "Node")
     Set<Node> nodeList;
 
-    @ApiModelProperty(value = "边")
+    @ApiModelProperty(value = "Edge")
     List<Verge> vergeList;
 
     @Data
     public static class Node {
 
-        @ApiModelProperty(value = "任务编码")
+        @ApiModelProperty(value = "Task id")
         private Integer id;
-        @ApiModelProperty(value = "任务名称")
+        @ApiModelProperty(value = "Task name")
         private String taskName;
-        @ApiModelProperty(value = "flow名称")
+        @ApiModelProperty(value = "Flow name")
         private String flowName;
-        @ApiModelProperty(value = "项目名称")
+        @ApiModelProperty(value = "Project name")
         private String projectName;
-        @ApiModelProperty(value = "任务开始时间")
+        @ApiModelProperty(value = "Task start time")
         private String startTime;
-        @ApiModelProperty(value = "任务结束时间")
+        @ApiModelProperty(value = "Task end time")
         private String endTime;
-        @ApiModelProperty(value = "任务执行周期")
+        @ApiModelProperty(value = "Execution Date")
         private String executionDate;
-        @ApiModelProperty(value = "任务运行运行耗时")
+        @ApiModelProperty(value = "Task execution time consumption")
         private String duration;
-        @ApiModelProperty(value = "运行耗时基线")
+        @ApiModelProperty(value = "Baseline for execution time consumption")
         private String durationBaseLine;
-        @ApiModelProperty(value = "结束时间基线")
+        @ApiModelProperty(value = "Baseline for completion time")
         private String endTimeBaseLine;
-        @ApiModelProperty(value = "是否结束时间异常")
+        @ApiModelProperty(value = "Whether the completion time is abnormal")
         private Boolean endTimeAbnormal = false;
-        @ApiModelProperty(value = "是否运行耗时异常")
+        @ApiModelProperty(value = "Whether the execution time is abnormal")
         private Boolean durationAbnormal = false;
-        @ApiModelProperty(value = "任务运行时间段")
+        @ApiModelProperty(value = "Time period of task execution")
         private String period;
-        @ApiModelProperty(value = "任务状态")
+        @ApiModelProperty(value = "Task state")
         private String taskState;
 
-        // 去重
+        // Duplicate
         @Override
         public boolean equals(Object obj) {
             if (obj == this) {
@@ -90,10 +89,10 @@ public class Datum {
     @Data
     public static class Verge {
 
-        @ApiModelProperty(value = "上游任务")
+        @ApiModelProperty(value = "Upstream task")
         private Integer upstream;
 
-        @ApiModelProperty(value = "下游任务")
+        @ApiModelProperty(value = "Downstream task")
         private Integer downStream;
 
         public Verge(Integer upstream, Integer downStream) {

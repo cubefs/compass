@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 初始化服务
+ * Initialize service
  */
 @Slf4j
 @Component
@@ -81,7 +81,7 @@ public class InitService implements CommandLineRunner {
     private DataSourceConfig dataSourceConfig;
 
     /**
-     * 表数据映射规则
+     * Table data mapping rules
      */
     private Map<String, Mapping> tableMapping;
 
@@ -94,7 +94,7 @@ public class InitService implements CommandLineRunner {
             return;
         }
 
-        // 可能有并发问题, 异常退出
+        // There may be concurrency issues and abnormal exit.
         try {
             TaskSyncerInit taskSyncerInit = new TaskSyncerInit();
             taskSyncerInit.setIsInit(1);
@@ -141,7 +141,7 @@ public class InitService implements CommandLineRunner {
         if (mapping == null) {
             log.error("can not find `flow` table mapping");
         } else {
-            // 保存flow数据表
+            // Save flow data table
             initTable(mapping, (Map<String, String> data) -> {
                 Flow flow = (Flow) DataUtil.parseInstance(data, FlowBuilder.class);
                 try {
@@ -171,7 +171,7 @@ public class InitService implements CommandLineRunner {
     }
 
     /**
-     * 初始化用户表
+     * Initialize user table
      */
     public void initTable(Mapping mapping, DataStore dataStore) {
         int page = 1;
@@ -190,10 +190,10 @@ public class InitService implements CommandLineRunner {
 
             datas = DataUtil.mapData(datas, mapping.getColumnMapping());
 
-            // 值映射
+            // value mapping
             DataUtil.mapColumnValue(datas, mapping.getColumnValueMapping());
 
-            // 增加常数列
+            // Add constant column
             DataUtil.constantColumnValue(datas, mapping.getConstantColumn());
 
             for (Map<String, String> data : datas) {
@@ -221,7 +221,7 @@ public class InitService implements CommandLineRunner {
                         }
                     }
                 }
-                // 保存数据
+                // Save data
                 dataStore.call(data);
             }
 
@@ -252,14 +252,14 @@ public class InitService implements CommandLineRunner {
     }
 
     /**
-     * 构建查询sql
+     * Build query sql
      */
     public String buildQuery(String table, Integer page, Integer pageSize) {
         return String.format("SELECT * FROM %s LIMIT %d,%d", table, (page - 1) * pageSize, pageSize);
     }
 
     /**
-     * 获取表字段映射规则
+     * Get table field mapping rules
      */
     public Mapping getTableMapping(String table) {
         if (this.tableMapping == null) {
@@ -269,7 +269,7 @@ public class InitService implements CommandLineRunner {
     }
 
     /**
-     * 加载数据表映射规则
+     * Load data table mapping rules
      */
     public Map<String, Mapping> loadTableMapping() {
         if (this.tableMapping == null) {
@@ -279,7 +279,7 @@ public class InitService implements CommandLineRunner {
     }
 
     /**
-     * 初始化表映射
+     * Initialization table mapping
      */
     public synchronized void initTableMapping() {
         this.tableMapping = new HashMap<>();
@@ -289,7 +289,7 @@ public class InitService implements CommandLineRunner {
     }
 
     /**
-     * 数据存储接口
+     * Data storage interface
      */
     interface DataStore {
 

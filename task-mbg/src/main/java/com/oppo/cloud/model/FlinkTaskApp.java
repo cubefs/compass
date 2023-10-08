@@ -21,40 +21,40 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class FlinkTaskApp implements Serializable {
-    @ApiModelProperty(value = "实时任务id")
+    @ApiModelProperty(value = "id")
     private Integer id;
 
-    @ApiModelProperty(value = "用户名")
+    @ApiModelProperty(value = "Username")
     private String username;
 
-    @ApiModelProperty(value = "用户记录id")
+    @ApiModelProperty(value = "User id")
     private Integer userId;
 
-    @ApiModelProperty(value = "项目名")
+    @ApiModelProperty(value = "Project name")
     private String projectName;
 
-    @ApiModelProperty(value = "项目id")
+    @ApiModelProperty(value = "Project id")
     private Integer projectId;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "Flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "工作流id")
+    @ApiModelProperty(value = "Flow id")
     private Integer flowId;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "Task name")
     private String taskName;
 
-    @ApiModelProperty(value = "任务id")
+    @ApiModelProperty(value = "Task id")
     private Integer taskId;
 
-    @ApiModelProperty(value = "任务运行状态,running,finish")
+    @ApiModelProperty(value = "Task state: running, finish")
     private String taskState;
 
     @ApiModelProperty(value = "task instance id")
     private Integer taskInstanceId;
 
-    @ApiModelProperty(value = "task instance 执行周期")
+    @ApiModelProperty(value = "Task instance execution time")
     private Date executionTime;
 
     @ApiModelProperty(value = "appId")
@@ -63,70 +63,70 @@ public class FlinkTaskApp implements Serializable {
     @ApiModelProperty(value = "flink track url")
     private String flinkTrackUrl;
 
-    @ApiModelProperty(value = "yarn获取的总共分配mb")
+    @ApiModelProperty(value = "Total allocated mb acquired by yarn")
     private Integer allocatedMb;
 
-    @ApiModelProperty(value = "yarn获取的总共分配vcore")
+    @ApiModelProperty(value = "The total allocated vcore obtained by yarn")
     private Integer allocatedVcores;
 
-    @ApiModelProperty(value = "yarn获取的总共分配容器")
+    @ApiModelProperty(value = "The total allocated containers obtained by yarn")
     private Integer runningContainers;
 
-    @ApiModelProperty(value = "执行引擎")
+    @ApiModelProperty(value = "Engine?")
     private String engineType;
 
-    @ApiModelProperty(value = "运行耗时")
+    @ApiModelProperty(value = "Running duration")
     private Double duration;
 
-    @ApiModelProperty(value = "开始时间")
+    @ApiModelProperty(value = "Start time")
     private Date startTime;
 
-    @ApiModelProperty(value = "结束时间")
+    @ApiModelProperty(value = "End time")
     private Date endTime;
 
-    @ApiModelProperty(value = "cpu消耗(vcore-seconds)")
+    @ApiModelProperty(value = "CPU consuming(vcore-seconds)")
     private Float vcoreSeconds;
 
-    @ApiModelProperty(value = "内存消耗(GB-seconds)")
+    @ApiModelProperty(value = "Memory consuming(GB-seconds)")
     private Float memorySeconds;
 
-    @ApiModelProperty(value = "运行队列")
+    @ApiModelProperty(value = "Queue")
     private String queue;
 
-    @ApiModelProperty(value = "集群名称")
+    @ApiModelProperty(value = "Cluster")
     private String clusterName;
 
-    @ApiModelProperty(value = "重试次数")
+    @ApiModelProperty(value = "Times of retries")
     private Integer retryTimes;
 
-    @ApiModelProperty(value = "执行用户")
+    @ApiModelProperty(value = "Executing user")
     private String executeUser;
 
-    @ApiModelProperty(value = "yarn诊断信息")
+    @ApiModelProperty(value = "Yarn diagnosis")
     private String diagnosis;
 
-    @ApiModelProperty(value = "flink 并行度")
+    @ApiModelProperty(value = "Flink parallel")
     private Integer parallel;
 
-    @ApiModelProperty(value = "flink tm slot")
+    @ApiModelProperty(value = "Flink tm slot")
     private Integer tmSlot;
 
-    @ApiModelProperty(value = "flink tm core")
+    @ApiModelProperty(value = "Flink tm core")
     private Integer tmCore;
 
-    @ApiModelProperty(value = "flink tm_mem")
+    @ApiModelProperty(value = "Flink tm_mem")
     private Integer tmMem;
 
-    @ApiModelProperty(value = "flink jm_mem")
+    @ApiModelProperty(value = "Flink jm_mem")
     private Integer jmMem;
 
-    @ApiModelProperty(value = "job name")
+    @ApiModelProperty(value = "Job name")
     private String jobName;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "Create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "Update time")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;

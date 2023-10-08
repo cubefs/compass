@@ -21,20 +21,20 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 诊断规则报告
+ * Diagnosis rules report.
  */
 @Data
 public class DiagnosisRuleReport {
     /**
-     * 诊断规则图表
+     * Diagnosis rules chart.
      */
     private List<IDiagnosisRuleChart> IDiagnosisRuleCharts;
     /**
-     * 标题
+     * Title
      */
     private String title;
     /**
-     * 结论
+     * Conclusion
      */
     private String conclusion;
 }

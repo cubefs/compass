@@ -21,19 +21,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 堆使用
+ * Tenured Heap Usage
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TenuredUsed {
-
     /**
-     * 时间戳
+     * timestamp
      */
     private Long timestamp;
     /**
-     * 使用值
+     * used value
      */
     private Integer used;
 }

@@ -21,6 +21,7 @@ import com.oppo.cloud.common.constant.LogGroupType;
 import com.oppo.cloud.common.domain.job.App;
 import com.oppo.cloud.common.domain.job.LogInfo;
 import com.oppo.cloud.common.domain.job.LogRecord;
+import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,5 +66,4 @@ public class TaskParam {
         this.app = app;
         this.logInfo = logInfo;
     }
-
 }

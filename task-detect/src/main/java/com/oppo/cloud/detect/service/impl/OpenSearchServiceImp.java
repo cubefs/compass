@@ -64,7 +64,7 @@ public class OpenSearchServiceImp implements OpenSearchService {
 
 
     /**
-     * 构建通用查询条件
+     * Build general query conditions.
      */
     @Override
     public SearchSourceBuilder genSearchBuilder(Map<String, Object> termQuery, Map<String, Object[]> rangeConditions,
@@ -72,24 +72,24 @@ public class OpenSearchServiceImp implements OpenSearchService {
                                                 Map<String, Object> or) {
         SearchSourceBuilder builder = new SearchSourceBuilder();
         BoolQueryBuilder boolQuery = new BoolQueryBuilder();
-        // 查询条件
+        // Term query
         for (String key : termQuery.keySet()) {
             Object value = termQuery.get(key);
             if (value == null) {
-                // null值查询
+                // null value query
                 boolQuery.mustNot(QueryBuilders.existsQuery(key));
             } else if ("".equals(value)) {
-                // 不匹配任何有效字符串
+                // Does not match any valid string.
                 boolQuery.mustNot(QueryBuilders.wildcardQuery(key, "*"));
             } else if (value instanceof java.util.List) {
-                // 列表查询
+                // Field query
                 boolQuery.filter(QueryBuilders.termsQuery(key, (List<String>) value));
             } else {
-                // 单字符串查询
+                // Single string query.
                 boolQuery.filter(QueryBuilders.termsQuery(key, value));
             }
         }
-        // or条件查询[xx and (a=1 or c=2)]
+        // Or conditional query [xx and (a=1 or c=2)]
         if (or != null) {
             BoolQueryBuilder orQuery = new BoolQueryBuilder();
             for (String key : or.keySet()) {
@@ -100,7 +100,7 @@ public class OpenSearchServiceImp implements OpenSearchService {
             }
             boolQuery.must(orQuery);
         }
-        // 范围查询
+        // Range query.
         if (rangeConditions != null) {
             for (String key : rangeConditions.keySet()) {
                 RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(key);
@@ -125,10 +125,10 @@ public class OpenSearchServiceImp implements OpenSearchService {
     }
 
     /**
-     * 根据查询条件对象和索引查询原始数据
+     * Query raw data based on the query condition builder and indexes.
      *
-     * @param builder 查询条件
-     * @param indexes 查询索引
+     * @param builder query condition
+     * @param indexes query indexes
      * @return
      * @throws Exception
      */
@@ -143,7 +143,7 @@ public class OpenSearchServiceImp implements OpenSearchService {
     }
 
     /**
-     * 查询YarnApp数据
+     * Query YarnApp data.
      */
     @Override
     public YarnApp searchYarnApp(String applicationId) throws Exception {
@@ -172,7 +172,7 @@ public class OpenSearchServiceImp implements OpenSearchService {
 
 
     /**
-     * 查询SparkApp数据
+     * Query SparkApp data.
      */
     @Override
     public SparkApp searchSparkApp(String applicationId) throws Exception {
@@ -212,7 +212,7 @@ public class OpenSearchServiceImp implements OpenSearchService {
     }
 
     /**
-     * 根据查询条件和索引查询数据
+     * Query data based on the query conditions and index.
      */
     @Override
     public <T extends OpenSearchInfo> List<T> find(Class<T> itemType, SearchSourceBuilder builder,

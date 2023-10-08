@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * 结束时间检测器
+ * End time detector.
  */
 @Order(2)
 @Slf4j
@@ -49,7 +49,7 @@ public class EndTimeAbnormal extends DetectServiceImpl {
 
     @Override
     public void detect(JobAnalysis jobAnalysis) throws Exception {
-        // 失败任务不进行运行时长检测
+        // Failed tasks are not subject to runtime duration detection.
         if (jobAnalysis.getTaskState().equals(TaskStateEnum.fail.name())) {
             return;
         }
@@ -83,7 +83,7 @@ public class EndTimeAbnormal extends DetectServiceImpl {
     }
 
     /**
-     * 获取上游任务的基线树
+     * Get the baseline tree of the upstream task.
      *
      * @param detectJobAnalysis
      * @return
@@ -105,7 +105,7 @@ public class EndTimeAbnormal extends DetectServiceImpl {
     }
 
     /**
-     * 构造基线节点
+     * Construct a baseline node.
      *
      * @param detectJobAnalysis
      * @return

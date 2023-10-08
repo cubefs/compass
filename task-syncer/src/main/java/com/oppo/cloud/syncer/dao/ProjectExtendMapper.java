@@ -20,16 +20,16 @@ import com.oppo.cloud.mapper.ProjectMapper;
 import com.oppo.cloud.model.Project;
 
 /**
- * 扩展项目Mapper
+ * Project Extended Mapper
  */
 public interface ProjectExtendMapper extends ProjectMapper {
 
     /**
-     * 保存数据
+     * Save data
      */
     int save(Project record);
     /**
-     * 筛选保存数据
+     * Save selective data
      */
     int saveSelective(Project record);
 }

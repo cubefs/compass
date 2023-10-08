@@ -22,23 +22,25 @@ import java.util.Date;
 
 public class TaskDatum implements Serializable {
 
-    @ApiModelProperty(value = "任务执行id")
+    @ApiModelProperty(value = "id")
     private Integer id;
 
-    @ApiModelProperty(value = "区域")
+    @ApiModelProperty(value = "Project name")
     private String projectName;
 
+    @ApiModelProperty(value = "Flow name")
     private String flowName;
 
+    @ApiModelProperty(value = "Task name")
     private String taskName;
 
-    @ApiModelProperty(value = "执行周期")
+    @ApiModelProperty(value = "Execution cycle")
     private Date executionDate;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "Create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "基线树")
+    @ApiModelProperty(value = "Baseline tree")
     private String baseline;
 
     private static final long serialVersionUID = 1L;

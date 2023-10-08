@@ -93,11 +93,11 @@ public class ParamUtil {
 
         logRecord.setJobAnalysis(jobAnalysis);
 
-        Map<String, TaskApp> taskAppList = new HashMap<>();
+        Map<String, TaskApp> taskAppMap = new HashMap<>();
         TaskApp taskApp = new TaskApp();
         taskApp.setApplicationId("appId");
         String str =
-                "User class threw exception: java.sql.SQLException: Access denied for user 'ads_da_user'@'10.39.12.161' (using password: YES)";
+                "User class threw exception: java.sql.SQLException: Access denied for user 'user'@'localhost' (using password: YES)";
         taskApp.setDiagnostics(str);
         taskApp.setQueue("root");
         taskApp.setProjectName("test");
@@ -107,8 +107,8 @@ public class ParamUtil {
         taskApp.setFinishTime(new Date());
 
         taskApp.setExecutionDate(new Date());
-        taskAppList.put("appId", taskApp);
-        logRecord.setTaskAppList(taskAppList);
+        taskAppMap.put("appId", taskApp);
+        logRecord.setTaskAppMap(taskAppMap);
 
         List<App> apps = new ArrayList<>();
         App app = new App();

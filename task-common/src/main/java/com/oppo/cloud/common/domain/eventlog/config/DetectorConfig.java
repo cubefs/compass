@@ -20,7 +20,7 @@ import com.oppo.cloud.common.domain.mr.config.*;
 import lombok.Data;
 
 /**
- * 异常检测各项阈值
+ * Threshold values for anomaly detection
  */
 @Data
 public class DetectorConfig {
@@ -31,92 +31,92 @@ public class DetectorConfig {
     private SparkEnvironmentConfig sparkEnvironmentConfig;
 
     /**
-     * 推测执行Task配置
+     * Speculative execution of task configuration
      */
     private SpeculativeTaskConfig speculativeTaskConfig;
 
     /**
-     * 内存浪费配置
+     * Memory waste configuration
      */
     private MemWasteConfig memWasteConfig;
 
     /**
-     * CPU浪费配置
+     * CPU waste configuration
      */
     private CpuWasteConfig cpuWasteConfig;
 
     /**
-     * Job耗时异常配置
+     * Job duration anomaly configuration
      */
     private JobDurationConfig jobDurationConfig;
 
     /**
-     * Stage耗时异常配置
+     * Stage duration anomaly configuration
      */
     private StageDurationConfig stageDurationConfig;
 
     /**
-     * Task长尾配置
+     * Task long-tail configuration
      */
     private TaskDurationConfig taskDurationConfig;
 
     /**
-     * hdfs卡顿配置
+     * HDFS stuck configuration
      */
     private HdfsStuckConfig hdfsStuckConfig;
 
     /**
-     * 全局排序配置
+     * Global sorting configuration
      */
     private GlobalSortConfig globalSortConfig;
 
     /**
-     * 大表扫描配置
+     * Large table scan configuration
      */
     private LargeTableScanConfig largeTableScanConfig;
 
     /**
-     * OOM预警
+     * OOM warning configuration
      */
     private OOMWarnConfig oomWarnConfig;
 
     /**
-     * 数据倾斜配置
+     * Data skew configuration
      */
     private DataSkewConfig dataSkewConfig;
     /**
-     * MapReduce env config
+     * MapReduce env configuration
      */
 
     private MREnvironmentConfig mrEnvironmentConfig;
 
     /**
-     * MapReduce memory config
+     * MapReduce memory configuration
      */
     private MRMemWasteConfig mrMemWasteConfig;
 
     /**
-     * MapReduce large table config
+     * MapReduce large table configuration
      */
     private MRLargeTableScanConfig mrLargeTableScanConfig;
 
     /**
-     * MapReduce data skew config
+     * MapReduce data skew configuration
      */
     private MRDataSkewConfig mrDataSkewConfig;
 
     /**
-     * MapReduce speculative task config
+     * MapReduce speculative task configuration
      */
     private MRSpeculativeTaskConfig mrSpeculativeTaskConfig;
 
     /**
-     * MapReduce task duration config
+     * MapReduce task duration configuration
      */
     private MRTaskDurationConfig mrTaskDurationConfig;
 
     /**
-     * MapReduce gc config
+     * MapReduce gc configuration
      */
     private MRGCConfig mrGCConfig;
 }

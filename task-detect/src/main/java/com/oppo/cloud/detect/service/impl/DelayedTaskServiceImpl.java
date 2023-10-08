@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 延迟任务处理
+ * Delayed task processing service.
  */
 @Slf4j
 @Service
@@ -56,7 +56,7 @@ public class DelayedTaskServiceImpl implements DelayedTaskService {
     private RedisScript<Object> delayTaskedScript;
 
     /**
-     * 延迟队列任务
+     * Push job to delayed queue.
      */
     @Override
     public void pushDelayedQueue(JobAnalysis detectJobAnalysis, String handledApps, String exception) {
@@ -68,7 +68,7 @@ public class DelayedTaskServiceImpl implements DelayedTaskService {
     }
 
     /**
-     * 延迟队列任务
+     * Re-delay Queue Task
      *
      */
     @Override

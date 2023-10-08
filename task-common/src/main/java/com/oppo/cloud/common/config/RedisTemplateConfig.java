@@ -31,11 +31,11 @@ public class RedisTemplateConfig {
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
 
-        // 创建redis模板对象
+        // Create a Redis template object.
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        // 设置连接工厂
+        // Set Connection Factory.
         redisTemplate.setConnectionFactory(factory);
-        // Redis Key字符串序列化
+        // Redis Key serializer
         redisTemplate.setKeySerializer(new StringRedisSerializer());
 
         redisTemplate.setValueSerializer(new StringRedisSerializer());
@@ -43,7 +43,7 @@ public class RedisTemplateConfig {
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
 
         redisTemplate.setHashValueSerializer(new StringRedisSerializer());
-        // Redis 配置设置完成
+        // Redis configuration settings have been completed
         redisTemplate.afterPropertiesSet();
 
         return redisTemplate;

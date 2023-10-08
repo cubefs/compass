@@ -19,16 +19,16 @@ package com.oppo.cloud.common.domain.flink.enums;
 import lombok.Getter;
 
 /**
- * 诊断规则是否有建议
+ * Whether the diagnosis rules have suggestions.
  */
 @Getter
 public enum DiagnosisRuleHasAdvice {
     /**
-     * 无建议
+     * No advice
      */
     NO_ADVICE(0, "没有建议"),
     /**
-     * 有建议
+     * Has advice
      */
     HAS_ADVICE(1, "有建议");
     private final int code;

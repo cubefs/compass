@@ -23,13 +23,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 /**
- * 日志解析管理
+ * Log parsing management
  */
 @Slf4j
 public class ParserManager {
 
     /**
-     * 默认单线程处理
+     * By default, process in a single thread.
      */
     public static Map<String, ParserAction> parse(String[] lines, List<ParserAction> parserActions) {
         if (lines == null || parserActions == null) {
@@ -46,13 +46,13 @@ public class ParserManager {
     }
 
     /**
-     * 多线程处理，传入线程池
+     *  Perform multi-threaded processing and pass it to the thread pool.
      */
     public static Map<String, ParserAction> parse(String[] lines, List<ParserAction> parserActions, Executor executor) {
         if (executor == null) {
             return parse(lines, parserActions);
         }
-        // 获取解析到的根结点
+        // Get the parsed actions to the root node.
         Map<String, ParserAction> rootActions = parseRootAction(lines, parserActions);
 
         CompletableFuture[] array = new CompletableFuture[rootActions.size()];
@@ -75,7 +75,7 @@ public class ParserManager {
     }
 
     /**
-     * 解析根结点action
+     * Get the parsed root node.
      */
     public static Map<String, ParserAction> parseRootAction(String[] lines, List<ParserAction> parserActions) {
         TextParser headTextParser = new TextParser(parserActions);
@@ -86,7 +86,7 @@ public class ParserManager {
     }
 
     /**
-     * 解析子节点action
+     * Parse sub-node actio
      */
     public static void parseChildActions(ParserAction root) {
         Deque<ParserAction> nodeDeque = new LinkedList<>();
@@ -111,12 +111,12 @@ public class ParserManager {
     }
 
     /**
-     * 子节点解析
+     * Sub-node parsing
      */
     private static void parseChildNode(ParserAction node) {
         TextParser nextParser = new TextParser(node);
         List<ParserResult> rootResults = node.getRootResults();
-        // 针对block合并行
+        // Merge lines for block
         if (node.getParserType().equals(ParserType.JOIN)) {
             rootResults = setJoinResults(rootResults);
         }
@@ -128,7 +128,7 @@ public class ParserManager {
     }
 
     /**
-     * 块文本转字符串
+     * Convert block text to string.
      */
     private static List<ParserResult> setJoinResults(List<ParserResult> parserResults) {
         List<ParserResult> results = new ArrayList<>();

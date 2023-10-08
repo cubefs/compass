@@ -21,239 +21,240 @@ USE compass;
 -- Table structure for user
 -- ----------------------------
 CREATE TABLE `user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户记录id',
-  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id,跟其他系统保持一致',
-  `username` varchar(64) DEFAULT NULL COMMENT '用户名',
-  `password` varchar(256) DEFAULT NULL COMMENT '用户密码',
-  `is_admin` int(1) DEFAULT '0' COMMENT '是否为管理员',
-  `icon` varchar(500) DEFAULT NULL COMMENT '头像',
-  `email` varchar(100) DEFAULT NULL COMMENT '邮箱',
-  `phone` varchar(64) DEFAULT NULL COMMENT '电话',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
-  `status` int(1) DEFAULT '1' COMMENT '账号启用状态: 0->禁用; 1->启用',
-  `scheduler_type` varchar(64) DEFAULT NULL COMMENT '调度器类型',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'User record id',
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT 'User ID, consistent with other systems',
+  `username` varchar(64) DEFAULT NULL COMMENT 'Username',
+  `password` varchar(256) DEFAULT NULL COMMENT 'Password',
+  `is_admin` int(1) DEFAULT '0' COMMENT 'Is it an administrator',
+  `icon` varchar(500) DEFAULT NULL COMMENT 'Icon: avatar',
+  `email` varchar(100) DEFAULT NULL COMMENT 'Email',
+  `phone` varchar(64) DEFAULT NULL COMMENT 'Phone',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update time',
+  `login_time` datetime DEFAULT NULL COMMENT 'Last login time',
+  `status` int(1) DEFAULT '1' COMMENT 'Account activation status: 0->disabled; 1->enabled',
+  `scheduler_type` varchar(64) DEFAULT NULL COMMENT 'scheduler type: dolphin, airflow, etc',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_user_username` (`username`,`scheduler_type`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User table';
 
 -- ----------------------------
 -- Table structure for project
 -- ----------------------------
 CREATE TABLE `project` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '项目id',
-  `project_name` varchar(64) DEFAULT NULL COMMENT '项目名',
-  `description` varchar(2048) DEFAULT NULL COMMENT '项目描述',
-  `user_id` int(11) DEFAULT NULL COMMENT '创建者id',
-  `project_status` int(1) DEFAULT '1' COMMENT '项目启用状态: 0->禁用; 1->启用',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Project id',
+  `project_name` varchar(64) DEFAULT NULL COMMENT 'Project name',
+  `description` varchar(2048) DEFAULT NULL COMMENT 'Description',
+  `user_id` int(11) DEFAULT NULL COMMENT 'Creator id',
+  `project_status` int(1) DEFAULT '1' COMMENT 'Project enable status: 0->disabled; 1->enabled',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update time',
   PRIMARY KEY (`id`),
   KEY `idx_project` (`project_name`),
   KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '项目表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'Project table';
 
 -- ----------------------------
 -- Table structure for flow （dag/process）
 -- ----------------------------
 CREATE TABLE `flow` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '工作流id',
-  `flow_name` varchar(64) DEFAULT NULL COMMENT '工作流名称',
-  `description` varchar(2048) DEFAULT NULL COMMENT '工作流描述',
-  `user_id` int(11) DEFAULT NULL COMMENT '工作流创建者id',
-  `flow_status` int(1) DEFAULT '1' COMMENT '工作流启用状态: 0->禁用; 1->启用',
-  `project_id` int(11) DEFAULT NULL COMMENT '工作流所属项目id',
-  `project_name` varchar(64) DEFAULT NULL COMMENT '项目名',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Flow id',
+  `flow_name` varchar(64) DEFAULT NULL COMMENT 'Flow name',
+  `description` varchar(2048) DEFAULT NULL COMMENT 'Description',
+  `user_id` int(11) DEFAULT NULL COMMENT 'Flow creator id',
+  `flow_status` int(1) DEFAULT '1' COMMENT 'Flow enable status: 0->disabled; 1->enabled',
+  `project_id` int(11) DEFAULT NULL COMMENT 'Project id',
+  `project_name` varchar(64) DEFAULT NULL COMMENT 'Project name',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update time',
   PRIMARY KEY (`id`),
   KEY `idx_flow` (`flow_name`),
   KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '工作流表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'Flow table';
 
 -- ----------------------------
 -- Table structure for task
 -- ----------------------------
 CREATE TABLE `task` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '任务id',
-  `project_name` varchar(64) DEFAULT NULL COMMENT '项目名',
-  `project_id` int(11) DEFAULT NULL COMMENT '项目记录id',
-  `flow_name` varchar(64) DEFAULT NULL COMMENT '工作流名称',
-  `flow_id`  int(11) DEFAULT NULL COMMENT '工作流记录id',
-  `task_name` varchar(64) DEFAULT NULL COMMENT '任务名称',
-  `description` varchar(2048) DEFAULT NULL COMMENT '任务描述',
-  `user_id` int(11) DEFAULT NULL COMMENT '任务创建者id',
-  `task_type` varchar(50) DEFAULT NULL COMMENT '任务类型: SHELL, PYTHON, SPARK',
-  `retries` int(11) DEFAULT NULL COMMENT '失败重试次数',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'task id',
+  `project_name` varchar(64) DEFAULT NULL COMMENT 'Project name',
+  `project_id` int(11) DEFAULT NULL COMMENT 'Project id',
+  `flow_name` varchar(64) DEFAULT NULL COMMENT 'Flow name',
+  `flow_id`  int(11) DEFAULT NULL COMMENT 'Flow id',
+  `task_name` varchar(64) DEFAULT NULL COMMENT 'Task name',
+  `description` varchar(2048) DEFAULT NULL COMMENT 'Description',
+  `user_id` int(11) DEFAULT NULL COMMENT 'Task creator id',
+  `task_type` varchar(50) DEFAULT NULL COMMENT 'Task type: SHELL, PYTHON, SPARK',
+  `retries` int(11) DEFAULT NULL COMMENT 'Number of failed retries',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update time',
    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'Task table';
 
 -- ----------------------------
 -- Table structure for task_instance
 -- ----------------------------
 CREATE TABLE `task_instance`(
-   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '任务执行id',
-   `project_name` varchar(64) DEFAULT NULL COMMENT '项目名',
-   `flow_name` varchar(64) DEFAULT NULL COMMENT '工作流名称',
-   `task_name` varchar(64) DEFAULT NULL COMMENT '任务名称',
-   `execution_time` datetime(6) DEFAULT NULL COMMENT '任务执行周期',
-   `start_time` timestamp(6) NULL DEFAULT NULL COMMENT '任务开始时间',
-   `end_time`   timestamp(6) NULL DEFAULT NULL COMMENT '任务结束时间',
-   `task_state` varchar(64) DEFAULT NULL COMMENT '任务执行状态',
-   `task_type`  varchar(64) DEFAULT NULL COMMENT '任务类型',
-   `retry_times` int(11) DEFAULT NULL COMMENT '任务重试第n次',
-   `max_retry_times` int(2) DEFAULT NULL COMMENT '任务执行最大重试次数',
-   `worker_group` varchar(64) DEFAULT NULL COMMENT '任务执行的work group',
-   `trigger_type` varchar(32) DEFAULT NULL COMMENT '任务触发类型：manual(手动触发), schedule(调触发)',
-   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Task instance id',
+   `project_name` varchar(64) DEFAULT NULL COMMENT 'Project name',
+   `flow_name` varchar(64) DEFAULT NULL COMMENT 'Flow name',
+   `task_name` varchar(64) DEFAULT NULL COMMENT 'Task name',
+   `execution_time` datetime(6) DEFAULT NULL COMMENT 'Task execution cycle',
+   `start_time` timestamp(6) NULL DEFAULT NULL COMMENT 'Task start time',
+   `end_time`   timestamp(6) NULL DEFAULT NULL COMMENT 'Task end time',
+   `task_state` varchar(64) DEFAULT NULL COMMENT 'Task state',
+   `task_type`  varchar(64) DEFAULT NULL COMMENT 'Task type',
+   `retry_times` int(11) DEFAULT NULL COMMENT 'Task retry nth time',
+   `max_retry_times` int(2) DEFAULT NULL COMMENT 'Maximum number of retries for task execution',
+   `worker_group` varchar(64) DEFAULT NULL COMMENT 'The work group where the task is executed',
+   `trigger_type` varchar(32) DEFAULT NULL COMMENT 'Task trigger type: manual (manual trigger), schedule (scheduled trigger)',
+   `create_time` datetime DEFAULT NULL COMMENT 'Create time',
+   `update_time` datetime DEFAULT NULL COMMENT 'Update time',
    PRIMARY KEY (`id`),
    UNIQUE KEY `idx_project_flow_task_execution_date_retry` (`project_name`, `flow_name`, `task_name`, `execution_time`, `retry_times`),
    KEY `idx_flow_task_execution` (`flow_name`,`task_name`,`execution_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '任务执行表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'Task instance table';
 
 -- ----------------------------
 -- Table structure for task_application
 -- ----------------------------
 CREATE TABLE `task_application` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '异常任务id',
-  `application_id` varchar(64) DEFAULT NULL COMMENT 'appId',
-  `task_name` varchar(64) DEFAULT NULL COMMENT '任务名称',
-  `flow_name` varchar(64) DEFAULT NULL COMMENT '工作流名称',
-  `project_name` varchar(64) DEFAULT NULL COMMENT '项目名称',
-  `execute_time` datetime DEFAULT NULL COMMENT '任务计划执行时间',
-  `retry_times` int(2) DEFAULT NULL COMMENT '任务重试第n次',
-  `log_path` text DEFAULT NULL COMMENT '任务调度器日志,多个用逗号隔开',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Task application record id',
+  `application_id` varchar(64) DEFAULT NULL COMMENT 'AppId(yarn application)',
+  `task_name` varchar(64) DEFAULT NULL COMMENT 'Task name',
+  `flow_name` varchar(64) DEFAULT NULL COMMENT 'Flow name',
+  `project_name` varchar(64) DEFAULT NULL COMMENT 'Project name',
+  `task_type` varchar(32) DEFAULT NULL COMMENT 'Task type(Spark、Flink)',
+  `execute_time` datetime DEFAULT NULL COMMENT 'Task plan execution time',
+  `retry_times` int(2) DEFAULT NULL COMMENT 'Task retry nth time',
+  `log_path` text DEFAULT NULL COMMENT 'Task scheduler log, multiple separated by commas',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update time',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_project_flow_task_appId` (`project_name`,`flow_name`,`task_name`,`execute_time`,`application_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='任务application表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Task application table';
 
 -- ----------------------------
 -- Table structure for task_blocklist
 -- ----------------------------
 CREATE TABLE `blocklist` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '任务白名单id',
-  `component` varchar(64) DEFAULT NULL COMMENT '组件',
-  `project_name` varchar(64) DEFAULT NULL COMMENT '项目名称',
-  `flow_name` varchar(64) DEFAULT NULL COMMENT '工作流名称',
-  `task_name` varchar(64) DEFAULT NULL COMMENT '任务名称',
-  `username` varchar(64) DEFAULT NULL COMMENT '添加用户',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Block list id',
+  `component` varchar(64) DEFAULT NULL COMMENT 'Component(Spark, Flink etc)',
+  `project_name` varchar(64) DEFAULT NULL COMMENT 'Project name',
+  `flow_name` varchar(64) DEFAULT NULL COMMENT 'Flow name',
+  `task_name` varchar(64) DEFAULT NULL COMMENT 'Task name',
+  `username` varchar(64) DEFAULT NULL COMMENT 'Username',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update time',
+  `deleted` int(11) NOT NULL DEFAULT '0' COMMENT 'Is deleted',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_project_flow_task_component` (`project_name`,`flow_name`,`task_name`,`component`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='任务白名单表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Task block list table';
 
 
 -- ----------------------------
 -- Table structure for task_syncer_init
 -- ----------------------------
 CREATE TABLE `task_syncer_init` (
-    is_init int(11) NOT NULL DEFAULT '0' COMMENT 'task_syncer应用是否已初始化： 0 -> 否, 1 -> 是',
+    is_init int(11) NOT NULL DEFAULT '0' COMMENT 'Whether the task_syncer application has been initialized: 0 -> No, 1 -> Yes',
     UNIQUE KEY `idx_is_init` (`is_init`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'task-syncer应用初始化表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'task-syncer application initialization table';
 
 
 -- ----------------------------
 -- Table structure for task_diagnose_advice
 -- ----------------------------
 CREATE TABLE `task_diagnosis_advice` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `log_type` varchar(64) DEFAULT NULL COMMENT '日志类型',
-  `parent_action` varchar(64) DEFAULT NULL COMMENT '父节点异常事件',
-  `action` varchar(64) DEFAULT NULL COMMENT '异常事件',
-  `description` varchar(255) DEFAULT NULL COMMENT '异常事件描述',
-  `abnormal_advice` text COMMENT '建议（其中的变量用 {变量名} 表示）',
-  `rule` text COMMENT '匹配规则',
-  `variables` varchar(255) DEFAULT NULL COMMENT '变量名列表( , 为分割符)',
-  `category` varchar(255) DEFAULT NULL COMMENT '异常类型',
-  `deleted` int(11) DEFAULT '0' COMMENT '是否删除',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `log_type` varchar(64) DEFAULT NULL COMMENT 'Log type',
+  `parent_action` varchar(64) DEFAULT NULL COMMENT 'Parent node exception event',
+  `action` varchar(64) DEFAULT NULL COMMENT 'Exceptional event',
+  `description` varchar(255) DEFAULT NULL COMMENT 'Exceptional description',
+  `abnormal_advice` text COMMENT 'Advice (variables are represented by {variable name})',
+  `rule` text COMMENT 'Matching rule',
+  `variables` varchar(255) DEFAULT NULL COMMENT 'Variable name list ( , is the delimiter)',
+  `category` varchar(255) DEFAULT NULL COMMENT 'Exception type',
+  `deleted` int(11) DEFAULT '0' COMMENT 'Is deleted',
   `normal_advice` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_logType_action` (`log_type`,`action`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='诊断建议';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Task advice table';
 
 -- ----------------------------
 -- Table structure for task_datum
 -- ----------------------------
 CREATE TABLE `task_datum` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '任务执行id',
-  `project_name` varchar(64) DEFAULT NULL COMMENT '区域',
-  `flow_name` varchar(180) DEFAULT NULL,
-  `task_name` varchar(180) DEFAULT NULL,
-  `execution_date` datetime DEFAULT NULL COMMENT '执行周期',
-  `baseline` text COMMENT '基线树',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `project_name` varchar(64) DEFAULT NULL COMMENT 'Project name',
+  `flow_name` varchar(180) DEFAULT NULL COMMENT 'Flow name',
+  `task_name` varchar(180) DEFAULT NULL COMMENT 'Task name',
+  `execution_date` datetime DEFAULT NULL COMMENT 'Execution cycle',
+  `baseline` text COMMENT 'Baseline tree',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create time',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_projectName_flowName_taskName_executionDate` (`project_name`,`flow_name`,`task_name`,`execution_date`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='任务基线运行表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Task baseline run table';
 
 -- ----------------------------
 -- Flink: Table structure for flink_app
 -- ----------------------------
  CREATE TABLE `flink_task` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '实时任务id',
-  `username` varchar(64) DEFAULT NULL COMMENT '用户名',
-  `user_id` int(11) DEFAULT NULL COMMENT '用户记录id',
-  `project_name` varchar(64) DEFAULT NULL COMMENT '项目名',
-  `project_id` int(11) DEFAULT NULL COMMENT '项目id',
-  `flow_name` varchar(64) DEFAULT NULL COMMENT '工作流名称',
-  `flow_id` int(11) DEFAULT NULL COMMENT '工作流id',
-  `task_name` varchar(64) DEFAULT NULL COMMENT '任务名称',
-  `task_id` int(11) DEFAULT NULL COMMENT '任务id',
-  `deleted` int(11) NOT NULL DEFAULT '0' COMMENT '是否删除',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `username` varchar(64) DEFAULT NULL COMMENT 'Username',
+  `user_id` int(11) DEFAULT NULL COMMENT 'User id',
+  `project_name` varchar(64) DEFAULT NULL COMMENT 'Project name',
+  `project_id` int(11) DEFAULT NULL COMMENT 'Project id',
+  `flow_name` varchar(64) DEFAULT NULL COMMENT 'Flow name',
+  `flow_id` int(11) DEFAULT NULL COMMENT 'Flow id',
+  `task_name` varchar(64) DEFAULT NULL COMMENT 'Task name',
+  `task_id` int(11) DEFAULT NULL COMMENT 'Task id',
+  `deleted` int(11) NOT NULL DEFAULT '0' COMMENT 'Is deleted',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update time',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_project_flow_task` (`project_name`,`flow_name`,`task_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='实时任务表';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Flink task metadata table';
 
 -- ----------------------------
 -- Flink: Table structure for flink_task_app
 -- ----------------------------
  CREATE TABLE `flink_task_app` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '实时任务id',
-  `username` varchar(64) DEFAULT NULL COMMENT '用户名',
-  `user_id` int(11) DEFAULT NULL COMMENT '用户记录id',
-  `project_name` varchar(64) DEFAULT NULL COMMENT '项目名',
-  `project_id` int(11) DEFAULT NULL COMMENT '项目id',
-  `flow_name` varchar(64) DEFAULT NULL COMMENT '工作流名称',
-  `flow_id` int(11) DEFAULT NULL COMMENT '工作流id',
-  `task_name` varchar(64) DEFAULT NULL COMMENT '任务名称',
-  `task_id` int(11) DEFAULT NULL COMMENT '任务id',
-  `task_state` varchar(64) DEFAULT NULL COMMENT '任务运行状态,running,finish',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `username` varchar(64) DEFAULT NULL COMMENT 'Username',
+  `user_id` int(11) DEFAULT NULL COMMENT 'User id',
+  `project_name` varchar(64) DEFAULT NULL COMMENT 'Project name',
+  `project_id` int(11) DEFAULT NULL COMMENT 'Project id',
+  `flow_name` varchar(64) DEFAULT NULL COMMENT 'Flow name',
+  `flow_id` int(11) DEFAULT NULL COMMENT 'Flow id',
+  `task_name` varchar(64) DEFAULT NULL COMMENT 'Task name',
+  `task_id` int(11) DEFAULT NULL COMMENT 'Task id',
+  `task_state` varchar(64) DEFAULT NULL COMMENT 'Task state: running, finish',
   `task_instance_id` int(11) NOT NULL COMMENT 'task instance id',
-  `execution_time` datetime DEFAULT NULL COMMENT 'task instance 执行周期',
+  `execution_time` datetime DEFAULT NULL COMMENT 'Task instance execution time',
   `application_id` varchar(64) DEFAULT NULL COMMENT 'appId',
   `flink_track_url` varchar(255) DEFAULT NULL COMMENT 'flink track url',
-  `allocated_mb` int(11) DEFAULT NULL COMMENT 'yarn获取的总共分配mb',
-  `allocated_vcores` int(11) DEFAULT NULL COMMENT 'yarn获取的总共分配vcore',
-  `running_containers` int(11) DEFAULT NULL COMMENT 'yarn获取的总共分配容器',
-  `engine_type` varchar(64) DEFAULT NULL COMMENT '执行引擎',
-  `duration` double DEFAULT NULL COMMENT '运行耗时',
-  `start_time` datetime DEFAULT NULL COMMENT '开始时间',
-  `end_time` datetime DEFAULT NULL COMMENT '结束时间',
-  `vcore_seconds` float DEFAULT NULL COMMENT 'cpu消耗(vcore-seconds)',
-  `memory_seconds` float DEFAULT NULL COMMENT '内存消耗(GB-seconds)',
-  `queue` varchar(64) DEFAULT NULL COMMENT '运行队列',
-  `cluster_name` varchar(64) DEFAULT NULL COMMENT '集群名称',
-  `retry_times` int(11) DEFAULT NULL COMMENT '重试次数',
-  `execute_user` varchar(64) DEFAULT NULL COMMENT '执行用户',
-  `diagnosis` varchar(255) COMMENT 'yarn诊断信息',
-  `parallel` int(11) DEFAULT NULL COMMENT 'flink 并行度',
-  `tm_slot` int(11) DEFAULT NULL COMMENT 'flink tm slot',
-  `tm_core` int(11) DEFAULT NULL COMMENT 'flink tm core',
-  `tm_mem` int(11) DEFAULT NULL COMMENT 'flink tm_mem',
-  `jm_mem` int(11) DEFAULT NULL COMMENT 'flink jm_mem',
-  `job_name` varchar(255) COMMENT 'job name',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `allocated_mb` int(11) DEFAULT NULL COMMENT 'Total allocated mb acquired by yarn',
+  `allocated_vcores` int(11) DEFAULT NULL COMMENT 'The total allocated vcore obtained by yarn',
+  `running_containers` int(11) DEFAULT NULL COMMENT 'The total allocated containers obtained by yarn',
+  `engine_type` varchar(64) DEFAULT NULL COMMENT 'Engine?',
+  `duration` double DEFAULT NULL COMMENT 'Running duration',
+  `start_time` datetime DEFAULT NULL COMMENT 'Start time',
+  `end_time` datetime DEFAULT NULL COMMENT 'End time',
+  `vcore_seconds` float DEFAULT NULL COMMENT 'CPU consuming(vcore-seconds)',
+  `memory_seconds` float DEFAULT NULL COMMENT 'Memory consuming(GB-seconds)',
+  `queue` varchar(64) DEFAULT NULL COMMENT 'Queue',
+  `cluster_name` varchar(64) DEFAULT NULL COMMENT 'Cluster',
+  `retry_times` int(11) DEFAULT NULL COMMENT 'Times of retries',
+  `execute_user` varchar(64) DEFAULT NULL COMMENT 'Executing user',
+  `diagnosis` varchar(255) COMMENT 'Yarn diagnosis',
+  `parallel` int(11) DEFAULT NULL COMMENT 'Flink parallel',
+  `tm_slot` int(11) DEFAULT NULL COMMENT 'Flink tm slot',
+  `tm_core` int(11) DEFAULT NULL COMMENT 'Flink tm core',
+  `tm_mem` int(11) DEFAULT NULL COMMENT 'Flink tm_mem',
+  `jm_mem` int(11) DEFAULT NULL COMMENT 'Flink jm_mem',
+  `job_name` varchar(255) COMMENT 'Job name',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update time',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_application_id` (`application_id`),
   KEY `idx_project_name` (`project_name`),
@@ -262,7 +263,7 @@ CREATE TABLE `task_datum` (
   KEY `idx_username` (`username`),
   KEY `idx_job_name` (`job_name`),
   KEY `idx_task_state` (`task_state`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='实时任务application表';
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='Flink application table';
 
 INSERT INTO `user` (`username`, `password`) values ('compass', 'compass');
 

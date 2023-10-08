@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * 任务或者job实例执行记录同步
+ * Task or job instance execution record synchronization
  */
 @Slf4j
 @Service
@@ -54,7 +54,7 @@ public class TaskInstanceService extends CommonService implements ActionService 
     private MessageProducer messageProducer;
 
     /**
-     * 插入操作
+     * insert operation
      */
     @Override
     public void insert(RawTable rawTable, Mapping mapping) {
@@ -62,14 +62,14 @@ public class TaskInstanceService extends CommonService implements ActionService 
     }
 
     /**
-     * 删除操作
+     * Delete operation
      */
     @Override
     public void delete(RawTable rawTable, Mapping mapping) {
     }
 
     /**
-     * 更新操作
+     * update operation
      */
     @Override
     public void update(RawTable rawTable, Mapping mapping) {
@@ -77,7 +77,7 @@ public class TaskInstanceService extends CommonService implements ActionService 
     }
 
     /**
-     * 数据保存操作
+     * Data save operation
      */
     @Override
     public void dataSave(Map<String, String> data, Mapping mapping, String action) {
@@ -105,7 +105,7 @@ public class TaskInstanceService extends CommonService implements ActionService 
                 return;
         }
 
-        // 数据写回kafka订阅
+        // Write data back to kafka subscription
         if (!DataUtil.isEmpty(mapping.getWriteKafkaTopic())) {
             try {
                 String message = JSON.toJSONString(new TableMessage(

@@ -30,21 +30,13 @@ public class TaskDurationAbnormal {
     private Integer jobId;
     private Integer stageId;
     private Integer attemptId;
-    /**
-     * 中位数
-     */
+
     private Double median;
-    /**
-     * 最大值
-     */
     private Double max;
-    /**
-     * 比率
-     */
     private Double ratio;
 
     /**
-     * 取最后30个任务
+     * Get 30 tasks in the list
      */
     private List<TaskDurationGraph> graphs;
 

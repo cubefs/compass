@@ -22,41 +22,41 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 表修改规则
+ * Table modification rules
  */
 @Data
 public class Mapping {
 
     /**
-     * 同步数据库
+     * Synchronized database
      */
     private String schema;
     /**
-     * 同步源表名
+     * Synchronized source table name
      */
     private String table;
     /**
-     * 同步目标表名
+     * Synchronized target table name
      */
     private String targetTable;
     /**
-     * 字段转为新字段映射
+     * Convert fields to new field mappings
      */
     private Map<String, String> columnMapping;
     /**
-     * 源字段值到目标字段值映射
+     * Source field value to target field value mapping
      */
     private Map<String, List<ValueMapping>> columnValueMapping;
     /**
-     * 目标值依赖其他表
+     * The target value depends on other tables
      */
     private ColumnDep columnDep;
     /**
-     * 同步映射后的数据写入kafka
+     * Synchronize the mapped data and write it to kafka
      */
     private String writeKafkaTopic;
     /**
-     * 源字段值到目标字段值映射
+     * Source field value to target field value mapping
      */
     private Map<String, String> constantColumn;
 }

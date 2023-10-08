@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.Data;
 
 /**
- * yarn rest api apps属性
+ * yarn rest api apps entity
  */
 @Data
 @JsonRootName("apps")

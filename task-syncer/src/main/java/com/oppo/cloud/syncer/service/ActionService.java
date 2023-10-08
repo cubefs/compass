@@ -20,20 +20,20 @@ import com.oppo.cloud.syncer.domain.Mapping;
 import com.oppo.cloud.syncer.domain.RawTable;
 
 /**
- * 数据表操作同步服务
+ * Data table operation synchronization service
  */
 public interface ActionService {
 
     /**
-     * 插入操作
+     * insert operation
      */
     void insert(RawTable rawTable, Mapping mapping);
     /**
-     * 删除操作
+     * Delete operation
      */
     void delete(RawTable rawTable, Mapping mapping);
     /**
-     * 更新操作
+     * update operation
      */
     void update(RawTable rawTable, Mapping mapping);
 }

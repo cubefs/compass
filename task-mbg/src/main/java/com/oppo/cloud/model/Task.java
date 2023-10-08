@@ -22,40 +22,40 @@ import java.util.Date;
 
 public class Task implements Serializable {
 
-    @ApiModelProperty(value = "任务id")
+    @ApiModelProperty(value = "task id")
     private Integer id;
 
-    @ApiModelProperty(value = "项目名")
+    @ApiModelProperty(value = "Project name")
     private String projectName;
 
-    @ApiModelProperty(value = "项目记录id")
+    @ApiModelProperty(value = "Project id")
     private Integer projectId;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "Flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "工作流记录id")
+    @ApiModelProperty(value = "Flow id")
     private Integer flowId;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "Task name")
     private String taskName;
 
-    @ApiModelProperty(value = "任务描述")
+    @ApiModelProperty(value = "Description")
     private String description;
 
-    @ApiModelProperty(value = "任务创建者id")
+    @ApiModelProperty(value = "Task creator id")
     private Integer userId;
 
-    @ApiModelProperty(value = "任务类型: SHELL, PYTHON, SPARK")
+    @ApiModelProperty(value = "Task type: SHELL, PYTHON, SPARK")
     private String taskType;
 
-    @ApiModelProperty(value = "失败重试次数")
+    @ApiModelProperty(value = "Number of failed retries")
     private Integer retries;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "Create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "Update time")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;

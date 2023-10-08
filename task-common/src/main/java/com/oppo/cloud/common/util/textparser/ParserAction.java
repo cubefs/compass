@@ -24,86 +24,86 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 单个匹配规则
+ * Single matching rule
  */
 @Data
 @JsonIgnoreProperties
 public class ParserAction {
 
     /**
-     * 动作
+     * Action or Activity
      */
     private String action;
 
     /**
-     * 父节点action(读取mysql配置时使用)
+     * Parent node action (used when reading MySQL configuration)
      */
     private String parentAction;
 
     /**
-     * 描述
+     * Description
      */
     private String desc;
 
     /**
-     * 诊断类型
+     * Diagnosis type
      */
     private String category;
 
     /**
-     * 步骤
+     * Step
      */
     private int step;
 
     /**
-     * 是否跳过
+     * Whether to skip
      */
     private boolean skip;
 
     /**
-     * 解析方式：
-     * DEFAULT: 行或块匹配
-     * JOIN 把结果合并成一行再匹配
+     * Parsing method：
+     * DEFAULT: Line or block matching
+     * JOIN Merge the results into one line before matching
      */
     private ParserType parserType;
 
     /**
-     * 文本解析模板：开头，中间和结束行
+     * Text parsing template: beginning, middle, and end lines.
      */
     private ParserTemplate parserTemplate;
 
     /**
-     * 分组匹配名称
+     * Name of the captured group.
      */
     private String[] groupNames;
 
     /**
-     * 分组匹配数据
+     *  Group matching data
      */
     private Map<String, String> groupData;
 
     /**
-     * 是否匹配成功
+     * Whether the match is successful or not
      */
     private boolean matchSucceed;
 
     /**
-     * 匹配结果
+     * Matched results
      */
     private List<ParserResult> parserResults;
 
     /**
-     * 根节点结果
+     * Root node result
      */
     private List<ParserResult> rootResults;
 
     /**
-     * 匹配结果hashCode
+     * Hash code of the matching result
      */
     private Set<Integer> hashCode;
 
     /**
-     * 子节点规则
+     * Child node rules
      */
     private List<ParserAction> children;
 }

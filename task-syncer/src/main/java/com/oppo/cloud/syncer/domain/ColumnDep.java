@@ -21,17 +21,18 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 新列依赖
+ * Column Dependency: column data from origin database will be
+ * mapped to a new column whose data depends on other table data.
  */
 @Data
 public class ColumnDep {
 
     /**
-     * 依赖字段名称
+     * Depend on column name
      */
     private List<String> columns;
     /**
-     * 查询依赖sql
+     * Query depends on sql
      */
     private List<String> queries;
 }

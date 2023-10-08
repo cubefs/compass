@@ -22,30 +22,31 @@ import java.util.Date;
 
 public class Flow implements Serializable {
 
-    @ApiModelProperty(value = "工作流id")
+    @ApiModelProperty(value = "Flow id")
     private Integer id;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "Flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "工作流描述")
+    @ApiModelProperty(value = "Description")
     private String description;
 
-    @ApiModelProperty(value = "工作流创建者id")
+    @ApiModelProperty(value = "Flow creator id")
     private Integer userId;
 
-    @ApiModelProperty(value = "工作流启用状态: 0->禁用; 1->启用")
+    @ApiModelProperty(value = "Flow enable status: 0->disabled; 1->enabled")
     private Integer flowStatus;
 
+    @ApiModelProperty(value = "Project name")
     private String projectName;
 
-    @ApiModelProperty(value = "工作流所属项目id")
+    @ApiModelProperty(value = "Project id")
     private Integer projectId;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "Create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "Update time")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;

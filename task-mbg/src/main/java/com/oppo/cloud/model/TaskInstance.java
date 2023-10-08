@@ -21,49 +21,49 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TaskInstance implements Serializable {
-    @ApiModelProperty(value = "任务执行id")
+    @ApiModelProperty(value = "Task instance id")
     private Integer id;
 
-    @ApiModelProperty(value = "项目名")
+    @ApiModelProperty(value = "Project name")
     private String projectName;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "Flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "Task name")
     private String taskName;
 
-    @ApiModelProperty(value = "任务执行周期")
+    @ApiModelProperty(value = "Task execution cycle")
     private Date executionTime;
 
-    @ApiModelProperty(value = "任务开始时间")
+    @ApiModelProperty(value = "Task start time")
     private Date startTime;
 
-    @ApiModelProperty(value = "任务结束时间")
+    @ApiModelProperty(value = "Task end time")
     private Date endTime;
 
-    @ApiModelProperty(value = "任务执行状态")
+    @ApiModelProperty(value = "Task state")
     private String taskState;
 
-    @ApiModelProperty(value = "任务类型")
+    @ApiModelProperty(value = "Task type")
     private String taskType;
 
-    @ApiModelProperty(value = "任务重试第n次")
+    @ApiModelProperty(value = "Task retry nth time")
     private Integer retryTimes;
 
-    @ApiModelProperty(value = "任务执行最大重试次数")
+    @ApiModelProperty(value = "Maximum number of retries for task execution")
     private Integer maxRetryTimes;
 
-    @ApiModelProperty(value = "任务执行的work group")
+    @ApiModelProperty(value = "The work group where the task is executed")
     private String workerGroup;
 
-    @ApiModelProperty(value = "任务触发类型：manual(手动触发), schedule(调触发)")
+    @ApiModelProperty(value = "Task trigger type: manual (manual trigger), schedule (scheduled trigger)")
     private String triggerType;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "Create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "Update time")
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;

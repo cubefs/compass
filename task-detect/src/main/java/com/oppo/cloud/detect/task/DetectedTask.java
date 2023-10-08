@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
- * 任务诊断
+ * Detected Task Service
  */
 @Component
 @Slf4j
@@ -64,7 +64,7 @@ public class DetectedTask {
     @KafkaListener(topics = "${custom.kafka.consumer.topic-name}", groupId = "${custom.kafka.consumer.group-id}", autoStartup = "${custom.kafka.consumer.auto.start}")
     public void consumerTask(@Payload List<String> tableChangeMessages, Acknowledgment ack) {
         for (String message : tableChangeMessages) {
-            // 过滤非最终状态任务数据
+            // Filter non-final state task data
             if (preFilter(message)) {
                 log.info("message:{}", message);
                 TableMessage tableMessage;
@@ -91,10 +91,10 @@ public class DetectedTask {
     }
 
     /**
-     * 判断是否最终状态
+     * Check if it is the final state
      */
     public boolean preFilter(String message) {
-        // 只检测task_instance表的非删除操作
+        // Only detect non-deletion operations in the task_instance table.
         if (message.contains("\"table\":\"task_instance\"") && !message.contains("\"eventType\":\"DELETE\"")) {
             if (message.contains("\\\"taskState\\\":\\\"success\\\"")
                     || message.contains("\\\"taskState\\\":\\\"fail\\\"")) {
@@ -105,20 +105,20 @@ public class DetectedTask {
     }
 
     /**
-     * 判断任务是否已将结束
+     * Determine whether the task has already ended.
      */
 
     public boolean judgeTaskFinished(TaskInstance taskInstance) {
-        // 成功任务直接检测
+        // Successful tasks are detected directly.
         if (TaskStateEnum.success.name().equals(taskInstance.getTaskState())) {
             return true;
         }
         if (TaskStateEnum.fail.name().equals(taskInstance.getTaskState())) {
-            // 手动执行的重试当成单次执行周期
+            // Manually executed retries are treated as a single execution cycle.
             if ("manual".equals(taskInstance.getTriggerType())) {
                 return true;
             } else {
-                // 非手动执行的判断是否重试完成
+                // Non-manual executions are judged whether the retries are completed.
                 Integer tryNumber = TryNumberUtil.updateTryNumber(taskInstance.getRetryTimes(), schedulerType);
                 log.info("schedulerType:{},{},{}, {}", schedulerType, taskInstance.getRetryTimes(), tryNumber, taskInstance.getMaxRetryTimes());
                 return tryNumber.equals(taskInstance.getMaxRetryTimes());
@@ -129,14 +129,14 @@ public class DetectedTask {
 
 
     /**
-     * 对每个任务进行诊断
+     * Diagnose each task.
      */
     public void detectTask(TaskInstance taskInstance) {
         if (taskInstance.getProjectName() == null || taskInstance.getFlowName() == null) {
             log.warn("instance projectName or flowName is null:{}", taskInstance);
             return;
         }
-        // 过滤白名单任务
+        // Filter out whitelisted tasks.
         if (blocklistService.isBlocklistTask(taskInstance.getProjectName(), taskInstance.getFlowName(),
                 taskInstance.getTaskName())) {
             log.info("find blocklist task, taskInstance:{}", taskInstance);
@@ -145,12 +145,12 @@ public class DetectedTask {
         JobAnalysis jobAnalysis = new JobAnalysis();
         TaskInstance taskInstanceSum;
         if ("manual".equals(taskInstance.getTriggerType())) {
-            // 手动执行的重试当成单次执行周期
+            // Manually executed retries are treated as a single execution cycle.
             taskInstance.setRetryTimes(0);
             taskInstance.setMaxRetryTimes(0);
             taskInstanceSum = taskInstance;
         } else {
-            // 更新任务的开始/结束时间
+            // Update the start/end time of the task.
             taskInstanceSum = taskInstanceService.searchTaskSum(taskInstance.getProjectName(),
                     taskInstance.getFlowName(), taskInstance.getTaskName(), taskInstance.getExecutionTime());
         }
@@ -167,7 +167,7 @@ public class DetectedTask {
 
         jobAnalysis.setRetryTimes(TryNumberUtil.updateTryNumber(jobAnalysis.getRetryTimes(),schedulerType));
 
-        // 异常任务检测
+        // Exception task detection.
         for (DetectService detectService : abnormalDetects) {
             try {
                 detectService.detect(jobAnalysis);
@@ -178,10 +178,10 @@ public class DetectedTask {
 
         try {
             if (jobAnalysis.getCategories().size() == 0) {
-                // 正常作业任务处理
+                // Normal job task processing.
                 abnormalDetects.get(0).handleNormalJob(jobAnalysis);
             } else {
-                // 异常作业任务处理
+                // Exception job task processing.
                 abnormalDetects.get(0).handleAbnormalJob(jobAnalysis);
             }
         } catch (Exception e) {

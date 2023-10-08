@@ -20,16 +20,16 @@ import com.oppo.cloud.mapper.FlowMapper;
 import com.oppo.cloud.model.Flow;
 
 /**
- * 工作流
+ * Flow Extended Mapper
  */
 public interface FlowExtendMapper extends FlowMapper {
 
     /**
-     * 保存数据
+     * Save data
      */
     int save(Flow record);
     /**
-     * 筛选保存数据
+     * Save selective data
      */
     int saveSelective(Flow record);
 }

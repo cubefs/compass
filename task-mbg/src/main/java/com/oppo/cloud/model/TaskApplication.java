@@ -25,37 +25,37 @@ import java.util.Date;
 @Data
 public class TaskApplication implements Serializable {
 
-    @ApiModelProperty(value = "异常任务id")
+    @ApiModelProperty(value = "Task application record id")
     private Integer id;
 
-    @ApiModelProperty(value = "appId")
+    @ApiModelProperty(value = "AppId(yarn application)")
     private String applicationId;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "Task name")
     private String taskName;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "Flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "Project name")
     private String projectName;
 
-    @ApiModelProperty(value = "任务计划执行时间")
+    @ApiModelProperty(value = "Task plan execution time")
     private Date executeTime;
 
-    @ApiModelProperty(value = "任务重试第n次")
+    @ApiModelProperty(value = "Task retry nth time")
     private Integer retryTimes;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "Create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "Update time")
     private Date updateTime;
 
-    @ApiModelProperty(value = "任务调度器日志,多个用逗号隔开")
+    @ApiModelProperty(value = "Task scheduler log, multiple separated by commas")
     private String logPath;
 
-    @ApiModelProperty(value = "作业类型")
+    @ApiModelProperty(value = "Task type(Spark、Flink)")
     private String taskType;
 
     private static final long serialVersionUID = 1L;
@@ -77,6 +77,7 @@ public class TaskApplication implements Serializable {
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", logPath=").append(logPath);
+        sb.append(", task_type=").append(taskType);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

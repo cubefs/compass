@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 任务运行实例接口
+ * Task execution instance interface.
  */
 @Service
 public class TaskInstanceServiceImpl implements TaskInstanceService {
@@ -42,13 +42,13 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     private TaskInstanceExtendMapper taskInstanceExtendMapper;
 
     /**
-     * 查询最近期任务执行情况数据
+     * Query the data of the most recent task execution.
      */
     @Override
     public List<TaskStateHistory> searchTaskStateHistory(String projectName, String flowName, String taskName,
                                                          Date executionTime, Date endExecutionTime, Integer sampleNum) {
         TaskInstanceExample taskInstanceExample = new TaskInstanceExample();
-        // 取近两个月的数据
+        // Take data from the past two months.
         taskInstanceExample.createCriteria()
                 .andProjectNameEqualTo(projectName)
                 .andFlowNameEqualTo(flowName)
@@ -59,7 +59,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     /**
-     * 查询任务近期执行耗时数据
+     * Query the recent execution duration data of tasks.
      */
     @Override
     public List<Double> searchTaskDurationHistory(String projectName, String flowName, String taskName,
@@ -84,7 +84,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     /**
-     * 查询近一个月任务近期执行结束时间相对运行周期的差值数据
+     * Query the data of the difference between the end time of task execution and the running cycle in the past month.
      */
     @Override
     public List<Double> searchTaskRelativeEndTime(String projectName, String flowName, String taskName,
@@ -110,7 +110,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     /**
-     * 查询具体执行周期的任务
+     * Query specific execution cycles of tasks.
      */
     @Override
     public TaskInstance searchTaskSum(String projectName, String flowName, String taskName, Date executionTime) {

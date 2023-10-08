@@ -26,39 +26,39 @@ import java.util.UUID;
 public class DelayedTaskInfo {
 
     /**
-     * 缓存key
+     * Cache key
      */
     private String key;
     /**
-     * 处理延迟任务的重试次数
+     * Handle the number of retries for delayed tasks.
      */
     private Integer processRetries;
     /**
-     * 延迟任务信息
+     * Delayed task information.
      */
     private JobAnalysis jobAnalysis;
     /**
-     * 已处理完成的taskApp集合
+     * Set of taskApps that have been processed and completed.
      */
     private String handledApps;
 
     /**
-     * 处理状态(processing, success, failed)
+     * Status (processing, success, failed)
      */
     private String processState;
 
     /**
-     * 创建时间
+     * Create time
      */
     private Date createTime;
 
     /**
-     * 更新时间
+     * Update time
      */
     private Date updateTime;
 
     /**
-     * 异常信息
+     * Exception information
      */
     private String exceptionInfo;
 

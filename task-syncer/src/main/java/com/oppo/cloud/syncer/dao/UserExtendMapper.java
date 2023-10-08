@@ -20,16 +20,16 @@ import com.oppo.cloud.mapper.UserMapper;
 import com.oppo.cloud.model.User;
 
 /**
- * 扩展用户接口
+ * User Extend Mapper
  */
 public interface UserExtendMapper extends UserMapper {
 
     /**
-     * 保存数据
+     * Save data
      */
     int save(User record);
     /**
-     * 筛选保存数据
+     * Save selective data
      */
     int saveSelective(User record);
 }

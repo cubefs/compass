@@ -30,18 +30,18 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 公共抽象服务
+ * public abstract service
  */
 @Slf4j
 abstract public class CommonService {
 
     /**
-     * 数据保存: 插入，更新
+     * Data storage: insert, update
      */
     abstract void dataSave(Map<String, String> data, Mapping mapping, String action);
 
     /**
-     * 数据映射
+     * Data mapping
      */
     public void dataMapping(JdbcTemplate jdbcTemplate, RawTable rawTable, Mapping mapping, String action) {
         if (DataUtil.isEmpty(rawTable.getData())) {
@@ -51,10 +51,10 @@ abstract public class CommonService {
         Map<String, String> columnMapping = mapping.getColumnMapping();
         List<Map<String, String>> datas = DataUtil.mapData(rawTable.getData(), columnMapping);
 
-        // 值映射
+        // value mapping
         DataUtil.mapColumnValue(datas, mapping.getColumnValueMapping());
 
-        // 增加常数列
+        // Add constant column
         DataUtil.constantColumnValue(datas, mapping.getConstantColumn());
 
         ColumnDep columnDep = mapping.getColumnDep();
@@ -64,7 +64,7 @@ abstract public class CommonService {
                 for (String query : columnDep.getQueries()) {
                     query = StringUtil.replaceParams(query, data);
                     Map<String, Object> result = null;
-                    // 可能延迟
+                    // possible delay
                     for (int i = 0; i < 3; i++) {
                         try {
                             result = jdbcTemplate.queryForMap(query);

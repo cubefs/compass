@@ -19,7 +19,7 @@ package com.oppo.cloud.common.domain.eventlog.config;
 import lombok.Data;
 
 /**
- * Task长尾
+ * Task long tail configuration
  */
 @Data
 public class TaskDurationConfig {
@@ -27,12 +27,12 @@ public class TaskDurationConfig {
     private Boolean disable;
 
     /**
-     * max/median占比
+     * The proportion of max/median
      */
     private Float threshold;
 
     /**
-     * 过滤时间(ms)
+     * duration(ms) (match if greater than duration)
      */
     private Long duration;
 

@@ -31,9 +31,6 @@ public class StageDurationAbnormal {
     private Integer attemptId;
     private Long stageDuration;
     private Long taskAccDuration;
-    /**
-     * 比率
-     */
     private Double ratio;
     private Double threshold;
     private Long filterTime;

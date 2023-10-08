@@ -23,16 +23,16 @@ spring:
       max-poll-interval-ms: 300000
 
 
-# 从kafka同步mysql binlog数据
-# 必须映射表: user, flow, task, task_instance
+# Synchronize mysql binlog data from kafka
+# Required mapping table: user, flow, task, task_instance
 datasource:
   mappings:
-    # user 表映射
-    - schema: "airflow"            # 同步源数据库
-      table: "ab_user"      # 源表名
-      targetTable: "user"      # 目标表名
-      columnMapping: # 字段映射，将id,user_name...字段映射为user_id,username...
-        user_id: "id"              # 目标字段:源字段
+    # user table mapping
+    - schema: "airflow"            # Sync source database
+      table: "ab_user"      # Source table name
+      targetTable: "user"      # Target table name
+      columnMapping: # Field mapping，Map id, user_name... fields to user_id, username...
+        user_id: "id"              # Target field: source field
         username: "username"
         password: "password"
         email: "email"
@@ -41,7 +41,7 @@ datasource:
       constantColumn:
         scheduler_type: "Airflow"
 
-    # project 表映射
+    # project table mapping
     - schema: "airflow"
       table: "dag"
       targetTable: "project"
@@ -58,7 +58,7 @@ datasource:
         queries: [ "select u.id as user_id from tb_dag as d inner join tb_ab_user as u on d.owners = u.username where d.dag_id = ${project_name}" ]
 
 
-    # flow 表映射
+    # flow table mapping
     - schema: "airflow"
       table: "dag"
       targetTable: "flow"
@@ -75,7 +75,7 @@ datasource:
         columns: [ "user_id" ]
         queries: [ "select u.id as user_id from tb_dag as d inner join tb_ab_user as u on d.owners = u.username where d.dag_id = ${flow_name}" ]
 
-    # task 任务表映射
+    # task table mapping
     - schema: "airflow"
       table: "task_instance"
       targetTable: "task"
@@ -95,7 +95,7 @@ datasource:
         columns: [ "user_id", "update_time" ]
         queries: [ "select u.id as user_id,d.last_parsed_time as update_time from tb_dag as d  inner join tb_ab_user as u on d.owners = u.username where d.dag_id = ${flow_name} limit 1" ]
 
-    # task_instance 任务表映射
+    # task_instance table mapping
     - schema: "airflow"
       table: "task_instance"
       targetTable: "task_instance"
@@ -115,8 +115,8 @@ datasource:
         create_time: ""
         update_time: ""
         run_id: "run_id"
-      columnValueMapping: # 字段值映射
-        # 只需要关注成功和失败，其他状态为其他
+      columnValueMapping: # Field value mapping
+        # Only need to pay attention to success and failure, other states are other
         task_state:
           - { targetValue: "success", originValue: [ "success" ] }
           - { targetValue: "fail", originValue: [ "failed" ] }
@@ -125,5 +125,5 @@ datasource:
       columnDep:
         columns: [ "execution_time" ]
         queries: [ "select execution_date as execution_time from tb_dag_run where dag_id=${flow_name} and run_id=${run_id}" ]
-      # 写回 kafka topic
+      # Write back to kafka topic
       writeKafkaTopic: task-instance

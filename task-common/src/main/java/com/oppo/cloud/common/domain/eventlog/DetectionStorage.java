@@ -37,51 +37,51 @@ public class DetectionStorage {
     private String logPath;
     private Map<String, String> vars;
     /**
-     * 是否异常
+     * Whether there is an exception or not.
      */
     private Boolean abnormal;
     /**
-     * 数据倾斜
+     * Data skewness
      */
     private List<DataSkewAbnormal> dataSkewTasks;
     /**
-     * 大表扫描
+     * Full table scan
      */
     private LargeTableScanAbnormal largeTableScanAbnormal;
     /**
-     * oom预警
+     * ut-of-Memory (OOM) Alert
      */
     private OOMAbnormal oomAbnormal;
     /**
-     * job异常数据
+     * Abnormal job data
      */
     private List<JobDurationAbnormal> jobDurationAbnormal;
     /**
-     * stage异常数据
+     * Stage anomaly data
      */
     private List<StageDurationAbnormal> stageDurationAbnormal;
     /**
-     * task异常数据
+     * Task anomaly data
      */
     private List<TaskDurationAbnormal> taskDurationAbnormal;
     /**
-     * hdfs卡顿
+     * HDFS stuck
      */
     private List<HdfsStuckAbnormal> hdfsStuckAbnormal;
     /**
-     * 推测执行过多异常
+     * Speculative execution excess anomaly
      */
     private List<SpeculativeTaskAbnormal> speculativeTaskAbnormal;
     /**
-     * 全局排序异常
+     * Global sorting anomaly
      */
     private List<GlobalSortAbnormal> globalSortAbnormal;
     /**
-     * cpu浪费
+     * CPU waste
      */
     private CpuWasteAbnormal cpuWasteAbnormal;
     /**
-     * 内存浪费
+     * Memory waste
      */
     private MemWasteAbnormal memWasteAbnormal;
 

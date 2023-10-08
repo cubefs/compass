@@ -27,7 +27,7 @@ import org.mybatis.generator.internal.DefaultCommentGenerator;
 import java.util.Properties;
 
 /**
- * 自定义注释生成器
+ * Custom annotation generator
  */
 public class CommentGenerator extends DefaultCommentGenerator {
 
@@ -36,7 +36,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
     private static final String API_IMPORT_CLASS = "io.swagger.annotations.ApiModelProperty";
 
     /**
-     * 设置用户配置的参数
+     * Set configuration parameters
      */
     @Override
     public void addConfigurationProperties(Properties properties) {
@@ -44,24 +44,24 @@ public class CommentGenerator extends DefaultCommentGenerator {
     }
 
     /**
-     * 字段添加swagger注解
+     * Add swagger annotations to fields
      */
     @Override
     public void addFieldComment(Field field, IntrospectedTable introspectedTable,
                                 IntrospectedColumn introspectedColumn) {
         String remarks = introspectedColumn.getRemarks();
-        // sql字段没有注释说明，忽略
+        // The sql field has no annotation and is ignored.
         if (!StringUtility.stringHasValue(remarks)) {
             return;
         }
-        // 数据库特殊字符"在生成代码注释时和Java字符语法冲突，替换为'
+        // The database special character " conflicts with Java character syntax when generating code comments and is replaced with '
         remarks = remarks.replace("\"", "'");
-        // 数据库字段生成实体model类添加swagger注解
+        // Database fields generate entity model classes and add swagger annotations
         field.addJavaDocLine("@ApiModelProperty(value = \"" + remarks + "\")");
     }
 
     /**
-     * 导入依赖类路径
+     * Import dependency classpath
      */
     @Override
     public void addJavaFileComment(CompilationUnit compilationUnit) {
@@ -71,7 +71,7 @@ public class CommentGenerator extends DefaultCommentGenerator {
                 compilationUnit.getType().getFullyQualifiedName().contains(MAPPER_CLASS)) {
             return;
         }
-        // 实体model类加入swagger
+        // Entity model class added to swagger
         compilationUnit.addImportedType(new FullyQualifiedJavaType(API_IMPORT_CLASS));
     }
 }

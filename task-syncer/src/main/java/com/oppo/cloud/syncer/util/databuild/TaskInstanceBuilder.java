@@ -22,16 +22,16 @@ import com.oppo.cloud.syncer.util.DataUtil;
 import java.util.Map;
 
 /**
- * 任务运行实例构建
+ * Task running instance build
  */
 public class TaskInstanceBuilder implements DataBuilder<TaskInstance> {
 
     /**
-     * 任务调度器触发
+     * Task scheduler triggers
      */
     private static final String TRIGGER_TYPE_SCHEDULE = "schedule";
     /**
-     * 任务手动点击触发
+     * Tasks are manually clicked to trigger
      */
     private static final String TRIGGER_TYPE_MANUAL = "manual";
 
@@ -55,7 +55,7 @@ public class TaskInstanceBuilder implements DataBuilder<TaskInstance> {
         taskInstance.setCreateTime(DataUtil.parseDate(data.get("create_time")));
         taskInstance.setUpdateTime(DataUtil.parseDate(data.get("update_time")));
 
-        // 如果 定期执行周期时间没有，使用开始时间
+        // If the periodic execution cycle time is not available, the start time is used
         if (taskInstance.getExecutionTime() == null) {
             taskInstance.setExecutionTime(taskInstance.getStartTime());
             taskInstance.setTriggerType(TRIGGER_TYPE_MANUAL);

@@ -19,12 +19,12 @@ package com.oppo.cloud.syncer.util;
 import java.util.Map;
 
 /**
- * 字符串处理工具
+ * String processing tools
  */
 public class StringUtil {
 
     /**
-     * 替换模板参数
+     * Replace template parameters
      */
     public static String replaceParams(String template, Map<String, String> params) {
         for (String key : params.keySet()) {
@@ -34,7 +34,7 @@ public class StringUtil {
     }
 
     /**
-     * 重写查询
+     * Rewrite query
      */
     public static String rewriteQuery(String query) {
         return null;

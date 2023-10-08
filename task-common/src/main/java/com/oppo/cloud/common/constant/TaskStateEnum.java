@@ -17,12 +17,12 @@
 package com.oppo.cloud.common.constant;
 
 /**
- * 任务状态枚举类型
+ * Task status enumeration type
  */
 public enum TaskStateEnum {
 
     /**
-     * 任务状态
+     * Task status
      */
     success("成功"),
     fail("失败");

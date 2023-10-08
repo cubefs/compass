@@ -17,7 +17,7 @@
 package com.oppo.cloud.syncer.util.databuild;
 
 /**
- * 构建工厂
+ * build factory
  */
 public interface DataFactory<T> {
 

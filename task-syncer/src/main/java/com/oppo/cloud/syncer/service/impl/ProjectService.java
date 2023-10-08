@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 项目表同步操作
+ * Project table synchronization operation
  */
 @Slf4j
 @Service
@@ -50,21 +50,21 @@ public class ProjectService extends CommonService implements ActionService {
     private JdbcTemplate jdbcTemplate;
 
     /**
-     * 插入数据
+     * Insert data
      */
     @Override
     public void insert(RawTable rawTable, Mapping mapping) {
         dataMapping(jdbcTemplate, rawTable, mapping, "INSERT");
     }
     /**
-     * 删除数据
+     * delete data
      */
     @Override
     public void delete(RawTable rawTable, Mapping mapping) {
         // todo: delete
     }
     /**
-     * 更新数据
+     * update data
      */
     @Override
     public void update(RawTable rawTable, Mapping mapping) {
@@ -72,7 +72,7 @@ public class ProjectService extends CommonService implements ActionService {
         // TODO: update other relative table
     }
     /**
-     * 数据保存
+     * Data saving
      */
     @Override
     public void dataSave(Map<String, String> data, Mapping mapping, String action) {

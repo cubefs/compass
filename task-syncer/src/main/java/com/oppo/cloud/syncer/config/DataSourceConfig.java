@@ -31,7 +31,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 /**
- * 同步数据表数据
+ * Synchronize data table data
  */
 @Data
 @Component
@@ -40,7 +40,7 @@ import java.util.List;
 public class DataSourceConfig {
 
     /**
-     * 同步表映射
+     * Synchronization table mapping
      */
     private List<Mapping> mappings;
 

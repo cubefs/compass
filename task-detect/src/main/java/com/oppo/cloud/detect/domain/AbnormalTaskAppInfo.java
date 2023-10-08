@@ -22,7 +22,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- *  获取生成AbnormalTaskApp的结果信息
+ *  AbnormalTaskApp Information
  */
 @Data
 public class AbnormalTaskAppInfo {

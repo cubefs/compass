@@ -36,17 +36,17 @@ public class DataSkewAbnormal {
     private Long maxShuffleReadRecords;
 
     /**
-     * 中位数
+     * Median
      */
     private Long medianRecords;
 
     /**
-     * 阈值
+     * Threshold
      */
     private Double threshold;
 
     /**
-     * max/median比率
+     * max/median ratio
      */
     private Double ratio;
 

@@ -26,26 +26,26 @@ public class DetectorStorage {
 
     Boolean abnormal;
     /**
-     * 工作流名称
+     * flow name
      */
     private String flowName;
 
     /**
-     * 项目名称
+     * project name
      */
     private String projectName;
 
     /**
-     * 任务名称
+     * task name
      */
     private String taskName;
 
     /**
-     * 任务执行周期
+     * execution time
      */
     private Date executionTime;
     /**
-     * 任务重试次数
+     * number of retries
      */
     private Integer tryNumber;
 

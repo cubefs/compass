@@ -21,7 +21,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 数据倾斜配置
+ * Data skew configuration
  */
 @Data
 public class DataSkewConfig {

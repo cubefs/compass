@@ -24,7 +24,7 @@ public class YarnStuckAbnormal {
     private String startTime;
     private String endTime;
     /**
-     * 创建appId耗时
+     *  Time taken to create appId
      */
     private Long createdAppSpentTime;
     private Integer threshold;
