@@ -17,7 +17,7 @@
 package com.oppo.cloud.common.util.textparser;
 
 /**
- * 块解析指向位置
+ * Block parsing points to the location
  */
 public enum PositionState {
     HEAD,

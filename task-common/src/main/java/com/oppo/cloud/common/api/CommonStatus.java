@@ -19,21 +19,21 @@ package com.oppo.cloud.common.api;
 import lombok.Data;
 
 /**
- * 通用返回对象
+ * Common Response Status
  */
 @Data
 public class CommonStatus<T> {
 
     /**
-     * 状态码
+     * Status code
      */
     private int code;
     /**
-     * 提示信息
+     * Response message
      */
     private String msg;
     /**
-     * 数据封装
+     * Response data
      */
     private T data;
 

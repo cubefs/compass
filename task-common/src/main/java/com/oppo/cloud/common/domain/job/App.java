@@ -23,27 +23,25 @@ import lombok.Data;
 import java.util.*;
 
 /**
- * yarn app元数据
+ * Yarn app metadata
  */
 @Data
 public class App {
 
     /**
-     * appId值[调度日志，appId为空]
+     * AppId value (scheduling log, appId is empty).
      */
     private String appId;
     /**
-     * 重试次数
+     * Number of retries
      */
     private Integer tryNumber;
-
     /**
-     * driver主机名
+     * driver host
      */
     private String amHost;
-
     /**
-     * 日志信息[里面只有一个值]
+     * Log information(at least one item)
      */
     private List<LogInfo> logInfoList;
 

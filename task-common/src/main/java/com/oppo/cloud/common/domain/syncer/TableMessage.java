@@ -19,25 +19,25 @@ package com.oppo.cloud.common.domain.syncer;
 import lombok.Data;
 
 /**
- * 操作数据表写回kafka结构体
+ * Canal data in Kafka
  */
 @Data
 public class TableMessage {
 
     /**
-     * 原始表数据
+     * Origin data
      */
     private String rawData;
     /**
-     * 数据内容
+     * Data
      */
     private String body;
     /**
-     * 数据操作 INSERT/UPDATE/DELETE
+     * Operation: INSERT/UPDATE/DELETE
      */
     private String eventType;
     /**
-     * 数据表
+     * Table
      */
     private String table;
 

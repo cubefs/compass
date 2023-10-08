@@ -20,55 +20,66 @@ import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 import com.oppo.cloud.common.domain.opensearch.TaskApp;
 import lombok.Data;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
- * 任务记录
+ * LogRecord Information
  */
 @Data
 public class LogRecord {
 
     /**
-     * 唯一标志
+     * Unique Id(uuid)
      */
     private String id;
     /**
-     * 作业信息
+     * Job analysis information
      */
     private JobAnalysis jobAnalysis;
 
     /**
-     * taskApp信息: Map<applicationId,taskApp>
+     * TaskApp information: Map<applicationId, taskApp> with execution information
      */
-    private Map<String, TaskApp> taskAppList;
+    private Map<String, TaskApp> taskAppMap;
 
     /**
-     * app日志
+     * Spark Application information
      */
     private List<App> apps;
 
     /**
-     * 一键诊断
+     * The LogRecord is produced by one-click.
      */
     private Boolean isOneClick = false;
-    /**
-     * 第一次消费时间
-     */
-    private Long firstConsumeTime = System.currentTimeMillis();
 
     /**
-     * 消费次数
+     * Create time for the LogRecord
+     */
+    private long createTime = System.currentTimeMillis();
+
+    /**
+     * Consuming count, the `setConsumeCount` is used in src/main/resources/scripts/logRecordConsumer.lua
      */
     private Integer consumeCount = 0;
 
-    public void formatTaskAppList(List<TaskApp> taskAppList) {
-        Map<String, TaskApp> temp = new HashMap<>();
-        for (TaskApp taskApp : taskAppList) {
-            temp.put(taskApp.getApplicationId(), taskApp);
-        }
-        this.taskAppList = temp;
+    /**
+     * convert taskAppList to taskAppMap
+     *
+     * @param taskAppList
+     */
+    public void toTaskAppMap(List<TaskApp> taskAppList) {
+        this.taskAppMap = taskAppList.stream().collect(Collectors.toMap(TaskApp::getApplicationId, x -> x));
     }
 
+    /**
+     * Get TaskApp From taskAppMap in LogRecord.
+     *
+     * @param appId
+     * @return
+     */
+    public TaskApp getTaskApp(String appId) {
+        return taskAppMap == null ? null : taskAppMap.get(appId);
+    }
 }

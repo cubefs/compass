@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Yarn工具类
+ * Yarn tool
  */
 @Slf4j
 public class YarnUtil {
@@ -41,7 +41,7 @@ public class YarnUtil {
     private static final String API_YARN_CLUSTER_INFO = "http://%s/ws/v1/cluster/info";
 
     /**
-     * 获取Yarn RM列表信息
+     * Get Yarn RM list information
      *
      * @param yarnConfs
      * @return
@@ -60,7 +60,7 @@ public class YarnUtil {
     }
 
     /**
-     * 获取Yarn Active节点
+     * Get Yarn Active Nodes
      *
      * @param hosts
      * @return

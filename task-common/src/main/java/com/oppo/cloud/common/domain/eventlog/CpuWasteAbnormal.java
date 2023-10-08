@@ -27,37 +27,37 @@ import lombok.NoArgsConstructor;
 public class CpuWasteAbnormal {
 
     /**
-     * app消耗的计算资源
+     * App's usage of computational resources.
      */
     private long appComputeMillisAvailable;
 
     /**
-     * job消耗的计算资源
+     * The computing resources consumed by the job
      */
     private long inJobComputeMillisAvailable;
 
     /**
-     * task消耗的计算资源
+     * The computing resources consumed by the task
      */
     private long inJobComputeMillisUsed;
 
     /**
-     * driver浪费的计算资源
+     * The computing resources wasted by the driver
      */
     private float driverWastedPercentOverAll;
 
     /**
-     * executor浪费的计算资源
+     * The computing resources wasted by the executor.
      */
     private float executorWastedPercentOverAll;
 
     /**
-     * executor并发最大数量
+     * Maximum number of concurrent tasks for the executor
      */
     private long maxExecutors;
 
     /**
-     * 核数
+     * Number of cores
      */
     private long executorCores;
 

@@ -21,7 +21,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * Swagger自定义配置
+ * Swagger Configuration
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -29,35 +29,35 @@ import lombok.EqualsAndHashCode;
 public class SwaggerProperties {
 
     /**
-     * API文档生成基础路径
+     * API base url path
      */
     private String apiBasePackage;
     /**
-     * 是否要启动登录认证
+     * Enable security
      */
     private boolean enableSecurity;
     /**
-     * 文档标题
+     * Document title
      */
     private String title;
     /**
-     * 文档描述
+     * Document description
      */
     private String description;
     /**
-     * 文档版本
+     * Document version
      */
     private String version;
     /**
-     * 文档联系人姓名
+     * Document contact
      */
     private String contactName;
     /**
-     * 文档联系人网址
+     * Document contact url
      */
     private String contactUrl;
     /**
-     * 文档联系人邮箱
+     * Document contact email
      */
     private String contactEmail;
 }

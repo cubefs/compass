@@ -19,16 +19,16 @@ package com.oppo.cloud.common.domain.flink.enums;
 import lombok.Getter;
 
 /**
- * 诊断规则类型
+ * Type of diagnosis rules.
  */
 @Getter
 public enum DiagnosisRuleType {
     /**
-     * 资源优化类型
+     * Resource optimization type.
      */
     ResourceRule(0, "资源优化类型"),
     /**
-     * 运行时异常类型
+     * Runtime exception type.
      */
     RuntimeExceptionRule(1, "运行时异常类型"),
     ;

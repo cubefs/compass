@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * 更新文档API
+ * Update Document API
  */
 public class UpdateApi {
 

@@ -17,17 +17,17 @@
 package com.oppo.cloud.common.api;
 
 /**
- * 常用API返回对象接口
+ * Common API response object interface.
  */
 public interface IErrorCode {
 
     /**
-     * 返回码
+     * Status code
      */
     int getCode();
 
     /**
-     * 返回信息
+     * Response message
      */
     String getMsg();
 }

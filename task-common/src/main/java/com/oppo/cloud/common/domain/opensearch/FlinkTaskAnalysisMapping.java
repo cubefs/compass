@@ -46,55 +46,55 @@ public class FlinkTaskAnalysisMapping extends Mapping {
         return Stream.of(
                 /* Flink task app Id */
                 new AbstractMap.SimpleEntry<>("flinkTaskAppId", digit("integer")),
-                /* 任务所属用户: [{userId: 23432, username: "someone"}] */
+                /* Users : [{userId: 23432, username: "someone"}] */
                 new AbstractMap.SimpleEntry<>("users", users()),
-                /* 项目名称 */
+                /* Project name */
                 new AbstractMap.SimpleEntry<>("projectName", text()),
-                /* 项目ID */
+                /* Project ID */
                 new AbstractMap.SimpleEntry<>("projectId", digit("integer")),
-                /* 工作流名称 */
+                /* Flow name */
                 new AbstractMap.SimpleEntry<>("flowName", text()),
-                /* 工作流Id */
+                /* Flow id */
                 new AbstractMap.SimpleEntry<>("flowId", digit("integer")),
-                /* 任务名称 */
+                /* Task name */
                 new AbstractMap.SimpleEntry<>("taskName", text()),
-                /* 任务ID */
+                /* Task ID */
                 new AbstractMap.SimpleEntry<>("taskId", digit("integer")),
                 /* yarn applicationId */
                 new AbstractMap.SimpleEntry<>("applicationId", text()),
                 /* flink track url */
                 new AbstractMap.SimpleEntry<>("flinkTrackUrl", text()),
-                /* yarn获取的总共分配mb */
+                /* Allocated memory (Unit: MB) */
                 new AbstractMap.SimpleEntry<>("allocatedMB", digit("long")),
-                /* yarn获取的总共分配vcore */
+                /* Allocated vcores */
                 new AbstractMap.SimpleEntry<>("allocatedVcores", digit("integer")),
-                /* yarn获取的总共分配容器 */
+                /* Allocated running containers */
                 new AbstractMap.SimpleEntry<>("runningContainers", digit("integer")),
-                /* 执行引擎? */
+                /* Engine ? */
                 new AbstractMap.SimpleEntry<>("engineType", text()),
-                /* 执行周期 */
+                /* Execution Date */
                 new AbstractMap.SimpleEntry<>("executionDate", date()),
-                /* 运行耗时 */
+                /* Running time */
                 new AbstractMap.SimpleEntry<>("duration", digit("double")),
-                /* 开始时间 */
+                /* Start time */
                 new AbstractMap.SimpleEntry<>("startTime", date()),
-                /* 结束时间 */
+                /* End time */
                 new AbstractMap.SimpleEntry<>("endTime", date()),
-                /* cpu消耗(vcore-seconds) */
+                /* CPU consumption (vcore-seconds) */
                 new AbstractMap.SimpleEntry<>("vcoreSeconds", digit("float")),
-                /* 内存消耗(GB-seconds) */
+                /* Memory consumption (GB-seconds) */
                 new AbstractMap.SimpleEntry<>("memorySeconds", digit("float")),
-                /* 队列名称 */
+                /* Queue */
                 new AbstractMap.SimpleEntry<>("queue", text()),
-                /* 集群名称 */
+                /* Cluster name */
                 new AbstractMap.SimpleEntry<>("clusterName", text()),
-                /* 重试次数 */
+                /* Times of retries */
                 new AbstractMap.SimpleEntry<>("retryTimes", digit("integer")),
-                /* 执行用户 */
+                /* Execute User */
                 new AbstractMap.SimpleEntry<>("executeUser", text()),
-                /* yarn诊断信息 */
+                /* Yarn diagnosis information */
                 new AbstractMap.SimpleEntry<>("diagnosis", text()),
-                /* 并行度 */
+                /* Parallel */
                 new AbstractMap.SimpleEntry<>("parallel", digit("integer")),
                 /* flink slot */
                 new AbstractMap.SimpleEntry<>("tmSlot", digit("integer")),
@@ -108,43 +108,51 @@ public class FlinkTaskAnalysisMapping extends Mapping {
                 new AbstractMap.SimpleEntry<>("tmNum", digit("integer")),
                 /* flink job name */
                 new AbstractMap.SimpleEntry<>("jobName", text()),
-                /*  诊断开始时间 */
+                /*  Start time of diagnosis */
                 new AbstractMap.SimpleEntry<>("diagnosisStartTime", date()),
-                /*  诊断结束时间 */
+                /*  End time of diagnosis */
                 new AbstractMap.SimpleEntry<>("diagnosisEndTime", date()),
-                /* 资源诊断类型,[0扩容cpu,1扩容mem,2缩减cpu,3缩减mem,4运行异常] */
+                /* Resource diagnosis type:
+                  - 0: Expand CPU
+                  - 1: Expand Memory,
+                  - 2: Reduce CPU,
+                  - 3: Reduce Memory,
+                  - 4: Running abnormally */
                 new AbstractMap.SimpleEntry<>("diagnosisResourceType", text()),
-                /* 诊断来源0凌晨定时任务,1任务上线后诊断,2即时诊断 */
+                /* Diagnosis source:
+                  - 0: Midnight scheduled task
+                  - 1: Diagnosis after task going online
+                  - 2: Real-time diagnosis */
                 new AbstractMap.SimpleEntry<>("diagnosisSource", digit("integer")),
-                /* 建议并行度 */
+                /* Advice parallel after diagnosis */
                 new AbstractMap.SimpleEntry<>("diagnosisParallel", digit("integer")),
-                /* 建议job manager 内存大小单位MB */
+                /* Advice JobManager memory(Unit: MB) after diagnosis */
                 new AbstractMap.SimpleEntry<>("diagnosisJmMemory", digit("integer")),
-                /* 建议task manager 内存大小单位MB */
+                /* Advice TaskManager memory(Unit: MB) after diagnosis */
                 new AbstractMap.SimpleEntry<>("diagnosisTmMemory", digit("integer")),
-                /* 建议tm的slot数量 */
+                /* Advice Task slots after diagnosis */
                 new AbstractMap.SimpleEntry<>("diagnosisTmSlotNum", digit("integer")),
-                /* 建议tm的core数量 */
+                /* Advice TaskManager core number after diagnosis */
                 new AbstractMap.SimpleEntry<>("diagnosisTmCoreNum", digit("integer")),
-                /* 建议tm数量 */
+                /* Advice TaskManager number after diagnosis */
                 new AbstractMap.SimpleEntry<>("diagnosisTmNum", digit("integer")),
-                /* 诊断类型 */
+                /* Diagnosis Type: [Low memory usage][High CPU peak utilization rate] */
                 new AbstractMap.SimpleEntry<>("diagnosisTypes", text()),
-                /* 处理状态(processing, success, failed) */
+                /* Processing State: (processing, success, failed) */
                 new AbstractMap.SimpleEntry<>("processState", text()),
-                /* 诊断建议：[{ruleName, ruleType, hasAdvice, description}, {...}] */
+                /* Diagnosis advice：[{ruleName, ruleType, hasAdvice, description}, {...}] */
                 new AbstractMap.SimpleEntry<>("advices", advice()),
-                /* 可优化核数 */
+                /* Optimizable number of cores */
                 new AbstractMap.SimpleEntry<>("cutCoreNum", digit("long")),
-                /* 总核数 */
+                /* Total number of cores. */
                 new AbstractMap.SimpleEntry<>("totalCoreNum", digit("long")),
-                /* 可优化内存数 */
+                /* Optimizable amount of memory */
                 new AbstractMap.SimpleEntry<>("cutMemNum", digit("long")),
-                /* 总内存 */
+                /* Total memory */
                 new AbstractMap.SimpleEntry<>("totalMemNum", digit("long")),
-                /* 记录创建时间 */
+                /* Create Time */
                 new AbstractMap.SimpleEntry<>("createTime", date()),
-                /* 记录更新时间 */
+                /* Update Time */
                 new AbstractMap.SimpleEntry<>("updateTime", date())
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }

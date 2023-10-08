@@ -19,53 +19,53 @@ package com.oppo.cloud.common.domain.cluster.yarn;
 import lombok.Data;
 
 /**
- * sparK rest api app 重试
+ * sparK rest api app attempt
  */
 @Data
 public class Attempt {
 
     /**
-     * 重试id
+     * Attempt id
      */
     private String attemptId;
     /**
-     * 开始时间
+     * Start time
      */
     private String startTime;
     /**
-     * 结束时间
+     * End time
      */
     private String endTime;
     /**
-     * 上次更新
+     * Last update time
      */
     private String lastUpdated;
     /**
-     * 运行耗时
+     * Running time
      */
     private Integer duration;
     /**
-     * spark运行用户
+     * Spark running user
      */
     private String sparkUser;
     /**
-     * 是否完成
+     * Whether it is completed or not
      */
     private Boolean completed;
     /**
-     * 版本
+     * version
      */
     private String appSparkVersion;
     /**
-     * 开始时间
+     * Start time
      */
     private Long startTimeEpoch;
     /**
-     * 结束时间
+     * End time
      */
     private Long endTimeEpoch;
     /**
-     * 上次更新时间
+     * Last updated time(epoch)
      */
     private Long lastUpdatedEpoch;
 }

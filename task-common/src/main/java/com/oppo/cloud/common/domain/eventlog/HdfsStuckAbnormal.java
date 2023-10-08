@@ -32,7 +32,7 @@ public class HdfsStuckAbnormal {
     private Integer stageId;
     private Integer attemptId;
     /**
-     * 比率
+     * ratio
      */
     private Double ratio;
     private Double median;

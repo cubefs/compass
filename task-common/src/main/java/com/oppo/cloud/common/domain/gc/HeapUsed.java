@@ -21,7 +21,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 堆使用
+ * Heap Usage
  */
 @Data
 @NoArgsConstructor
@@ -29,11 +29,11 @@ import lombok.NoArgsConstructor;
 public class HeapUsed {
 
     /**
-     * 时间戳
+     * Timestamp
      */
     private Long timestamp;
     /**
-     * 使用值
+     * Use value
      */
     private Integer used;
 }

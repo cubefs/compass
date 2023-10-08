@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.Data;
 
 /**
- * yarn 集群信息
+ * yarn cluster information
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

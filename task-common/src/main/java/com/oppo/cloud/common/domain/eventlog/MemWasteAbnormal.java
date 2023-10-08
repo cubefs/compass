@@ -28,32 +28,31 @@ public class MemWasteAbnormal {
 
     private Boolean abnormal;
     /**
-     * app总时间
+     * App total time
      */
     private Long totalTime;
     /**
-     * driver申请内存大小
+     * driver memory
      */
     private Long driverMemory;
     /**
-     * executor申请内存大小
+     * executor memory
      */
     private Long executorMemory;
     /**
-     * 总内存时间
+     * total memory time
      */
     private Long totalMemoryTime;
     /**
-     * 总消耗内存时间
+     * total consuming memory time
      */
     private Long totalMemoryComputeTime;
     /**
-     * 浪费百分比
+     * waste percent
      */
     private Float wastePercent;
-
     /**
-     * 阈值
+     * threshold
      */
     private Float threshold;
 

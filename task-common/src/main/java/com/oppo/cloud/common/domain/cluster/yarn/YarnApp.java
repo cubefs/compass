@@ -22,17 +22,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * yarn app属性
+ * yarn app
  */
 @Data
 public class YarnApp {
 
     /**
-     * 集群名称
+     * Cluster name
      */
     private String clusterName;
     /**
-     * RM ip地址
+     * RM IP address
      */
     private String ip;
     /**
@@ -146,7 +146,7 @@ public class YarnApp {
      */
     private int numAMContainerPreempted;
     /**
-     * 保存时间
+     * Save time
      */
     private long createTime;
 

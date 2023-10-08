@@ -19,7 +19,7 @@ package com.oppo.cloud.common.domain.eventlog.config;
 import lombok.Data;
 
 /**
- * Task长尾
+ * Hdfs stuck configuration
  */
 @Data
 public class HdfsStuckConfig {
@@ -27,17 +27,17 @@ public class HdfsStuckConfig {
     private Boolean disable;
 
     /**
-     * max/median占比
+     * Proportion of max/median
      */
     private Float threshold;
 
     /**
-     * task读取数据量(MB)
+     * task reads data volume in MB
      */
     private Float taskSize;
 
     /**
-     * 耗时(s)
+     * Duration (in seconds)
      */
     private Long duration;
 

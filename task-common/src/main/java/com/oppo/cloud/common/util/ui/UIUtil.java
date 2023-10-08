@@ -19,20 +19,20 @@ package com.oppo.cloud.common.util.ui;
 
 public class UIUtil {
 
-    // 图表颜色
-    // 异常类型颜色：红色
+    // Chart color
+    // Exception type color: red
     public static final String ABNORMAL_COLOR = "#f60000";
 
     public static final String ABNORMAL_COLOR_2 = "#F08080";
-    // 普通类型颜色：蓝色
+    // Regular type color: blue
     public static final String NORMAL_COLOR = "#6cdcd5";
-    // 关键类型颜色：绿色
+    // Key type color: green
     public static final String KEY_COLOR = "#00b500";
-    // 素类型颜色：黄色
+    // Plain type color: yellow
     public static final String PLAIN_COLOR = "#ffc84f";
 
     /**
-     * 字符串颜色加红色标签
+     * String color with red tag
      */
     public static String transferRed(String keyword) {
         return String.format("<span style=\"color: #e24a4a;\">%s</span>", keyword);
@@ -43,7 +43,7 @@ public class UIUtil {
     }
 
     /**
-     * 超链接
+     * Hyperlink
      */
     public static String transferHyperLink(String url, String keyword) {
         return String.format("<a target=\"_blank\" style=\"color: rgb(45, 204, 195);\" " +

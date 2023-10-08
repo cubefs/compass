@@ -22,16 +22,16 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 诊断规则线状图
+ * Diagnosis rules line chart.
  */
 @Data
 public class DiagnosisRuleLine {
     /**
-     * 标签
+     * Label
      */
     String label;
     /**
-     * 指标曲线
+     * Line data
      */
     List<MetricResult.DataResult> data;
 }

@@ -36,106 +36,106 @@ import java.util.*;
 @Data
 public class TaskApp extends OpenSearchInfo {
 
-    @ApiModelProperty(value = "applicationId名称")
+    @ApiModelProperty(value = "applicationId")
     private String applicationId;
 
-    @ApiModelProperty(value = "applicationType类型")
+    @ApiModelProperty(value = "applicationType")
     private String applicationType;
 
-    @ApiModelProperty(value = "执行用户")
+    @ApiModelProperty(value = "Execute user")
     private String executeUser;
 
-    @ApiModelProperty(value = "执行队列")
+    @ApiModelProperty(value = "queue")
     private String queue;
 
-    @ApiModelProperty(value = "集群名称")
+    @ApiModelProperty(value = "cluster name")
     private String clusterName;
 
-    @ApiModelProperty(value = "用户列表")
+    @ApiModelProperty(value = "Users")
     private List<SimpleUser> users;
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "Project name")
     private String projectName;
 
-    @ApiModelProperty(value = "项目ID")
+    @ApiModelProperty(value = "Project ID")
     private Integer projectId;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "Flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "工作流Id")
+    @ApiModelProperty(value = "Flow Id")
     private Integer flowId;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "Task name")
     private String taskName;
 
-    @ApiModelProperty(value = "任务Id")
+    @ApiModelProperty(value = "Task Id")
     private Integer taskId;
 
-    @ApiModelProperty(value = "执行周期")
+    @ApiModelProperty(value = "Execution date")
     private Date executionDate;
 
-    @ApiModelProperty(value = "任务开始执行时间")
+    @ApiModelProperty(value = "Start time of the task")
     private Date startTime;
 
-    @ApiModelProperty(value = "任务结束时间")
+    @ApiModelProperty(value = "End time of the task")
     private Date finishTime;
 
-    @ApiModelProperty(value = "任务执行耗时")
+    @ApiModelProperty(value = "Running time")
     private Double elapsedTime;
 
-    @ApiModelProperty(value = "任务执行状态")
+    @ApiModelProperty(value = "Task execution status")
     private String taskAppState;
 
-    @ApiModelProperty(value = "执行消耗memory·seconds[mb·s]")
+    @ApiModelProperty(value = "Memory consumption(Unit: memory·seconds[mb·s])")
     private Double memorySeconds;
 
-    @ApiModelProperty(value = "执行消耗vcore·seconds")
+    @ApiModelProperty(value = "CPU consumption (Unit: vcore·seconds)")
     private Double vcoreSeconds;
 
-    @ApiModelProperty(value = "am异常信息")
+    @ApiModelProperty(value = "AM diagnosis information")
     private String diagnostics;
 
-    @ApiModelProperty(value = "第几次重试的下的app")
+    @ApiModelProperty(value = "The app retried for the nth time")
     private Integer retryTimes;
 
-    @ApiModelProperty(value = "异常类型")
+    @ApiModelProperty(value = "Categories of exception")
     private List<String> categories;
 
-    @ApiModelProperty(value = "任务处理状态")
+    @ApiModelProperty(value = "Task processing status")
     private Integer taskStatus = 0;
 
-    @ApiModelProperty(value = "诊断结果")
+    @ApiModelProperty(value = "Result of diagnosis")
     private String diagnoseResult;
 
-    @ApiModelProperty(value = "跳转SparkUI")
+    @ApiModelProperty(value = "SparkUI link")
     private String sparkUI;
 
-    @ApiModelProperty(value = "spark event log path")
+    @ApiModelProperty(value = "Spark event log path")
     private String eventLogPath;
 
-    @ApiModelProperty(value = "yarn container log path")
+    @ApiModelProperty(value = "Yarn container log path")
     private String yarnLogPath;
 
-    @ApiModelProperty(value = "mr job history done path")
+    @ApiModelProperty(value = "MR job history done path")
     private String jobHistoryDoneLogPath;
 
-    @ApiModelProperty(value = "mr job history intermediate done path")
+    @ApiModelProperty(value = "MR job history intermediate done path")
     private String jobHistoryIntermediateDoneLogPath;
 
-    @ApiModelProperty(value = "mr job history staging path")
+    @ApiModelProperty(value = "MR job history staging path")
     private String jobHistoryStagingLogPath;
 
-    @ApiModelProperty(value = "am 主机名")
+    @ApiModelProperty(value = "AM host")
     private String amHost;
 
-    @ApiModelProperty(value = "是否删除")
+    @ApiModelProperty(value = "Delete or not")
     private Integer deleted = 0;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "Create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "修改时间")
+    @ApiModelProperty(value = "Update time")
     private Date updateTime;
 
     public Map<String, Object> genDoc() throws Exception {
@@ -212,10 +212,8 @@ public class TaskApp extends OpenSearchInfo {
         if ("".equals(yarnLogPath)) {
             throw new Exception(String.format("can not find yarn log path: rm ip : %s", yarnApp.getIp()));
         }
-        // todo adapt to different hadoop versions
+        // Todo: adapt to different hadoop versions
         this.yarnLogPath = yarnLogPath + "/" + yarnApp.getUser() + "/logs/" + this.applicationId;
 
     }
-
-
 }

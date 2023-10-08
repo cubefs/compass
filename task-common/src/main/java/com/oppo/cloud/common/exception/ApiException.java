@@ -19,7 +19,7 @@ package com.oppo.cloud.common.exception;
 import com.oppo.cloud.common.api.IErrorCode;
 
 /**
- * 自定义API异常
+ * Custom API exception
  */
 public class ApiException extends RuntimeException {
 

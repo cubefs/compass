@@ -80,7 +80,7 @@ public class DateUtil {
     }
 
     /**
-     * 本地时间戳转UTC时间
+     * Convert local timestamp to UTC time
      */
     public static String timestampToUTCDate(long time) {
         Calendar ca = Calendar.getInstance();
@@ -92,7 +92,7 @@ public class DateUtil {
     }
 
     /**
-     * 本地时间戳转UTC时间格式
+     * Convert local timestamp to UTC time format
      */
     public static String timestampToUTCStr(long time) {
         Calendar ca = Calendar.getInstance();
@@ -103,10 +103,10 @@ public class DateUtil {
     }
 
     /**
-     * 时间简化： end - start
+     * Time simplification： end - start
      *
-     * @param start 开始时间
-     * @param end   结束时间
+     * @param start time start
+     * @param end   time end
      */
     public static String timeSimplify(Date start, Date end) {
         long s = 0L, e = 0L;
@@ -120,7 +120,7 @@ public class DateUtil {
     }
 
     /**
-     * 时间简化
+     * Time simplification
      */
     public static String timeSimplify(Double timeDelta) {
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
@@ -136,7 +136,7 @@ public class DateUtil {
     }
 
     /**
-     * 获取相对于偏移量为offset的时间
+     * Get time relative to offset
      */
     public static Date getOffsetDate(Date date, Integer offset) {
         Calendar calendar = Calendar.getInstance();
@@ -146,7 +146,7 @@ public class DateUtil {
     }
 
     /**
-     * 获取当天零点的时间戳
+     * Get the timestamp of zero o'clock today.
      */
     public static Long todayZero() {
         Calendar calendar = Calendar.getInstance();
@@ -158,7 +158,7 @@ public class DateUtil {
     }
 
     /**
-     * 获取某一天零点的时间戳
+     * Get the timestamp of 00:00:00 of a certain day.
      */
     public static long dateOfZeroDate(long timestamp) {
         Calendar calendar = Calendar.getInstance();
@@ -171,7 +171,7 @@ public class DateUtil {
     }
 
     /**
-     * 获取某一天yyyy-MM-dd格式字符换，例如：当天amount=0,昨天amount=-1
+     * Get the date of a specific day in the format "yyyy-MM-dd", for example: the amount is 0 for today, and -1 for yesterday.
      */
     public static String getDay(int amount) {
         Calendar cal = Calendar.getInstance();
@@ -182,7 +182,7 @@ public class DateUtil {
     }
 
     /**
-     * 获取 fastjson2 utc context
+     * Get fastjson2 UTC context
      */
     public static JSONReader.Context getUTCContext() {
         JSONReader.Context context = JSONFactory.createReadContext();

@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * redis操作service
+ * Redis operation service
  */
 public interface RedisService {
 

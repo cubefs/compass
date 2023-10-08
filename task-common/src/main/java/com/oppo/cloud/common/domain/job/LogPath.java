@@ -20,28 +20,28 @@ import com.oppo.cloud.common.constant.LogPathType;
 import lombok.Data;
 
 /**
- * 日志信息
+ * LogPath Information
  */
 @Data
 public class LogPath {
 
     /**
-     * 协议: hdfs,s3
+     * Protocol: hdfs,s3
      */
     private String protocol;
 
     /**
-     * 类型: scheduler,event,executor,gc
+     * LogType: scheduler,event,executor,gc
      */
     private String logType;
 
     /**
-     * 日志路径类型: file,directory,pattern
+     * LogPathType: file,directory,pattern
      */
     private LogPathType logPathType;
 
     /**
-     * 路径
+     * LogPath
      */
     private String logPath;
 

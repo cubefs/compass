@@ -26,13 +26,13 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * 解析规则工具类
+ * Parsing rule utility class
  */
 @Slf4j
 public class ParserActionUtil {
 
     /**
-     * 是否包含某个action
+     * Whether it contains a certain action.
      */
     public static boolean containedAction(ParserAction root, String action) {
         Deque<ParserAction> deque = new LinkedList<>();
@@ -54,7 +54,7 @@ public class ParserActionUtil {
     }
 
     /**
-     * 获取叶子节点规则列表
+     * Get list of leaf node rules
      */
     public static List<ParserAction> getLeafAction(ParserAction root, boolean matchSucceed) {
         List<ParserAction> list = new ArrayList<>();
@@ -79,7 +79,7 @@ public class ParserActionUtil {
     }
 
     /**
-     * 校验规则
+     * Validation rules.
      */
     public static ParserAction verifyParserAction(ParserAction action) {
         if (action.isSkip()) {
@@ -91,7 +91,7 @@ public class ParserActionUtil {
     }
 
     /**
-     * 校验规则列表
+     * List of validation rules
      */
     public static List<ParserAction> verifyParserActions(List<ParserAction> actions) {
         actions.sort(Comparator.comparing(ParserAction::getStep));
@@ -107,7 +107,7 @@ public class ParserActionUtil {
 
 
     /**
-     * 遍历规则
+     *  Looping rules
      */
     public static void traverse(ParserAction action) {
         Deque<ParserAction> nodeDeque = new LinkedList<>();
@@ -132,7 +132,7 @@ public class ParserActionUtil {
     }
 
     /**
-     * 正则表达式编译
+     * Compile regular expression.
      */
     private static void compileParserTemplate(ParserAction parserAction) {
         ParserTemplate parserTemplate = parserAction.getParserTemplate();

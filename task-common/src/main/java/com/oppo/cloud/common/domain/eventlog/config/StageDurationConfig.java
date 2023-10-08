@@ -19,7 +19,7 @@ package com.oppo.cloud.common.domain.eventlog.config;
 import lombok.Data;
 
 /**
- * Stage耗时异常参数
+ * Stage duration anomaly parameters
  */
 @Data
 public class StageDurationConfig {
@@ -27,12 +27,12 @@ public class StageDurationConfig {
     private Boolean disable;
 
     /**
-     * 空闲时间占比
+     * threshold: idle time percentage
      */
     private Float threshold;
 
     /**
-     * 过滤时间(ms)
+     * duration(ms) (match if greater than duration)
      */
     private Long duration;
 

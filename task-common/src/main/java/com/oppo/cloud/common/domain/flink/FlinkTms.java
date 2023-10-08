@@ -21,7 +21,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * flink tm
+ * Flink task manager
  */
 @Data
 public class FlinkTms {

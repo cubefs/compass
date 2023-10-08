@@ -29,15 +29,15 @@ public class JobDurationAbnormal {
     private Long jobDuration;
     private Long stageAccDuration;
     /**
-     * 比率
+     * ratio
      */
     private Double ratio;
     /**
-     * 阈值
+     * threshold
      */
     private Double threshold;
     /**
-     * 过滤时间
+     * duration: (match if greater than it)
      */
     private Long duration;
     private Boolean abnormal;

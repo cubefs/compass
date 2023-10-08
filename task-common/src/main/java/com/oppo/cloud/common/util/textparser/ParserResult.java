@@ -22,17 +22,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 解析结果
+ * Parsing Result
  */
 @Data
 public class ParserResult {
 
     /**
-     * 行数据
+     * Row data
      */
     private List<String> lines;
     /**
-     * 分组匹配数据
+     * Match the data in groups.
      */
     private Map<String, String> groupData;
 }

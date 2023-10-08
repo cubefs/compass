@@ -21,22 +21,23 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * flink作业
+ * Flink job
  */
 @Data
 public class FlinkJobs {
     /**
-     * 作业
+     * Job list
      */
     List<FlinkOverviewJob> jobs;
+
     @Data
-    public static class FlinkOverviewJob{
+    public static class FlinkOverviewJob {
         /**
          * id
          */
         String id;
         /**
-         * 状态
+         * Status
          */
         String status;
     }
