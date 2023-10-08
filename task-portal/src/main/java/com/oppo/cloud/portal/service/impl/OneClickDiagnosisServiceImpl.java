@@ -274,7 +274,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
         App app = new App();
         app.formatAppLog(taskApp);
         logRecord.setApps(Collections.singletonList(app));
-        logRecord.formatTaskAppList(Collections.singletonList(taskApp));
+        logRecord.toTaskAppMap(Collections.singletonList(taskApp));
 
         List<TaskApp> taskAppEsList = findTaskApp(taskApp.getApplicationId());
 

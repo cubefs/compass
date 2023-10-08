@@ -265,7 +265,7 @@ public class DelayedTask implements CommandLineRunner {
         LogRecord logRecord = new LogRecord();
         logRecord.setId(UUID.randomUUID().toString());
         logRecord.setJobAnalysis(delayedTaskInfo.getJobAnalysis());
-        logRecord.formatTaskAppList(abnormalTaskAppInfo.getTaskAppList());
+        logRecord.toTaskAppMap(abnormalTaskAppInfo.getTaskAppList());
         List<App> appLogPath = logRecordService.getAppLog(abnormalTaskAppInfo.getTaskAppList());
         logRecord.setApps(appLogPath);
         return logRecord;

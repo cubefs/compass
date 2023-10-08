@@ -160,7 +160,7 @@ public abstract class DetectServiceImpl implements DetectService {
         logRecord.setId(UUID.randomUUID().toString());
         logRecord.setIsOneClick(false);
         logRecord.setJobAnalysis(detectJobAnalysis);
-        logRecord.formatTaskAppList(abnormalTaskAppInfo.getTaskAppList());
+        logRecord.toTaskAppMap(abnormalTaskAppInfo.getTaskAppList());
         List<App> appLogPath = logRecordService.getAppLog(abnormalTaskAppInfo.getTaskAppList());
         List<App> schedulerLogApp = logRecordService.getSchedulerLog(detectJobAnalysis);
         appLogPath.addAll(schedulerLogApp);

@@ -77,7 +77,7 @@ public class LogRecordServiceImpl implements LogRecordService {
         LogRecord logRecord = new LogRecord();
         logRecord.setId(UUID.randomUUID().toString());
         logRecord.setJobAnalysis(new JobAnalysis());
-        logRecord.setTaskAppList(taskAppMap);
+        logRecord.setTaskAppMap(taskAppMap);
         logRecord.setApps(Collections.singletonList(app));
 
         String logRecordJson = JSONObject.toJSONString(logRecord);
