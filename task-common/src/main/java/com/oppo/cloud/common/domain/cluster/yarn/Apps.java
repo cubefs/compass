@@ -22,13 +22,13 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * yarn rest api app列表
+ * yarn rest api app
  */
 @Data
 public class Apps {
 
     /**
-     * 接口返回的app字段
+     * list of application
      */
     @JsonProperty("app")
     private List<YarnApp> app;

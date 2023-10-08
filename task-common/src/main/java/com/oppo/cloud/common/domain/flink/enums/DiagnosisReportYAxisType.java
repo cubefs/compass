@@ -17,23 +17,23 @@
 package com.oppo.cloud.common.domain.flink.enums;
 
 /**
- * 诊断报告Y轴类型
+ * Diagnosis report Y-axis type.
  */
 public enum DiagnosisReportYAxisType {
     /**
-     * 百分比
+     * Percent
      */
     Percent(0, "percent 0-1"),
     /**
-     * 数值
+     * Numeric data
      */
     Numeric(1, "数值"),
     /**
-     * 时间秒
+     * Time(seconds)
      */
     Second(2, "时间秒"),
     /**
-     * 速度bytes/s
+     * Speed(bytes/s)
      */
     BytesPerSecond(3, "byte/s"),
     ;

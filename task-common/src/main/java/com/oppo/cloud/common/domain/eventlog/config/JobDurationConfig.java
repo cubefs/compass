@@ -19,7 +19,7 @@ package com.oppo.cloud.common.domain.eventlog.config;
 import lombok.Data;
 
 /**
- * Job耗时异常参数
+ * Job duration anomaly parameters
  */
 @Data
 public class JobDurationConfig {

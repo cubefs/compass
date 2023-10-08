@@ -22,7 +22,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * sparK rest api app 重试
+ * SparK rest api app (App information is from spark ui)
  */
 @Data
 public class SparkApplication {
@@ -32,11 +32,11 @@ public class SparkApplication {
      */
     private String id;
     /**
-     * spark应用名称
+     * spark application name
      */
     private String name;
     /**
-     * 重试列表
+     * list of attempts
      */
     private List<Attempt> attempts;
 }

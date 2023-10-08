@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * 创建动态模板API
+ * Create dynamic template API
  */
 public class MappingApi {
 
@@ -40,7 +40,7 @@ public class MappingApi {
     }
 
     /**
-     * 创建mapping
+     * Create mapping
      */
     public CreateIndexResponse create(RestHighLevelClient client, final String index, final Map<String, Object> mapping,
                                       int numberOfShards, int numberOfReplicas) throws IOException {
@@ -52,7 +52,7 @@ public class MappingApi {
     }
 
     /**
-     * 创建template mapping
+     * Create template mapping
      */
     public AcknowledgedResponse putTemplate(RestHighLevelClient client, final String template, String[] patterns,
                                             final Map<String, Object> mapping, int numberOfShards,
@@ -66,7 +66,7 @@ public class MappingApi {
     }
 
     /**
-     * 删除模板，通过模板名字
+     * Delete template by name
      */
     public AcknowledgedResponse delete(RestHighLevelClient client, final String template) throws IOException {
         DeleteIndexTemplateRequest request = new DeleteIndexTemplateRequest();
@@ -75,7 +75,7 @@ public class MappingApi {
     }
 
     /**
-     * 判断模板是否存在
+     * Check if template exists
      */
     public boolean existsTemplate(RestHighLevelClient client, final String template) throws IOException {
         IndexTemplatesExistRequest request = new IndexTemplatesExistRequest(template);

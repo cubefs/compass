@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  日志解析消息接口
+ *  Log parsing message service.
  */
 @Service
 @Slf4j
@@ -42,7 +42,7 @@ public class LogRecordServiceImpl implements LogRecordService {
     @Override
     public List<App> getSchedulerLog(JobAnalysis detectJobAnalysis) {
         List<App> apps = new ArrayList<>();
-        // 根据任务重试次数构造出调度日志
+        // Construct scheduling logs based on the number of times the task is retried.
         for (int i = 0; i <= detectJobAnalysis.getRetryTimes(); i++) {
             List<String> logPaths = schedulerLogService.getSchedulerLog(detectJobAnalysis.getProjectName(),
                     detectJobAnalysis.getFlowName(), detectJobAnalysis.getTaskName(),
@@ -53,7 +53,7 @@ public class LogRecordServiceImpl implements LogRecordService {
                 apps.add(app);
             }
         }
-        // 构造出每次重试的调度日志才算成功
+        // Successfully constructing the scheduling log for each retry.
         if (apps.size() < detectJobAnalysis.getRetryTimes() + 1) {
             apps = new ArrayList<>();
         }
@@ -63,7 +63,7 @@ public class LogRecordServiceImpl implements LogRecordService {
     @Override
     public List<App> getAppLog(List<TaskApp> taskAppList) {
         List<App> apps = new ArrayList<>();
-        // 如果有信息完整的appId,则一起发送
+        // If there is a complete appId, send it together.
         for (TaskApp taskApp : taskAppList) {
             App app = new App();
             app.formatAppLog(taskApp);

@@ -25,17 +25,17 @@ import java.util.List;
 public interface TaskInstanceExtendMapper extends TaskInstanceMapper {
 
     /**
-     *查询任务执行状态的历史数据
+     * Query the historical data of task execution status.
      */
     List<TaskStateHistory> searchTaskState(TaskInstanceExample example);
 
     /**
-     * 查询任务执行耗时的历史数据
+     * Query the historical data of task execution duration.
      */
     List<TaskStateHistory> searchTaskDuration(TaskInstanceExample example);
 
     /**
-     * 查询任务执行结束时间相对于运行周期的历史数据
+     * Query the historical data of the end time of task execution relative to the running cycle.
      */
     List<TaskStateHistory> searchTaskRelativeEndTime(TaskInstanceExample example);
 }

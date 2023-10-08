@@ -70,7 +70,7 @@ public class LogRecordProcessingTask {
         log.info("processingJob size:{}", size);
         map.forEach((key, val) -> {
             LogRecord logRecord = JSONObject.parseObject((String) val, LogRecord.class);
-            long spendTime = System.currentTimeMillis() - logRecord.getFirstConsumeTime();
+            long spendTime = System.currentTimeMillis() - logRecord.getCreateTime();
             long limitTimesMs = limitTime * Constant.HOUR_MS;
             if (spendTime > limitTimesMs && logRecord.getConsumeCount() > limitCount) {
                 log.warn("delete logRecord: {}, id: {}", customConfig.getProcessingHash(), key);

@@ -19,22 +19,22 @@ package com.oppo.cloud.common.domain.eventlog;
 public enum GraphType {
 
     /**
-     * 最大值
+     * max value
      */
     max,
 
     /**
-     * 中位数
+     * median value
      */
     median,
 
     /**
-     * 最小值
+     * min value
      */
     min,
 
     /**
-     * 正常值
+     * normal value
      */
     normal
 }

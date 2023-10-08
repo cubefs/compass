@@ -17,15 +17,15 @@
 package com.oppo.cloud.common.util.textparser;
 
 /**
- * 解析类型枚举
+ * Parse type enumeration
  */
 public enum ParserType {
     /**
-     * 默认：行匹配或块匹配
+     * Default: line matching or block matching
      */
     DEFAULT,
     /**
-     * 把结果合并成一行再匹配
+     * Merge the results into one line and then match
      */
     JOIN;
 }

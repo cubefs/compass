@@ -19,17 +19,17 @@ package com.oppo.cloud.common.util.textparser;
 import java.util.Map;
 
 /**
- * 文本解析接口
+ * Text parsing interface
  */
 public interface ITextParser {
 
     /**
-     * 解析
+     * Parsing
      */
     void parse(String line);
 
     /**
-     * 获取结果
+     * Get the result
      */
     Map<String, ParserAction> getResults();
 }

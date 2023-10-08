@@ -24,33 +24,33 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * 文本解析
+ * Text parsing
  */
 @Slf4j
 public class TextParser implements ITextParser {
 
     /**
-     * 所有的action规则
+     * All action rules
      */
     private List<ParserAction> actions;
     /**
-     * 单个文本匹配到的action规则
+     * Action rules matched by a single text
      */
     private final Map<String, ParserAction> matchActions;
     /**
-     * 正在匹配的action，只支持单个action
+     * Matching action in progress, only supports a single action
      */
     private ParserAction parsingAction;
     /**
-     * 匹配到的内容
+     * Matched content
      */
     private List<String> blocks;
     /**
-     * 匹配到的blocks结尾
+     * Matched block endings
      */
     private String blockEnd;
     /**
-     * 模板匹配位置
+     * Template matching location
      */
     private PositionState state;
 
@@ -75,11 +75,11 @@ public class TextParser implements ITextParser {
     }
 
     /**
-     * 解析
+     * Parsing
      */
     @Override
     public void parse(String line) {
-        // 若blockEnd不为null，则需要首先处理上一次匹配的末尾行
+        // If blockEnd is not null, the last line of the previous match needs to be processed first.
         if (this.blockEnd != null) {
             parseInternal(this.blockEnd);
             this.blockEnd = null;
@@ -104,7 +104,7 @@ public class TextParser implements ITextParser {
     }
 
     /**
-     * 获取解析结果
+     * Get parsing results
      */
     @Override
     public Map<String, ParserAction> getResults() {
@@ -112,7 +112,7 @@ public class TextParser implements ITextParser {
     }
 
     /**
-     * 头部匹配
+     * Header matching
      *
      * @param line
      */
@@ -139,7 +139,7 @@ public class TextParser implements ITextParser {
                             extractGroupData(m);
                             this.state = PositionState.TAIL;
                         } else {
-                            // 只有head,相当于行匹配
+                            // Only head, equivalent to line matching.
                             setParserResults(m);
                         }
                         return;

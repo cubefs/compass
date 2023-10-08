@@ -398,27 +398,25 @@ public class OpenSearchWriter {
             }
         }
 
-        for (Map.Entry<String, List<String>> map : appCategoryMap.entrySet()) {
-            TaskApp taskApp = logRecord.getTaskAppList().get(map.getKey());
+        for (Map.Entry<String, List<String>> item : appCategoryMap.entrySet()) {
+            TaskApp taskApp = logRecord.getTaskApp(item.getKey());
             if (taskApp == null) {
-                log.error("get {} taskApp null", map.getKey());
+                log.error("get {} taskApp null", item.getKey());
                 continue;
             }
-            List<String> categories = map.getValue();
+            List<String> categories = item.getValue();
             Map<String, Boolean> appCategories = new HashMap<>();
             categories.forEach(data -> appCategories.put(data, true));
             // update task-app categories
             log.info("updateTaskApp:{},{}", logRecord.getId(), appCategories);
-            if (appCategories.size() > 0) {
+            if (!appCategories.isEmpty()) {
                 OpenSearchWriter.getInstance().updateTaskApp(taskApp, appCategories);
                 continue;
             }
             if (logRecord.getIsOneClick()) {
                 OpenSearchWriter.getInstance().updateTaskApp(taskApp, appCategories);
             }
-
         }
-
     }
 
     private enum OpenSearch {

@@ -19,7 +19,7 @@ package com.oppo.cloud.common.domain.eventlog.config;
 import lombok.Data;
 
 /**
- * CPU浪费配置
+ * CPU waste configuration
  */
 @Data
 public class CpuWasteConfig {

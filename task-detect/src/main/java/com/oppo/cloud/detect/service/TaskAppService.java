@@ -24,27 +24,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 任务taskApp接口
+ * Task taskApp interface.
  */
 public interface TaskAppService {
 
     /**
-     * 获取异常任务Apps的结果信息（包括异常信息）
+     * Get the result information of exception task Apps (including exception information).
      */
     AbnormalTaskAppInfo getAbnormalTaskAppsInfo(JobAnalysis jobAnalysis, String handledApps);
 
     /**
-     * 获取任务下所有的的AbnormalTaskApp数据，包括没有taskApp的数据
+     * Get all AbnormalTaskApp data under the task, including data without taskApp.
      */
     Map<Integer, List<TaskApp>> getAbnormalTaskApps(JobAnalysis jobAnalysis);
 
     /**
-     * 往Es中插入异常任务的app信息
+     * Insert the app information of exception tasks.
      */
     void insertTaskApps(List<TaskApp> taskAppList) throws Exception;
 
     /**
-     * 从Es中获取异常任务的app信息
+     * Get the app information of exception tasks.
      */
     List<TaskApp> searchTaskApps(JobAnalysis jobAnalysis) throws Exception;
 }

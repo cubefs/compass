@@ -19,7 +19,7 @@ package com.oppo.cloud.common.domain.flink;
 import lombok.Data;
 
 /**
- * job manager 配置项
+ * JobManager configuration item
  */
 @Data
 public class JobManagerConfigItem {

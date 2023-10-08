@@ -17,7 +17,7 @@
 package com.oppo.cloud.common.domain.flink.report;
 
 /**
- * 诊断规则图表
+ * Diagnosis rules chart interface.
  */
 public interface IDiagnosisRuleChart {
 }

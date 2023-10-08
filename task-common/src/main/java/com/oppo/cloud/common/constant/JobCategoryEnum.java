@@ -23,12 +23,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 异常类型枚举类
+ * Exception type enumeration class.
  */
 public enum JobCategoryEnum {
 
     /**
-     * 运行失败
+     * Failed to run.
      */
     executionFailed("运行失败", "执行失败的任务"),
 
@@ -70,7 +70,7 @@ public enum JobCategoryEnum {
 
 
     /**
-     * 获取作业异常类型的中文列表
+     * Get the Chinese list of job exception types.
      * @return
      */
     public static List<String> getAllAppCategoryOfChina() {
@@ -82,7 +82,7 @@ public enum JobCategoryEnum {
     }
 
     /**
-     * 获取作业异常类型,按enum顺序获取其中文列表
+     * Get the job exception type and get the Chinese list in the order of the enum.
      *
      * @param categoryList
      * @return
@@ -101,7 +101,7 @@ public enum JobCategoryEnum {
     }
 
     /**
-     * 获取作业异常类型,按enum顺序获取其英文列表
+     * Get the job exception type and get the English list in the order of the enum.
      *
      * @param categoryChList
      * @return
@@ -120,7 +120,7 @@ public enum JobCategoryEnum {
     }
 
     /**
-     * 获取作业异常类型的msg
+     * Get the message of job exception types.
      */
     public static String getJobNameMsg(String category) {
         if (MAP.containsKey(category)) {

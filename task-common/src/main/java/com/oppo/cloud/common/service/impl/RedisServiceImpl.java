@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Redis操作实现类
+ * Redis operation implementation
  */
 @Slf4j
 public class RedisServiceImpl implements RedisService {

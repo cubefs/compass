@@ -53,7 +53,7 @@ public class YarnTask extends Task {
         if (StringUtils.isBlank(appId)) {
             return null;
         }
-        TaskApp taskApp = this.taskParam.getLogRecord().getTaskAppList().get(appId);
+        TaskApp taskApp = this.taskParam.getLogRecord().getTaskApp(appId);
         if (taskApp == null) {
             return null;
         }

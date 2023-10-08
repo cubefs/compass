@@ -32,9 +32,9 @@ public class FlinkReportMapping extends Mapping{
 
     public static Map<String, Object> build() {
         return Stream.of(
-                /* 属于某个作业的Id, 用于做索引 */
+                /* Job ID for indexing */
                 new AbstractMap.SimpleEntry<>("flinkTaskAnalysisId", text()),
-                /* 创建记录时间 */
+                /* Create time */
                 new AbstractMap.SimpleEntry<>("createTime", date())
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }

@@ -24,67 +24,67 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public enum AppCategoryEnum {
 
-    // sql失败（语法，字段，权限，环境等）
+    // sql failed（syntax, field, permission, environment, etc）
     SQL_FAILED("sqlFailed", "sql失败", "runError"),
 
-    // shuffle失败
+    // shuffle failed
     SHUFFLE_FAILED("shuffleFailed", "shuffle失败", "runError"),
 
-    // 内存溢出
+    // memory overflow
     MEMORY_OVERFLOW("memoryOverflow", "内存溢出", "runError"),
 
-    // 内存浪费
+    // memory waste
     MEMORY_WASTE("memoryWaste", "内存浪费", "resourceUsage"),
 
-    // CPU浪费
+    // CPU waste
     CPU_WASTE("cpuWaste", "CPU浪费", "resourceUsage"),
 
-    // 大表扫描
+    // large table scan
     LARGE_TABLE_SCAN("largeTableScan", "大表扫描", "runPerformance"),
 
-    // oom预警
+    // oom warning
     OOMWarn("oomWarn", "OOM预警", "runPerformance"),
 
-    // 数据倾斜
+    // data skew
     DATA_SKEW("dataSkew", "数据倾斜", "runPerformance"),
 
-    // Job耗时异常
+    // Job duration abnormal
     JOB_DURATION("jobDurationAbnormal", "Job耗时异常", "runPerformance"),
 
-    // Stage耗时异常
+    // Stage duration abnormal
     STAGE_DURATION("stageDurationAbnormal", "Stage耗时异常", "runPerformance"),
 
-    // Task耗时异常
+    // Task duration abnormal
     TASK_DURATION("taskDurationAbnormal", "Task长尾", "runPerformance"),
 
-    // Hdfs卡顿
+    // Hdfs stuck
     HDFS_STUCK("hdfsStuck", "HDFS卡顿", "runPerformance"),
 
-    // 推测执行Task过多
+    // Speculative task is too many
     SPECULATIVE_TASK("speculativeTask", "推测执行Task过多", "runPerformance"),
 
-    // 全局排序异常
+    // global sorting exception
     GLOBAL_SORT("globalSortAbnormal", "全局排序异常", "runPerformance"),
 
-    // MapReduce内存浪费
+    // MapReduce memory waste
     MR_MEMORY_WASTE("mrMemoryWaste", "MR内存浪费", "resourceUsage"),
 
-    // MapReduce大表扫描
+    // MapReduce large table scan
     MR_LARGE_TABLE_SCAN("mrLargeTableScan", "MR大表扫描", "runPerformance"),
 
-    // MapReduce数据倾斜
+    // MapReduce data skew
     MR_DATA_SKEW("mrDataSkew", "MR数据倾斜", "runPerformance"),
 
-    // MapReduce Task长尾
+    // MapReduce Task long tail
     MR_TASK_DURATION("mrTaskDurationAbnormal", "MRTask长尾", "runPerformance"),
 
-    // MapReduce推测执行Task过多
+    // MapReduce speculative task is too many
     MR_SPECULATIVE_TASK("mrSpeculativeTask", "MR推测执行Task过多", "runPerformance"),
 
-    // MapReduce GC异常
+    // MapReduce GC exception
     MR_GC_ABNORMAL("mrGCAbnormal", "MRGC异常", "runPerformance"),
 
-    // 其他异常
+    // other exception
     OTHER_EXCEPTION("otherException", "其他异常", "runError");
 
     private final String category;
@@ -120,7 +120,7 @@ public enum AppCategoryEnum {
     }
 
     /**
-     * 获取app异常类型,按enum顺序获取其中文列表
+     * Get the exception type of the app and get the Chinese list in the order of the enum
      *
      * @param categoryList
      * @return
@@ -139,7 +139,7 @@ public enum AppCategoryEnum {
     }
 
     /**
-     * 获取app异常类型,按enum顺序获取其英文列表
+     * Get the exception type of the app and get the English list in the order of the enum.
      *
      * @param categoryChList
      * @return
@@ -158,7 +158,7 @@ public enum AppCategoryEnum {
     }
 
     /**
-     * 获取app异常类型的中文列表
+     * Get the list of app exception types.
      *
      * @return
      */
@@ -171,7 +171,7 @@ public enum AppCategoryEnum {
     }
 
     /**
-     * 获取app异常类型的中文名称
+     * Get the Chinese name of app exception types.
      */
     @Deprecated
     public static String getAppCategoryOfChina(String category) {
@@ -184,7 +184,7 @@ public enum AppCategoryEnum {
     }
 
     /**
-     * 获取app异常类型的desc
+     * Get the description of app exception types.
      */
     public static String getAppCategoryOfDesc(String category) {
         if (MAP.containsKey(category)) {

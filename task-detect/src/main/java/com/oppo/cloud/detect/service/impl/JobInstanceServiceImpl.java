@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 任务实例处理
+ * Job instance processing service.
  */
 
 @Service

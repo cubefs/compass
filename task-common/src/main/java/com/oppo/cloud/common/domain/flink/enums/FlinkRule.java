@@ -23,73 +23,73 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.stream.Stream;
 
 /**
- * Flink 诊断规则
+ * Flink diagnosis rules.
  */
 @Getter
 @Slf4j
 public enum FlinkRule {
     /**
-     * 内存利用率高
+     * High memory utilization rate.
      */
     TmMemoryHigh(0, "内存利用率高", "rgb(255, 114, 46)", "计算内存的使用率，如果使用率高于阈值，则增加内存",
             DiagnosisRuleType.ResourceRule.getCode()),
     /**
-     * 内存利用率低
+     * Low memory utilization rate.
      */
     TmMemoryLow(1, "内存利用率低", "rgb(255, 114, 46)", "计算内存的使用率，如果使用率低于阈值，则降低内存",
             DiagnosisRuleType.ResourceRule.getCode()),
     /**
-     * JM内存优化
+     * JM memory optimization.
      */
     JmMemoryRule(2, "JM内存优化", "rgb(255, 114, 46)", "根据tm个数计算jm内存的建议值",
             DiagnosisRuleType.ResourceRule.getCode()),
     /**
-     * 作业无流量
+     * No traffic for the job.
      */
     JobNoTraffic(3, "作业无流量", "rgb(255, 114, 46)", "检测作业的kafka source算子是否没有流量",
             DiagnosisRuleType.ResourceRule.getCode()),
     /**
-     * 存在慢算子
+     * Slow operators(vertices) exist.
      */
     SlowVerticesRule(4, "存在慢算子", "rgb(255, 114, 46)", "检测作业是否存在慢算子",
             DiagnosisRuleType.RuntimeExceptionRule.getCode()),
     /**
-     * TM管理内存优化
+     * TM memory management optimization.
      */
     TmManagedMemory(5, "TM管理内存优化", "rgb(255, 114, 46)",
             "计算作业管理内存的使用率，给出合适的管理内存建议值", DiagnosisRuleType.ResourceRule.getCode()),
     /**
-     * 部分TM空跑
+     * Partial TM idling.
      */
     TmNoTraffic(7, "部分TM空跑", "rgb(255, 114, 46)", "检测是否有tm没有流量，并且cpu和内存也没有使用",
             DiagnosisRuleType.ResourceRule.getCode()),
     /**
-     * 并行度不够
+     * Insufficient parallelism.
      */
     ParallelIncr(8, "并行度不够", "rgb(255, 114, 46)", "检测作业是否因为并行度不够引起延迟",
             DiagnosisRuleType.ResourceRule.getCode()),
     /**
-     * CPU均值利用率高
+     * High CPU average utilization rate.
      */
     AvgCpuHighRule(10, "CPU利用率高", "rgb(255, 114, 46)",
             "计算作业的CPU使用率，如果高于阈值，则增加cpu", DiagnosisRuleType.ResourceRule.getCode()),
     /**
-     * CPU均值利用率低
+     * Low CPU average utilization rate.
      */
     AvgCpuLowRule(11, "CPU利用率低", "rgb(255, 114, 46)",
             "计算作业的CPU使用率，如果低于阈值，则降低cpu", DiagnosisRuleType.ResourceRule.getCode()),
     /**
-     * CPU峰值利用率高
+     * High CPU peak utilization rate.
      */
     PeekDurationResourceRule(12, "CPU峰值利用率高", "rgb(255, 114, 46)",
             "计算作业的CPU峰值使用率，如果高于阈值，则增加cpu", DiagnosisRuleType.ResourceRule.getCode()),
     /**
-     * 存在反压算子
+     * Back pressure vertices exist.
      */
     BackPressure(15, "存在反压算子", "rgb(255, 114, 46)",
             "检测作业是否存在反压算子", DiagnosisRuleType.RuntimeExceptionRule.getCode()),
     /**
-     * 作业延迟高
+     * High job latency.
      */
     JobDelay(16, "作业延迟高", "rgb(255, 114, 46)", "检测作业的kafka延迟是否高于阈值",
             DiagnosisRuleType.RuntimeExceptionRule.getCode()),

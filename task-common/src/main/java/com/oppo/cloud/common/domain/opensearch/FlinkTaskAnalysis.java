@@ -28,25 +28,25 @@ public class FlinkTaskAnalysis extends OpenSearchInfo {
     /* Flink task app Id */
     private Integer flinkTaskAppId;
 
-    /* 任务所属用户: [{userId: 23432, username: "someone"}] */
+    /* Owner of the task: [{userId: 23432, username: "someone"}] */
     private List<SimpleUser> users;
 
-    /* 项目名称 */
+    /* Project name */
     private String projectName;
 
-    /* 项目ID */
+    /* Project ID */
     private Integer projectId;
 
-    /* 工作流名称 */
+    /* Flow name */
     private String flowName;
 
-    /* 工作流Id */
+    /* Flow id */
     private Integer flowId;
 
-    /* 任务名称 */
+    /* task Name */
     private String taskName;
 
-    /* 任务ID */
+    /* task ID */
     private Integer taskId;
 
     /* yarn applicationId */
@@ -55,52 +55,52 @@ public class FlinkTaskAnalysis extends OpenSearchInfo {
     /* flink track url */
     private String flinkTrackUrl;
 
-    /* yarn获取的总共分配mb */
+    /* Total allocated memory */
     private Integer allocatedMB;
 
-    /* yarn获取的总共分配vcore */
+    /* Total allocated vcores */
     private Integer allocatedVcores;
 
-    /* yarn获取的总共分配容器 */
+    /* Number of allocated containers */
     private Integer runningContainers;
 
-    /* 执行引擎? */
+    /* Executing Engine ? */
     private String engineType;
 
-    /* 执行周期 */
+    /* Execution Date */
     private Date executionDate;
 
-    /* 运行耗时 */
+    /* Elapsed time */
     private Double duration;
 
-    /* 开始时间 */
+    /* Start time */
     private Date startTime;
 
-    /* 结束时间 */
+    /* End time */
     private Date endTime;
 
-    /* cpu消耗(vcore-seconds) */
+    /* CPU consumption(vcore-seconds) */
     private Float vcoreSeconds;
 
-    /* 内存消耗(GB-seconds) */
+    /* Memory consumption(GB-seconds) */
     private Float memorySeconds;
 
-    /* 队列名称 */
+    /* Queue */
     private String queue;
 
-    /* 集群名称 */
+    /* Cluster name */
     private String clusterName;
 
-    /* 重试次数 */
+    /* Times of retries */
     private Integer retryTimes;
 
-    /* 执行用户 */
+    /* Executing user */
     private String executeUser;
 
-    /* yarn诊断信息 */
+    /* Yarn diagnosis information */
     private String diagnosis;
 
-    /* 并行度 */
+    /* Parallel */
     private Integer parallel;
 
     /* flink slot */
@@ -121,65 +121,73 @@ public class FlinkTaskAnalysis extends OpenSearchInfo {
     /* flink job name */
     private String jobName;
 
-    /* 诊断开始时间 */
+    /* Start time of diagnosis */
     private Date diagnosisStartTime;
 
-    /* 诊断结束时间 */
+    /* End time of diagnosis */
     private Date diagnosisEndTime;
 
-    /* 资源诊断类型,[0扩容cpu,1扩容mem,2缩减cpu,3缩减mem,4运行异常] */
+    /* Resource diagnosis type:
+      - 0: Expand CPU
+      - 1: Expand Memory,
+      - 2: Reduce CPU,
+      - 3: Reduce Memory,
+      - 4: Running abnormally */
     private List<Integer> diagnosisResourceType;
 
-    /* 诊断来源0凌晨定时任务,1任务上线后诊断,2即时诊断 */
+    /* Diagnosis source:
+      - 0: Midnight scheduled task
+      - 1: Diagnosis after task going online
+      - 2: Real-time diagnosis */
     private Integer diagnosisSource;
 
-    /* 建议并行度 */
+    /* Advice parallel after diagnosis */
     private Integer diagnosisParallel;
 
-    /* 建议job manager 内存大小单位MB */
+    /* Advice JobManager memory(Unit: MB) after diagnosis */
     private Integer diagnosisJmMemory;
 
-    /* 建议task manager 内存大小单位MB */
+    /* Advice TaskManager memory(Unit: MB) after diagnosis */
     private Integer diagnosisTmMemory;
 
-    /* 建议tm的slot数量 */
+    /* Advice Task slots after diagnosis */
     private Integer diagnosisTmSlotNum;
 
-    /* 建议tm的core数量 */
+    /* Advice TaskManager core number after diagnosis */
     private Integer diagnosisTmCoreNum;
 
-    /* 建议tm数量 */
+    /* Advice TaskManager number after diagnosis */
     private Integer diagnosisTmNum;
 
-    /* 诊断类型: [内存使用率低][CPU峰值利用率高] */
+    /* Diagnosis Type: [Low memory usage][High CPU peak utilization rate] */
     private List<String> diagnosisTypes;
 
-    /* 处理状态(processing, success, failed) */
+    /* Processing State: (processing, success, failed) */
     private List<String> processState;
 
-    /* 诊断建议 */
+    /* Diagnosis advice */
     private List<FlinkTaskAdvice> advices;
 
-    /* 可优化核数 */
+    /* Optimizable number of cores */
     private Long cutCoreNum;
 
-    /* 总核数 */
+    /* Total number of cores. */
     private Long totalCoreNum;
 
-    /* 可优化内存数 */
+    /* Optimizable amount of memory */
     private Long cutMemNum;
 
-    /* 总内存 */
+    /* Total memory */
     private Long totalMemNum;
 
-    /* 记录创建时间 */
+    /* Create Time */
     private Date createTime;
 
-    /* 记录更新时间 */
+    /* Update Time */
     private Date updateTime;
 
     /**
-     * 生成文档记录
+     * Generate doc for storing
      *
      * @return
      * @throws Exception

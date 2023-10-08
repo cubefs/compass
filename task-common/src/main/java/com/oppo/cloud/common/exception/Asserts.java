@@ -19,7 +19,7 @@ package com.oppo.cloud.common.exception;
 import com.oppo.cloud.common.api.IErrorCode;
 
 /**
- * 断言处理类，用于抛出各种API异常
+ * Assertion handling class for throwing various API exceptions.
  */
 public class Asserts {
 

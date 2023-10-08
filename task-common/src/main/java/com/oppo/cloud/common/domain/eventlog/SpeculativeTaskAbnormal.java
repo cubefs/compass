@@ -32,11 +32,11 @@ public class SpeculativeTaskAbnormal {
     private Integer stageId;
     private Integer attemptId;
     /**
-     * 推测执行数量
+     * Speculative execution count
      */
     private Integer speculativeCount;
     /**
-     * 推测执行任务id列表
+     * Speculative execution task ID list
      */
     private List<Long> taskIds;
     private Boolean abnormal;

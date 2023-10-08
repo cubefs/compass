@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 批量添加文档接口
+ * Batch document addition interface
  */
 public class BulkApi {
 

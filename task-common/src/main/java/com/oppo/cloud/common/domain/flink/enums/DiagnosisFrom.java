@@ -21,15 +21,15 @@ import lombok.Getter;
 @Getter
 public enum DiagnosisFrom {
     /**
-     * 每日定时诊断
+     * Daily scheduled diagnosis.
      */
     EveryDay(0, "每日定时诊断"),
     /**
-     * 作业上线诊断
+     * Job diagnosis online.
      */
     JobUptime(1, "作业上线诊断"),
     /**
-     * 即时诊断
+     * One-click job diagnosis.
      */
     Manual(2, "即时诊断"),
     ;

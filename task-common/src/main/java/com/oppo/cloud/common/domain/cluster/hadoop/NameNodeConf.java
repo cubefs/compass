@@ -19,44 +19,44 @@ package com.oppo.cloud.common.domain.cluster.hadoop;
 import lombok.Data;
 
 /**
- * name node 集群配置信息
+ * name node cluster configuration information
  */
 @Data
 public class NameNodeConf {
 
     /**
-     * 命名空间
+     * namespace
      */
     private String nameservices;
 
     /**
-     * namenode地址
+     * namenode address
      */
     private String[] namenodesAddr;
 
     /**
-     * namenode名称
+     * name of namenode
      */
     private String[] namenodes;
 
     /**
-     * 用户
+     * user
      */
     private String user;
 
     /**
-     * 密码
+     * password
      */
     private String password;
 
     /**
-     * 端口
+     * port
      */
     private String port;
 
 
     /**
-     * 匹配路径
+     * matching path
      */
     private String[] matchPathKeys;
 

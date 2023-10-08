@@ -24,7 +24,7 @@ import java.util.List;
 
 
 @Data
-@ApiModel("内存分析")
+@ApiModel("Memory analysis.")
 public class MemoryAnalyze {
 
     /**
@@ -48,19 +48,18 @@ public class MemoryAnalyze {
     @ApiModelProperty(value = "execution date")
     private Integer executionDate;
     /**
-     * 区域
+     * Zone
      */
-    @ApiModelProperty(value = "区域")
+    @ApiModelProperty(value = "zone")
     private String zone;
     /**
-     * 日志类型 driver executor
+     * Log type: driver executor
      */
-    @ApiModelProperty(value = "日志类型 driver executor")
+    @ApiModelProperty(value = "Log type: driver executor")
     private String logType;
-
     /**
-     * executor的内存使用
+     * Executor's memory usage.
      */
-    @ApiModelProperty(value = "executor的内存使用")
+    @ApiModelProperty(value = "Executor's memory usage.")
     private List<ExecutorPeakMemory> executorPeakMemoryList;
 }

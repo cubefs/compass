@@ -19,7 +19,7 @@ package com.oppo.cloud.common.domain.eventlog.config;
 import lombok.Data;
 
 /**
- * 数据倾斜配置
+ * Data skew configuration
  */
 @Data
 public class MedianInterval {

@@ -21,7 +21,7 @@ import lombok.Getter;
 @Getter
 public enum YarnAppType {
     /**
-     * 任务状态
+     * Yarn Application Type
      */
     SPARK(0, "Apache Spark"),
     FLINK(1, "Apache Flink");

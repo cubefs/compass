@@ -20,30 +20,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * flink 诊断建议
+ * Flink diagnostic suggestions.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class FlinkTaskAdvice {
     /**
-     * 诊断规则名
+     * Diagnostic rule name.
      */
     private String ruleName;
     /**
-     * 诊断规则别名: CPU利用率低、CPU峰值利用率高...
+     * Diagnostic rule alias: Low CPU utilization, High peak CPU utilization...
      */
     private String ruleAlias;
     /**
-     * 规则编码
+     * Rule code.
      */
     private Integer ruleCode;
     /**
-     * 规则是否命中0未1有
+     * Whether the rule has been hit or not.
      */
     private Integer hasAdvice;
     /**
-     * 描述
+     * Description for the advice.
      */
     private String description;
 }

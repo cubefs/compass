@@ -25,22 +25,22 @@ import java.util.List;
 public interface AbnormalJobService {
 
     /**
-     * 更新内存数据和Vcore数据
+     * Update memory data and Vcore data.
      */
     void updateVcoreAndMemory(JobAnalysis jobAnalysis) throws Exception;
 
     /**
-     * 增量更新内存数据和vCore数据
+     * Incrementally update memory data and vCore data.
      */
     void updateResource(JobAnalysis jobAnalysis, List<TaskApp> taskAppList);
 
     /**
-     * 查询job
+     * Search job
      */
     JobAnalysis searchJob(JobAnalysis jobAnalysis) throws Exception;
 
     /**
-     * 插入或者更新job实例
+     * Insert or update job instances.
      */
     void insertOrUpdate(JobAnalysis jobAnalysis) throws Exception;
 

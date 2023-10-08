@@ -24,7 +24,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 /**
- * 运行耗时长检测器
+ * Run the long runtime duration detector
  */
 @Order(4)
 @Service

@@ -32,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 调度日志接口实现类
+ * Implementation of scheduling log interface.
  */
 @Slf4j
 @Service
@@ -65,7 +65,7 @@ public class SchedulerLogServiceImpl implements SchedulerLogService {
                     break;
                 }
             }
-            // 兼容无调度周期的任务重试次数默认为0
+            // The number of retries for tasks without a scheduling cycle is set to 0 by default.
             if (taskApplication == null) {
                 taskApplication = taskApplicationList.get(0);
             }

@@ -19,7 +19,7 @@ package com.oppo.cloud.common.domain.eventlog.config;
 import lombok.Data;
 
 /**
- * 全局排序
+ * Global sorting configuration
  */
 @Data
 public class GlobalSortConfig {
@@ -27,17 +27,17 @@ public class GlobalSortConfig {
     private Boolean disable;
 
     /**
-     * 任务个数
+     * Number of tasks
      */
     private Integer taskCount;
 
     /**
-     * 处理数据行数
+     * Number of rows processed
      */
     private Integer records;
 
     /**
-     * 持续时间
+     * Duration
      */
     private Long duration;
 

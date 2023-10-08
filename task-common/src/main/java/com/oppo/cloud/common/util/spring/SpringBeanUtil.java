@@ -22,7 +22,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
- * spring bean 工具类
+ * Spring bean utility
  */
 @Component
 public class SpringBeanUtil implements ApplicationContextAware {
@@ -37,28 +37,28 @@ public class SpringBeanUtil implements ApplicationContextAware {
     }
 
     /**
-     * 获取applicationContext
+     * Get applicationContext
      */
     public static ApplicationContext getApplicationContext() {
         return applicationContext;
     }
 
     /**
-     * 通过name获取Bean
+     * Get bean by name
      */
     public static Object getBean(String name) {
         return getApplicationContext().getBean(name);
     }
 
     /**
-     * 通过class获取Bean
+     * Get bean by class
      */
     public static Object getBean(Class clazz) {
         return getApplicationContext().getBean(clazz);
     }
 
     /**
-     * 通过name,以及Clazz返回指定的Bean
+     * Get specified bean by name and class
      */
     public static Object getBean(String name, Class clazz) {
         return getApplicationContext().getBean(name, clazz);

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * sparK app 属性
+ * sparK app entity
  */
 @Data
 public class SparkApp {
@@ -34,19 +34,19 @@ public class SparkApp {
      */
     private String appId;
     /**
-     * 重试id
+     * attempt id
      */
     private String attemptId;
     /**
-     * 运行耗时
+     * duration
      */
     private Integer duration;
     /**
-     * 开始时间
+     * start time (epoch)
      */
     private Long startTimeEpoch;
     /**
-     * 结束时间
+     * end time (epoch)
      */
     private Long endTimeEpoch;
     /**
@@ -58,7 +58,7 @@ public class SparkApp {
      */
     private String eventLogDirectory;
     /**
-     * 保存时间
+     * save time
      */
     private Long createTime;
 

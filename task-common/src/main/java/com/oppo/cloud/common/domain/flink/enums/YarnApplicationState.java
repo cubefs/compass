@@ -19,40 +19,40 @@ package com.oppo.cloud.common.domain.flink.enums;
 import lombok.Getter;
 
 /**
- * yarn app 状态
+ * YARN Application State
  */
 @Getter
 public enum YarnApplicationState {
     /**
-     * yarn app 新建状态
+     * New State
      */
     NEW(0, "NEW"),
     /**
-     * yarn app NEW_SAVING 状态
+     * NEW_SAVING State
      */
     NEW_SAVING(1, "NEW_SAVING"),
     /**
-     * yarn app SUBMITTED 状态
+     * SUBMITTED State
      */
     SUBMITTED(2, "SUBMITTED"),
     /**
-     * yarn app ACCEPTED 状态
+     * ACCEPTED State
      */
     ACCEPTED(3, "ACCEPTED"),
     /**
-     * yarn app RUNNING 状态
+     * RUNNING State
      */
     RUNNING(4, "RUNNING"),
     /**
-     * yarn app FINISHED 状态
+     * FINISHED State
      */
     FINISHED(5, "FINISHED"),
     /**
-     * yarn app FAILED 状态
+     * FAILED State
      */
     FAILED(6, "FAILED"),
     /**
-     * yarn app KILLED 状态
+     * KILLED State
      */
     KILLED(7, "KILLED"),
     ;

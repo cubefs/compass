@@ -20,12 +20,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 调度日志获取接口
+ * Scheduling log acquisition interface.
  */
 public interface SchedulerLogService {
 
     /**
-     * 从task_application获取dolphin的调度日志
+     * Get Dolphin's scheduling log from task_application.
      */
     List<String> getSchedulerLog(String projectName, String flowName, String taskName,
                                  Date executionDate, Integer tryNum);

@@ -19,28 +19,28 @@ package com.oppo.cloud.common.constant;
 public class Constant {
 
     /**
-     * 小时毫秒数值
+     * The value of milliseconds in an hour.
      */
     public static final long HOUR_MS = 60 * 60 * 1000;
     /**
-     * 天秒数值
+     * The value in seconds of Tian (a unit of time in Chinese mythology)
      */
     public static final long DAY_SECONDS = 24 * 60 * 60;
     /**
-     * spark event log路径
+     * Spark event log path.
      */
     public static final String SPARK_EVENT_LOG_DIRECTORY = "spark:event:log:directory:";
     /**
-     * spark历史服务器缓存key
+     * Spark history server cache key.
      */
     public static final String SPARK_HISTORY_SERVERS = "spark:history:servers";
 
     /**
-     * yarn集群缓存key
+     * Yarn cluster cache key
      */
     public static final String YARN_CLUSTERS = "yarn:clusters";
     /**
-     * resourceManager对应jobHistoryServer
+     * ResourceManager corresponds to JobHistoryServer.
      */
     public static final String RM_JHS_MAP = "rm:jhs:map";
     /**

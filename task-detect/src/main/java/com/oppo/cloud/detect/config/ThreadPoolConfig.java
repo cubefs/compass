@@ -24,7 +24,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * Executor线程池配置
+ * Executor Thread Pool Configuration
  */
 @Configuration
 public class ThreadPoolConfig {
@@ -33,7 +33,7 @@ public class ThreadPoolConfig {
     public static final String DELAY_QUEUE_EXECUTOR_POOL = "delayQueueExecutorPool";
 
     /**
-     * 解析任务线程池
+     * Parsing task thread pool
      */
     @Bean(name = DETECT_EXECUTOR_POOL)
     public Executor detectExecutorPool() {
@@ -51,7 +51,7 @@ public class ThreadPoolConfig {
     }
 
     /**
-     * 延迟任务线程池
+     * Delayed Task Thread Pool
      */
     @Bean(name = DELAY_QUEUE_EXECUTOR_POOL)
     public Executor delayQueueExecutorPool() {

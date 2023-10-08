@@ -19,7 +19,7 @@ package com.oppo.cloud.common.domain.flink.report;
 import lombok.Data;
 
 /**
- * 诊断规则点
+ * Diagnosis rules point.
  */
 @Data
 public class DiagnosisRulePoint {

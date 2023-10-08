@@ -25,13 +25,13 @@ import java.util.Map;
 public class LogInfo {
 
     /**
-     * 日志分组类别: scheduler,spark,mapreduce
+     * LogGroup: scheduler,spark,mapreduce
      */
     private String logGroup;
 
     /**
-     * 日志信息 <eventLog: List<LogPath>>
-     *  value是个List 兼容 scheduler
+     * LogInfo <eventLog: List<LogPath>>
+     * The value of logPathMap is list that is compatible with the scheduler with multiple log path uploaded to hdfs.
      */
     private Map<String, List<LogPath>> logPathMap;
 }

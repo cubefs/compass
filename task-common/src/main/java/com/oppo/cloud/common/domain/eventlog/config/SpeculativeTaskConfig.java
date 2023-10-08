@@ -19,18 +19,18 @@ package com.oppo.cloud.common.domain.eventlog.config;
 import lombok.Data;
 
 /**
- * 内存浪费配置
+ * Speculative task configuration
  */
 @Data
 public class SpeculativeTaskConfig {
 
     private Boolean disable;
     /**
-     * 推测执行Task数量
+     * Threshold: the number of speculative task executions
      */
     private Integer threshold;
     /**
-     * 过滤时间(ms)
+     * duration(ms) (match if greater than duration)
      */
     private Long duration;
 

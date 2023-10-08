@@ -22,23 +22,23 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * 匹配模板
+ * Matching template
  */
 @Data
 public class ParserTemplate {
 
     /**
-     * 头部解析正则
+     * Regular expression for header parsing.
      */
     private List<Pattern> heads;
 
     /**
-     * 中间解析正则
+     * Intermediate parsing regular expression
      */
     private List<Pattern> middles;
 
     /**
-     * 尾部解析正则
+     * Regular expression for tail parsing
      */
     private List<Pattern> tails;
 

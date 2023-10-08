@@ -22,40 +22,40 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 诊断规则线状图表
+ * Diagnosis rules line chart table.
  */
 @Data
 public class DiagnosisRuleLineChart implements IDiagnosisRuleChart{
     /**
-     * 图表类型
+     * Chart type.
      */
     String type = "Line";
     /**
-     * 标题
+     * Title
      */
     String title;
     /**
-     * y轴单位
+     * Y-axis unit.
      */
     String yAxisUnit;
     /**
-     * y轴值类型
+     * Y-axis value type.
      */
     String yAxisValueType;
     /**
-     * 线
+     * Line
      */
     DiagnosisRuleLine line;
     /**
-     * 常数线
+     * Constant line.
      */
     Map<String,Double> constLines;
     /**
-     * y轴最大值
+     * Maximum value of the Y-axis.
      */
     Double yAxisMax;
     /**
-     * y轴最小值
+     * Minimum value of the Y-axis.
      */
     Double yAxisMin;
 }
