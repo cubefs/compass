@@ -17,17 +17,17 @@ spring:
     username:
     password:
     druid:
-      initial-size: 5 # 连接池初始化大小
-      min-idle: 10 # 最小空闲连接数
-      max-active: 20 # 最大连接数
+      initial-size: 5 # Connection pool initialization size
+      min-idle: 10 # Minimum number of idle connections
+      max-active: 20 # Maximum number of connections
   kafka:
     bootstrap-servers: "localhost:9095"
     taskApplicationTopic: "task-application"
     flinkTaskApp: "flink-task-app"
     consumer:
       group-id: "task-flink-diagnosis-local"
-      auto-offset-reset: "latest"  # 从提交offset开始消费，无提交offset,从头开始消费
-      max-poll-interval-ms: 300000  # 两次消费活跃时间间隔5min
+      auto-offset-reset: "latest"  # Start consuming from the submitted offset. If no offset is submitted, consume from the beginning.
+      max-poll-interval-ms: 300000  # The time interval between two active consumptions is 5 minutes
   opensearch:
     hosts: localhost:19527
     username:
@@ -39,7 +39,7 @@ mybatis:
   mapper-locations:
     - classpath:dao/*.xml
     - classpath*:com/**/mapper/*.xml
-  configuration: #打印sql语句
+  configuration: # print sql
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 diagnosis:

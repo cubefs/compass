@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 消费者
+ * Consumer message
  */
 @Slf4j
 @Component
@@ -47,7 +47,7 @@ public class ConsumerMessage {
     @Autowired
     FlinkTaskAppMapper flinkTaskAppMapper;
     /**
-     * 日志消费task app 元數據
+     * Consume task app metadata
      */
     @KafkaListener(topics = "${spring.kafka.taskApplicationTopic}", containerFactory = "kafkaListenerContainerFactory")
     public void receiveDsTaskApplication(@Payload String message,
@@ -56,14 +56,14 @@ public class ConsumerMessage {
                                          Consumer consumer,
                                          Acknowledgment ack) {
         log.debug(String.format("%d, From partition %d: %s", consumer.hashCode(), partition, message));
-        // 解析数据结构
+        // Parsing message
         TaskApplication realtimeTaskInstance = JSON.parseObject(message, TaskApplication.class);
         flinkMetaService.saveRealtimeMetaOnYarn(realtimeTaskInstance);
         consumer.commitSync();
     }
 
     /**
-     * 日志消费task app 元數據
+     * Consume task app metadata
      */
     @KafkaListener(topics = "${spring.kafka.flinkTaskApp}", containerFactory = "kafkaListenerContainerFactory")
     public void receiveFlinkTaskApp(@Payload String message,
@@ -72,7 +72,7 @@ public class ConsumerMessage {
                                          Consumer consumer,
                                          Acknowledgment ack) {
         log.debug(String.format("%d, From partition %d: %s", consumer.hashCode(), partition, message));
-        // 解析数据结构
+        // Parsing message
         FlinkTaskApp flinkTaskApp = JSON.parseObject(message, FlinkTaskApp.class);
         try {
             FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();

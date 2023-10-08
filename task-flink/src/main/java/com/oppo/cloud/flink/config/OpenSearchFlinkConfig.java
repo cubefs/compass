@@ -34,17 +34,17 @@ import org.springframework.context.annotation.Primary;
 @Data
 public class OpenSearchFlinkConfig {
     /**
-     * 主机列表
+     * Cluster nodes
      */
     @Value("${spring.opensearch.nodes}")
     private String hosts;
     /**
-     * 用户名
+     * Username
      */
     @Value("${spring.opensearch.username}")
     private String username;
     /**
-     * 密码
+     * Password
      */
     @Value("${spring.opensearch.password}")
     private String password;
