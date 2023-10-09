@@ -104,7 +104,7 @@ services:
     ports:
       - "12345:12345"
       - "25333:25333"
-    profiles: ["all"]
+    profiles: ["dolphinscheduler"]
     environment:
       DATABASE: postgresql
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
@@ -117,7 +117,7 @@ services:
 
   dolphinscheduler-alert:
     image: apache/dolphinscheduler-alert-server:3.1.8
-    profiles: ["all"]
+    profiles: ["dolphinscheduler"]
     environment:
       DATABASE: postgresql
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
@@ -130,7 +130,7 @@ services:
 
   dolphinscheduler-master:
     image: apache/dolphinscheduler-master:3.1.8
-    profiles: ["all"]
+    profiles: ["dolphinscheduler"]
     environment:
       DATABASE: postgresql
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
@@ -154,7 +154,7 @@ services:
         SPARK_BINARY_VERSION: ${SPARK_BINARY_VERSION}
         APACHE_MIRROR: ${APACHE_MIRROR}
         MAVEN_MIRROR: ${MAVEN_MIRROR}
-    profiles: ["all"]
+    profiles: ["dolphinscheduler"]
     environment:
       DATABASE: postgresql
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
