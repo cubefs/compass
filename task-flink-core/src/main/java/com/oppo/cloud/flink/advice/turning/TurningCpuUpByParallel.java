@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * 根据并行度调高cpu
+ * Increase the CPU according to the parallelism.
  */
 @Slf4j
 @Component
@@ -40,7 +40,7 @@ public class TurningCpuUpByParallel implements TurningCpuUpStrategy {
     public TurningAdvice turning(DiagnosisContext context) {
         TurningAdvice resAdvice = new TurningAdvice();
         if (context == null || context.getRcJobDiagnosis() == null) {
-            log.debug("cpu优化,环境为空");
+            log.debug("CPU optimization, environment is empty.");
             resAdvice.setDescription("并行度扩容策略不适用,环境为空");
             return resAdvice;
         }
@@ -67,7 +67,7 @@ public class TurningCpuUpByParallel implements TurningCpuUpStrategy {
             newParallel = sourcePartitionNum;
         }else{
             int upJumpNewParallel = sourcePartitionNum;
-            // 并行度调整为分区的倍数,防止数据倾斜
+            // Adjust the degree of parallelism to be a multiple of the number of partitions to prevent data skew.
             while ((int) Math.ceil((double) upJumpNewParallel / 2) > newParallel) {
                 upJumpNewParallel = (int) Math.ceil((double) upJumpNewParallel / 2);
             }

@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * 诊断上下文
+ * Diagnosis context.
  */
 @Data
 @Builder
@@ -54,55 +54,55 @@ public class DiagnosisContext {
     }
 
     /**
-     * 诊断来源
+     * Diagnosis source.
      */
     private DiagnosisFrom from;
     /**
-     * 诊断数据
+     * Diagnosis data.
      */
     private RcJobDiagnosis rcJobDiagnosis;
     /**
-     * 诊断指标
+     * Diagnosis metrics.
      */
     private Map<String, List<MetricResult.DataResult>> metrics;
     /**
-     * 诊断消息
+     * Diagnosis message.
      */
     private Map<DiagnosisParam, Object> messages;
     /**
-     * 开始时间秒
+     * Start time in seconds.
      */
     private Long start;
     /**
-     * 结束时间秒
+     * End time in seconds.
      */
     private Long end;
     /**
-     * 指标获取服务
+     * Metric retrieval service.
      */
     FlinkDiagnosisMetricsServiceImpl metricsClient;
     /**
-     * 缩容规则
+     * Scaling-in rule.
      */
     List<IAdviceRule> decrRules = null;
     /**
-     * 扩容规则
+     * Scaling-out rule.
      */
     List<IAdviceRule> incrRules = null;
     /**
-     * 基本规则
+     * Basic rule.
      */
     List<IAdviceRule> attentionRules = null;
     /**
-     * 诊断医生
+     * Diagnosis doctor.
      */
     private DiagnosisDoctor doctor;
     /**
-     * 是否停止诊断
+     * Whether to stop the diagnosis.
      */
     private Boolean stopResourceDiagnosis = false;
     /**
-     * 诊断建议
+     * Diagnosis advice.
      */
     private List<RcJobDiagnosisAdvice> advices;
 }

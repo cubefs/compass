@@ -41,9 +41,9 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_MANAGE_MEM_
 
 
 /**
- * 根据tm manage 内存使用率给出参数建议
+ * Provide parameter suggestions based on tm manage memory utilization rate.
  * <p>
- * manage 内存最小值
+ * manage minimum memory value
  * taskmanager.memory.managed.size:100m
  * taskmanager.memory.managed.fraction:0.01
  */
@@ -73,13 +73,13 @@ public class TmManagedMemory extends BaseRule {
                 .filter(Objects::nonNull).max(Double::compareTo);
         Double maxUsage = maxUsageOption.orElse(null);
         if (maxUsage == null) {
-            data.setAdviceDescription("maxUsage 为空");
+            data.setAdviceDescription("maxUsage is empty");
             return data;
         }
         List<MetricResult.DataResult> manageTotalList = context.getMetrics().get(TM_MANAGE_MEM_TOTAL);
         if (manageTotalList == null) {
-            log.debug(String.format("%s manageTotalList为空", context.getRcJobDiagnosis().getJobName()));
-            data.setAdviceDescription(String.format("%s manageTotalList为空", context.getRcJobDiagnosis().getJobName()));
+            log.debug(String.format("%s manageTotalList is empty", context.getRcJobDiagnosis().getJobName()));
+            data.setAdviceDescription(String.format("%s manageTotalList is empty", context.getRcJobDiagnosis().getJobName()));
             return data;
         }
         Optional<Double> maxTotalOption = manageTotalList
@@ -88,7 +88,7 @@ public class TmManagedMemory extends BaseRule {
                 .filter(Objects::nonNull).max(Double::compareTo);
         Double maxTotal = maxTotalOption.orElse(null);
         if (maxTotal == null) {
-            data.setAdviceDescription("maxTotal 为空");
+            data.setAdviceDescription("maxTotal is empty");
             return data;
         }
         double maxTotalMb = maxTotal / 1024 / 1024;
@@ -98,7 +98,7 @@ public class TmManagedMemory extends BaseRule {
         if (needManageMemoryMb < 100) {
             needManageMemoryMb = 100;
         }
-        // 观察到有设置100MB管理内存，但是实际出来有105M，导致重复设置
+        // Observed that 100MB management memory was set, but the actual output was 105MB, resulting in duplicate settings.
         if (needManageMemoryMb + 100 < maxTotalMb) {
             descriptionBuilder
                     .append(String.format("建议设置taskmanager.memory.managed.size为%dm", needManageMemoryMb));
@@ -124,7 +124,7 @@ public class TmManagedMemory extends BaseRule {
             data.setDiagnosisRuleReport(diagnosisRuleReport);
             return data;
         }
-        data.setAdviceDescription("无建议");
+        data.setAdviceDescription("No advice");
         return data;
     }
 }

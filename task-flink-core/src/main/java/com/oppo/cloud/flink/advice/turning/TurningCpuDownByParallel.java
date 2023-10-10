@@ -34,7 +34,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_CPU_USAGE_R
 
 
 /**
- * 根据并行度调低cpu
+ * Adjust CPU usage based on parallelism.
  */
 @Slf4j
 @Component
@@ -53,14 +53,14 @@ public class TurningCpuDownByParallel implements TurningCpuDownStrategy {
     public TurningAdvice turning(DiagnosisContext context) {
         TurningAdvice resAdvice = new TurningAdvice();
         if (context == null || context.getRcJobDiagnosis() == null) {
-            log.debug("cpu优化,环境为空");
-            resAdvice.setDescription("并行度缩减策略不适用，环境为空");
+            log.debug("CPU optimization, environment is empty.");
+            resAdvice.setDescription("Parallelism reduction strategy does not apply, environment is empty.");
             return resAdvice;
         }
         Double lowTarget = doctorUtil.getCpuLowTarget(context);
         Double changeRate = null;
         RcJobDiagnosis rcJobDiagnosis = context.getRcJobDiagnosis();
-        // 计算缩减率
+        // Calculate the reduction rate.
         List<MetricResult.DataResult> cpuUsageList = context.getMetrics().get(TM_CPU_USAGE_RATE);
         if (cpuUsageList != null && cpuUsageList.size() > 0) {
             Double maxCpuUsage = cpuUsageList.stream()
@@ -71,7 +71,7 @@ public class TurningCpuDownByParallel implements TurningCpuDownStrategy {
             if (maxCpuUsage < lowTarget) {
                 double unitMaxCpuUsage = maxCpuUsage;
                 changeRate = 1 - unitMaxCpuUsage / lowTarget;
-                log.info(context.getRcJobDiagnosis().getJobName() + "目标缩减率:" + changeRate);
+                log.info(context.getRcJobDiagnosis().getJobName() + " target reduction rate:" + changeRate);
             }
         }
         if (changeRate == null) {
@@ -81,23 +81,23 @@ public class TurningCpuDownByParallel implements TurningCpuDownStrategy {
         advice.setTmNum(rcJobDiagnosis.getTmNum());
         int newTmNum = (int) Math.ceil(advice.getTmNum() * (1 - changeRate));
         if (newTmNum == rcJobDiagnosis.getTmNum()) {
-            resAdvice.setDescription("并行度缩减策略不适用，tm number没有合适值");
+            resAdvice.setDescription("Parallelism reduction strategy does not apply, there is no suitable value for TM number.");
             return resAdvice;
         }
         if (newTmNum < 1) {
             newTmNum = 1;
         }
         int newParallel = newTmNum * context.getRcJobDiagnosis().getTmSlotNum();
-        // check 检查是否满足缩减并行度的条件
+        // Check if the conditions for reducing parallelism are met.
         Integer sourcePartitionNumObj = context.getRcJobDiagnosis().getKafkaConsumePartitionNum();
         if (sourcePartitionNumObj == null || sourcePartitionNumObj == 0) {
-            resAdvice.setDescription("并行度缩减策略不适用，拿不到source partition num");
+            resAdvice.setDescription("Parallelism reduction strategy does not apply, unable to obtain source partition num.");
             return resAdvice;
         }
         int sourcePartitionNum = sourcePartitionNumObj;
         if (sourcePartitionNum > newParallel && sourcePartitionNum % newParallel < newParallel / 2) {
-            // 造成数据倾斜了
-            resAdvice.setDescription("并行度缩减策略不适用，缩减并行度后会数据倾斜");
+            // It has caused data skew.
+            resAdvice.setDescription("The strategy of reducing parallelism is not applicable, and data skew may occur after reducing parallelism.");
             return resAdvice;
         }
         advice.setParallel(newParallel);

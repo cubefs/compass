@@ -46,7 +46,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_CPU_USAGE_R
 
 
 /**
- * 监测峰值时候的资源情况，判断是否需要扩容
+ * Monitor the resource situation during peak times and determine whether scaling is necessary.
  */
 @Slf4j
 @Component
@@ -72,7 +72,7 @@ public class PeekRatioResourceRule extends BaseRule {
         if (dataResults == null || dataResults.size() == 0) {
             return builder
                     .hasAdvice(false)
-                    .adviceDescription("cpu平均使用率指标为空")
+                    .adviceDescription("The CPU average utilization rate indicator is empty.")
                     .build();
         }
         try {
@@ -91,7 +91,7 @@ public class PeekRatioResourceRule extends BaseRule {
                 }).count();
                 double highRatio = (double) highCount / total;
                 if (highRatio > cons.getCpuUsageAccHighTimeRate()) {
-                    log.debug("tm平均峰值利用率高的数据:" + stream);
+                    log.debug("Data with high average peak utilization rate for tm:" + stream);
                     TurningAdvice turning = turningManager.turningCpuUp(r);
                     if (turning != null && turning.getStatus().equals(DiagnosisTurningStatus.HAS_ADVICE)) {
                         RcJobDiagnosisAdvice build = convertTurningToAdviceBuilder(turning, builder)
@@ -140,7 +140,7 @@ public class PeekRatioResourceRule extends BaseRule {
         }
         return builder
                 .hasAdvice(false)
-                .adviceDescription("无建议")
+                .adviceDescription("No advice")
                 .build();
     }
 }

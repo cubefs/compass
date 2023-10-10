@@ -36,7 +36,7 @@ import java.util.Objects;
 
 
 /**
- * 诊断入口
+ * Diagnostic service
  */
 @Data
 @Builder
@@ -79,7 +79,7 @@ public class DiagnosisDoctor {
         context.setDoctor(this);
         Long start = context.getStart();
         Long end = context.getEnd();
-        // 从metric 获取实际运行 parallel 和 slot 和 tm number
+        // Obtaining actual running parallelism, slot number, and TM number from metrics
         DiagnosisContext c = context.getMetricsClient().getMetrics(context, start, end);
         if (c == null) {
             return null;
@@ -117,7 +117,7 @@ public class DiagnosisDoctor {
             ));
         }
         List<RcJobDiagnosisAdvice> advices = new ArrayList<>();
-        // 每个基本规则都应用一遍
+        // Applying each basic rule once
         for (IAdviceRule rule : context.getAttentionRules()) {
             try {
                 RcJobDiagnosisAdvice advice = rule.advice(context);
@@ -129,7 +129,7 @@ public class DiagnosisDoctor {
             }
         }
 
-        // 扩容规则应用,最多应用一个
+        // Applying scaling rules, applying at most one
         if (!c.getStopResourceDiagnosis()) {
             boolean isIncreaseResource = false;
             for (IAdviceRule rule : context.getIncrRules()) {
@@ -146,7 +146,7 @@ public class DiagnosisDoctor {
                     log.error(e.getMessage(), e);
                 }
             }
-            // 缩容规则应用,最多应用一个
+            // Applying shrinking rules, applying at most one
             if (!isIncreaseResource) {
                 for (IAdviceRule rule : context.getDecrRules()) {
                     try {
@@ -205,12 +205,12 @@ public class DiagnosisDoctor {
     }
 
     /**
-     * 设置诊断资源参数
+     * Setting diagnostic resource parameters
      *
      * @param rcJobDiagnosis
      */
     private void setBaseTurningParam(RcJobDiagnosis rcJobDiagnosis) {
-        // tm core 不配置默认为1
+        // By default, if no configuration is made, the number of TM cores is 1
         if (rcJobDiagnosis.getTmCore() == null) {
             rcJobDiagnosis.setTmCore(1);
         }
@@ -221,5 +221,4 @@ public class DiagnosisDoctor {
         rcJobDiagnosis.setDiagnosisTmCore(rcJobDiagnosis.getTmCore());
         rcJobDiagnosis.setDiagnosisTmSlot(rcJobDiagnosis.getTmSlotNum());
     }
-
 }

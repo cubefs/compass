@@ -60,14 +60,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 实时元数据
+ * Real-time metadata
  */
 @Service
 @Slf4j
 public class FlinkMetaServiceImpl implements FlinkMetaService {
 
     /**
-     * yarn api 获取集群作业
+     * Get cluster jobs with YARN API
      */
     private static final String YARN_APP_URL = "http://%s/ws/v1/cluster/apps/%s";
     /**

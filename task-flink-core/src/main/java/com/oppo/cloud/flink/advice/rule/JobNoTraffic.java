@@ -35,7 +35,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.JOB_DATA_FLOW_
 
 
 /**
- * 判断是否是无流量的任务
+ * Determine whether it is a task without internet traffic.
  */
 @Component
 public class JobNoTraffic extends BaseRule {
@@ -43,7 +43,9 @@ public class JobNoTraffic extends BaseRule {
     public RcJobDiagnosisAdvice advice(DiagnosisContext context) {
         RcJobDiagnosisAdvice.RcJobDiagnosisAdviceBuilder builder = getBuilder(context);
         builder.adviceType(FlinkRule.JobNoTraffic);
-        // 没有流量建议下线,这里用等于0,不用null,因为null的任务不一定是读kafka，可能读其他数据源，这时不应该下线
+        // If there is no traffic, it is recommended to go offline, using 0 instead of null.
+        // This is because a null task may not be reading from Kafka, but from another data source,
+        // and should not be taken offline.
         Object flowObj = context.getMessages().getOrDefault(FlowMax, -1);
         if (flowObj != null && (Integer) flowObj == 0) {
             builder
@@ -71,7 +73,7 @@ public class JobNoTraffic extends BaseRule {
         }
         return builder
                 .hasAdvice(false)
-                .adviceDescription("无建议")
+                .adviceDescription("No advice")
                 .build();
     }
 }

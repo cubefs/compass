@@ -24,7 +24,7 @@ public class FlinkOpenSearchServiceImpl implements FlinkOpenSearchService {
      * 插入或更新
      */
     @Override
-    public UpdateResponse insertOrUpDate(String index, String id, Object document) throws Exception {
+    public UpdateResponse insertOrUpdate(String index, String id, Object document) throws Exception {
         String json = "";
         try {
             json = JSON.toJSONString(document);

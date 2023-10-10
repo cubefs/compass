@@ -23,7 +23,6 @@ import com.oppo.cloud.flink.constant.DiagnosisParamsConstants;
 import com.oppo.cloud.flink.constant.MonitorMetricConstant;
 import com.oppo.cloud.flink.domain.diagnosis.DiagnosisContext;
 import com.oppo.cloud.flink.domain.diagnosis.RcJobDiagnosis;
-import com.oppo.cloud.flink.util.DoctorUtil;
 import com.oppo.cloud.flink.util.MonitorMetricUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -45,15 +44,14 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.*;
 
 
 /**
- * 诊断指标获取模块
+ * Diagnostic metrics acquisition module.
  */
 @Slf4j
 @Service
 public class FlinkDiagnosisMetricsServiceImpl {
     @Autowired
     DiagnosisParamsConstants cons;
-    @Autowired
-    DoctorUtil doctorUtil;
+
     @Autowired
     MonitorMetricUtil monitorMetricUtil;
 
@@ -65,7 +63,7 @@ public class FlinkDiagnosisMetricsServiceImpl {
             List<MetricResult.DataResult> dataResults = getJobMetrics(promQl);
             return monitorMetricUtil.getLatest(dataResults);
         } catch (Exception e) {
-            log.error("执行promQL失败");
+            log.error("Failed to execute PromQL.");
             log.error(e.getMessage() + promQl, e);
         }
         return 0D;
@@ -76,7 +74,7 @@ public class FlinkDiagnosisMetricsServiceImpl {
             List<MetricResult.DataResult> dataResults = getJobMetrics(promQl);
             return monitorMetricUtil.getMin(dataResults);
         } catch (Exception e) {
-            log.error("执行promQL失败");
+            log.error("Failed to execute PromQL.");
             log.error(e.getMessage() + promQl, e);
         }
         return 0D;
@@ -87,19 +85,19 @@ public class FlinkDiagnosisMetricsServiceImpl {
             List<MetricResult.DataResult> dataResults = getJobMetrics(promQl);
             return monitorMetricUtil.getAvg(dataResults);
         } catch (Exception e) {
-            log.error("执行promQL失败");
+            log.error("Failed to execute PromQL.");
             log.error(e.getMessage() + promQl, e);
         }
         return 0D;
     }
 
     /**
-     * 查询metrics 数据
+     * Query for metrics data.
      *
-     * @param promQl promql查询语句
-     * @param start  起始时间戳 秒级别
-     * @param end    结束时间戳 秒级别
-     * @return 查询结果
+     * @param promQl PromQL query statement.
+     * @param start  Start timestamp in seconds.
+     * @param end    End timestamp in seconds.
+     * @return Query result.
      */
     public List<MetricResult.DataResult> getJobMetrics(String promQl, long start, long end) {
         int step = monitorMetricUtil.getStep(start, end);
@@ -155,13 +153,13 @@ public class FlinkDiagnosisMetricsServiceImpl {
     }
 
     /**
-     * 查询 metrics 数据
+     * Query for metrics data.
      *
-     * @param promQl pronql查询语句
-     * @param start  起始时间戳 秒级别
-     * @param end    结束时间戳 秒级别
-     * @param step   步长 秒级别
-     * @return 查询结果
+     * @param promQl PromQL query statement.
+     * @param start  Start timestamp in seconds.
+     * @param end    End timestamp in seconds.
+     * @param step   Step in seconds.
+     * @return Query result.
      */
     public List<MetricResult.DataResult> getJobMetrics(String promQl, long start, long end, int step) {
         String queryUrl = "";
@@ -174,7 +172,7 @@ public class FlinkDiagnosisMetricsServiceImpl {
             }
             promQl = promQl.replace("$__interval_s", String.format("%ds", step));
             promQl = promQl.replace("$__interval", String.format("%d", step));
-            // promQl 可能包含url不允许的字符如空格，在这里进行encode
+            // The PromQL query may contain characters that are not allowed in URLs, such as spaces. Here, they will be encoded.
             promQl = URLEncoder.encode(promQl, "utf-8");
             queryUrl = flinkDiagnosisConfig.getFlinkPrometheusHost() + MonitorMetricConstant.QUERY_RANGE_QUERY + promQl;
             return monitorMetricUtil.query(queryUrl, start, end, step);
@@ -232,22 +230,24 @@ public class FlinkDiagnosisMetricsServiceImpl {
     }
 
     /**
-     * 获取metrics
+     * Get metrics.
      *
      * @param start 秒
      * @param end   秒
      * @return
      */
     public DiagnosisContext getMetrics(DiagnosisContext context, long start, long end) {
-        log.info("{} 诊断获取指标,时间范围 start:{} end:{}", context.getRcJobDiagnosis().getJobName(), start, end);
-        // 计算诊断开始后一小时的时间点
-        // important!只有uptime指标用的是job_id，其余的指标都通过uptime 的metric 获取的job来获取，所以要先执行uptime
+        log.info("{} diagnosis: Fetching metrics for the time range start: {} end: {}.",
+                context.getRcJobDiagnosis().getJobName(), start, end);
+        // Calculate one hour after the start time of diagnosis.
+        // important!The "uptime" metric uses job_id, while other metrics are obtained by getting the job
+        // through the "uptime" metric. Therefore, "uptime" needs to be executed first.
         Long tsAfter1Hour = getTsAfter1Hour(context, start, end);
         if (tsAfter1Hour == null) {
             tsAfter1Hour = start + cons.getDiagnosisAfterMinutesMax() * 60;
         }
         String metricJob = context.getMessages().get(JobId).toString();
-        // 把start设置为最新的slot数持续的时间最早的时间
+        // Set the start time to the earliest time duration that is covered by the latest slot number.
 
         try {
             String totalTmSlotCountsPromql = addLabel(TOTAL_TM_SLOT_COUNTS, "job", context.getMessages().get(Job).toString());
@@ -273,12 +273,13 @@ public class FlinkDiagnosisMetricsServiceImpl {
                         });
                 Double latestTotalSlots = monitorMetricUtil.getLatestOrNull(Lists.newArrayList(latestDr.get()));
                 if (latestTotalSlots != null) {
-                    //  设置实际的并行度
+                    //  Set the actual parallelism.
                     context.getRcJobDiagnosis().setParallel((int) Math.floor(latestTotalSlots));
                     Integer latestElasticTs = monitorMetricUtil.getKeyValueStream(latestDr.get()).get()
                             .map(MetricResult.KeyValue::getTs).min(Integer::compare).get();
                     if (latestElasticTs != start) {
-                        log.info(String.format("%s 诊断选择了最近一次伸缩开始ts:%d", context.getRcJobDiagnosis().getJobName(), latestElasticTs));
+                        log.info(String.format("%s diagnosis selects the latest scaling start ts: %d.",
+                                context.getRcJobDiagnosis().getJobName(), latestElasticTs));
                         start = latestElasticTs;
                     }
                 }
@@ -287,103 +288,108 @@ public class FlinkDiagnosisMetricsServiceImpl {
         } catch (Throwable t) {
             log.error(t.getMessage(), t);
         }
-        // 获取到总的tm个数
+        // Get the total number of TMs.
         List<MetricResult.DataResult> totalTmCountsMetrics = getJobMetrics(TOTAL_TM_COUNTS, context, start, end);
         if (totalTmCountsMetrics != null && totalTmCountsMetrics.size() == 1) {
             Double latestTotalTmNum = monitorMetricUtil.getLatestOrNull(totalTmCountsMetrics);
-            // 设置总的tm个数
+            // Set the total number of TMs.
             context.getRcJobDiagnosis().setTmNum((int) Math.floor(latestTotalTmNum));
-            // 计算单个tm的slot数量
+            // Calculate the number of slots in a single TM.
             context.getRcJobDiagnosis().setTmSlotNum((int) Math.ceil((float) context.getRcJobDiagnosis()
                     .getParallel() / context.getRcJobDiagnosis().getTmNum()));
         }
         context.getMetrics().put(TOTAL_TM_COUNTS, totalTmCountsMetrics);
 
-        // 根据延迟计算诊断起始时间点
+        // Calculate the start time point for diagnosis according to the latency.
         Long delayEndTs = getTsDelayEnd(context, start, end);
         if (delayEndTs == null) {
             delayEndTs = Long.MAX_VALUE;
         }
 
-        // 计算延迟持续5分钟上涨的时间
+        // Calculate the time when the latency continues to rise for 5 minutes.
         Long tsAfter5MinOffsetGrow = getTsAfter5MinutesOffsetGrow(context, start, end);
         if (tsAfter5MinOffsetGrow == null) {
             tsAfter5MinOffsetGrow = Long.MAX_VALUE;
         }
-        // 计算是否追延迟比较慢
+        // Calculate if the delay catching up is relatively slow.
         Long tsStartIfDelayAndCatchUpSlow = getTsIfCatchUpDelaySlow(context, start, end);
         if (tsStartIfDelayAndCatchUpSlow == null) {
             tsStartIfDelayAndCatchUpSlow = Long.MAX_VALUE;
         }
-        log.info("{} 诊断延迟结束的时间点: {}", context.getRcJobDiagnosis().getJobName(), delayEndTs);
-        log.info("{} 诊断running后{}分钟的时间点: {}", context.getRcJobDiagnosis().getJobName(), cons.getDiagnosisAfterMinutesMax(), tsAfter1Hour);
-        log.info("{} 诊断offset持续上涨的时间点: {}", context.getRcJobDiagnosis().getJobName(), tsAfter5MinOffsetGrow);
-        log.info("{} 诊断追延迟慢的start: {}", context.getRcJobDiagnosis().getJobName(), tsStartIfDelayAndCatchUpSlow);
+        log.info("{} diagnosis end time point for latency: {}.", context.getRcJobDiagnosis().getJobName(), delayEndTs);
+        log.info("{} diagnosis time point for {} minutes after the start of diagnosis: {}.", context.getRcJobDiagnosis().getJobName(),
+                cons.getDiagnosisAfterMinutesMax(), tsAfter1Hour);
+        log.info("{} diagnosis time point for the duration of the continually increasing offset: {}.", context.getRcJobDiagnosis().getJobName(),
+                tsAfter5MinOffsetGrow);
+        log.info("{} diagnosis start time point for the delay catching up slowly: {}.", context.getRcJobDiagnosis().getJobName(),
+                tsStartIfDelayAndCatchUpSlow);
+
         start = Math.min(tsStartIfDelayAndCatchUpSlow, Math.min(tsAfter5MinOffsetGrow, Math.min(delayEndTs, tsAfter1Hour)));
-        log.info("{} 诊断选择时间点: {}", context.getRcJobDiagnosis().getJobName(), start);
+        log.info("{} diagnosis selected time point: {}.", context.getRcJobDiagnosis().getJobName(), start);
         if (start >= end - cons.getElasticMinInterval() * 60) {
-            log.info("{} 诊断追延迟没有结束，没有运行达到1小时,没有offset持续上涨,或者没有达到伸缩间隔{}分钟",
+            log.info("{} diagnosis has not completed the delay catching up, has not been running for an hour, the offset" +
+                            " has not been continuously increasing, or did not meet the scaling interval of {} minutes.",
                     context.getRcJobDiagnosis().getJobName(), cons.getElasticMinInterval());
             context.setStopResourceDiagnosis(true);
             return context;
         }
-        // 获取监控指标，生成诊断指标
+        // Get monitoring metrics and generate diagnostic metrics.
         RcJobDiagnosis rcJobDiagnosis = context.getRcJobDiagnosis();
-        // tm 平均cpu使用率
+        // Average CPU usage of the TM.
         List<MetricResult.DataResult> tmAvgCpuUsageRateMetrics =
                 getTaskManagerMetrics(TM_AVG_CPU_USAGE_RATE, context, start, end);
         rcJobDiagnosis.setTmAvgCpuUsageMax(doubleToFloat(monitorMetricUtil.getMaxOrNull(tmAvgCpuUsageRateMetrics)));
         rcJobDiagnosis.setTmAvgCpuUsageMin(doubleToFloat(monitorMetricUtil.getMinOrNull(tmAvgCpuUsageRateMetrics)));
         rcJobDiagnosis.setTmAvgCpuUsageAvg(doubleToFloat(monitorMetricUtil.getAvgOrNull(tmAvgCpuUsageRateMetrics)));
         context.getMetrics().put(TM_AVG_CPU_USAGE_RATE, tmAvgCpuUsageRateMetrics);
-        // tm 单个cpu使用率
+        // CPU usage of a single TM.
         List<MetricResult.DataResult> tmCpuUsageRateMetrics = getTaskManagerMetrics(TM_CPU_USAGE_RATE, context, start, end);
         context.getMetrics().put(TM_CPU_USAGE_RATE, tmCpuUsageRateMetrics);
-        // tm 流量
+        // Traffic of a TM.
         List<MetricResult.DataResult> tmDataFlowRateMetrics = getTaskManagerMetrics(TM_DATA_FLOW_RATE, context, start, end);
         context.getMetrics().put(TM_DATA_FLOW_RATE, tmDataFlowRateMetrics);
-        // 作业流量
+        // Traffic of the job.
         List<MetricResult.DataResult> jobDataFlowMetrics = getTaskManagerMetrics(JOB_DATA_FLOW_RATE, context, start, end);
         context.getMetrics().put(JOB_DATA_FLOW_RATE, jobDataFlowMetrics);
         Integer maxFlow = doubleToInteger(monitorMetricUtil.getMaxOrNull(jobDataFlowMetrics));
         if (maxFlow != null) {
             context.getMessages().put(FlowMax, maxFlow);
         }
-        // 计算一天当中的流量波峰波谷
+        // Calculate the traffic peaks and valleys throughout the day.
         List<MetricResult.DataResult> jobDataFlowMetricsHourly = getTaskManagerMetrics(JOB_DATA_FLOW_RATE, context, start, end, 60 * 60);
         context.getMetrics().put(JOB_DATA_FLOW_RATE_TROUGH, jobDataFlowMetricsHourly);
-        // 慢算子检测
+        // Slow operator(vertices) detection.
         List<MetricResult.DataResult> backPressureBlockSubtaskDetailMetrics = getTaskManagerMetrics(SLOW_VERTICES, context, start, end);
         if (backPressureBlockSubtaskDetailMetrics != null) {
             context.getMetrics().put(SLOW_VERTICES, backPressureBlockSubtaskDetailMetrics);
-            log.debug("反压算子阻塞:" + backPressureBlockSubtaskDetailMetrics);
+            log.debug("Back pressure blocking of operators.:" + backPressureBlockSubtaskDetailMetrics);
         }
-        // TM 使用的管理内存
+        // Managed memory used by the TM.
         List<MetricResult.DataResult> tmManageMemUsageMetrics = getTaskManagerMetrics(TM_MANAGE_MEM_USAGE, context, start, end);
         context.getMetrics().put(TM_MANAGE_MEM_USAGE, tmManageMemUsageMetrics);
 
         // kafka partition
         List<MetricResult.DataResult> kafkaPartitionsMetrics = getTaskManagerMetrics(KAFKA_PARTITIONS, context, start, end);
         context.getMetrics().put(KAFKA_PARTITIONS, kafkaPartitionsMetrics);
-        // 获取最近的kafka 分区数
+        // Get the number of Kafka partitions recently.
         Double maxPartition = monitorMetricUtil.getLatestOrNull(kafkaPartitionsMetrics);
         context.getRcJobDiagnosis().setKafkaConsumePartitionNum(maxPartition == null ? null : maxPartition.intValue());
 
-        // tm使用堆内存
+        // Heap memory used by the TM.
         List<MetricResult.DataResult> tmUsageHeapMemMaxMetrics = getTaskManagerMetrics(TM_USAGE_HEAP_MEM_MAX, context, start, end);
         context.getMetrics().put(TM_USAGE_HEAP_MEM_MAX, tmUsageHeapMemMaxMetrics);
-        // tm总的堆内存
+        // Total heap memory of the TM.
         List<MetricResult.DataResult> tmTotalHeapMemMaxMetrics = getTaskManagerMetrics(TM_TOTAL_HEAP_MEM_MAX, context, start, end);
         context.getMetrics().put(TM_TOTAL_HEAP_MEM_MAX, tmTotalHeapMemMaxMetrics);
-        // TM manage 内存总量
+        // Total managed memory of the TM.
         List<MetricResult.DataResult> tmManageMemTotalMetrics = getTaskManagerMetrics(TM_MANAGE_MEM_TOTAL, context, start, end);
         context.getMetrics().put(TM_MANAGE_MEM_TOTAL, tmManageMemTotalMetrics);
 
-        // 反压算子
+        // Back pressure operators(vertices).
         List<MetricResult.DataResult> backPressureVerticesMetrics = getTaskManagerMetrics(BACK_PRESSURE_VERTICES, context, start, end);
         context.getMetrics().put(BACK_PRESSURE_VERTICES, backPressureVerticesMetrics);
 
-        // 单个tm堆内存使用率
+        // Heap memory usage rate of a single TM.
         List<MetricResult.DataResult> tmHeapMemUsageRateMetrics = getTaskManagerMetrics(TM_HEAP_MEM_USAGE_RATE, context, start, end);
         context.getMetrics().put(TM_HEAP_MEM_USAGE_RATE, tmHeapMemUsageRateMetrics);
 
@@ -418,7 +424,7 @@ public class FlinkDiagnosisMetricsServiceImpl {
                 return Integer.compare(maxTs1, maxTs2);
             }).orElse(null);
             if (latestResult == null) {
-                log.error(String.format("%s 最近一次上线时间为空", context.getRcJobDiagnosis().getJobName()));
+                log.error(String.format("%s the latest online time is empty.", context.getRcJobDiagnosis().getJobName()));
                 return null;
             }
             return monitorMetricUtil.getLatestOrNull(Lists.newArrayList(latestResult));
@@ -427,12 +433,12 @@ public class FlinkDiagnosisMetricsServiceImpl {
     }
 
     /**
-     * 只有uptime指标用的是job_id，其余的指标都通过uptime 的metric 获取的job来获取
+     * Only the uptime metric uses the job_id, while all other metrics are obtained through the metric of uptime to obtain the job
      *
      * @param context
      * @param start
      * @param end
-     * @return 秒级别时间戳
+     * @return Timestamp (In seconds)
      */
     private Long getTsAfter1Hour(DiagnosisContext context, long start, long end) {
         List<MetricResult.DataResult> jobUpTimeMetrics = getJobManagerMetrics(JOB_UP_TIME, context, start, end);
@@ -446,7 +452,7 @@ public class FlinkDiagnosisMetricsServiceImpl {
                 return Integer.compare(maxTs1, maxTs2);
             }).orElse(null);
             if (latestResult == null) {
-                log.error(String.format("%s 最近一次上线时间为空", context.getRcJobDiagnosis().getJobName()));
+                log.error(String.format("%s The latest online time is empty.", context.getRcJobDiagnosis().getJobName()));
                 return null;
             }
             String job = latestResult.getMetric().get("job").toString();
@@ -457,7 +463,7 @@ public class FlinkDiagnosisMetricsServiceImpl {
                 return Integer.compare(ts1, ts2);
             }).collect(Collectors.toList());
             if (resultList.size() == 0) {
-                log.error(String.format("%s 最近一次上线时间指标点数为0", context.getRcJobDiagnosis().getJobName()));
+                log.error(String.format("%s The latest online time metric has 0 data points.", context.getRcJobDiagnosis().getJobName()));
                 return null;
             }
             Integer minTs = (Integer) resultList.get(0).get(0);
@@ -466,7 +472,7 @@ public class FlinkDiagnosisMetricsServiceImpl {
                 Integer ts = (Integer) data.get(0);
                 double milliseconds = Double.parseDouble((String) data.get(1));
                 if (milliseconds > diagnosisStartUpTimeMilliseconds || ts - minTs > diagnosisStartUpTimeMilliseconds / 1000) {
-                    log.info(String.format("%s 诊断任务开始一小时时间为ts:%d", context.getRcJobDiagnosis().getJobName(), ts));
+                    log.info(String.format("%s the diagnostic task started one hour ago at ts:%d.", context.getRcJobDiagnosis().getJobName(), ts));
                     return ts.longValue();
                 } else {
                     return (long) ts + (long) (diagnosisStartUpTimeMilliseconds - milliseconds) / 1000;
@@ -482,7 +488,7 @@ public class FlinkDiagnosisMetricsServiceImpl {
 
 
     /**
-     * 计算延迟15分钟上涨的时间点
+     * Calculate the time point that rises 15 minutes after the delay.
      *
      * @param context
      * @param start
@@ -493,10 +499,10 @@ public class FlinkDiagnosisMetricsServiceImpl {
         List<MetricResult.DataResult> offsetDeltaMetrics = getTaskManagerMetrics(OFFSET_DELTA, context, start, end);
         if (offsetDeltaMetrics != null) {
             if (offsetDeltaMetrics.size() != 1) {
-                log.info("{} job offset delta 列表数量不为1", context.getRcJobDiagnosis().getJobName());
+                log.info("The number of {} job offset delta list is not 1.", context.getRcJobDiagnosis().getJobName());
                 return null;
             }
-            // 获取延迟开始上涨的那个点
+            // Retrieve the point at which the onset of delay increase occurs
             Supplier<Stream<MetricResult.KeyValue>> kvSmooth = monitorMetricUtil
                     .getWindowReduceKeyValueStream(monitorMetricUtil.getKeyValueStream(
                             offsetDeltaMetrics.get(0)), 5, new Function<Stream<Double>, OptionalDouble>() {
@@ -510,7 +516,7 @@ public class FlinkDiagnosisMetricsServiceImpl {
             if (firstDelay5Minute.isPresent()) {
                 return (long) firstDelay5Minute.get().getTs();
             } else {
-                log.info("{} 延迟没有连续5分钟上涨", context.getRcJobDiagnosis().getJobName());
+                log.info("{} Delay did not rise continuously for 5 minutes.", context.getRcJobDiagnosis().getJobName());
                 return null;
             }
         } else {
@@ -520,45 +526,45 @@ public class FlinkDiagnosisMetricsServiceImpl {
     }
 
     /**
-     * 计算是否追延迟比较慢,如果比较慢，则需要扩容资源
+     * To determine if catching up with the delay is slower than expected, and whether additional resources are needed, you can follow these steps
      *
      * @param context
-     * @param start   秒
-     * @param end     秒
-     * @return 秒
+     * @param start   Second
+     * @param end     Second
+     * @return Second
      */
     private Long getTsIfCatchUpDelaySlow(DiagnosisContext context, long start, long end) {
         try {
             // 首先判断是不是还有延迟
             List<MetricResult.DataResult> maxTimeLagPromqlMetrics = getTaskManagerMetrics(MAX_TIME_LAG_PROMQL, context, start, end);
             if (maxTimeLagPromqlMetrics == null || maxTimeLagPromqlMetrics.size() != 1) {
-                log.info("{} 延迟指标为空，不能判断是否追延迟太慢", context.getRcJobDiagnosis().getJobName());
+                log.info("{} The delay metric is empty, so it cannot be determined if catching up with the delay is too slow", context.getRcJobDiagnosis().getJobName());
                 return null;
             }
             context.getMetrics().put(MAX_TIME_LAG_PROMQL, maxTimeLagPromqlMetrics);
             Double delaySec = monitorMetricUtil.getLatestOrNull(maxTimeLagPromqlMetrics);
             if (delaySec == null || delaySec < cons.getCatchUpDelayThreshold()) {
-                log.info("{} 延迟为 {} 或在{} second 内", context.getRcJobDiagnosis().getJobName(), delaySec, cons.getCatchUpDelayThreshold());
+                log.info("{} Delay is {} or within {} seconds.", context.getRcJobDiagnosis().getJobName(), delaySec, cons.getCatchUpDelayThreshold());
                 return null;
             }
-            // 然后判断消费速率与生产速率的比值有没有达到阈值
+            // Then, check if the ratio of consumption rate to production rate has reached the threshold value.
             List<MetricResult.DataResult> consumeDivideProduceRateMetrics = getTaskManagerMetrics(CONSUME_DIVIDE_PRODUCE_RATE, context, start, end);
             if (consumeDivideProduceRateMetrics == null || consumeDivideProduceRateMetrics.size() != 1) {
-                log.info("{} 消费生产速率比值指标为空", context.getRcJobDiagnosis().getJobName());
+                log.info("{} The consumer-to-producer rate ratio metric is empty.", context.getRcJobDiagnosis().getJobName());
                 return null;
             }
             Double latestConsumeDivideProduceRate = monitorMetricUtil.getLatestOrNull(consumeDivideProduceRateMetrics);
             if (latestConsumeDivideProduceRate == null || latestConsumeDivideProduceRate > cons.getCatchUpConsumeDivideProduceThreshold()) {
-                log.info("{} 消费生产速率比值:{} > {}", context.getRcJobDiagnosis().getJobName(),
+                log.info("{} The consumer-to-producer rate ratio is: {} > {}.", context.getRcJobDiagnosis().getJobName(),
                         latestConsumeDivideProduceRate, cons.getCatchUpConsumeDivideProduceThreshold());
                 return null;
             }
-            log.info("{} 存在延迟:{} second 高于 {} second,消费生产速率比值:{} 未达到 {}",
+            log.info("{} The delay exists: {} seconds, which is higher than {} seconds. The consumer-to-producer rate ratio is {} below {}..",
                     context.getRcJobDiagnosis().getJobName(), delaySec, cons.getCatchUpDelayThreshold(),
                     latestConsumeDivideProduceRate, cons.getCatchUpConsumeDivideProduceThreshold());
             return start;
         } catch (Throwable t) {
-            log.error("{} 作业计算追延迟是否慢报错", context.getRcJobDiagnosis().getJobName());
+            log.error("Error occurred while calculating whether the job was catching up the delay slowly for {} job.", context.getRcJobDiagnosis().getJobName());
             log.error(t.getMessage(), t);
             return null;
         }

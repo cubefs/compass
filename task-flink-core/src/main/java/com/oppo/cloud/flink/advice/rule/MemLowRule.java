@@ -44,7 +44,7 @@ import java.util.Map;
 import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_HEAP_MEM_USAGE_RATE;
 
 /**
- * 缩减内存规则
+ * Memory reduction rules.
  */
 @Component
 @Slf4j
@@ -65,7 +65,7 @@ public class MemLowRule extends BaseRule {
         RcJobDiagnosis rcJobDiagnosis = context.getRcJobDiagnosis();
         RcJobDiagnosisAdvice.RcJobDiagnosisAdviceBuilder builder = getBuilder(context);
         builder.adviceType(FlinkRule.TmMemoryLow);
-        // 尝试降低tm内存,判断最大的堆内存利用率小于阈值
+        // Try to reduce the tm memory, and determine if the largest heap memory utilization rate is less than the threshold.
         List<MetricResult.DataResult> memUsageList = context.getMetrics().get(TM_HEAP_MEM_USAGE_RATE);
         if (memUsageList != null && memUsageList.size() > 0) {
             Double maxMemUsage = memUsageList.stream()
@@ -118,12 +118,12 @@ public class MemLowRule extends BaseRule {
                             .build();
                 }
             } else {
-                log.debug(String.format("%s最大的tm堆内存利用率%.2f", context.getRcJobDiagnosis().getJobName(), maxMemUsage));
+                log.debug(String.format("%s job's maximum tm heap memory utilization rate:%.2f", context.getRcJobDiagnosis().getJobName(), maxMemUsage));
             }
         }
 
         return builder
-                .adviceDescription("没有建议")
+                .adviceDescription("No advice")
                 .build();
     }
 

@@ -41,7 +41,7 @@ import java.util.Map;
 import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_AVG_CPU_USAGE_RATE;
 
 /**
- * 根据cpu和mem使用的均值判断是否需要扩容
+ * Based on the average usage of CPU and memory to determine whether to scale up.
  */
 @Component
 public class AvgCpuHighRule extends BaseRule {
@@ -59,7 +59,7 @@ public class AvgCpuHighRule extends BaseRule {
         RcJobDiagnosis rcJobDiagnosis = r.getRcJobDiagnosis();
         RcJobDiagnosisAdvice.RcJobDiagnosisAdviceBuilder builder = getBuilder(r);
         builder.adviceType(FlinkRule.AvgCpuHighRule);
-        // 判断平均cpu是否高
+        // To determine if the average CPU usage is high.
         if (rcJobDiagnosis.getTmAvgCpuUsageAvg() != null
                 && notNullGt(rcJobDiagnosis.getTmAvgCpuUsageAvg(), cpuHighThreshold.floatValue())) {
             TurningAdvice turning = turningManager.turningCpuUp(r);
@@ -112,7 +112,7 @@ public class AvgCpuHighRule extends BaseRule {
 
         return builder
                 .hasAdvice(false)
-                .adviceDescription("无建议")
+                .adviceDescription("No advice")
                 .build();
     }
 

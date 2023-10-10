@@ -25,132 +25,133 @@ import org.springframework.stereotype.Component;
 @Component
 public class DiagnosisParamsConstants {
     /**
-     * 默认缩减率
+     * Default reduction rate
      */
     public Double parallelCutRate = 0.1d;
     /**
-     * 默认扩容率
+     * Default expansion(grow) rate
      */
     public Double tmParallelGrowRate = 0.1d;
     /**
-     * 单tm cpu利用率太低的阈值
+     * Threshold value for low CPU utilization of a single TaskManager
      */
     public Double tmCpuUsageCutThreshold = 0.4d;
     /**
-     * 单tm cpu利用率太低的目标值
+     * Target value for low CPU utilization of a single TaskManager
      */
     public Double tmCpuUsageCutTarget = 0.6d;
     /**
-     * cpu过高的阈值
+     * Threshold value for high CPU utilization
      */
     public Double tmCpuUsageGrowThreshold = 0.8d;
     /**
-     * 单tm峰值cpu利用率目标最大值
+     * Maximum target value for peak CPU utilization of a single TaskManager
      */
     public Double tmCpuUsageGrowTarget = 0.6d;
     /**
-     * 单tm mem利用率太低的阈值
+     * Threshold value for low memory utilization of a single TaskManager
      */
     public Double tmMemUsageLowThreshold = 0.4d;
     /**
-     * 单tm mem利用率太低的目标值
+     * Target value for low memory utilization of a single TaskManager
      */
     public Double tmMemUsageLowTarget = 0.6d;
     /**
-     * mem 太高阈值
+     * Threshold value for high memory utilization
      */
     public Double tmMemUsageHighThreshold = 0.8d;
     /**
-     * 单tm mem利用率目标值
+     * Target value for memory utilization of a single TaskManager
      */
     public Double tmMemUsageHighTarget = 0.6d;
     /**
-     * 单tm峰值利用率太高的持续时间阈值秒
+     * Threshold value for the duration (in seconds) of high peak utilization of a single TaskManager
      */
     public Float tmPeakHighTimeThreshold = 1800f;
     /**
-     * cpu 使用率累计高的高的时间
+     * Duration of high cumulative CPU utilization
      */
     public Float cpuUsageAccHighTimeRate = 0.2f;
     /**
-     * 诊断最大从周期内该时间后开始诊断
+     * Maximum time after which diagnosis starts within a cycle
      */
     public Integer diagnosisAfterMinutesMax = 60;
     /**
-     * 诊断判断追数据结束的lag最低值
+     * Minimum value of LAG used in diagnostic judgments to determine the end of data chasing
      */
     public Integer diagnosisMinDelayAfterRunning = 100;
     /**
-     * 扩容时取最近n分钟的cpu均值
+     * During scaling out, take the average CPU utilization of the last n minutes.
      */
     public Integer tmCpuHighLatestNMinutes = 5;
     /**
-     * 追延迟时判断延迟时间是否超过这个值，超过了则需要追延迟
+     * When chasing latency, judge whether the latency time exceeds this threshold value.
+     * If it exceeds, it is necessary to chase the latency.
      */
     public Float catchUpDelayThreshold = 300f;
     /**
-     * 追延迟时消费速率与生产速率比值最大值阈值
+     * Threshold value of maximum ratio of consumption rate to production rate when chasing latency
      */
     public Float catchUpConsumeDivideProduceThreshold = 3.0f;
     /**
-     * 任务伸缩最小间隔分钟
+     * Minimum interval for scaling tasks (in minutes)
      */
     public Float elasticMinInterval = 5.0f;
     /**
-     * jm内存在100个tm内时设置为1g
+     * When there are 100 TaskManagers in one JobManager, the memory of JobManager is set to 1 GB.
      */
     public Integer jm1gTmNum = 100;
     /**
-     * 慢算子的in out buffer pool 使用率差值阈值
+     * Threshold value of usage difference for Input/Output buffer pool of slow operator(Vertices)
      */
     public Double slowVerticesInoutDiffHighThreshold = 0.6;
     /**
-     * 慢算子的in out buffer pool 使用率差值持续时间阈值秒
+     * Threshold value of duration (in seconds) for usage difference of Input/Output buffer pool of slow operator(Vertices)
      */
     public Integer slowVerticesInoutDiffHighDuration = 300;
     /**
-     * manage内存期望使用率
+     * Expected usage rate of Manage memory
      */
     public Float tmManageMemUsageCutThreshold = 0.5f;
     /**
-     * 流量波谷中心距离边缘的比例
+     * Proportion of distance between the center of traffic trough and the edge
      */
     public Float trafficTroughRatio = 0.7f;
 
     /**
-     * tm内存最大值
+     * Maximum memory value of TM
      */
     public Integer tmMemMax = 6144;
     /**
-     * tm内存最小值
+     * Minimum memory value of TM
      */
     public Integer tmMemMin = 1024;
     /**
-     * tm cpu没有使用的阈值
+     * Threshold value for unused CPU of TM
      */
     public Double tmCpuNoUsageThreshold = 0.05;
     /**
-     * tm mem没有使用的阈值
+     * Threshold value for unused memory of TM
      */
     public Double tmHeapMemNoUsageThreshold = 0.1;
     /**
-     * 任务缩减延迟时间阈值秒
+     * Threshold value of delay time for task reduction (in seconds)
      */
     public Float JOB_CUT_LAG_TIME_THRESHOLD = 600f;
     /**
-     * 任务缩减延迟时间阈值秒
+     * Threshold value of delay time for task reduction (in seconds)
      */
     public Float JOB_DELAY_LITTLE_HIGH = 300f;
     /**
-     * 默认作业最大并行度
+     * Default maximum parallelism of the job
      */
     public Integer maxParallel = 300;
     /**
-     * 小时诊断开始时间
+     * Start time of hourly diagnosis
      */
     public Integer hourlyDiagnosisStartMinutes = 60;
     /**
-     * 小时级别在任务上线后start 分钟到end分钟内进行诊断
+     * Diagnosis at the hourly level is performed within start minutes and end minutes after the task is online.
      */
     public Integer hourlyDiagnosisEndMinutes = 120;
 }
