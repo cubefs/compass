@@ -55,7 +55,7 @@ public class TurningManager {
     @Autowired
     DoctorUtil doctorUtil;
 
-    // 调大cpu
+    // Increase CPU performance
     public TurningAdvice turningCpuUp(DiagnosisContext context) {
         List<TurningCpuUpStrategy> strategies = Lists.newArrayList(turningCpuUpByParallel, turningCpuUpBySpec
         );
@@ -76,7 +76,7 @@ public class TurningManager {
         return noAdviceRes;
     }
 
-    // 调小cpu
+    // Reduce CPU performance
     public TurningAdvice turningCpuDown(DiagnosisContext context) {
         List<TurningCpuDownStrategy> strategies = Lists.newArrayList(turningCpuDownByParallel, turningCpuDownBySpec
         );
@@ -97,7 +97,7 @@ public class TurningManager {
         return noAdviceRes;
     }
 
-    // 调小内存
+    // Reduce memory size
     public TurningAdvice turningMemDown(DiagnosisContext context) {
         List<TurningMemDownStrategy> strategies = Lists.newArrayList(turningMemDownBySpec);
         TurningAdvice noAdviceRes = new TurningAdvice();
@@ -116,7 +116,7 @@ public class TurningManager {
         }
         return noAdviceRes;
     }
-    // 调大内存
+    // Increase memory size
     public TurningAdvice turningMemUp(DiagnosisContext context) {
         List<TurningMemUpStrategy> strategies = Lists.newArrayList(turningMemUpBySpec);
         TurningAdvice noAdviceRes = new TurningAdvice();

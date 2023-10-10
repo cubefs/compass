@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * 根据规格调高mem
+ * Increase memory according to the specifications.
  */
 @Component
 @Slf4j
@@ -42,13 +42,13 @@ public class TurningMemUpBySpec implements TurningMemUpStrategy {
     public TurningAdvice turning(DiagnosisContext context) {
         TurningAdvice resAdvice = new TurningAdvice();
         if (context == null || context.getRcJobDiagnosis() == null) {
-            log.debug("内存优化,环境为空");
-            resAdvice.setDescription("内存优化,环境为空");
+            log.debug("Memory optimization, environment is empty.");
+            resAdvice.setDescription("Memory optimization, environment is empty.");
             return resAdvice;
         }
         TurningAdvice adviceMem = memByUsage.turning(context, context.getRcJobDiagnosis().getTmSlotNum());
         if (adviceMem == null) {
-            resAdvice.setDescription("内存需求计算返回null");
+            resAdvice.setDescription("Memory requirement calculation returns null.");
             return resAdvice;
         }
         int adviceTmMem = adviceMem.getTmMem();
@@ -59,7 +59,7 @@ public class TurningMemUpBySpec implements TurningMemUpStrategy {
             adviceTmMem = cons.tmMemMax;
         }
         if (adviceTmMem <= context.getRcJobDiagnosis().getTmMem()) {
-            resAdvice.setDescription("内存需求量和当前量相同");
+            resAdvice.setDescription("The memory demand is the same as the current amount.");
             return resAdvice;
         }
         RcJobDiagnosis job = context.getRcJobDiagnosis();

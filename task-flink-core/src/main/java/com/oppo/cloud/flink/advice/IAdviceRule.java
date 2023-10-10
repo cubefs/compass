@@ -20,7 +20,7 @@ import com.oppo.cloud.flink.domain.diagnosis.DiagnosisContext;
 import com.oppo.cloud.flink.domain.diagnosis.RcJobDiagnosisAdvice;
 
 /**
- * 诊断规则接口
+ * Diagnostic rule interface
  */
 public interface IAdviceRule {
     RcJobDiagnosisAdvice advice(DiagnosisContext r);

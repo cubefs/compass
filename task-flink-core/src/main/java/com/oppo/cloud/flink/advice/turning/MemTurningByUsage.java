@@ -35,7 +35,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.*;
 
 
 /**
- * 根据内存使用情况给出内存的建议值
+ * Suggest the appropriate amount of memory based on the memory usage situation.
  */
 @Component
 @Slf4j
@@ -56,11 +56,11 @@ public class MemTurningByUsage {
     public TurningAdvice turning(DiagnosisContext context, int newTmSlotNum) {
 
         if (context == null || context.getRcJobDiagnosis() == null) {
-            log.error("内存优化,环境为空");
-            throw new RuntimeException("内存优化,环境为空");
+            log.error("Memory optimization, environment is empty.");
+            throw new RuntimeException("Memory optimization, environment is empty.");
         }
         Double memHighTarget = doctorUtil.getMemHighTarget(context);
-        // 堆内存使用平均值
+        // Average heap memory usage
         List<MetricResult.DataResult> heapUsageList = context.getMetrics().get(TM_USAGE_HEAP_MEM_MAX);
         if (heapUsageList == null) {
             return calcMemBySlot(context, newTmSlotNum);
@@ -69,9 +69,9 @@ public class MemTurningByUsage {
         if (!maxHeapUsageAvg.isPresent()) {
             return calcMemBySlot(context, newTmSlotNum);
         }
-        // tm中堆使用平均值MB的最大值
+        // The maximum value of average heap usage in megabytes in TM.
         double heapUsageAvg = maxHeapUsageAvg.get() / 1024 / 1024;
-        // 堆内存总大小
+        // Total heap memory size.
         List<MetricResult.DataResult> heapTotalList = context.getMetrics().get(TM_TOTAL_HEAP_MEM_MAX);
         if (heapTotalList == null) {
             return calcMemBySlot(context, newTmSlotNum);
@@ -80,23 +80,23 @@ public class MemTurningByUsage {
         if (!heapTotalListOption.isPresent()) {
             return calcMemBySlot(context, newTmSlotNum);
         }
-        // 堆总量MB
+        // Total heap size in megabytes.
         double heapTotal = heapTotalListOption.get() / 1024 / 1024;
-        // 管理内存总量MB
+        // Total managed memory size in megabytes.
         double manageTotal = 0;
         RcJobDiagnosisAdvice manageMemoryAdvice = tmManagedMemory.advice(context);
-        // 如果manage 内存有建议值，则用建议值来计算
-        if(manageMemoryAdvice!=null && manageMemoryAdvice.getHasAdvice()== true){
+        // If there is a suggested value for managed memory, use it for calculation.
+        if (manageMemoryAdvice != null && manageMemoryAdvice.getHasAdvice() == true) {
             manageTotal = manageMemoryAdvice.getDiagnosisManageMem();
-        }else{
-            // 否则用manage 内存的当前值来计算
+        } else {
+            // Otherwise, use the current value of managed memory for calculation.
             List<MetricResult.DataResult> manageTotalList = context.getMetrics().get(TM_MANAGE_MEM_TOTAL);
             if (manageTotalList == null) {
-                log.info(String.format("%s job内存优化,manageTotalList为空", context.getRcJobDiagnosis().getJobName()));
+                log.info(String.format("%s: memory optimization for the job, manageTotalList is empty.", context.getRcJobDiagnosis().getJobName()));
             } else {
                 Optional<Double> manageTotalListOption = manageTotalList.stream().map(monitorMetricUtil::getMaxOrNull).filter(Objects::nonNull).max(Double::compareTo);
                 if (!manageTotalListOption.isPresent()) {
-                    log.info(String.format("%s job内存优化,manageTotalListOption为空", context.getRcJobDiagnosis().getJobName()));
+                    log.info(String.format("%s: memory optimization for the job, manageTotalListOption is empty.", context.getRcJobDiagnosis().getJobName()));
                 } else {
                     manageTotal = manageTotalListOption.get() / 1024 / 1024;
                 }
@@ -113,7 +113,11 @@ public class MemTurningByUsage {
         tmTotalMem = Math.ceil(tmTotalMem / 1024) * 1024;
         TurningAdvice res = new TurningAdvice();
         res.setTmMem((int) tmTotalMem);
-        log.debug(String.format("内存根据使用量来调整:tmmem:%dMB,oriTmSlotNum:%d,newTmSlotNum:%d," + "manageTotal:%.4f,heapTotal:%.4f,otherMem:%.4f," + "heapUsageAvg:%.4f,needHeapMemAvg:%.4f,newHeapMemTotal:%.4f," + "newManageTotal:%.4f,tmTotalMem:%.4f", tmMem, oriTmSlotNum, newTmSlotNum, manageTotal, heapTotal, otherMem, heapUsageAvg, needHeapMemAvg, newHeapMemTotal, newManageTotal, tmTotalMem));
+        log.debug(String.format("Adjust memory usage based on actual usage:tm_mem:%dMB,originTmSlotNum:%d,newTmSlotNum:%d,"
+                + "manageTotal:%.4f,heapTotal:%.4f,otherMem:%.4f,"
+                + "heapUsageAvg:%.4f,needHeapMemAvg:%.4f,newHeapMemTotal:%.4f,"
+                + "newManageTotal:%.4f,tmTotalMem:%.4f", tmMem, oriTmSlotNum, newTmSlotNum, manageTotal, heapTotal,
+                otherMem, heapUsageAvg, needHeapMemAvg, newHeapMemTotal, newManageTotal, tmTotalMem));
         return res;
     }
 

@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 
 
 /**
- * 根据规格调低mem
+ * Adjust mem based on specifications.
  */
 @Component
 @Slf4j
@@ -43,13 +43,13 @@ public class TurningMemDownBySpec implements TurningMemDownStrategy {
     public TurningAdvice turning(DiagnosisContext context) {
         TurningAdvice resAdvice = new TurningAdvice();
         if (context == null || context.getRcJobDiagnosis() == null) {
-            log.debug("内存优化,环境为空");
-            resAdvice.setDescription("内存优化,环境为空");
+            log.debug("Memory optimization, environment is empty.");
+            resAdvice.setDescription("Memory optimization, environment is empty.");
             return resAdvice;
         }
         TurningAdvice adviceMem = memByUsage.turning(context, context.getRcJobDiagnosis().getTmSlotNum());
         if (adviceMem == null) {
-            resAdvice.setDescription("计算内存需要量返回null");
+            resAdvice.setDescription("Memory requirement calculation returns null.");
             return resAdvice;
         }
         int adviceTmMem = adviceMem.getTmMem();
@@ -59,10 +59,10 @@ public class TurningMemDownBySpec implements TurningMemDownStrategy {
         if (adviceTmMem > cons.tmMemMax) {
             adviceTmMem = cons.tmMemMax;
         }
-        // 缩减内存尽量保守，在建议内存上加个1gb
+        // Try to be conservative when reducing memory, and add 1GB to the recommended memory.
         adviceTmMem = adviceTmMem + 1024;
         if (adviceTmMem >= context.getRcJobDiagnosis().getTmMem()) {
-            resAdvice.setDescription("内存建议量和当前量相同");
+            resAdvice.setDescription("The recommended amount of memory is the same as the current amount.");
             return resAdvice;
         }
         RcJobDiagnosis job = context.getRcJobDiagnosis();

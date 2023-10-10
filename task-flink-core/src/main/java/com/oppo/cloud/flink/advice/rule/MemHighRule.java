@@ -45,7 +45,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_HEAP_MEM_US
 
 
 /**
- * 扩容mem规则
+ * Expanding memory rules.
  */
 @Component
 @Slf4j
@@ -69,7 +69,7 @@ public class MemHighRule extends BaseRule {
         RcJobDiagnosis rcJobDiagnosis = r.getRcJobDiagnosis();
         RcJobDiagnosisAdvice.RcJobDiagnosisAdviceBuilder builder = getBuilder(r);
         builder.adviceType(FlinkRule.TmMemoryHigh);
-        // 尝试降低tm内存,判断最大的堆内存利用率小于阈值
+        // Try to reduce the tm memory, and determine if the largest heap memory utilization rate is less than the threshold.
         List<MetricResult.DataResult> memUsageList = r.getMetrics().get(TM_HEAP_MEM_USAGE_RATE);
         if (memUsageList != null && memUsageList.size() > 0) {
             Double maxMemUsage = memUsageList.stream()
@@ -123,11 +123,11 @@ public class MemHighRule extends BaseRule {
                             .build();
                 }
             } else {
-                log.debug(String.format("%s最大的tm堆内存利用率%.2f", r.getRcJobDiagnosis().getJobName(), maxMemUsage));
+                log.debug(String.format("%s job's maximum tm heap memory utilization rate:%.2f", r.getRcJobDiagnosis().getJobName(), maxMemUsage));
             }
         }
         return builder
-                .adviceDescription("没有建议")
+                .adviceDescription("No advice")
                 .build();
     }
 }

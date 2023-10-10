@@ -43,7 +43,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.SLOW_VERTICES;
 
 
 /**
- * 慢算子监测规则
+ * Slow operator monitoring rules.
  */
 @Component
 @Slf4j
@@ -83,7 +83,7 @@ public class SlowVerticesRule extends BaseRule {
         data.setHasAdvice(false);
         List<MetricResult.DataResult> dataResults = context.getMetrics().get(SLOW_VERTICES);
         if (dataResults == null) {
-            data.setAdviceDescription("dataResults为空");
+            data.setAdviceDescription("dataResults is empty");
             return data;
         }
         double poolUsageDiffThreshold = cons.slowVerticesInoutDiffHighThreshold;
@@ -120,7 +120,7 @@ public class SlowVerticesRule extends BaseRule {
                     }
                 }
             } catch (Throwable e) {
-                log.error("计算慢算子报错,请打开stdout查看异常堆栈:" + e.getMessage(), e);
+                log.error("Error calculating slow operators, please open stdout to view the exception stack trace: " + e.getMessage(), e);
             }
         });
         Set<String> tasks = new HashSet<>();
@@ -158,7 +158,7 @@ public class SlowVerticesRule extends BaseRule {
             diagnosisRuleReport.setIDiagnosisRuleCharts(Lists.newArrayList(diagnosisRuleLineChart));
             data.setDiagnosisRuleReport(diagnosisRuleReport);
         } else {
-            data.setAdviceDescription("无建议");
+            data.setAdviceDescription("No advice");
         }
         return data;
     }

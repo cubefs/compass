@@ -36,7 +36,7 @@ public abstract class BaseRule implements IAdviceRule {
     }
 
     /**
-     * 构建advice对象
+     * Building an advice object
      *
      * @param r
      * @param advice

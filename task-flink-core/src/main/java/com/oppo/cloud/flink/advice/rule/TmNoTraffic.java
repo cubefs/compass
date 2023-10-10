@@ -38,7 +38,8 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.*;
 
 
 /**
- * 某些tm没有流量，cpu利用率低，堆内存利用率低，则可以缩减掉并行度
+ * If some tm have no traffic, low CPU utilization rate, and low heap memory utilization rate,
+ * the parallelism can be reduced.
  */
 @Component
 @Slf4j
@@ -58,14 +59,14 @@ public class TmNoTraffic extends BaseRule {
         List<MetricResult.DataResult> tmFlowList = context.getMetrics().get(TM_DATA_FLOW_RATE);
         List<MetricResult.DataResult> cpuUsageList = context.getMetrics().get(TM_CPU_USAGE_RATE);
         List<MetricResult.DataResult> memUsageList = context.getMetrics().get(TM_HEAP_MEM_USAGE_RATE);
-        // 计算流量为0的tm个数
+        // Calculate the number of tm with zero traffic.
         long tmNoTrafficCount = tmFlowList.stream().map(monitorMetricUtil::getMaxOrNull).filter(d -> d != null && d == 0d).count();
         long tmCpuNoUsageCount = cpuUsageList.stream().map(monitorMetricUtil::getMaxOrNull)
                 .filter(d -> d != null && d < cons.getTmCpuNoUsageThreshold()).count();
         long tmMemNoUsageCount = memUsageList.stream().map(monitorMetricUtil::getAvgOfBelowSerrationsOrNull)
                 .filter(d -> d != null && d < cons.getTmHeapMemNoUsageThreshold()).count();
-        log.debug("{} 作业cpu没有使用的tm个数:{} 内存没使用tm个数:{} 没有流量tm个数:{}", rcJobDiagnosis.getJobName(),
-                tmCpuNoUsageCount, tmMemNoUsageCount, tmNoTrafficCount);
+        log.debug("{}: number of tm that are not using job CPU:{}, number of tm that are not using memory:{}, number of tm with no traffic:{}",
+                rcJobDiagnosis.getJobName(), tmCpuNoUsageCount, tmMemNoUsageCount, tmNoTrafficCount);
         int cutTmNum = Math.min(Math.min((int) tmCpuNoUsageCount, (int) tmMemNoUsageCount), (int) tmNoTrafficCount);
         if (cutTmNum > 0) {
             int minParallel = 1;
@@ -106,9 +107,8 @@ public class TmNoTraffic extends BaseRule {
                 build.setDiagnosisRuleReport(diagnosisRuleReport);
                 return build;
             }
-
         }
-        return builder.hasAdvice(false).adviceDescription("无建议").build();
+        return builder.hasAdvice(false).adviceDescription("No advice").build();
     }
 
 }

@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 
 
 /**
- * 诊断建议
+ * Diagnosis advice/suggestion.
  */
 @Data
 @Builder
@@ -38,67 +38,67 @@ import java.time.LocalDateTime;
 public class RcJobDiagnosisAdvice implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
-     * 诊断规则
+     * diagnostic rule name
      */
     private String ruleName;
     /**
-     * 作业名字
+     * flink job name
      */
     private String jobName;
     /**
-     * 建议类型
+     * advice types
      */
     private FlinkRule adviceType;
     /**
-     * 建议描述
+     * advice description
      */
     private String adviceDescription;
     /**
-     * 是否有建议
+     * any advice, yes or no
      */
     private Boolean hasAdvice = false;
     /**
-     * 诊断并行度
+     * parallelism after diagnosis.
      */
     private Integer diagnosisParallel;
     /**
-     * tm slot数量
+     * number of slots of a tm after diagnosis.
      */
     private Integer diagnosisTmSlotNum;
     /**
-     * 诊断tm数量
+     * number of task manger after diagnosis.
      */
     private Integer diagnosisTmNum;
     /**
-     * 诊断jm内存
+     * job manager memory after diagnosis.
      */
     private Integer diagnosisJmMem;
     /**
-     * 诊断tm内存
+     * task manager memory after diagnosis.
      */
     private Integer diagnosisTmMem;
     /**
-     * 诊断tm core
+     * task manager core (vcore) after diagnosis.
      */
     private Integer diagnosisTmCore;
     /**
-     * 慢算子task name
+     * Slow operator(vertice) task name
      */
     private String slowTasks;
     /**
-     * manage内存MB
+     * manage memory (in MB)
      */
     private Integer diagnosisManageMem;
     /**
-     * 波谷建议tm个数
+     * Recommended number of TMs for valley wave.
      */
     private Integer trafficElasticTmNum;
     /**
-     * 波谷开始时间
+     * Start time of valley wave.
      */
     private LocalDateTime trafficTroughStartTime;
     /**
-     * 波谷结束时间
+     * End time of valley wave.
      */
     private LocalDateTime trafficTroughEndTime;
 
