@@ -44,7 +44,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_CPU_USAGE_R
 
 
 /**
- * 根据cpu和mem的最大值和均值判断是否需要缩容
+ * Based on the maximum and average values of CPU and memory usage to determine whether to scale down.
  */
 @Slf4j
 @Component
@@ -65,8 +65,8 @@ public class AvgCpuLowRule extends BaseRule {
         Double cpuLowTarget = doctorUtil.getCpuLowTarget(r);
         RcJobDiagnosisAdvice.RcJobDiagnosisAdviceBuilder builder = getBuilder(r);
         builder.adviceType(FlinkRule.AvgCpuLowRule);
-        // 尝试降低cpu
-        // 判断单个cpu利用率的最大值低于阈值
+        // Try to reduce CPU usage.
+        // To determine if the maximum utilization rate of a single CPU is below a threshold.
         List<MetricResult.DataResult> cpuUsageList = r.getMetrics().get(TM_CPU_USAGE_RATE);
         if (cpuUsageList != null && cpuUsageList.size() > 0) {
             Double maxCpuUsage = cpuUsageList.stream()
@@ -125,7 +125,7 @@ public class AvgCpuLowRule extends BaseRule {
         }
 
         return builder.hasAdvice(false)
-                .adviceDescription("无建议")
+                .adviceDescription("No advice")
                 .build();
     }
 

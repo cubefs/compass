@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * 根据规则扩容cpu
+ * Increase CPU capacity according to the rules.
  */
 @Component
 @Slf4j
@@ -53,7 +53,7 @@ public class TurningCpuUpBySpec implements TurningCpuUpStrategy {
             return noAdvice;
         }
         Double changeRate = cons.tmParallelGrowRate;
-        // 根据cpu利用率计算change rate
+        // Calculate change rate based on CPU utilization rate.
         Double jobChangeRate = doctorUtil.getGrowChangeRate(context);
         if (jobChangeRate != null) {
             changeRate = jobChangeRate;
@@ -88,18 +88,18 @@ public class TurningCpuUpBySpec implements TurningCpuUpStrategy {
         int newTotalSlot = newTmNum * newSlotNum;
         int minNewCore = (int) Math.ceil((double) oriTotalCore / newTmNum);
         ArrayList<TurningAdvice> advices = new ArrayList<>();
-        log.debug("{} 计算cpu方案 new Slot Num:{},oriSlotNum:{}", context.getRcJobDiagnosis().getJobName(), newSlotNum, oriSlotNum);
+        log.debug("{} calculates the new slot number for CPU scheme:{},oriSlotNum:{}", context.getRcJobDiagnosis().getJobName(), newSlotNum, oriSlotNum);
         for (int vcoreIndex = minNewCore; vcoreIndex < minNewCore + 10; vcoreIndex++) {
-            // 计算是否总体core减少
+            // Calculate if there is an overall decrease in cores.
             int newTotalCore = vcoreIndex * newTmNum;
             if (newTotalCore <= oriTotalCore) {
                 log.debug("{} newTotalCore {} <= oriTotalCore {}", context.getRcJobDiagnosis().getJobName(), newTotalCore, oriTotalCore);
                 continue;
             }
-            // 计算内存是否符合要求
+            // Calculate if the memory meets the requirements.
             TurningAdvice newMemAdvice = memTurning.turning(context, newSlotNum);
             if (newMemAdvice == null) {
-                log.debug("{} 内存为null", context.getRcJobDiagnosis().getJobName());
+                log.debug("{} Memory is null.", context.getRcJobDiagnosis().getJobName());
                 continue;
             }
             Integer newMem = newMemAdvice.getTmMem();
@@ -108,26 +108,28 @@ public class TurningCpuUpBySpec implements TurningCpuUpStrategy {
                 newMem = newMem / 1024 * 1024;
             }
             if (newMem > cons.tmMemMax || newMem < cons.tmMemMin) {
-                log.debug("{} {} 内存超出阈值", context.getRcJobDiagnosis().getJobName(), newMem);
-                // slot 等于1
+                log.debug("{} {} Memory exceeds the threshold.", context.getRcJobDiagnosis().getJobName(), newMem);
+                // slot is 1
                 if (newSlotNum == 1) {
                     if (oriMem <= cons.tmMemMax) {
-                        // 任务原始tm内存在范围内，且新的slot为1已经是最小值，此时尽管计算的内存超了，仍然设置为内存最大值，因为此时是内存最大配比
-                        log.debug("{} 内存设置为和ori mem {}相等", context.getRcJobDiagnosis().getJobName(), oriMem);
+                        // If the original memory of the task is within the range, and the new slot value is already at
+                        // the minimum value of 1, even if the calculated memory exceeds the limit, it will still be set
+                        // to the maximum value because this is the maximum memory ratio.
+                        log.debug("Set the {} memory to be equal to the origin memory {}", context.getRcJobDiagnosis().getJobName(), oriMem);
                         newMem = cons.tmMemMax;
                     } else {
                         newMem = oriMem;
                     }
                 } else {
-                    log.debug("{} new mem {}, ori mem {}", context.getRcJobDiagnosis().getJobName(), newMem, oriMem);
+                    log.debug("{} new memory {}, origin memory {}", context.getRcJobDiagnosis().getJobName(), newMem, oriMem);
                     continue;
                 }
             }
-            // 内存调整要尽量保守，防止oom
+            // Memory adjustment should be conservative to prevent OOM (Out of Memory).
             if (newMem + 1024 <= cons.tmMemMax) {
                 newMem = newMem + 1024;
             }
-            // 生成建议对象,计算得分
+            // Generate a recommendation object and calculate the score.
             TurningAdvice advice = new TurningAdvice();
             advice.setParallel(oriParallel);
             advice.setTmSlotNum(newSlotNum);
@@ -142,10 +144,11 @@ public class TurningCpuUpBySpec implements TurningCpuUpStrategy {
             double realChangeRate = (double) Math.abs(newSlotCore - oldSlotCore) / oldSlotCore;
             double score;
             if (realChangeRate > changeRate) {
-                // oneDivideExp 取值范围是1-0,所以这里score 是 100-50
+                // If the range of `oneDivideExp` is from 1 to 0, then the score here would be from 100 to 50.
                 score = 50 + 50 * doctorUtil.oneDivideExp(realChangeRate - changeRate);
             } else {
-                // 这里score取值范围是50-5 realChangeRate=changeRate 时候 score 是50,realChangeRate < changeRate 时候,score 小于50大于0
+                // The score range here is 50 to 5. When realChangeRate equals changeRate, the score is 50.
+                // When realChangeRate is less than changeRate, the score is less than 50 but greater than 0.
                 score = 50 - 50 * doctorUtil.oneSubExp(realChangeRate - changeRate);
             }
             advice.setScore((float) score);
@@ -159,7 +162,7 @@ public class TurningCpuUpBySpec implements TurningCpuUpStrategy {
             }
         }
         if (advices.size() == 0) {
-            log.debug("{} advices 为空 ", context.getRcJobDiagnosis().getJobName());
+            log.debug("{} advices is empty ", context.getRcJobDiagnosis().getJobName());
             return null;
         }
         Optional<TurningAdvice> max = advices.stream().max((o1, o2) -> Float.compare(o1.getScore(), o2.getScore()));

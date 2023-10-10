@@ -46,7 +46,9 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.*;
 
 
 /**
- * 如果有延迟，并且core数大于单 tm slot总数，且cpu利用率上不去，就增大slot 数(+1)，并且同时按比例增加并行度，并行度不超过cpu。
+ * If there is a delay, and the number of cores is greater than the total number of single TM slots,
+ * and the CPU utilization rate cannot be increased, increase the slot number by 1, and at the same
+ * time increase the parallelism proportionally, with the parallelism not exceeding the CPU.
  */
 @Component
 @Slf4j
@@ -72,14 +74,14 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
         RcJobDiagnosis rcJobDiagnosis = context.getRcJobDiagnosis();
         RcJobDiagnosisAdvice.RcJobDiagnosisAdviceBuilder builder = getBuilder(context);
         builder.adviceType(FlinkRule.ParallelIncr);
-        // 如果任务有延迟,延迟需要持续大于10分钟,需要消尖
+        // If there is a delay in the task and the delay needs to continue for more than 10 minutes, it is necessary to perform deburring.
         List<MetricResult.DataResult> delayTimeLagList = context.getMetrics().get(MAX_TIME_LAG_PROMQL);
         if (delayTimeLagList == null || delayTimeLagList.size() == 0) {
             return builder
-                    .adviceDescription("delay time 为空")
+                    .adviceDescription("delay time is empty")
                     .build();
         }
-        // 获取延迟超过阈值的指标点个数
+        // Get the number of indicator points with delays exceeding the threshold.
         long delayHighCount = monitorMetricUtil.getFlatKeyValueStream(delayTimeLagList.get(0))
                 .get()
                 .filter(Objects::nonNull)
@@ -87,7 +89,7 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
                     return (x.getValue() != null && x.getValue() > cons.JOB_CUT_LAG_TIME_THRESHOLD);
                 })
                 .count();
-        // 获取最大延迟
+        // Get the maximum delay
         double maxDelay = monitorMetricUtil.getFlatKeyValueStream(delayTimeLagList.get(0))
                 .get()
                 .map(MetricResult.KeyValue::getValue)
@@ -99,9 +101,9 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
         int countThreshold = (int) Math.ceil(10d * 60d / step);
         boolean isDelay = (delayHighCount > countThreshold);
         Boolean delayLittleHigh = (maxDelay > cons.JOB_DELAY_LITTLE_HIGH);
-        log.debug("{} {}-{} 作业最大延迟 {} second", rcJobDiagnosis.getJobName(), context.getStart(),
+        log.debug("{} {}-{} job maximum delay {} second", rcJobDiagnosis.getJobName(), context.getStart(),
                 context.getEnd(), maxDelay);
-        // 判断最近10分钟内延迟连续
+        // Delay is continuous within the past 10 minutes.
         Boolean offsetGrow10minutes = offsetGrow10minutes(context);
         Double cpuHighThreshold = doctorUtil.getCpuHighThreshold(context);
         boolean cpuNotHigh = notNullLt(rcJobDiagnosis.getTmAvgCpuUsageAvg() / rcJobDiagnosis.getTmCore(),
@@ -110,20 +112,20 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
         int maxParallel = cons.maxParallel;
         Integer sourcePartitionNumObj = rcJobDiagnosis.getKafkaConsumePartitionNum();
         if (sourcePartitionNumObj == null) {
-            log.info("{} 拿不到source partition num", rcJobDiagnosis.getJobName());
+            log.info("{} can not get source partition num", rcJobDiagnosis.getJobName());
         } else {
             maxParallel = 4 * sourcePartitionNumObj;
         }
         if ((isDelay || (offsetGrow10minutes && delayLittleHigh)) && cpuNotHigh) {
-            // 增加并行度,调整cpu，调整内存
+            // Increase concurrency, adjust CPU, and adjust memory.
             int oriSlotNum = rcJobDiagnosis.getTmSlotNum();
             int newSlotNum = oriSlotNum;
             int oriTmMem = rcJobDiagnosis.getTmMem();
             int newTmMem = oriTmMem;
 
-            // 调整 slot number,使得内存足够
+            // Adjust the slot number to ensure sufficient memory.
             while (newSlotNum > 1) {
-                // 计算内存是否符合要求
+                // Calculate whether the memory meets the requirements.
                 TurningAdvice newMemAdvice = memTurningByUsage.turning(context, newSlotNum);
                 if (newMemAdvice == null || newMemAdvice.getTmMem() == null) {
                     newTmMem = oriTmMem * (int) Math.floor((double) newSlotNum / oriSlotNum);
@@ -131,7 +133,7 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
                 } else {
                     newTmMem = newMemAdvice.getTmMem();
                 }
-                // 内存调整要尽量保守，防止oom
+                // Memory adjustment should be conservative to avoid OOM
                 if (newTmMem + 1024 <= cons.tmMemMax) {
                     newTmMem = newTmMem + 1024;
                 }
@@ -146,7 +148,7 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
             if (newTmMem > cons.tmMemMax || newTmMem < cons.tmMemMin) {
                 newTmMem = cons.tmMemMax;
             }
-            // 如果并行度小于最大并行度,增加并行度
+            // If the concurrency is less than the maximum concurrency, increase the concurrency.
             int newParallel = rcJobDiagnosis.getParallel();
             if (rcJobDiagnosis.getParallel() < maxParallel) {
                 int iterateParallel = maxParallel;
@@ -155,12 +157,12 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
                 }
                 newParallel = iterateParallel;
             } else {
-                // 并行度已经最大了，那么尝试减少slot num,增加tm个数
+                // If the concurrency is already at its maximum, try reducing the slot number and increasing the number of tm.
                 if (newSlotNum >= oriSlotNum && oriSlotNum > 1) {
                     newSlotNum = oriSlotNum - 1;
                 }
             }
-            // cpu 设置等于slot
+            // Set the CPU to equal the slot.
             int newCpu = newSlotNum;
             int newTmNum = (int) Math.ceil((double) newParallel / newSlotNum);
             int oriTmNum = rcJobDiagnosis.getTmNum();
@@ -233,12 +235,12 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
                     rcJobDiagnosis.getJobName(), isDelay, offsetGrow10minutes, cpuNotHigh, slotLtCpu);
         }
         return builder
-                .adviceDescription("无建议")
+                .adviceDescription("No advice")
                 .build();
     }
 
     /**
-     * 判断作业最近10minute offset 连续上涨
+     * Determine whether the job's recent 10-minute offset has been continuously increasing.
      *
      * @param context
      * @return
@@ -249,13 +251,13 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
             log.info("{} job offset delta 列表数量不为1", context.getRcJobDiagnosis().getJobName());
             return false;
         }
-        // 获取延迟开始上涨的那个点
+        // Obtain the point at which the delay began to increase.
         Optional<Integer> ts = monitorMetricUtil.getKeyValueStream(offsetDeltaMetrics.get(0))
                 .get()
                 .map(MetricResult.KeyValue::getTs)
                 .max(Integer::compareTo);
         if (!ts.isPresent()) {
-            log.error("{} 获取ts失败", context.getRcJobDiagnosis().getJobName());
+            log.error("{} failed to get ts", context.getRcJobDiagnosis().getJobName());
             return false;
         }
         Integer maxTs = ts.get();
@@ -270,15 +272,15 @@ public class DelayAndCpuNotFullUtilization extends BaseRule {
                 .map(MetricResult.KeyValue::getValue)
                 .min(Double::compareTo);
         if (!minOffsetDelta.isPresent()) {
-            log.error("{} 获取offset delta 失败", context.getRcJobDiagnosis().getJobName());
+            log.error("{} failed to get offset delta", context.getRcJobDiagnosis().getJobName());
             return false;
         }
         if (minOffsetDelta.get() > 0) {
-            log.info("{} 连续10分钟offset 上涨 {}", context.getRcJobDiagnosis().getJobName(),
+            log.info("{}： Continuous 10-minute offset increase {}", context.getRcJobDiagnosis().getJobName(),
                     latest10minOffsetDelta);
             return true;
         } else {
-            log.info("{} 没有连续10分钟offset 上涨 {}", context.getRcJobDiagnosis().getJobName(),
+            log.info("{}: No continuous 10-minute offset increase {}", context.getRcJobDiagnosis().getJobName(),
                     latest10minOffsetDelta);
             return false;
         }

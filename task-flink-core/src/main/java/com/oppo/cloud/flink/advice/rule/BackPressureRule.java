@@ -43,7 +43,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.BACK_PRESSURE_
 
 
 /**
- * 慢算子监测规则
+ * Slow operator monitoring rules.
  */
 @Component
 @Slf4j
@@ -84,7 +84,7 @@ public class BackPressureRule extends BaseRule {
         data.setHasAdvice(false);
         List<MetricResult.DataResult> dataResults = context.getMetrics().get(BACK_PRESSURE_VERTICES);
         if (dataResults == null) {
-            data.setAdviceDescription("dataResults为空");
+            data.setAdviceDescription("dataResults is empty");
             return data;
         }
         long backpressureDuration = cons.slowVerticesInoutDiffHighDuration;
@@ -112,7 +112,7 @@ public class BackPressureRule extends BaseRule {
                     }
                 }
             } catch (Throwable e) {
-                log.error("计算反压报错:" + e.getMessage(), e);
+                log.error("get backpressure error:" + e.getMessage(), e);
             }
         });
         Set<String> tasks = new HashSet<>();
@@ -143,7 +143,7 @@ public class BackPressureRule extends BaseRule {
             diagnosisRuleReport.setIDiagnosisRuleCharts(Lists.newArrayList(diagnosisRuleLineChart));
             data.setDiagnosisRuleReport(diagnosisRuleReport);
         } else {
-            data.setAdviceDescription("无建议");
+            data.setAdviceDescription("No advice");
         }
         return data;
     }

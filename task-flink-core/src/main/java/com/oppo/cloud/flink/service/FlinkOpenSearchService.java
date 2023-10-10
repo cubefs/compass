@@ -5,7 +5,7 @@ import org.opensearch.action.update.UpdateResponse;
 public interface FlinkOpenSearchService {
 
     /**
-     * 插入或更新
+     * Insert or update item with document id
      */
-    UpdateResponse insertOrUpDate(String index, String id, Object document) throws Exception;
+    UpdateResponse insertOrUpdate(String index, String id, Object document) throws Exception;
 }

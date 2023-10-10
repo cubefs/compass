@@ -74,7 +74,7 @@ public class JobDelayHigh extends BaseRule {
         List<MetricResult.DataResult> delayTimeLagList = context.getMetrics().get(MAX_TIME_LAG_PROMQL);
         if (delayTimeLagList == null || delayTimeLagList.size() == 0) {
             return builder
-                    .adviceDescription("delay time 为空")
+                    .adviceDescription("delay time is empty")
                     .build();
         }
         long delayHighCount = monitorMetricUtil.getFlatKeyValueStream(delayTimeLagList.get(0))
@@ -89,9 +89,9 @@ public class JobDelayHigh extends BaseRule {
         int countThreshold = (int) Math.ceil(10d * 60d / step);
         boolean isDelay = (delayHighCount > countThreshold);
         Boolean delayLittleHigh = (latestDelay > cons.JOB_DELAY_LITTLE_HIGH);
-        log.debug("{} {}-{} 作业最近延迟 {} second", rcJobDiagnosis.getJobName(), context.getStart(),
+        log.debug("{} {}-{} Job has been delayed {} second recently.", rcJobDiagnosis.getJobName(), context.getStart(),
                 context.getEnd(), latestDelay);
-        // 判断最近10分钟内延迟连续
+        // Determine if there has been continuous delay within the past 10 minutes.
         Boolean offsetGrow10minutes = offsetGrow10minutes(context);
         Double cpuHighThreshold = doctorUtil.getCpuHighThreshold(context);
         boolean cpuNotHigh = notNullLt(rcJobDiagnosis.getTmAvgCpuUsageAvg() / rcJobDiagnosis.getTmCore(),
@@ -123,7 +123,7 @@ public class JobDelayHigh extends BaseRule {
                     rcJobDiagnosis.getJobName(), isDelay, offsetGrow10minutes, cpuNotHigh);
         }
         return builder
-                .adviceDescription("无建议")
+                .adviceDescription("No advice")
                 .build();
     }
 

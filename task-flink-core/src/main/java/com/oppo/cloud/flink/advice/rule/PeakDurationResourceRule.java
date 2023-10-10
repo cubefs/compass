@@ -50,7 +50,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_CPU_USAGE_R
 
 
 /**
- * 监测峰值时候的资源情况，判断是否需要扩容
+ * Monitor the resource situation during peak times and determine whether scaling is necessary.
  */
 @Slf4j
 @Component
@@ -73,18 +73,20 @@ public class PeakDurationResourceRule extends BaseRule {
         Double cpuHighTarget = doctorUtil.getCpuHighTarget(context);
         RcJobDiagnosisAdvice.RcJobDiagnosisAdviceBuilder builder = getBuilder(context);
         builder.adviceType(FlinkRule.PeekDurationResourceRule);
-        // 判断cpu峰值利用高
-        // 拿到每个tm的cpu使用率
+        // Determine if the CPU peak utilization is high.
+        // Obtain the CPU utilization rate for each tm.
         List<MetricResult.DataResult> cpuUsageList = context.getMetrics().get(TM_CPU_USAGE_RATE);
         if (cpuUsageList == null || cpuUsageList.size() == 0) {
             return builder
                     .hasAdvice(false)
-                    .adviceDescription("tm cpu usage为空")
+                    .adviceDescription("Tm cpu usage is empty")
                     .build();
         }
         for (MetricResult.DataResult dataResult : cpuUsageList) {
             try {
-                // 最近的五分钟cpu 高于阈值,取累计时间还是取均值,取均值,要消尖，不取平滑，平滑会减少点数
+                // If the CPU is above the threshold for the past five minutes, take the average value instead of
+                // the cumulative time. Smooth the data to eliminate spikes, but do not use smoothing to reduce the
+                // number of data points.
                 long end = context.getEnd();
                 long minutes5Before = end - cons.getTmCpuHighLatestNMinutes() * 60;
                 Supplier<Stream<MetricResult.KeyValue>> flatMetric = monitorMetricUtil.getFlatKeyValueStream(dataResult);
@@ -104,11 +106,12 @@ public class PeakDurationResourceRule extends BaseRule {
                         .average();
                 if (averageUnitCpuMinutes5Before.isPresent()
                         && averageUnitCpuMinutes5Before.getAsDouble() > cpuHighThreshold) {
-                    log.debug("tm 最近{} 分钟 cpu均值高于阈值:" + context.getRcJobDiagnosis().getJobName() + ":" + JSON.toJSONString(dataResult),
-                            cons.getTmCpuHighLatestNMinutes());
-                    log.info(String.format("作业部分tm 最近%d 分钟 cpu均值利用率:%.2f%% 超过%.2f%%",
+                    log.debug("Tm's CPU average value has been above the threshold for the past {} minutes: {}",
+                            cons.getTmCpuHighLatestNMinutes(),
+                            context.getRcJobDiagnosis().getJobName() + ":" + JSON.toJSONString(dataResult));
+                    log.info("CPU average utilization rate of tm in the job section for the past {} minutes: {}% exceeds {}%.",
                             cons.getTmCpuHighLatestNMinutes(), averageUnitCpuMinutes5Before.getAsDouble() * 100,
-                            cpuHighThreshold.floatValue() * 100));
+                            cpuHighThreshold.floatValue() * 100);
                     Double changeRate = averageUnitCpuMinutes5Before.getAsDouble() / cpuHighTarget - 1;
                     context.getMessages().put(DiagnosisParam.GrowCpuChangeRate, changeRate);
                     TurningAdvice turning = turningManager.turningCpuUp(context);
@@ -158,7 +161,7 @@ public class PeakDurationResourceRule extends BaseRule {
                     }
                 }
 
-                // 全程累计时间高于阈值
+                // Total cumulative time is above the threshold.
                 int step = monitorMetricUtil.getStep(context.getStart(), context.getEnd());
                 Supplier<Stream<MetricResult.KeyValue>> smoothMetric = monitorMetricUtil.getSmoothKeyValueStream(
                         monitorMetricUtil.getFlatKeyValueStream(dataResult), 3);
@@ -175,7 +178,7 @@ public class PeakDurationResourceRule extends BaseRule {
                         }).collect(Collectors.toList());
                 long highDuration = (long) collectHighValue.size() * step;
                 if (highDuration > cons.getTmPeakHighTimeThreshold()) {
-                    log.debug("tm单个峰值利用率高的数据:" + context.getRcJobDiagnosis().getJobName() + ":" + JSON.toJSONString(dataResult));
+                    log.debug("Data with high individual peak utilization rate for tm:" + context.getRcJobDiagnosis().getJobName() + ":" + JSON.toJSONString(dataResult));
                     TurningAdvice turning = turningManager.turningCpuUp(context);
                     if (turning != null && turning.getStatus().equals(DiagnosisTurningStatus.HAS_ADVICE)) {
                         RcJobDiagnosisAdvice build = convertTurningToAdviceBuilder(turning, builder)
@@ -219,13 +222,13 @@ public class PeakDurationResourceRule extends BaseRule {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                log.error("cpu峰值利用率高调优报错" + e.getMessage());
+                log.error("Error in tuning when CPU peak utilization rate is high: " + e.getMessage());
             }
         }
 
         return builder
                 .hasAdvice(false)
-                .adviceDescription("无建议")
+                .adviceDescription("No advice")
                 .build();
     }
 

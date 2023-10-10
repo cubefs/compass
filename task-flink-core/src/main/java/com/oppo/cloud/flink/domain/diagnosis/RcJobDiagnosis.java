@@ -21,31 +21,27 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * 诊断实体
+ * Diagnosis entity.
  */
 @Data
 @Accessors(chain = true)
 public class RcJobDiagnosis {
 
     private static final long serialVersionUID = 1L;
-
     /**
-     * promethues上报的作业名称
+     * Job name reported by Prometheus.
      */
     private String jobName;
-
     /**
-     * 并行度
+     * Parallelism
      */
     private Integer parallel;
-
     /**
-     * tm slot数量
+     * Number of slots of a TM.
      */
     private Integer tmSlotNum;
-
     /**
-     * tm 个数
+     * Number of TaskManagers (TMs).
      */
     private Integer tmNum;
     /**
@@ -64,51 +60,40 @@ public class RcJobDiagnosis {
      * kafka partition number
      */
     private Integer kafkaConsumePartitionNum;
-
-
     /**
-     * 建议并行度
+     * Suggested parallelism.
      */
     private Integer diagnosisParallel;
-
     /**
-     * 建议tm的slot数量
+     * Suggested number of slots for a TaskManager.
      */
     private Integer diagnosisTmSlot;
-
     /**
-     * 建议的tm个数
+     * Recommended number of TaskManagers (TMs).
      */
     private Integer diagnosisTmNum;
-
     /**
-     * 建议tm的slot数量
+     * Suggested number of slots for a TaskManager.
      */
     private Integer diagnosisTmCore;
-
     /**
-     * 建议tm的memory MB
+     * Suggested memory(in MB) for a TaskManager
      */
     private Integer diagnosisTmMem;
-
     /**
-     * 建议jm的memory MB
+     * Suggested memory (in MB) for JobManager
      */
     private Integer diagnosisJmMem;
-
     /**
-     * tm整体平均 cpu使用率最大值
+     * Maximum value of overall average CPU utilization of a TM.
      */
     private Float tmAvgCpuUsageMax;
-
     /**
-     * tm整体平均 cpu使用率最小值
+     * Minimum value of overall average CPU utilization of a TM.
      */
     private Float tmAvgCpuUsageMin;
-
     /**
-     * tm整体平均 cpu使用率平均值
+     * Average value of overall average CPU utilization of a TM.
      */
     private Float tmAvgCpuUsageAvg;
-
 }

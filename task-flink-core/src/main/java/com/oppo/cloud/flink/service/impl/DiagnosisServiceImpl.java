@@ -58,7 +58,7 @@ import java.util.*;
 import static com.oppo.cloud.flink.constant.MonitorMetricConstant.JOB_UP_TIME;
 
 /**
- * 诊断服务
+ * Diagnosis Service
  */
 @Service
 @Slf4j
@@ -99,7 +99,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     private FlinkOpenSearchService flinkOpenSearchService;
 
     /**
-     * 添加诊断类型
+     * Add diagnostic type.
      *
      * @param flinkTaskAnalysis
      * @param ruleAlias
@@ -114,7 +114,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     }
 
     /**
-     * 添加诊断资源类型
+     * Add diagnostic resource type.
      *
      * @param flinkTaskAnalysis
      * @param code
@@ -129,23 +129,23 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     }
 
     public void updateRealtimeTaskAppStatus(FlinkTaskApp flinkTaskApp) {
-        //通过 tracking url 检查
+        // Check via tracking URL.
         List<JobManagerConfigItem> jobManagerConfigItems = flinkMetaService.reqFlinkConfig(flinkTaskApp.getFlinkTrackUrl());
         if (System.currentTimeMillis() - flinkTaskApp.getCreateTime().getTime() > 1000 * 60 * 30 && jobManagerConfigItems == null) {
-            log.info("作业访问tracking url失败 {}", flinkTaskApp);
+            log.info("Failed to access tracking URL for the job: {}", flinkTaskApp);
             flinkTaskApp.setTaskState(FlinkTaskAppState.FINISHED.getDesc());
             flinkTaskAppMapper.updateByPrimaryKey(flinkTaskApp);
             return;
         }
 
-        // 检查app 是否在运行状态
+        // Check if the app is in running status.
         String appId = flinkTaskApp.getApplicationId();
         YarnApp app = flinkMetaService.requestYarnApp(appId);
         if (app == null) {
-            log.info("没有找到 app {}", appId);
+            log.info("App {} not found", appId);
             return;
         }
-        // 如果检测到app状态是 FINISHED,FAILED,KILLED,则标记元数据状态为finish
+        // If the status of the app is detected as FINISHED, FAILED, or KILLED, mark the metadata status as finished.
         if (
                 app.getState().equalsIgnoreCase(YarnApplicationState.FINISHED.getDesc()) ||
                         app.getState().equalsIgnoreCase(YarnApplicationState.FAILED.getDesc()) ||
@@ -153,23 +153,23 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         ) {
             flinkTaskApp.setTaskState(FlinkTaskAppState.FINISHED.getDesc());
             flinkTaskAppMapper.updateByPrimaryKey(flinkTaskApp);
-            log.info(" app 已经停止 {}", appId);
+            log.info(" The app {} has already stopped.", appId);
         }
     }
 
     /**
-     * 诊断作业
+     * Diagnostic job.
      *
      * @param flinkTaskApp
-     * @param start        秒
-     * @param end          秒
+     * @param start        seconds
+     * @param end          seconds
      * @param from
      * @return
      */
     @Override
     public FlinkTaskAnalysis diagnosisApp(FlinkTaskApp flinkTaskApp, long start, long end,
                                           DiagnosisFrom from) throws Exception {
-        // 白名单检查
+        // Whitelist check.
         BlocklistExample example = new BlocklistExample();
         example.createCriteria()
                 .andTaskNameEqualTo(flinkTaskApp.getTaskName())
@@ -181,52 +181,53 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         List<Blocklist> blockLists = blocklistMapper.selectByExample(example);
         log.debug(example.getOredCriteria().toString());
         if (blockLists != null && blockLists.size() > 0) {
-            log.debug("白名单拦截:{}", flinkTaskApp);
+            log.debug("Whitelist block:{}", flinkTaskApp);
             return null;
         } else {
-            log.debug("白名单通过:{}", flinkTaskApp);
+            log.debug("Whitelist passed:{}", flinkTaskApp);
         }
         RcJobDiagnosis rcJobDiagnosis = new RcJobDiagnosis();
         FlinkTaskAnalysis flinkTaskAnalysis = new FlinkTaskAnalysis();
         flinkTaskAnalysis.setDiagnosisResourceType(new ArrayList<>());
 
-        // 1、元数据填到诊断结果中
-        // 从flink ui config 获取 jobName,运行配置参数,如果访问不到，说明作业有问题
+        // 1.Fill metadata into diagnostic result.
+        // Get jobName and runtime configuration parameters from Flink UI config.
+        // If unable to access, it indicates that there is an issue with the job.
         List<JobManagerConfigItem> flinkConfigItems = flinkMetaService.reqFlinkConfig(flinkTaskApp.getFlinkTrackUrl());
         if (flinkConfigItems == null) {
-            log.info("flink ui无法访问 {}", flinkTaskApp.getFlinkTrackUrl());
+            log.info("flink ui unable to access. {}", flinkTaskApp.getFlinkTrackUrl());
             return null;
         }
         String jobId = flinkMetaService.getJobId(flinkTaskApp.getFlinkTrackUrl());
         if (jobId == null) {
-            log.info("flink jobid 获取失败 {}", flinkTaskApp.getFlinkTrackUrl());
+            log.info("Failed to fetch/get flink jobId, track url: {}", flinkTaskApp.getFlinkTrackUrl());
             return null;
         }
         List<String> tmIds = flinkMetaService.getTmIds(flinkTaskApp.getFlinkTrackUrl());
-        // 通过flink job manager的配置更新元数据
+        // Update the metadata through the configuration of Flink Job Manager.
         flinkMetaService.fillFlinkMetaWithFlinkConfigOnYarn(flinkTaskApp, flinkConfigItems, jobId);
-        // 更新元数据
+        // Update metadata.
         flinkTaskAppMapper.updateByPrimaryKeySelective(flinkTaskApp);
-        // 元数据更新后填到诊断结果中
+        // Fill the updated metadata into diagnostic result.
         fillFlinkTaskAnalysisWithTaskMeta(flinkTaskAnalysis, flinkTaskApp);
-        // 构造诊断上下文，元数据填到上下文中
+        // Construct diagnostic context and fill metadata into context.
         fillRcJobDiagnosisWithTaskMeta(rcJobDiagnosis, flinkTaskApp);
-        // 构造context
+        // Construct context.
         DiagnosisContext context = new DiagnosisContext(rcJobDiagnosis, start, end, flinkDiagnosisMetricsServiceImpl, from);
         context.getMessages().put(DiagnosisParam.JobId, jobId);
         context.getMessages().put(DiagnosisParam.TmIds, tmIds);
 
-        // 2、执行诊断阶段
+        // 2.Execute diagnostic phase.
         diagnosisDoctor.diagnosis(context);
         if (context.getStopResourceDiagnosis()) {
-            log.info("不满足诊断条件，返回null");
+            log.info("If the diagnostic conditions are not met, return null.");
             return null;
         }
-        // 诊断结果回填到FlinkTaskDiagnosis中
+        // Fill the diagnostic result into FlinkTaskDiagnosis.
         fillFlinkTaskAnalysisWithDiagnosisContext(flinkTaskAnalysis, context);
-        // 3、存储数据阶段
-        // 3.1 存储flinkTaskAnalysis
-        // 构造 FlinkTaskDiagnosisRuleAdvice, 填入FlinkTaskDiagnosis的id
+        // 3.Data storage phase.
+        // 3.1 Store FlinkTaskAnalysis.
+        // Construct FlinkTaskDiagnosisRuleAdvice and fill in the ID of FlinkTaskDiagnosis.
         List<RcJobDiagnosisAdvice> advices = context.getAdvices();
         List<String> reports = new ArrayList<>();
         List<FlinkTaskAdvice> flinkTaskAdvices = new ArrayList<>();
@@ -270,22 +271,22 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         flinkTaskAnalysis.setCutCoreNum(0L);
         flinkTaskAnalysis.setCutMemNum(0L);
 
-        if (resourceTypeSet.contains(2)) { // 2缩减cpu
+        if (resourceTypeSet.contains(2)) { // 2.Reduce CPU.
             int cutCores = totalCores - flinkTaskAnalysis.getDiagnosisTmCoreNum() * flinkTaskAnalysis.getDiagnosisTmNum();
             flinkTaskAnalysis.setCutCoreNum((long) cutCores);
         }
 
-        if (resourceTypeSet.contains(3)) { // 3缩减mem
+        if (resourceTypeSet.contains(3)) { // 3.Reduce memory.
             int cutMemory = totalMem - flinkTaskAnalysis.getDiagnosisTmMemory() * flinkTaskAnalysis.getDiagnosisTmNum();
             flinkTaskAnalysis.setCutMemNum((long) cutMemory);
         }
 
-        log.info("result=>" + flinkTaskAnalysis);
+        log.debug("diagnosis result: {}", flinkTaskAnalysis);
 
-
-        UpdateResponse update = flinkOpenSearchService.insertOrUpDate(index, id, flinkTaskAnalysis.genDoc());
+        UpdateResponse update = flinkOpenSearchService.insertOrUpdate(index, id, flinkTaskAnalysis.genDoc());
         flinkTaskAnalysis.setDocId(id);
-        log.info("update:" + update);
+
+        log.debug("update result: {}", update);
 
         BulkResponse response;
         try {
@@ -303,12 +304,12 @@ public class DiagnosisServiceImpl implements DiagnosisService {
                 log.info("saveGCReportsErr:", r.getFailure().getCause());
             }
         }
-        // 返回数据
+        // Return data.
         return flinkTaskAnalysis;
     }
 
     /**
-     * 诊断所有作业
+     * Diagnose all jobs.
      *
      * @param start
      * @param end
@@ -339,7 +340,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     }
 
     /**
-     * 检测小时级诊断是否需要进行
+     * Check if the hourly diagnosis needs to be conducted.
      *
      * @param job
      * @param start
@@ -352,9 +353,10 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         String jobUpTime = flinkDiagnosisMetricsServiceImpl.addLabel(JOB_UP_TIME, "job_id", jobId);
         List<MetricResult.DataResult> jobUpTimeMetrics = flinkDiagnosisMetricsServiceImpl
                 .getJobMetrics(jobUpTime, start, end);
-        // 首先，如果jobUpTimeMetrics返回不止一个list，那么肯定不在上线的一小时后,因为小时诊断只诊断一小时内的数据
+        // Firstly, if jobUpTimeMetrics returns more than one list, then it is definitely not more than one hour since
+        // the job has been online, because hourly diagnosis only diagnoses the data within one hour.
         if (jobUpTimeMetrics == null || jobUpTimeMetrics.size() != 1) {
-            log.info("小时级别诊断:{} 初始化时间为空或者大小不为1", jobUpTime);
+            log.info("Hourly diagnosis: {} initialization time is null or its size is not equal to 1.", jobUpTime);
             return false;
         }
         double minUpTime = monitorMetricUtil.getKeyValueStream(jobUpTimeMetrics.get(0))
@@ -367,16 +369,21 @@ public class DiagnosisServiceImpl implements DiagnosisService {
                 .orElse(-1);
         int diagnosisStartMinutes = cons.hourlyDiagnosisStartMinutes;
         int diagnosisEndMinutes = cons.hourlyDiagnosisEndMinutes;
-        // 如果minUpTime 上报为-1，也不诊断，需要修复上报正确时间
+        // If minUpTime is reported as -1, do not diagnose and fix the reported time correctly.
         if (minUpTime / 1000 / 60 > diagnosisStartMinutes && minUpTime / 1000 / 60 < diagnosisEndMinutes) {
-            log.info("小时级别诊断:" + metricJobName +
-                    String.format("诊断开始时,上线时间%.2f分钟,在%d分钟到%d分钟内", minUpTime / 1000 / 60, diagnosisStartMinutes, diagnosisEndMinutes));
+            log.info("Hourly diagnosis:" + metricJobName +
+                    String.format("At the beginning of the diagnosis, " +
+                                    "the job has been online for %.2f minutes and it is " +
+                                    "within the range of %d minutes to %d minutes.", minUpTime / 1000 / 60,
+                            diagnosisStartMinutes, diagnosisEndMinutes));
         } else if (minUpTime == -1) {
-            log.info(String.format("小时级别诊断:%s,上线时间指标全部为-1或者为0", metricJobName));
+            log.info(String.format("Hourly diagnosis:%s, all job up time metrics are reported as -1 or 0.", metricJobName));
             return false;
         } else {
-            log.info("小时级别诊断:" + metricJobName +
-                    String.format("诊断开始时,上线时间%.2f分钟,不在%d分钟到%d分钟内,不诊断", minUpTime / 1000 / 60, diagnosisStartMinutes, diagnosisEndMinutes));
+            log.info("Hourly diagnosis:" + metricJobName +
+                    String.format("The job has been online for %.2f minutes at the beginning of the diagnosis, " +
+                            "but it is not within the range of %d minutes to %d minutes, so it cannot be diagnosed.",
+                            minUpTime / 1000 / 60, diagnosisStartMinutes, diagnosisEndMinutes));
             return false;
         }
         return true;

@@ -37,7 +37,7 @@ import static com.oppo.cloud.flink.constant.MonitorMetricConstant.TM_CPU_USAGE_R
 
 
 /**
- * 根据规格调低cpu
+ * Lowering the CPU according to the specifications.
  */
 @Component
 @Data
@@ -65,7 +65,7 @@ public class TurningCpuDownBySpec implements TurningCpuDownStrategy {
             resAdvice.setDescription("cpu缩减策略不适用，tm slot为0或者parallel为0");
             return resAdvice;
         }
-        // 计算缩减率
+        // Calculate the reduction rate.
         List<MetricResult.DataResult> cpuUsageList = context.getMetrics().get(TM_CPU_USAGE_RATE);
         if (cpuUsageList != null && cpuUsageList.size() > 0) {
             Double maxCpuUsage = cpuUsageList.stream()
@@ -76,7 +76,7 @@ public class TurningCpuDownBySpec implements TurningCpuDownStrategy {
             if (maxCpuUsage > 0 && maxCpuUsage / rcJobDiagnosis.getTmCore() < lowTarget) {
                 double unitMaxCpuUsage = maxCpuUsage / rcJobDiagnosis.getTmCore();
                 changeRate = 1 - unitMaxCpuUsage / lowTarget;
-                log.info(context.getRcJobDiagnosis().getJobName() + "目标缩减率:" + changeRate);
+                log.info(context.getRcJobDiagnosis().getJobName() + " target reduction rate:" + changeRate);
             }
         }
         if (changeRate == null) {
@@ -115,13 +115,13 @@ public class TurningCpuDownBySpec implements TurningCpuDownStrategy {
         int maxNewCore = (int) Math.floor((double) oriTotalCore / newTmNum);
         ArrayList<TurningAdvice> advices = new ArrayList<>();
         for (int vcoreIndex = maxNewCore; vcoreIndex > 0; vcoreIndex--) {
-            // 计算是否总体core减少
+            // Calculate if there is an overall reduction in cores.
             int newTotalCore = vcoreIndex * newTmNum;
-            // 这里新的 core 可以等于旧的core，因为内存可以缩小
+            // Here, the new number of cores can be equal to the old number of cores because we can reduce the memory size.
             if (newTotalCore > oriTotalCore) {
                 continue;
             }
-            // 计算内存是否符合要求
+            // Calculate if the memory meets the requirements.
             TurningAdvice newMemAdvice = memTurning.turning(context, newSlotNum);
             if (newMemAdvice == null) {
                 continue;
@@ -134,11 +134,11 @@ public class TurningCpuDownBySpec implements TurningCpuDownStrategy {
             if (newMem > cons.tmMemMax || newMem < cons.tmMemMin) {
                 continue;
             }
-            // 内存调整要尽量保守，防止oom
+            // Memory adjustment should be as conservative as possible to prevent OOM (Out of Memory) issues.
             if (newMem + 1024 <= cons.tmMemMax) {
                 newMem = newMem + 1024;
             }
-            // 生成建议对象,计算得分
+            // Generate recommendation object and calculate the score.
             TurningAdvice advice = new TurningAdvice();
             advice.setParallel(oriParallel);
             advice.setTmSlotNum(newSlotNum);
@@ -149,7 +149,7 @@ public class TurningCpuDownBySpec implements TurningCpuDownStrategy {
             advice.setTmMem(newMem);
             double desChangeRate = cutRate;
             float realChangeRate = (float) (oriTotalCore - newTotalCore) / oriTotalCore;
-            // 缩减资源时候，不能大于目标缩减率
+            // When reducing resources, they cannot exceed the target reduction rate.
             if (realChangeRate < desChangeRate) {
                 float score = 100 * (1 - Math.abs(realChangeRate - (float) desChangeRate));
                 advice.setScore(score);

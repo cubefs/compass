@@ -28,7 +28,7 @@ public class TurningAdvice {
     private Integer totalCore;
     private Integer totalSlot;
     private Integer tmMem;
-    // 满分100
+    // Full score: 100
     private Float score;
     private DiagnosisTurningStatus status = DiagnosisTurningStatus.NO_ADVICE;
     private String description = "";

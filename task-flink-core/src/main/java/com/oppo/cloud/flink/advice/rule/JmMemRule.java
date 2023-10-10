@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 /**
- * 根据并行度调整jm内存
+ * Adjust jm memory based on parallelism.
  */
 @Component
 public class JmMemRule extends BaseRule {

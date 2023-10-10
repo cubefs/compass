@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * http客户端
+ * http client
  */
 @Component
 public class RestTemplateUtil {
