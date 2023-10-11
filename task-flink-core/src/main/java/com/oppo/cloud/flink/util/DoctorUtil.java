@@ -39,7 +39,7 @@ public class DoctorUtil {
     MonitorMetricUtil monitorMetricUtil;
 
     /**
-     * 0-1范围
+     * 0-1 Range.
      * @param context
      * @return
      */
@@ -53,7 +53,7 @@ public class DoctorUtil {
     }
 
     /**
-     * 0-1范围
+     * 0-1 Range.
      * @param context
      * @return
      */
@@ -67,7 +67,7 @@ public class DoctorUtil {
     }
 
     /**
-     * 0-1范围
+     * 0-1 Range.
      * @param context
      * @return
      */
@@ -81,7 +81,7 @@ public class DoctorUtil {
     }
 
     /**
-     * 0-1范围
+     * 0-1 Range.
      * @param context
      * @return
      */
@@ -95,7 +95,7 @@ public class DoctorUtil {
     }
 
     /**
-     * 0-1范围
+     * 0-1 Range.
      * @param context
      * @return
      */
@@ -109,7 +109,7 @@ public class DoctorUtil {
     }
 
     /**
-     * 0-1范围
+     * 0-1 Range.
      * @param context
      * @return
      */
@@ -123,7 +123,7 @@ public class DoctorUtil {
     }
 
     /**
-     * 0-1范围
+     * 0-1 Range.
      * @param context
      * @return
      */
@@ -137,7 +137,7 @@ public class DoctorUtil {
     }
 
     /**
-     * 0-1范围
+     * 0-1 Range.
      * @param context
      * @return
      */
@@ -172,7 +172,7 @@ public class DoctorUtil {
     }
 
     /**
-     * 获取扩容 change rate
+     * Retrieve scaling change rate.
      * @param context
      * @return
      */
@@ -193,7 +193,7 @@ public class DoctorUtil {
             return null;
         }
         Double highTarget = getCpuHighTarget(context);
-        // 根据cpu利用率计算change rate
+        // Calculate change rate based on CPU utilization.
         List<MetricResult.DataResult> cpuUsageList = context.getMetrics().get(TM_CPU_USAGE_RATE);
         if (cpuUsageList != null && cpuUsageList.size() != 0) {
             int step = monitorMetricUtil.getStep(context.getStart(), context.getEnd());
@@ -209,7 +209,7 @@ public class DoctorUtil {
                                         .limit(batchHighPointNum)
                                         .mapToDouble(MetricResult.KeyValue::getValue)
                                         .average();
-                                log.debug("{} cpu tm 前{}峰值平均值{} 原始数据:{}", rcJobDiagnosis.getJobName(),
+                                log.debug("{} CPU Task Manager Top {} peak average {} raw data: {}", rcJobDiagnosis.getJobName(),
                                         batchHighPointNum, average.toString(), x);
                                 if (average.isPresent()) {
                                     return average.getAsDouble();
@@ -226,19 +226,19 @@ public class DoctorUtil {
                 if (unitMaxRate > highTarget) {
                     return unitMaxRate / highTarget - 1;
                 } else {
-                    log.info(String.format("cpu利用率削峰归一化后 小于%.2f", highTarget));
+                    log.info(String.format("CPU utilization after peak shaving and normalization is less than %.2f.", highTarget));
                     return null;
                 }
             }
         } else {
-            log.error("{} cpu list metric 为空", context.getRcJobDiagnosis().getJobName());
+            log.error("{} cpu list metric is empty", context.getRcJobDiagnosis().getJobName());
         }
         return null;
     }
 
     /**
-     * x 取值 负无穷~0 时 返回 正无穷~1
-     * x 取值 0~正无穷 时 返回 1~0
+     * When the value of x ranges from negative infinity to 0, it returns positive infinity to 1.
+     * When the value of x ranges from 0 to positive infinity, it returns from 1 to 0.
      *
      * @param x
      * @return
@@ -248,8 +248,8 @@ public class DoctorUtil {
     }
 
     /**
-     * x 取值 负无穷~0 时 返回 1~0
-     * x 取值 0~正无穷 时 返回 0~负无穷
+     * When the value of x ranges from negative infinity to 0, it returns from 1 to 0.
+     * When the value of x ranges from 0 to positive infinity, it returns from 0 to negative infinity.
      *
      * @param x
      * @return

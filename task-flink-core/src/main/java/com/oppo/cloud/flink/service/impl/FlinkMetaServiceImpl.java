@@ -71,15 +71,15 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
      */
     private static final String YARN_APP_URL = "http://%s/ws/v1/cluster/apps/%s";
     /**
-     * flink api 获取配置
+     * Flink API configuration retrieval
      */
     private static final String FLINK_JOB_MANAGER_CONFIG = "%s/jobmanager/config";
     /**
-     * flink api 获取job
+     * Flink API job information retrieval
      */
     private static final String FLINK_JOBS = "%s/jobs";
     /**
-     * flink api 获取tm
+     * Flink API taskmanager information retrieval
      */
     private static final String FLINK_TMS = "%s/taskmanagers";
 
@@ -117,24 +117,24 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
                                                 Map<String, Object> or) {
         SearchSourceBuilder builder = new SearchSourceBuilder();
         BoolQueryBuilder boolQuery = new BoolQueryBuilder();
-        // 查询条件
+        // Query Conditions
         for (String key : termQuery.keySet()) {
             Object value = termQuery.get(key);
             if (value == null) {
-                // null值查询
+                // null value query
                 boolQuery.mustNot(QueryBuilders.existsQuery(key));
             } else if ("".equals(value)) {
-                // 不匹配任何有效字符串
+                // No valid string matches.
                 boolQuery.mustNot(QueryBuilders.wildcardQuery(key, "*"));
             } else if (value instanceof java.util.List) {
-                // 列表查询
+                // List Query
                 boolQuery.filter(QueryBuilders.termsQuery(key, (List<String>) value));
             } else {
-                // 单字符串查询
+                // Single String Query
                 boolQuery.filter(QueryBuilders.termsQuery(key, value));
             }
         }
-        // or条件查询[xx and (a=1 or c=2)]
+        // Or condition query[xx and (a=1 or c=2)]
         if (or != null) {
             BoolQueryBuilder orQuery = new BoolQueryBuilder();
             for (String key : or.keySet()) {
@@ -145,7 +145,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
             }
             boolQuery.must(orQuery);
         }
-        // 范围查询
+        // Range Query
         if (rangeConditions != null) {
             for (String key : rangeConditions.keySet()) {
                 RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(key);
@@ -213,7 +213,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
     @Override
     public void saveRealtimeMetaOnYarn(TaskApplication taskApplication) {
         if (!taskApplication.getTaskType().equalsIgnoreCase(TASK_TYPE_FLINK)) {
-            log.debug("不是flink作业");
+            log.debug("Not a Flink Job.");
             return;
         }
         YarnApp yarnApp = requestYarnApp(taskApplication.getApplicationId());
@@ -225,16 +225,16 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
             log.debug("not a flink app task:{} yarn app:{} ", taskApplication, yarnApp);
             return;
         }
-        // 补充taskId, projectId信息
+        // Provide taskId and projectId information
         Task task = getTask(taskApplication.getProjectName(), taskApplication.getFlowName(), taskApplication.getTaskName());
         if (task == null) {
             log.error("task is null :{}", taskApplication);
             return;
         }
-        // 保存实时task元数据
+        // Save Real-time Task Metadata.
         saveRealtimeTask(task);
 
-        // 保存实时 app 元数据
+        // Save Real-time App Metadata.
         FlinkTaskApp flinkTaskApp;
         FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
         flinkTaskAppExample.createCriteria()
@@ -246,9 +246,9 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
             flinkTaskApp = flinkTaskApps.get(0);
         } else {
             flinkTaskApp = flinkTaskApps.get(0);
-            log.error("realtimeTaskApps size 大于1 , appid:{}", taskApplication.getApplicationId());
+            log.error("realtimeTaskApps size > 1 , appid:{}", taskApplication.getApplicationId());
         }
-        // 保存实时task app
+        // Save Real-time Task App.
         saveRealtimeTaskApp(flinkTaskApp, yarnApp, task, taskApplication);
     }
 
@@ -364,7 +364,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
     }
 
     /**
-     * 通过 flink tracking url获取 jobId
+     * Get jobId through Flink Tracking URL.
      *
      * @param trackingUrl
      * @return
@@ -409,11 +409,12 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
             return null;
         }
     }
+
     @Override
     public void fillFlinkMetaWithFlinkConfigOnYarn(FlinkTaskApp flinkTaskApp, List<JobManagerConfigItem> configItems, String jobId) {
         try {
 
-            // 找资源参数
+            // Find resource parameters.
             for (JobManagerConfigItem jobManagerConfigItem : configItems) {
                 if (flinkYarnConfig.getParallel().equalsIgnoreCase(jobManagerConfigItem.getKey())) {
                     flinkTaskApp.setParallel(Integer.valueOf(jobManagerConfigItem.getValue()));
