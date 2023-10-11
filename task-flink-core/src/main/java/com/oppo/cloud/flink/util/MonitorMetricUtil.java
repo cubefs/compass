@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 监控工具类
+ * Monitoring Tool
  */
 @Getter
 @Slf4j
@@ -42,7 +42,7 @@ public class MonitorMetricUtil {
     private final HttpUtil httpUtil = new HttpUtil();
 
     /**
-     * 查询promql
+     * Query promql
      *
      * @param url
      * @param start
@@ -179,7 +179,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 对曲线消尖
+     * Flatten curves.
      *
      * @param result
      * @return
@@ -189,7 +189,7 @@ public class MonitorMetricUtil {
         return getFlatKeyValueStream(getKeyValueStream(result));
     }
 
-    // 对曲线消尖，不会减少点数
+    // Flatten curves without reducing the number of points.
     public Supplier<Stream<MetricResult.KeyValue>> getFlatKeyValueStream(Supplier<Stream<MetricResult.KeyValue>> stream) {
         if (stream == null) {
             return null;
@@ -219,7 +219,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 获取平滑后的最大值
+     * Get the maximum value after smoothing.
      *
      * @param result
      * @param smoothWindow
@@ -251,7 +251,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 获取平滑后的最小值
+     * Get the minimum value after smoothing.
      *
      * @param result
      * @param smoothWindow
@@ -284,7 +284,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 曲线平滑,窗口内的点取平均
+     * Smooth the curve and take the average of the points within the window.
      *
      * @param stream
      * @param smoothWindow
@@ -297,7 +297,7 @@ public class MonitorMetricUtil {
         }
         return () -> {
             if (smoothWindow < 2) {
-                throw new RuntimeException("平滑窗口至少是2");
+                throw new RuntimeException("The smoothing window size should be at least 2.");
             }
             List<MetricResult.KeyValue> collect = stream.get()
                     .collect(Collectors.toList());
@@ -320,7 +320,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 对窗口内的数值用fn函数计算聚合值
+     * Calculate the aggregate value using the fn function on the values within the window.
      *
      * @param stream
      * @param smoothWindow
@@ -334,7 +334,7 @@ public class MonitorMetricUtil {
         }
         return () -> {
             if (smoothWindow < 2) {
-                throw new RuntimeException("聚合窗口至少是2");
+                throw new RuntimeException("The aggregation window size should be at least 2.");
             }
             List<MetricResult.KeyValue> collect = stream.get()
                     .collect(Collectors.toList());
@@ -355,7 +355,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 获取键值对
+     * Retrieve key-value pairs.
      *
      * @param result
      * @return
@@ -378,7 +378,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 获取最大值
+     * Retrieve the maximum value.
      *
      * @param result
      * @return
@@ -433,7 +433,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 获取最近的值
+     * Retrieve the closest value.
      *
      * @param result
      * @return
@@ -462,7 +462,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 获取最小值
+     * Retrieve the minimum value.
      *
      * @param result
      * @return
@@ -496,7 +496,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 获取平均值
+     * Retrieve the average value.
      *
      * @param result
      * @return
@@ -523,7 +523,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 获取平均值
+     * Retrieve the average value.
      *
      * @param result
      * @return
@@ -566,36 +566,36 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 计算查询步长
+     * Calculate the query interval(step)
      *
-     * @param start 开始时间戳秒级别
-     * @param end   结束时间戳秒级别
-     * @return 步长 秒级别
+     * @param start Start timestamp(In seconds)
+     * @param end   End timestamp(In seconds)
+     * @return step (In seconds)
      */
     public int getStep(long start, long end) {
         long dis = end - start;
         int daySec = 24 * 60 * 60;
         int step;
         if (dis <= daySec / 4) {
-            // 6小时
+            // 6 hours.
             step = 60;
         } else if (dis <= daySec / 2) {
-            // 12小时
+            // 12 hours.
             step = 120;
         } else if (dis <= daySec) {
-            // 1天
+            // 1 day.
             step = 120;
         } else if (dis <= 2 * daySec) {
-            // 2天
+            // 2 days.
             step = 600;
         } else if (dis <= 3 * daySec) {
-            // 3天
+            // 3 days.
             step = 600;
         } else if (dis <= 5 * daySec) {
-            // 5天
+            // 5 days.
             step = 1200;
         } else if (dis <= 6 * daySec) {
-            // 6天
+            // 6 days.
             step = 3600;
         } else if (dis <= 7 * daySec) {
             step = 3600;
@@ -606,7 +606,7 @@ public class MonitorMetricUtil {
     }
 
     /**
-     * 获取锯齿下缘的平均值
+     * Retrieve the average value of the lower edge of the sawtooth.
      *
      * @param result
      * @return

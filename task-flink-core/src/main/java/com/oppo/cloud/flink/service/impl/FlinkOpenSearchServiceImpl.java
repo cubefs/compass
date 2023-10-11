@@ -21,7 +21,7 @@ public class FlinkOpenSearchServiceImpl implements FlinkOpenSearchService {
     private RestHighLevelClient restHighLevelClient;
 
     /**
-     * 插入或更新
+     * Upsert item
      */
     @Override
     public UpdateResponse insertOrUpdate(String index, String id, Object document) throws Exception {
