@@ -37,35 +37,35 @@ import java.util.Properties;
 import java.util.Random;
 
 /**
- * kafka配置
+ * kafka configuration
  */
 @Configuration
 @EnableKafka
 @Data
 public class KafkaConfig {
     /**
-     * 消费组
+     * Consumer group
      */
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
     /**
-     * 消费模式: latest, earliest
+     * Consumer mode: latest, earliest
      */
     @Value("${spring.kafka.consumer.auto-offset-reset}")
     private String autoOffsetReset;
     /**
-     * kafka broker集群地址
+     * kafka broker address
      */
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
     /**
-     * 两次消费最大间隔时间
+     * Maximum time between two consumptions
      */
     @Value("${spring.kafka.consumer.max-poll-interval-ms}")
     private String maxPollIntervalMs;
 
     /**
-     * 创建消费者
+     * Create consumer
      */
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
@@ -73,7 +73,7 @@ public class KafkaConfig {
     }
 
     /**
-     * 消费者配置
+     * Consumer configuration
      */
     public Map<String, Object> consumerConfig() {
         Map<String, Object> config = new HashMap<>();
@@ -90,7 +90,7 @@ public class KafkaConfig {
     }
 
     /**
-     * 配置listener
+     * Listener configuration
      */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String>
@@ -103,7 +103,7 @@ public class KafkaConfig {
     }
 
     /**
-     * 获取clientId: 表现为kafka memberId前缀
+     * Get clientId: kafka memberId prefix
      */
     @Bean(name = "consumerId")
     public String consumerClientId() {

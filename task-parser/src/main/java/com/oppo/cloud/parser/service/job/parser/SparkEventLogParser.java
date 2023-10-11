@@ -94,6 +94,8 @@ public class SparkEventLogParser extends OneClickSubject implements IParser {
             log.error("Exception:", e);
             updateParserProgress(ProgressState.FAILED, 0, 0);
             return null;
+        } finally {
+            readerObject.close();
         }
         return detect(replayEventLogs, readerObject.getLogPath());
     }

@@ -102,8 +102,8 @@ public class HDFSUtil {
         System.setProperty("java.security.krb5.conf", nameNodeConf.getKrb5Conf());
         conf.set("dfs.namenode.kerberos.principal.pattern", nameNodeConf.getPrincipalPattern());
         UserGroupInformation.setConfiguration(conf);
-        UserGroupInformation.loginUserFromKeytab(nameNodeConf.getLoginUser(), nameNodeConf.getKeytabPath());
-        UserGroupInformation ugi = UserGroupInformation.getLoginUser();
+        UserGroupInformation ugi = UserGroupInformation.loginUserFromKeytabAndReturnUGI(
+                nameNodeConf.getLoginUser(), nameNodeConf.getKeytabPath());
         return ugi.doAs((PrivilegedExceptionAction<FileSystem>) () -> FileSystem.get(conf));
     }
 

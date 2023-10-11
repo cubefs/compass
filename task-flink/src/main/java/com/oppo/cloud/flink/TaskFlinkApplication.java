@@ -22,9 +22,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-/**
- * 启动类
- */
 @Slf4j
 @SpringBootApplication
 @ComponentScan(basePackages = {

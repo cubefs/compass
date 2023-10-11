@@ -34,39 +34,39 @@ public class TaskDetectScheduler {
     DiagnosisService diagnosisService;
 
     /**
-     * TODO: 自定义时间诊断
+     * TODO: Custom schedule time
      */
     public void CustomDetect() {
     }
 
     /**
-     * 每日定时诊断
+     * Daily scheduled diagnosis
      */
     @Scheduled(cron = "1 */10 * * * ?")
     public void DetectDaily() {
-        log.info("开始执行定时诊断任务");
+        log.info("Start executing scheduled diagnostic tasks");
         LocalDateTime now = LocalDateTime.now(ZoneOffset.ofHours(8));
         LocalDateTime endDate = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
         long end = endDate.toEpochSecond(ZoneOffset.ofHours(8));
         LocalDateTime startDate = endDate.plusDays(-1);
         long start = startDate.toEpochSecond(ZoneOffset.ofHours(8));
         diagnosisService.diagnosisAllApp(start, end, DiagnosisFrom.EveryDay);
-        log.info("结束执行定时诊断任务");
+        log.info("End execution of scheduled diagnostic tasks");
     }
 
     /**
-     * 小时级别定时诊断
+     * Hourly level scheduled diagnosis
      */
-    //    @Scheduled(cron = "0 0/1 * * * ?") // debug for 1 minutes
+    // @Scheduled(cron = "0 0/1 * * * ?") // debug for 1 minutes
     @Scheduled(cron = "1 0 * * * ?")
     public void detectHourly() {
-        log.info("开始执行定时诊断任务");
+        log.info("Start executing scheduled diagnostic tasks");
         LocalDateTime now = LocalDateTime.now(ZoneOffset.ofHours(8));
         LocalDateTime endDate = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
         long end = endDate.toEpochSecond(ZoneOffset.ofHours(8));
         LocalDateTime startDate = endDate.plusDays(-1);
         long start = startDate.toEpochSecond(ZoneOffset.ofHours(8));
         diagnosisService.diagnosisAppHourly(start, end, DiagnosisFrom.JobUptime);
-        log.info("结束执行定时诊断任务");
+        log.info("End execution of scheduled diagnostic tasks");
     }
 }

@@ -17,12 +17,15 @@
 package com.oppo.cloud.parser.domain.reader;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 @Data
+@Slf4j
 public class ReaderObject {
 
     private String logPath;
@@ -32,4 +35,21 @@ public class ReaderObject {
     private FSDataInputStream fsDataInputStream;
 
     private FileSystem fs;
+
+    public void close() {
+        try {
+            if (fsDataInputStream != null) {
+                fsDataInputStream.close();
+            }
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+            if (fs != null) {
+                // TODO: should close fs ? the fs may be a share object if we use FileSystem.get internal cache mechanisam
+                fs.close();
+            }
+        } catch (IOException e) {
+            log.error("close file: {}, exception: ", logPath, e);
+        }
+    }
 }

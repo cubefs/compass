@@ -74,6 +74,8 @@ public class MapReduceContainerLogParser extends CommonTextParser implements IPa
                 } catch (Exception e) {
                     log.error("Exception:", e);
                     continue;
+                } finally {
+                    readerObject.close();
                 }
                 List<String> list = OpenSearchWriter.getInstance()
                         .saveParserActions(logType, readerObject.getLogPath(), this.param, results);
