@@ -20,22 +20,22 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * YARN、SPARK集群地址配置信息
+ * YARN and Spark Cluster Address Configuration Information
  */
 public interface IClusterConfigService {
 
     /**
-     * 获取spark history server列表
+     * Obtaining the Spark History Server List
      */
     List<String> getSparkHistoryServers();
 
     /**
-     * 获取yarn rm列表
+     * Obtaining the YARN Resource Manager List
      */
    Map<String,String> getYarnClusters();
 
     /**
-     * 更新集群信息
+     * Updating Cluster Information
      */
     void updateClusterConfig();
 }

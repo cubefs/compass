@@ -45,7 +45,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 /**
- * 同步yarn app元数据
+ * Synchronization of YARN Application Metadata
  */
 @Slf4j
 @Service("YarnMetaServiceImpl")
@@ -75,12 +75,12 @@ public class YarnMetaServiceImpl implements ITaskSyncerMetaService {
     @Resource
     private RestHighLevelClient client;
     /**
-     * 限定开始运行时间戳
+     * Specifying a Start Time Timestamp
      */
     private static final String YARN_APPS_URL = "http://%s/ws/v1/cluster/apps?startedTimeBegin=%d";
 
     /**
-     * 集群并发同步
+     * Cluster Concurrent Synchronization
      */
     @Override
     public void syncer() {
@@ -113,7 +113,7 @@ public class YarnMetaServiceImpl implements ITaskSyncerMetaService {
     }
 
     /**
-     * 拉取集群app元数据
+     * Pulling Cluster Application Metadata
      */
     public void pull(String ip, String clusterName) {
         log.info("start to pull yarn tasks:{}", ip);
@@ -151,7 +151,7 @@ public class YarnMetaServiceImpl implements ITaskSyncerMetaService {
     }
 
     /**
-     * yarn 任务获取
+     * Obtaining YARN Jobs
      */
     public List<YarnApp> yarnRequest(String ip) {
         long begin = System.currentTimeMillis() - startedTimeBegin * Constant.HOUR_MS;

@@ -17,12 +17,12 @@
 package com.oppo.cloud.meta.service;
 
 /**
- * 集群任务元数据同步
+ * Synchronization of Cluster Task Metadata
  */
 public interface ITaskSyncerMetaService {
 
     /**
-     * 数据同步
+     * Data Synchronization
      */
     void syncer();
 }

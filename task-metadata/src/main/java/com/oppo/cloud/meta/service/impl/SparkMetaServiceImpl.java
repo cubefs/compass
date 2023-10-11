@@ -50,7 +50,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 同步spark app元数据
+ * Synchronization of Spark Application Metadata
  */
 @Slf4j
 @Service("SparkMetaServiceImpl")
@@ -115,7 +115,7 @@ public class SparkMetaServiceImpl implements ITaskSyncerMetaService {
     }
 
     /**
-     * 任务数据同步
+     * Synchronization of Task Data
      */
     public void pull(String shs) {
         log.info("start to pull spark tasks:{}", shs);
@@ -174,7 +174,7 @@ public class SparkMetaServiceImpl implements ITaskSyncerMetaService {
     }
 
     /**
-     * spark 任务获取
+     * Obtaining Spark Jobs
      */
     public List<SparkApplication> sparkRequest(String shs) {
         String url = String.format(SPARK_APPS_URL, shs, limitCount, DateUtil.getDay(-1));
@@ -202,7 +202,7 @@ public class SparkMetaServiceImpl implements ITaskSyncerMetaService {
     }
 
     /**
-     * 获取SparkHistoryServer Event log directory: hdfs://ip:port/spark/
+     * Obtaining SparkHistoryServer Event log directory: hdfs://ip:port/spark/
      */
     public String getEventLogDirectory(String ip) throws Exception {
         String key = Constant.SPARK_EVENT_LOG_DIRECTORY + ip;
