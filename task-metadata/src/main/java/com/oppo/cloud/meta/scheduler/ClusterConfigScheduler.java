@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 /**
- * YARN、SPARK集群地址信息同步
+ * Synchronization of YARN and Spark Cluster Address Information
  */
 @Slf4j
 @Configuration

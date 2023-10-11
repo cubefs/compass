@@ -22,13 +22,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 匹配工具类
+ * Matching Utility
  */
 @Slf4j
 public class MatcherUtil {
 
     /**
-     * 获取单个group分组数据
+     * Obtaining Data for a single Grouping within the Group
      */
     public static String getGroupData(String content, Pattern pattern, String name) {
         Matcher matcher = pattern.matcher(content);

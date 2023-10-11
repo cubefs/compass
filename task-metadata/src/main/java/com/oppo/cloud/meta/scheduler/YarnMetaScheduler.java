@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 /**
- * YARN任务app列表数据同步
+ * Synchronization of YARN Job Application List Data
  */
 @Slf4j
 @Configuration

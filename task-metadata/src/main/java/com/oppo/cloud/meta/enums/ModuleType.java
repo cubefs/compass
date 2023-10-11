@@ -17,7 +17,7 @@
 package com.oppo.cloud.meta.enums;
 
 /**
- * 模块枚举
+ * Module Enumeration
  */
 public enum ModuleType {
     spark,

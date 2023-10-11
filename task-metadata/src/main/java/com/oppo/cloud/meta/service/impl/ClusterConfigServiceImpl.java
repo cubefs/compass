@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * YARN、SPARK集群地址配置信息
+ * YARN and Spark Cluster Address Configuration Information
  */
 @Slf4j
 @Service

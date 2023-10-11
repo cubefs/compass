@@ -17,7 +17,7 @@
 package com.oppo.cloud.meta.enums;
 
 /**
- * 集群角色枚举
+ * Cluster Role Enumeration
  */
 public enum ClusterRole {
     resourcemanager,
