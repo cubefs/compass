@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 字符串处理工具
+ * string processing tool
  */
 @Slf4j
 public class StringUtil {
 
     /**
-     * 替换模板参数
+     * replace template parameters
      */
     public static String replaceParams(String template, Map<String, Object> params) {
         for (String key : params.keySet()) {

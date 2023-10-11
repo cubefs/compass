@@ -23,12 +23,12 @@ import java.util.List;
 public interface DelayedTaskService {
 
     /**
-     * 添加延迟队列任务
+     * add delayed queue task
      */
     void pushDelayedQueue(DelayedTaskInfo delayedTaskInfo);
 
     /**
-     * 获取延迟队列重试任务
+     * "get delayed queue retry task
      */
     List<DelayedTaskInfo> getDelayedTasks();
 }

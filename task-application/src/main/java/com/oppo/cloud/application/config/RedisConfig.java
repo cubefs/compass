@@ -24,7 +24,7 @@ import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
 /**
- * redis配置
+ * Redis configuration
  */
 @Component
 public class RedisConfig extends RedisTemplateConfig {

@@ -23,9 +23,9 @@ public class EscapePathUtil {
      */
     public static String escape(String str) {
         if (str != null) {
-            return str.replaceAll("\\s+|:|\\.+|~", "_");
+//             return str.replaceAll("\\s+|:|\\.+|~", "_");
+            return str.replaceAll("\\s+|:|~", "_");
         }
         return null;
     }
-
 }

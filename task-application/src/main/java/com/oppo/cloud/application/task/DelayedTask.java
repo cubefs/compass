@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 
 /**
- * 处理日志延迟任务
+ * process log delay task
  */
 @Slf4j
 @Component
@@ -73,7 +73,7 @@ public class DelayedTask implements CommandLineRunner {
 
     @PostConstruct
     void init() {
-        // 加载因重启而中断的任务
+        // load tasks interrupted due to restart
         Map<Object, Object> processingMap = null;
         try {
             processingMap = redisService.hGetAll(processingKey);
@@ -118,7 +118,7 @@ public class DelayedTask implements CommandLineRunner {
         Map<String, String> rawData = delayedTaskInfo.getRawData();
         try {
             ParseRet parseRet = logParserService.handle(instance, rawData);
-            // 重试不成功
+            // retry unsuccessful
             if (parseRet.getRetCode() != RetCode.RET_OK) {
                 if (delayedTaskInfo.getTryTimes() > tryTimes) {
                     log.error("discard delay task:{}", delayedTaskInfo);
@@ -128,7 +128,7 @@ public class DelayedTask implements CommandLineRunner {
                 delayedTaskInfo.setTryTimes(delayedTaskInfo.getTryTimes() + 1);
                 delayedTaskService.pushDelayedQueue(delayedTaskInfo);
             } else {
-                // 成功删除缓存
+                // successfully delete the cache
                 redisService.hDel(processingKey, delayedTaskInfo.getKey());
             }
         } catch (Exception e) {

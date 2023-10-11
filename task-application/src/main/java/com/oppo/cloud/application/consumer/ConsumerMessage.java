@@ -39,26 +39,26 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * 消费task-instance任务实例
+ * Consume task-instance task instances.
  */
 @Slf4j
 @Component
 public class ConsumerMessage {
 
     /**
-     * 日志解析服务
+     * Log parsing service
      */
     @Autowired
     private LogParserService logParserService;
 
     /**
-     * 任务日志延迟处理
+     * Delayed processing of task logs
      */
     @Autowired
     private DelayedTaskService delayedTaskService;
 
     /**
-     * 日志消费
+     * Log consumption
      */
     @KafkaListener(topics = "${spring.kafka.topics}", containerFactory = "kafkaListenerContainerFactory")
     public void receive(@Payload String message, @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
@@ -72,7 +72,7 @@ public class ConsumerMessage {
                 JSON.parseObject(tableMessage.getRawData(), new TypeReference<Map<String, String>>() {});
         try {
             ParseRet parseRet = logParserService.handle(taskInstance, rawData);
-            // 加入延迟重试
+            // Adding delay for retry
             if (parseRet.getRetCode() == RetCode.RET_OP_NEED_RETRY) {
                 delayedTaskService
                         .pushDelayedQueue(new DelayedTaskInfo(UUID.randomUUID().toString(), 1, taskInstance, rawData));

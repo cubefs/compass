@@ -29,7 +29,7 @@ public class ThreadPoolConfig {
     public static final String DELAYED_QUEUE_EXECUTOR_POOL = "delayedQueueExecutorPool";
 
     /**
-     * 延迟任务线程池
+     * Delayed task thread pool
      */
     @Bean(name = DELAYED_QUEUE_EXECUTOR_POOL)
     public Executor delayQueueExecutorPool() {

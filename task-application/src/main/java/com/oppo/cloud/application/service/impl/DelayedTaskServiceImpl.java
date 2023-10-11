@@ -52,7 +52,7 @@ public class DelayedTaskServiceImpl implements DelayedTaskService {
     private RedisService redisService;
 
     /**
-     * 添加延迟队列任务
+     * add delayed queue task
      */
     @Override
     public void pushDelayedQueue(DelayedTaskInfo delayedTaskInfo) {
@@ -61,7 +61,7 @@ public class DelayedTaskServiceImpl implements DelayedTaskService {
     }
 
     /**
-     * 获取延迟队列重试任务
+     * get delayed queue retry task
      */
     @Override
     public List<DelayedTaskInfo> getDelayedTasks() {
