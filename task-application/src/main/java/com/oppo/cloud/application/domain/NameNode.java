@@ -21,25 +21,25 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * NameNode配置
+ * NameNode configuration
  */
 @Data
 public class NameNode implements Serializable {
 
     /**
-     * 域名服务器
+     * name services
      */
     private String nameservices;
     /**
-     * 节点地址
+     * namenode addresses
      */
     private String[] namenodesAddr;
     /**
-     * 节点名称
+     * names of namenode
      */
     private String[] namenodes;
     /**
-     * 用户名称
+     * user
      */
     private String user;
 }

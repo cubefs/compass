@@ -17,7 +17,7 @@
 package com.oppo.cloud.application.constant;
 
 /**
- * 日志处理结果返回码
+ * Return codes for log processing results
  */
 public enum RetCode {
     RET_OK, RET_DATA_NOT_EXIST, RET_LOG_NOT_EXIST, RET_EXCEPTION, RET_SKIP, RET_OP_NEED_RETRY

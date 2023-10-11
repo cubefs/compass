@@ -23,21 +23,21 @@ import lombok.Data;
 import java.util.Map;
 
 /**
- * 解析结果
+ * Parsing result
  */
 @Data
 public class ParseRet {
 
     /**
-     * 返回码
+     * Return code
      */
     private RetCode retCode;
     /**
-     * 处理日志的实例
+     * TaskInstance related with applicationId in log
      */
     private TaskInstance taskInstance;
     /**
-     * 原始列依赖数据
+     * raw column dependent data
      */
     private Map<String, Object> rawData;
 

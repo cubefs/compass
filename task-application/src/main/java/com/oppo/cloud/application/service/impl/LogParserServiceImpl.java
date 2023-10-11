@@ -46,14 +46,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 日志解析服务
+ * log parsing service
  */
 @Service
 @Slf4j
 public class LogParserServiceImpl implements LogParserService {
 
     /**
-     * hadoop节点资源
+     * Hadoop node resources
      */
     @Autowired
     private HadoopConfig hadoopConfig;
@@ -68,32 +68,32 @@ public class LogParserServiceImpl implements LogParserService {
     private MessageProducer messageProducer;
 
     /**
-     * 原生sql查询
+     * native SQL query
      */
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     /**
-     * 任务 application表管理
+     * task application table management
      */
     @Autowired
     private TaskApplicationMapper taskApplicationMapper;
     /**
-     * hadoop文件读取节点配置
+     * Hadoop file read node configuration
      */
     private Map<String, NameNodeConf> nameNodeMap;
     /**
-     * 任务成功状态
+     * task success status
      */
     private static final String TASK_STATE_SUCCESS = "success";
 
     /**
-     * 任务失败状态
+     * task failure status
      */
     private static final String TASK_STATE_FAIL = "fail";
 
     /**
-     * 任务其他状态
+     * other task status
      */
     private static final String TASK_STATE_OTHER = "other";
 
@@ -108,12 +108,12 @@ public class LogParserServiceImpl implements LogParserService {
     private static final String APPLICATION_ID = "applicationId";
 
     /**
-     * 日志地址存储
+     * log address storage
      */
     private final static String LOG_PATH_KEY = "__log_path";
 
     /**
-     * 获取hadoop集群配置信息
+     * Get Hadoop cluster configuration information
      */
     public synchronized Map<String, NameNodeConf> getNameNodeMap() {
         if (nameNodeMap == null) {
@@ -123,7 +123,7 @@ public class LogParserServiceImpl implements LogParserService {
     }
 
     /**
-     * 初始化配置信息
+     * initialize configuration information
      */
     public Map<String, NameNodeConf> initNameNode() {
         Map<String, NameNodeConf> m = new HashMap<>();
@@ -141,7 +141,7 @@ public class LogParserServiceImpl implements LogParserService {
      * filter task instance without matching rule.
      */
     public boolean skipTaskInstance(TaskInstance taskInstance) {
-        // 实例状态为空或者非成功、失败状态
+        // The instance status is either empty or not a success or failure status
         if (StringUtils.isBlank(taskInstance.getTaskState())) {
             return true;
         }
@@ -155,15 +155,15 @@ public class LogParserServiceImpl implements LogParserService {
     }
 
     /**
-     * 任务处理
+     * task processing
      */
     @Override
     public ParseRet handle(TaskInstance taskInstance, Map<String, String> rawData) throws Exception {
-        log.debug("收到task instance,{}", taskInstance);
+        log.debug("Receiving task instance,{}", taskInstance);
         if (skipTaskInstance(taskInstance)) {
             return new ParseRet(RetCode.RET_SKIP, null);
         }
-        // 获取完整的数据
+        // retrieve complete data
         Map<String, Object> data;
         String sql = null;
         Object[] args = null;
@@ -182,7 +182,7 @@ public class LogParserServiceImpl implements LogParserService {
                     + taskInstance);
             return new ParseRet(RetCode.RET_EXCEPTION, taskInstance);
         }
-        // 补充其他数据依赖
+        // supplement other data dependencies
         if (rawData != null) {
             for (Map.Entry<String, String> map : rawData.entrySet()) {
                 if (!data.containsKey(map.getKey())) {
@@ -190,7 +190,7 @@ public class LogParserServiceImpl implements LogParserService {
                 }
             }
         }
-        // 获取task instance全部信息
+        // get all information of task instance
         taskInstance = new JSONObject(data).toJavaObject(TaskInstance.class);
 
         int count = 0;
@@ -207,7 +207,7 @@ public class LogParserServiceImpl implements LogParserService {
                 if (retCode != RetCode.RET_OK) {
                     break;
                 }
-                count++; // 计数
+                count++; // counting
             } catch (Exception e) {
                 log.error("parseError:", e);
                 parseRet = new ParseRet(RetCode.RET_EXCEPTION, taskInstance);
@@ -216,16 +216,16 @@ public class LogParserServiceImpl implements LogParserService {
         }
 
         log.debug("parseRet==>" + parseRet);
-        // 非成功解析的返回
+        // return of parsing that is not successful
         if (parseRet.getRetCode() != RetCode.RET_OK && parseRet.getRetCode() != RetCode.RET_DATA_NOT_EXIST) {
             return parseRet;
         }
 
         String logPath = String.join(",", logPathList);
-        // 保存 applicationId
+        // save applicationId
         Object applicationId = data.get(APPLICATION_ID);
         if (applicationId instanceof List) {
-            // 去重 applicationId
+            // remove duplicate applicationId
             Set<String> setId = new HashSet<>();
             for (Object appId : (List) applicationId) {
                 if (setId.add((String) appId)) {
@@ -243,10 +243,10 @@ public class LogParserServiceImpl implements LogParserService {
     }
 
     /**
-     * 添加任务applicationId
+     * add task application ID
      */
     public void addTaskApplication(String applicationId, TaskInstance taskInstance, String logPath) {
-        // 数据写回kafka订阅
+        // write data back to Kafka subscription
         log.debug("application save: applicationId=" + applicationId + " task_instance=" + taskInstance + ",lopPath="
                 + logPath);
 
@@ -280,26 +280,26 @@ public class LogParserServiceImpl implements LogParserService {
     }
 
     /**
-     * 日志解析类
+     * log parsing
      */
     class LogParser {
 
         /**
-         * 中间数据存储
+         * intermediate data storage
          */
         private Map<String, Object> data;
         /**
-         * 日志解析规则
+         * log parsing rules
          */
         private Rule rule;
 
         /**
-         * 解析次序
+         * parsing sequence
          */
         private final int index;
 
         /**
-         * 读取hadoop文件延迟时间
+         * delay time for reading Hadoop files
          */
         private final int[] SLEEP_TIME = new int[]{20, 40, 60, 80, 100};
 
@@ -322,7 +322,7 @@ public class LogParserServiceImpl implements LogParserService {
         }
 
         /**
-         * 日志提取
+         * log extraction
          */
         public RetCode extract() throws Exception {
             if (!StringUtils.isBlank(rule.getLogPathDep().getQuery())) {
@@ -369,7 +369,7 @@ public class LogParserServiceImpl implements LogParserService {
                 return RetCode.RET_OP_NEED_RETRY;
             }
 
-            // 记录日志路径
+            // record log path
             logPath = String.join(",", filePaths);
             data.put(LOG_PATH_KEY, logPath);
 
@@ -383,15 +383,15 @@ public class LogParserServiceImpl implements LogParserService {
                 if (lines.length > 0) {
                     countFileIfHasContent += 1;
                 }
-                // 提取关键字
+                // extract keywords
                 for (String line : lines) {
                     Matcher matcher = pattern.matcher(line);
                     if (matcher.matches()) {
                         String matchVal = matcher.group(rule.getExtractLog().getName());
 
-                        if (this.data.get(rule.getExtractLog().getName()) != null) { // 值已经存在， 原来值变为列表类型
+                        if (this.data.get(rule.getExtractLog().getName()) != null) { // The value already exists, and the original value becomes a list type.
                             Object val = this.data.get(rule.getExtractLog().getName());
-                            // 如果是applicationId，可能有多个
+                            // If it is application ID, there may be multiple
                             if (val instanceof List) {
                                 ((List) val).add(matchVal);
                             } else {
@@ -413,7 +413,7 @@ public class LogParserServiceImpl implements LogParserService {
                 return RetCode.RET_OK;
             }
 
-            // 可能没有日志
+            // There may not be any logs
             if (taskType.equals(TASK_TYPE_FLINK)) {
                 log.info("filePaths Count=" + filePaths.size() + ", hasContentCount=" + countFileIfHasContent);
                 return RetCode.RET_OP_NEED_RETRY;
@@ -423,7 +423,7 @@ public class LogParserServiceImpl implements LogParserService {
         }
 
         /**
-         * 获取日志路径
+         * retrieve log path
          */
         public String getLogPath() {
             List<String> paths = new ArrayList<>();
@@ -458,7 +458,7 @@ public class LogParserServiceImpl implements LogParserService {
         }
 
         /**
-         * 获取数据
+         * retrieve data
          */
         public Map<String, Object> getData() {
             return this.data;

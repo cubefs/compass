@@ -19,13 +19,13 @@ package com.oppo.cloud.application.domain;
 import lombok.Data;
 
 /**
- * 日志路径依赖数据库字段查询
+ * log path dependent on database field query
  */
 @Data
 public class LogPathDep {
 
     /**
-     * 查询数据库sql
+     * SQL query database
      */
     private String query;
 }

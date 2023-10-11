@@ -33,16 +33,16 @@ custom:
     processing: "{lua}:task-processing"
     delayedSeconds: 5
     tryTimes: 20
-  # 从上到下串行执行解析到任务的applicationId
+  # parse through to the task's application ID serially from top to bottom
   rules:
-    - logPathDep: # 日志依赖查询
+    - logPathDep: # log dependency query
         query: "select CASE WHEN end_time IS NOT NULL THEN DATE_ADD(end_time, INTERVAL 1 second) ELSE start_time END as end_time,log_path from t_ds_task_instance where id=${id}"     # 查询, id 是 task-instance表的id
-      logPathJoins: # 组成日志路径
+      logPathJoins: # compose log path
         # end_time: 2023-02-18 01:43:11
         # log_path: ../logs/6354680786144_1/3/4.log
-        - { "column": "", "data": "/flume/dolphinscheduler" } # 配置存储调度日志的hdfs根目录
+        - { "column": "", "data": "/flume/dolphinscheduler" } # configure the HDFS root directory for storing scheduled logs
         - { "column": "end_time", "regex": "^.*(?<date>\\d{4}-\\d{2}-\\d{2}).+$", "name": "date" }
         - { "column": "log_path", "regex": "^.*logs/(?<logpath>.*)$", "name": "logpath" }
-      extractLog: # 根据组装的日志路径解析日志
-        regex: ".*(?<applicationId>application_[0-9]+_[0-9]+).*$"     # 匹配规则
-        name: "applicationId"      # 匹配文本名，最后必须有applicationId
+      extractLog: # parse logs based on the assembled log path
+        regex: ".*(?<applicationId>application_[0-9]+_[0-9]+).*$"     # matching rules
+        name: "applicationId"      # match a text name that must end with the application ID

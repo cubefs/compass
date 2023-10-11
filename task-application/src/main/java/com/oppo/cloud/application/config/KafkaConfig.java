@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * kafka配置
+ * Kafka configuration
  */
 @Configuration
 @EnableKafka
@@ -44,38 +44,38 @@ import java.util.stream.Stream;
 public class KafkaConfig {
 
     /**
-     * 消费主题
+     * Consume topic
      */
     @Value("${spring.kafka.topics}")
     private String topics;
     /**
-     * 消费主题
+     * Topic to save application metadata
      */
     @Value("${spring.kafka.taskApplicationTopic}")
     private String taskApplicationTopic;
     /**
-     * 消费组
+     * Consume group
      */
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
     /**
-     * 消费模式: lastest, earliest
+     * Consume mode: lastest, earliest
      */
     @Value("${spring.kafka.consumer.auto-offset-reset}")
     private String autoOffsetReset;
     /**
-     * kafka broker集群地址
+     * kafka broker cluster address
      */
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
     /**
-     * 两次消费最大间隔时间
+     * Maximum time interval between two consecutive consume
      */
     @Value("${spring.kafka.consumer.max-poll-interval-ms}")
     private String maxPollIntervalMs;
 
     /**
-     * 创建消费者
+     * Create consumer factory
      */
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
@@ -83,25 +83,25 @@ public class KafkaConfig {
     }
 
     /**
-     * 消费者配置
+     * Configure consumer
      */
     public Map<String, Object> consumerConfig() {
         return Stream.of(
-                new AbstractMap.SimpleEntry<>(ConsumerConfig.CLIENT_ID_CONFIG, consumerClientId()),
-                new AbstractMap.SimpleEntry<>(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers),
-                new AbstractMap.SimpleEntry<>(ConsumerConfig.GROUP_ID_CONFIG, groupId),
-                new AbstractMap.SimpleEntry<>(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset),
-                new AbstractMap.SimpleEntry<>(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false"),
-                new AbstractMap.SimpleEntry<>(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, maxPollIntervalMs),
-                new AbstractMap.SimpleEntry<>(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG,
-                        RoundRobinAssignor.class.getName()),
-                new AbstractMap.SimpleEntry<>(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class),
-                new AbstractMap.SimpleEntry<>(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class))
+                        new AbstractMap.SimpleEntry<>(ConsumerConfig.CLIENT_ID_CONFIG, consumerClientId()),
+                        new AbstractMap.SimpleEntry<>(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers),
+                        new AbstractMap.SimpleEntry<>(ConsumerConfig.GROUP_ID_CONFIG, groupId),
+                        new AbstractMap.SimpleEntry<>(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset),
+                        new AbstractMap.SimpleEntry<>(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false"),
+                        new AbstractMap.SimpleEntry<>(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, maxPollIntervalMs),
+                        new AbstractMap.SimpleEntry<>(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG,
+                                RoundRobinAssignor.class.getName()),
+                        new AbstractMap.SimpleEntry<>(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class),
+                        new AbstractMap.SimpleEntry<>(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     /**
-     * 配置listener
+     * Configure consume listener
      */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(ConsumerFactory<String, String> consumerFactory) {
@@ -115,7 +115,7 @@ public class KafkaConfig {
     }
 
     /**
-     * 获取clientId: 表现为kafka memberId前缀
+     * Get clientId: Manifested as Kafka memberId prefix
      */
     @Bean(name = "consumerId")
     public String consumerClientId() {
@@ -123,7 +123,7 @@ public class KafkaConfig {
     }
 
     /**
-     * 获取主题
+     * Get consume topics
      */
     @Bean(name = "topics")
     public String getTopics() {
@@ -131,7 +131,7 @@ public class KafkaConfig {
     }
 
     /**
-     * 获取brokers
+     * Get brokers
      */
     @Bean(name = "bootstrapServers")
     public String getBootstrapServers() {
@@ -139,7 +139,7 @@ public class KafkaConfig {
     }
 
     /**
-     * 获取groupId
+     * Get groupId
      */
     @Bean(name = "groupId")
     public String getGroupId() {
@@ -147,7 +147,7 @@ public class KafkaConfig {
     }
 
     /**
-     * 使用Kafka Admin Client API操作
+     * Using Kafka Admin Client API for operations
      */
     @Bean(name = "kafkaAdminClient")
     public AdminClient kafkaAdminClient() {
