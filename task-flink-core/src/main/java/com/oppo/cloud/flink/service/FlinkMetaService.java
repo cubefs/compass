@@ -25,7 +25,7 @@ import java.util.List;
 
 public interface FlinkMetaService {
     /**
-     * 存储实时作业元数据
+     * Store real-time job metadata.
      */
     void saveRealtimeMetaOnYarn(TaskApplication taskApplication);
 
