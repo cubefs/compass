@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * 生产者消费消息
+ * producer consumer message
  */
 @Component
 public class MessageProducer {
@@ -35,7 +35,7 @@ public class MessageProducer {
     private KafkaTemplate kafkaTemplate;
 
     /**
-     * 同步发送消息
+     * synchronous message sending
      */
     public void sendMessageSync(String topic,
                                 String message) throws ExecutionException, InterruptedException, TimeoutException {
@@ -43,7 +43,7 @@ public class MessageProducer {
     }
 
     /**
-     * 异步发送消息
+     * asynchronous message sending
      */
     public void sendMessageAsync(String topic, String message) {
         kafkaTemplate.send(topic, message).addCallback(new ListenableFutureCallback() {

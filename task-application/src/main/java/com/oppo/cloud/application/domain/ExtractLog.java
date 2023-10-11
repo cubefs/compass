@@ -19,17 +19,17 @@ package com.oppo.cloud.application.domain;
 import lombok.Data;
 
 /**
- * 关键字提取
+ * Keyword extraction
  */
 @Data
 public class ExtractLog {
 
     /**
-     * 匹配正则
+     * match regular expression
      */
     private String regex;
     /**
-     * 内容名称
+     * content name
      */
     private String name;
 }

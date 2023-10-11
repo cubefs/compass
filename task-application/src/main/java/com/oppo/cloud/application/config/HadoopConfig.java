@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * hadoop hdfs NameNode配置
+ * Hadoop Namenode cluster information
  */
 @Configuration
 @ConfigurationProperties(prefix = "hadoop")
@@ -37,7 +37,7 @@ import java.util.Map;
 @EnableConfigurationProperties(HadoopConfig.class)
 public class HadoopConfig {
     /**
-     * hadoop namenode集群信息
+     * Hadoop Namenode cluster information
      */
     private List<NameNodeConf> namenodes;
 }

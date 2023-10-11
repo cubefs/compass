@@ -29,20 +29,20 @@ import java.util.Map;
 public class DelayedTaskInfo {
 
     /**
-     * 缓存key
+     * Cache key
      */
     private String key;
     /**
-     * 重试次数
+     * Number of retries
      */
     private Integer tryTimes;
     /**
-     * 任务实例
+     * Task instance
      */
     private TaskInstance taskInstance;
 
     /**
-     * 任务执行的原始数据
+     * Raw data for task execution
      */
     Map<String, String> rawData;
 }

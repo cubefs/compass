@@ -29,7 +29,7 @@ import java.util.List;
 public class CustomConfig {
 
     /**
-     * 日志解析规则
+     * Log parsing rules
      */
     private List<Rule> rules;
 }

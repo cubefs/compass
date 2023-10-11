@@ -33,12 +33,12 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Hdfs工具类
+ * HDFS utility
  */
 public class HDFSUtil {
 
     /**
-     * 获取Namnode, 根据配置matchPathKeys是否被包含在路径关键字中
+     * Get NameNode, based on whether the configuration matchPathKeys is included in the path keywords or not
      */
     public static NameNodeConf getNameNode(Map<String, NameNodeConf> nameNodeMap, String filePath) {
         for (String nameService : nameNodeMap.keySet()) {
@@ -53,7 +53,7 @@ public class HDFSUtil {
     }
 
     /**
-     * 获取FileSystem
+     * get FileSystem
      */
     private static FileSystem getFileSystem(NameNodeConf nameNodeConf) throws Exception {
         Configuration conf = new Configuration(false);
@@ -112,7 +112,7 @@ public class HDFSUtil {
     }
 
     /**
-     * 读取文件，返回日志内容
+     * read file and return log content
      */
     public static String[] readLines(NameNodeConf nameNodeConf, String filePath) throws Exception {
         FSDataInputStream fsDataInputStream = null;
@@ -141,7 +141,7 @@ public class HDFSUtil {
     }
 
     /**
-     * 通配符获取文件列表, 带*通配
+     * get file list with wildcard using *
      */
     public static List<String> filesPattern(NameNodeConf nameNodeConf, String filePath) throws Exception {
         filePath = checkLogPath(nameNodeConf, filePath);

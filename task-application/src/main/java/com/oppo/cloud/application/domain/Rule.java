@@ -21,21 +21,21 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 文本解析规则
+ * text parsing rules
  */
 @Data
 public class Rule {
 
     /**
-     * 依赖查询路径
+     * dependent query path
      */
     private LogPathDep logPathDep;
     /**
-     * 日志路径字段组成
+     * log path field composition
      */
     private List<LogPathJoin> logPathJoins;
     /**
-     * 提取规则
+     * extraction rule
      */
     private ExtractLog extractLog;
 }

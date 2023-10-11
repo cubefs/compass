@@ -19,25 +19,25 @@ package com.oppo.cloud.application.domain;
 import lombok.Data;
 
 /**
- * 日志路径组成
+ * log path composition
  */
 @Data
 public class LogPathJoin {
 
     /**
-     * 依赖的数据列
+     * dependent data columns
      */
     private String column;
     /**
-     * 解析日志列正则
+     * parse log column with regular expression
      */
     private String regex;
     /**
-     * 匹配日志名称
+     * match log name
      */
     private String name;
     /**
-     * 静态数据，不需要正则匹配
+     * static data, no need for regular expression matching
      */
     private String data;
 }

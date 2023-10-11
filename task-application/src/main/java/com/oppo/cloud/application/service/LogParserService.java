@@ -22,12 +22,12 @@ import com.oppo.cloud.model.TaskInstance;
 import java.util.Map;
 
 /**
- * 日志解析服务
+ * log parsing service
  */
 public interface LogParserService {
 
     /**
-     * 具体处理函数
+     * specific processing function
      */
     ParseRet handle(TaskInstance taskInstance, Map<String, String> rawData) throws Exception;
 
