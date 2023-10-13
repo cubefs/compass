@@ -17,7 +17,7 @@
 
 # Example of version 2.0.6, you need to be consistent with the version you actually use.
 ------------------------------------------------
----------------- 流(dag)定义表 ----------------------
+---------------- flow (dag) table ----------------------
 ------------------------------------------------
 CREATE TABLE `t_ds_process_definition` (
    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'self-increasing id',
@@ -84,7 +84,7 @@ CREATE TABLE `t_ds_process_instance` (
 ) ENGINE=InnoDB AUTO_INCREMENT=653 DEFAULT CHARSET=utf8
 
 ------------------------------------------------
----------------- 任务上下游关系 -------------------
+---------------- task up down stream table -------------------
 ------------------------------------------------
 CREATE TABLE `t_ds_process_task_relation` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'self-increasing id',
@@ -104,7 +104,7 @@ CREATE TABLE `t_ds_process_task_relation` (
 ) ENGINE=InnoDB AUTO_INCREMENT=238 DEFAULT CHARSET=utf8
 
 ------------------------------------------------
----------------- 项目 -------------------
+---------------- project -------------------
 ------------------------------------------------
 CREATE TABLE `t_ds_project` (
     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
@@ -120,7 +120,7 @@ CREATE TABLE `t_ds_project` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8
 
 ------------------------------------------------
----------------- 任务定义表 -------------------
+---------------- task definition ---------------
 ------------------------------------------------
 CREATE TABLE `t_ds_task_definition` (
     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'self-increasing id',
@@ -149,7 +149,7 @@ CREATE TABLE `t_ds_task_definition` (
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8
 
 ------------------------------------------------
----------------- 任务执行实例表 -------------------
+---------------- task instance table -----------
 ------------------------------------------------
 CREATE TABLE `t_ds_task_instance` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
@@ -188,7 +188,7 @@ CREATE TABLE `t_ds_task_instance` (
 ) ENGINE=InnoDB AUTO_INCREMENT=667 DEFAULT CHARSET=utf8
 
 ------------------------------------------------
----------------- 用户表 -------------------
+---------------- user table -------------------
 ------------------------------------------------
 CREATE TABLE `t_ds_user` (
      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'user id',
