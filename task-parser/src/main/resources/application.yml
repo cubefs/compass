@@ -45,13 +45,13 @@ custom:
     processingHash: "{lua}:parser:processing"
     scheduled:
       cron: "0/2 * * * * ?"
-      limitTime: 2 # 单位小时
-      limitCount: 2 # 次数
+      limitTime: 2 # Unit: hour
+      limitCount: 2 # number of count
   jvmType:
     - Java HotSpot
     - OpenJDK
-  # spark event log检测参数
-  # disable 默认false;true禁用该检测项
+  # Spark event log check parameters
+  # disable default: false, set it true to disable this detection item.
   detector:
     # spark
     sparkEnvironmentConfig:

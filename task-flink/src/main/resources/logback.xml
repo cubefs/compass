@@ -3,23 +3,18 @@
 
     <contextName>logback</contextName>
 
-    <!--共有8个级别，按照从低到高为：ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF。-->
-    <!-- 格式化输出：%date表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度 %msg：日志消息，%n是换行符-->
     <property name="LOG_PATTERN_COLOR"
               value="%date %highlight(%-5level) ${PID:- } [%thread] [%X{TRACE_ID}] : /* [%logger{50}:%line] %highlight(%msg*) */%n"/>
     <property name="LOG_PATTERN"
               value="%date %-5level ${PID:- } [%thread] [%X{TRACE_ID}] : /* [%logger{50}:%line] %msg* */%n"/>
-    <!-- 定义日志存储的路径，不要配置相对路径 -->
+
     <property name="FILE_PATH" value="logs/task-flink.info.%d{yyyy-MM-dd}.%i.log"/>
 
-    <!-- 控制台输出日志 -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <!-- 日志级别过滤INFO以下 -->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>info</level>
         </filter>
         <encoder>
-            <!-- 按照上面配置的LOG_PATTERN来打印日志 -->
             <pattern>${LOG_PATTERN_COLOR}</pattern>
         </encoder>
     </appender>
@@ -34,11 +29,9 @@
             <maxHistory>7</maxHistory>
 
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- 日志文件的最大大小 -->
                 <maxFileSize>500MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
 
-            <!-- 超出删除老文件 -->
             <totalSizeCap>15GB</totalSizeCap>
         </rollingPolicy>
 
@@ -63,11 +56,10 @@
             <maxHistory>7</maxHistory>
 
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- 日志文件的最大大小 -->
+
                 <maxFileSize>500MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
 
-            <!-- 超出删除老文件 -->
             <totalSizeCap>15GB</totalSizeCap>
         </rollingPolicy>
 
@@ -92,11 +84,9 @@
             <maxHistory>3</maxHistory>
 
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- 日志文件的最大大小 -->
                 <maxFileSize>500MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
 
-            <!-- 超出删除老文件 -->
             <totalSizeCap>15GB</totalSizeCap>
         </rollingPolicy>
 
@@ -121,11 +111,9 @@
             <maxHistory>3</maxHistory>
 
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- 日志文件的最大大小 -->
                 <maxFileSize>500MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
 
-            <!-- 超出删除老文件 -->
             <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
 
@@ -144,7 +132,6 @@
 
     <logger name="net.sh.rgface.serive" level="INFO"/>
 
-    <!-- 日志输出级别 -->
     <root level="info">
         <appender-ref ref="console"/>
         <appender-ref ref="warn"/>
