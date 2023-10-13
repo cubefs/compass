@@ -92,7 +92,7 @@ const addLineChart = (chartItem, childChart) => {
     var relVal = params[0].name;
     for (var i = 0, l = params.length; i < l; i++) {
       console.log('tooltip数据值', params[i])
-      //遍历出来的值一般是字符串，需要转换成数字，再进项tiFixed四舍五入
+      // The value iterated out is generally a string, which needs to be converted to a number and then rounded by tiFixed.
       console.log(params[i].value[1])
       relVal += params[i].axisValueLabel + '<br/>' + params[i].marker + params[i].seriesName + ' : ' + (Number(params[i].value[1])).toFixed(2) + chartItem.YAxisUnit + '<br/>'
     }

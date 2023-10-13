@@ -58,7 +58,7 @@ const request = function (type: Method) {
     const currentIsLock
       = lock ?? ['put', 'post', 'patch', 'delete'].includes(type)
     Object.assign(config, ext)
-    // 当设置_mock时当条请求使用mock数据
+    // When _mock is set, the current request uses mock data
     config.url = url
     config.method = type
     config.headers = config.headers || {}
@@ -94,7 +94,7 @@ const request = function (type: Method) {
       const res = await axios(config)
       if ([500].includes(+res.data.code)) {
         // ElMessage.error(res.data.msg)
-        // throw new Error('请求失败')
+        // throw new Error('Request failed')
         if(res.data && res.data.msg){
           throw new Error(res.data.msg)
         }else{

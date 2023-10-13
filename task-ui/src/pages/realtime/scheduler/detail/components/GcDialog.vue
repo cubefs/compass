@@ -13,7 +13,7 @@ const option = {
   tooltip: {
     trigger: 'axis',
     axisPointer: {
-      type: 'cross', // 默认为直线，可选为：'line' | 'shadow'
+      type: 'cross', // Default line, optional as：'line' | 'shadow'
       label: {
         backgroundColor: '#6a7985',
       },

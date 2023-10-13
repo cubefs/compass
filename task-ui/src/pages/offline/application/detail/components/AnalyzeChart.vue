@@ -80,7 +80,7 @@ const update = () => {
         now.yvalues.forEach(item => item.type === bar.key ? acc.push(item.value) : acc.push('-'))
       }
       else if (now.yvalues.length > 1) {
-        // 堆叠情况
+        // Stacking situation
         now.yvalues.forEach(item => item.type === bar.key && acc.push(item.value))
       }
       return acc
