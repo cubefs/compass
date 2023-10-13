@@ -68,7 +68,7 @@ custom:
         start: true
 
   detectionRule:
-    # 运行耗时长配置，单位小时
+    # Configuration for long running time, in hours.
     durationWarning: 2
-    # 长期失败配置，单位天
+    # Configuration for long-term failure, in days.
     alwaysFailedWarning: 10
