@@ -93,7 +93,7 @@ const getTableData = async (params: any) => {
   tableData.data = res.jobInfos
   tableData.count = res.count
 }
-// 获取被选择的标签
+// Get the selected label
 const getSelect = () => {
   return categories.data.reduce((acc, now) => {
     if (now.selected)

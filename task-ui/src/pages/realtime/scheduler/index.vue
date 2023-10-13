@@ -102,7 +102,7 @@ const getTableData = async (params: any) => {
   tableData.count = res.total
   console.log(res)
 }
-// 获取被选择的标签
+// Get the selected label
 const getSelect = () => {
   return diagnosisRule.data.reduce((acc, now) => {
     if (now.selected)

@@ -43,7 +43,7 @@ const getTableData = async (params: any) => {
   tableData.data = res.taskApps
   tableData.count = res.count
 }
-// 获取被选择的标签
+// Get the selected label
 const getSelect = () => {
   return categories.data.reduce((acc:any, now:any) => {
     if (now.selected)
