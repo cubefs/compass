@@ -63,7 +63,6 @@
         <log4j.version>2.17.2</log4j.version>
         <spring-kafka.version>2.9.0</spring-kafka.version>
         <mockito.version>4.3.1</mockito.version>
-        <gcviewer.version>1.36</gcviewer.version>
         <swagger.version>3.0.0</swagger.version>
         <spotless.version>2.27.2</spotless.version>
         <opensearch.version>1.3.12</opensearch.version>
@@ -318,12 +317,6 @@
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
                 <version>${kafka-clients.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.chewiebug</groupId>
-                <artifactId>gcviewer</artifactId>
-                <version>${gcviewer.version}</version>
             </dependency>
 
             <dependency>

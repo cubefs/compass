@@ -69,4 +69,17 @@ public class UnitUtil {
         return mb * 1024 * 1024;
     }
 
+    public static double toKBByUnit(String doubleSize, String unit) {
+        switch (unit) {
+            case "m":
+            case "M":
+                return Double.parseDouble(doubleSize) * 1024;
+            case "g":
+            case "G":
+                return Double.parseDouble(doubleSize) * 1024 * 1024;
+            default:
+                return Double.parseDouble(doubleSize);
+        }
+    }
+
 }

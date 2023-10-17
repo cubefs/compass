@@ -144,7 +144,7 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
 
     private SparkExecutorLogParserResult parseRootAction(String logType, ReaderObject readerObject) throws Exception {
         List<ParserAction> actions = DiagnosisConfig.getInstance().getActions(logType);
-        Map<Integer, InputStream> gcLogMap = new HashMap<>();
+        Map<Integer, byte[]> gcLogMap = new HashMap<>();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         boolean isGCLog = false;
         boolean isStderr = false;
@@ -168,7 +168,7 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
             if (line.contains("stderr")) {
                 isGCLog = false;
                 if (LogType.SPARK_DRIVER.getName().equals(logType) && byteArrayOutputStream.size() > 0) {
-                    gcLogMap.put(0, new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+                    gcLogMap.put(0, byteArrayOutputStream.toByteArray());
                 }
                 isStderr = true;
             }
@@ -192,7 +192,7 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
                 if (byteArrayOutputStream.size() > 0) {
                     String gcLog = byteArrayOutputStream.toString();
                     log.debug("gcLog:{}\n{}", readerObject.getLogPath(), gcLog);
-                    gcLogMap.put(Integer.valueOf(id), new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+                    gcLogMap.put(Integer.valueOf(id), byteArrayOutputStream.toByteArray());
                     byteArrayOutputStream = new ByteArrayOutputStream();
                 }
             }
