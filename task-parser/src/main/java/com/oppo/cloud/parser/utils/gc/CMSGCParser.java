@@ -40,18 +40,18 @@ public class CMSGCParser implements GCLogParser {
     /**
      * 10208K(1048576K)] 596900K(1992320K)
      */
-    public static String BASE_SIZE_REGEX = "(?<baseUsed>[0-9]*)(?<baseUsedUnit>[KMG])\\((?<baseTotal>[0-9]*)(?<baseTotalUnit>[KMG])\\)\\] "
+    public static String MEMORY_SIZE_REGEX = "(?<oldUsed>[0-9]*)(?<oldUsedUnit>[KMG])\\((?<oldTotal>[0-9]*)(?<oldTotalUnit>[KMG])\\)\\] "
             + "(?<heapUsed>[0-9]*)(?<heapUsedUnit>[KMG])\\((?<heapTotal>[0-9]*)(?<heapTotalUnit>[KMG])\\)";
 
     /**
      * 897412K->70278K(943744K), 0.0936951 secs] 904070K->80486K(1992321K)
      */
-    public static String BASE_SIZE_TIME_REGEX = "(?<basePre>[0-9]*)(?<basePreUnit>[KMG])->(?<basePost>[0-9]*)(?<basePostUnit>[KMG])\\((?<baseTotal>[0-9]*)(?<baseTotalUnit>[KMG])\\), "
+    public static String MEMORY_SIZE_TIME_REGEX = "(?<before>[0-9]*)(?<beforeUnit>[KMG])->(?<after>[0-9]*)(?<afterUnit>[KMG])\\((?<total>[0-9]*)(?<totalUnit>[KMG])\\), "
             + "(?<time>[0-9]*\\.[0-9]*) secs\\] "
-            + "(?<heapPre>[0-9]*)(?<heapPreUnit>[KMG])->(?<heapPost>[0-9]*)(?<heapPostUnit>[KMG])\\((?<heapTotal>[0-9]*)(?<heapTotalUnit>[KMG])\\)";
+            + "(?<heapBefore>[0-9]*)(?<heapBeforeUnit>[KMG])->(?<heapAfter>[0-9]*)(?<heapAfterUnit>[KMG])\\((?<heapTotal>[0-9]*)(?<heapTotalUnit>[KMG])\\)";
 
-    public static Pattern BASE_SIZE_PATTERN = Pattern.compile(BASE_SIZE_REGEX);
-    public static Pattern BASE_SIZE_TIME_PATTERN = Pattern.compile(BASE_SIZE_TIME_REGEX);
+    public static Pattern MEMORY_SIZE_PATTERN = Pattern.compile(MEMORY_SIZE_REGEX);
+    public static Pattern MEMORY_SIZE_TIME_PATTERN = Pattern.compile(MEMORY_SIZE_TIME_REGEX);
 
 
     @Override
@@ -71,7 +71,7 @@ public class CMSGCParser implements GCLogParser {
                 continue;
             }
             if (line.contains(CMS_INITIAL_MARK_MATCHER) || line.contains(CMS_REMARK_MATCHER)) {
-                Matcher matcher = BASE_SIZE_PATTERN.matcher(line);
+                Matcher matcher = MEMORY_SIZE_PATTERN.matcher(line);
                 if (matcher.find()) {
                     double used = UnitUtil.toKBByUnit(matcher.group("heapUsed"), matcher.group("heapUsedUnit"));
                     double total = UnitUtil.toKBByUnit(matcher.group("heapTotal"), matcher.group("heapTotalUnit"));
@@ -79,17 +79,17 @@ public class CMSGCParser implements GCLogParser {
                     maxheapAllocateSize = Math.max(total, maxheapAllocateSize);
                 }
             } else if (line.contains(ALLOCATION_FAILURE_MATCHER) || line.contains(FULL_GC_MATCHER)) {
-                Matcher matcher = BASE_SIZE_TIME_PATTERN.matcher(line);
+                Matcher matcher = MEMORY_SIZE_TIME_PATTERN.matcher(line);
                 if (matcher.find()) {
-                    double used = UnitUtil.toKBByUnit(matcher.group("heapPre"), matcher.group("heapPreUnit"));
+                    double used = UnitUtil.toKBByUnit(matcher.group("heapBefore"), matcher.group("heapBeforeUnit"));
                     double total = UnitUtil.toKBByUnit(matcher.group("heapTotal"), matcher.group("heapTotalUnit"));
                     maxheapUsedSize = Math.max(used, maxheapUsedSize);
                     maxheapAllocateSize = Math.max(total, maxheapAllocateSize);
                 }
             } else {
-                Matcher matcher = BASE_SIZE_TIME_PATTERN.matcher(line);
+                Matcher matcher = MEMORY_SIZE_TIME_PATTERN.matcher(line);
                 if (matcher.find()) {
-                    double used = UnitUtil.toKBByUnit(matcher.group("heapPre"), matcher.group("heapPreUnit"));
+                    double used = UnitUtil.toKBByUnit(matcher.group("heapBefore"), matcher.group("heapBeforeUnit"));
                     double total = UnitUtil.toKBByUnit(matcher.group("heapTotal"), matcher.group("heapTotalUnit"));
                     maxheapUsedSize = Math.max(used, maxheapUsedSize);
                     maxheapAllocateSize = Math.max(total, maxheapAllocateSize);

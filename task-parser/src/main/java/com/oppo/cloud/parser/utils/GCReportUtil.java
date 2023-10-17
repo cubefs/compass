@@ -37,11 +37,14 @@ public class GCReportUtil {
             return null;
         }
         List<GCReport> gcReports = new ArrayList<>();
-        for (Map.Entry<Integer, byte[]> exeGc : gcLogMap.entrySet()) {
-            GCReport gcReport = GCLogParserManager.generateGCReport(exeGc.getValue());
+        for (Map.Entry<Integer, byte[]> executorGc : gcLogMap.entrySet()) {
+            GCReport gcReport = GCLogParserManager.generateGCReport(executorGc.getValue(), logPath);
+            if (gcReport == null) {
+                continue;
+            }
             gcReport.setLogPath(logPath);
-            gcReport.setExecutorId(exeGc.getKey());
-            if (exeGc.getKey() == 0) {
+            gcReport.setExecutorId(executorGc.getKey());
+            if (executorGc.getKey() == 0) {
                 gcReport.setLogType(LogType.SPARK_DRIVER.getName());
             } else {
                 gcReport.setLogType(LogType.SPARK_EXECUTOR.getName());

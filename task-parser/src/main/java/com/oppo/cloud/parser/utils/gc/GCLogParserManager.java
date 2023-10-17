@@ -17,40 +17,61 @@
 package com.oppo.cloud.parser.utils.gc;
 
 import com.oppo.cloud.common.domain.gc.GCReport;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 
 /**
  * jvm gc log parser manager,support to parse jdk8 cms/g1gc and jdk9+ g1gc
  */
+@Slf4j
 public class GCLogParserManager {
 
     private static final int LIMIT_LINE = 20;
 
-    public static GCReport generateGCReport(byte[] bytes) throws Exception {
-        GCLogParser gcLogParser = createGCLogParser(readLines(bytes));
+    public static GCReport generateGCReport(byte[] bytes, String logPath) throws Exception {
+        GCLogType gcType = getGCType(bytes);
+        GCLogParser gcLogParser = createGCLogParser(gcType, logPath);
+        if (gcLogParser == null) {
+            return null;
+        }
         return gcLogParser.generateGCReport(new ByteArrayInputStream(bytes));
     }
 
-    private static GCLogParser createGCLogParser(String s) {
-        if (s.contains("UseG1GC") || s.contains("(young)")) {
-            return new G1GCParser();
-        } else if (s.contains("UseConcMarkSweepGC") || s.contains("CMS")) {
-            return new CMSGCParser();
-        } else if (s.contains("Using G1")) {
-            return new UnifiedG1GCParser();
+    private static GCLogParser createGCLogParser(GCLogType gcType, String logPath) {
+        switch (gcType) {
+            case CMS:
+                return new CMSGCParser();
+            case G1:
+                return new G1GCParser();
+            case UnifiedG1:
+                return new UnifiedG1GCParser();
+            case UNKNOWN:
+                log.error("{} gc log type is unknown", logPath);
+                break;
+            default:
+                break;
         }
-        return new G1GCParser();
+        return null;
     }
 
-    private static String readLines(byte[] bytes) throws IOException {
+    private static GCLogType getGCType(byte[] bytes) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(bytes)));
         for (int i = 0; i < LIMIT_LINE; i++) {
             String line = br.readLine();
             sb.append(line).append(System.lineSeparator());
         }
-        return sb.toString();
+        String gcLog = sb.toString();
+        if (gcLog.contains("UseG1GC") || gcLog.contains("(young)")) {
+            return GCLogType.G1;
+        } else if (gcLog.contains("UseConcMarkSweepGC") || gcLog.contains("CMS")) {
+            return GCLogType.CMS;
+        } else if (gcLog.contains("Using G1")) {
+            return GCLogType.UnifiedG1;
+        } else {
+            return GCLogType.UNKNOWN;
+        }
     }
 
 }

@@ -34,13 +34,13 @@ public class G1GCParser implements GCLogParser {
     /**
      * Eden: 2128.0M(2128.0M)->0.0B(2800.0M) Survivors: 49152.0K->65536.0K Heap: 2163.2M(14336.0M)->52707.3K(14336.0M)]
      */
-    private static final String HEAP_REGEX = "Heap: (?<pre>[0-9]*\\.[0-9]*)(?<preUnit>[KMG])\\((?<preTotal>[0-9]*\\.[0-9]*)(?<preTotalUnit>[KMG])\\)->(?<post>[0-9]*\\.[0-9]*)(?<postUnit>[KMG])\\((?<total>[0-9]*\\.[0-9]*)(?<totalUnit>[KMG])\\)\\]";
+    private static final String HEAP_REGEX = "Heap: (?<before>[0-9]*\\.[0-9]*)(?<beforeUnit>[KMG])\\((?<totalBefore>[0-9]*\\.[0-9]*)(?<totalBeforeUnit>[KMG])\\)->(?<after>[0-9]*\\.[0-9]*)(?<afterUnit>[KMG])\\((?<total>[0-9]*\\.[0-9]*)(?<totalUnit>[KMG])\\)\\]";
     private static final Pattern HEAP_PATTERN = Pattern.compile(HEAP_REGEX);
 
     /**
      * 2023-09-18T12:10:39.771+0800: 5.049: [GC cleanup 135M->135M(14336M), 0.0013357 secs]
      */
-    private static final String CLEANUP_REGEX = "(?<pre>[0-9]*\\.?[0-9]+)(?<preUnit>[KMG])->(?<post>[0-9]*\\.?[0-9]+)(?<postUnit>[KMG])\\((?<total>[0-9]*\\.?[0-9]+)(?<totalUnit>[KMG])\\)";
+    private static final String CLEANUP_REGEX = "(?<before>[0-9]*\\.?[0-9]+)(?<beforeUnit>[KMG])->(?<after>[0-9]*\\.?[0-9]+)(?<afterUnit>[KMG])\\((?<total>[0-9]*\\.?[0-9]+)(?<totalUnit>[KMG])\\)";
     private static final Pattern CLEANUP_PATTERN = Pattern.compile(CLEANUP_REGEX);
 
     private static final String HEAP_MATCHER = "Heap:";
@@ -63,18 +63,18 @@ public class G1GCParser implements GCLogParser {
             if (line.contains(HEAP_MATCHER)) {
                 Matcher heapSizeMatcher = HEAP_PATTERN.matcher(line);
                 if (heapSizeMatcher.find()) {
-                    double pre = UnitUtil.toKBByUnit(heapSizeMatcher.group("pre"), heapSizeMatcher.group("preUnit"));
+                    double before = UnitUtil.toKBByUnit(heapSizeMatcher.group("before"), heapSizeMatcher.group("beforeUnit"));
                     double total = UnitUtil.toKBByUnit(heapSizeMatcher.group("total"), heapSizeMatcher.group("totalUnit"));
-                    maxheapUsedSize = Math.max(pre, maxheapUsedSize);
+                    maxheapUsedSize = Math.max(before, maxheapUsedSize);
                     maxheapAllocateSize = Math.max(total, maxheapAllocateSize);
                 }
             }
             if (line.contains(HEAP_CLEANUP_MATCHER)) {
                 Matcher heapSizeMatcher = CLEANUP_PATTERN.matcher(line);
                 if (heapSizeMatcher.find()) {
-                    double pre = UnitUtil.toKBByUnit(heapSizeMatcher.group("pre"), heapSizeMatcher.group("preUnit"));
+                    double before = UnitUtil.toKBByUnit(heapSizeMatcher.group("before"), heapSizeMatcher.group("beforeUnit"));
                     double total = UnitUtil.toKBByUnit(heapSizeMatcher.group("total"), heapSizeMatcher.group("totalUnit"));
-                    maxheapUsedSize = Math.max(pre, maxheapUsedSize);
+                    maxheapUsedSize = Math.max(before, maxheapUsedSize);
                     maxheapAllocateSize = Math.max(total, maxheapAllocateSize);
                 }
             }

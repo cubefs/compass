@@ -36,9 +36,9 @@ public class UnifiedG1GCParser implements GCLogParser {
     /**
      * 25M->11M(256M)
      */
-    public static String BASE_SIZE_REGEX = "(?<pre>[0-9]*\\.?[0-9]+)(?<preUnit>[KMG])->(?<post>[0-9]*\\.?[0-9]+)(?<postUnit>[KMG])\\((?<total>[0-9]*\\.?[0-9]+)(?<totalUnit>[KMG])\\)";
+    public static String MEMORY_SIZE_REGEX = "(?<before>[0-9]*\\.?[0-9]+)(?<beforeUnit>[KMG])->(?<after>[0-9]*\\.?[0-9]+)(?<afterUnit>[KMG])\\((?<total>[0-9]*\\.?[0-9]+)(?<totalUnit>[KMG])\\)";
 
-    private static final Pattern BASE_SIZE_PATTERN = Pattern.compile(BASE_SIZE_REGEX);
+    private static final Pattern MEMORY_SIZE_PATTERN = Pattern.compile(MEMORY_SIZE_REGEX);
 
     @Override
     public GCReport generateGCReport(InputStream in) throws IOException {
@@ -56,14 +56,12 @@ public class UnifiedG1GCParser implements GCLogParser {
             if (!line.contains(SIZE_CHANGE_TOKEN)) {
                 continue;
             }
-            if (line.contains(BASE_SIZE_REGEX)) {
-                Matcher heapSizeMatcher = BASE_SIZE_PATTERN.matcher(line);
-                if (heapSizeMatcher.find()) {
-                    double pre = UnitUtil.toKBByUnit(heapSizeMatcher.group("pre"), heapSizeMatcher.group("preUnit"));
-                    double total = UnitUtil.toKBByUnit(heapSizeMatcher.group("total"), heapSizeMatcher.group("totalUnit"));
-                    maxheapUsedSize = Math.max(pre, maxheapUsedSize);
-                    maxheapAllocateSize = Math.max(total, maxheapAllocateSize);
-                }
+            Matcher heapSizeMatcher = MEMORY_SIZE_PATTERN.matcher(line);
+            if (heapSizeMatcher.find()) {
+                double before = UnitUtil.toKBByUnit(heapSizeMatcher.group("before"), heapSizeMatcher.group("beforeUnit"));
+                double total = UnitUtil.toKBByUnit(heapSizeMatcher.group("total"), heapSizeMatcher.group("totalUnit"));
+                maxheapUsedSize = Math.max(before, maxheapUsedSize);
+                maxheapAllocateSize = Math.max(total, maxheapAllocateSize);
             }
         }
 
