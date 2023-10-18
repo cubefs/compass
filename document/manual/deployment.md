@@ -212,7 +212,7 @@ canal.instance.dbPassword=root
 canal.instance.filter.regex=.*\\..*
 canal.mq.topic=mysqldata
 
-# 动态topic和分区默认不配置，若数据量比较大，可按表Hash到相同topic不同分区，避免单分区压力过大
+# Dynamic topics and partitions are not configured by default.
 canal.mq.dynamicTopic = mysqldata:db\\..*
 canal.mq.partitionsNum =  12
 canal.mq.partitionHash = .*\\..*
@@ -276,7 +276,7 @@ conf/application.yml
 canal.conf:
   srcDataSources:
     defaultDS:
-      # 调度平台MySQL同步账号
+      # Scheduling platform MySQL synchronization account
       url: ${CANAL_ADAPTER_SOURCE_MYSQL_URL}
       username: ${CANAL_ADAPTER_SOURCE_MYSQL_USERNAME}
       password: ${CANAL_ADAPTER_SOURCE_MYSQL_PASSWORD}
@@ -290,7 +290,7 @@ canal.conf:
         key: mysql1
         properties:
           jdbc.driverClassName: com.mysql.jdbc.Driver
-          # compass平台MySQL账号
+          # Compass platform MySQL account
           jdbc.url: ${CANAL_ADAPTER_DESTINATION_MYSQL_URL}
           jdbc.username: ${CANAL_ADAPTER_DESTINATION_MYSQL_USERNAME}
           jdbc.password: ${CANAL_ADAPTER_DESTINATION_MYSQL_PASSWORD}
@@ -306,11 +306,11 @@ outerAdapterKey: mysql1
 concurrent: false
 dbMapping:
   database: ${SCHEDULER_MYSQL_DB}
-  # 调度平台MySQL表
+  # Scheduling platform MySQL table
   table: example
-  # compass平台MySQL表
+  # Compass platform MySQL table
   targetTable: example
-  # 主键配置
+  # Primary key configuration
   targetPk:
     id: id
   mapAll: true
@@ -364,13 +364,13 @@ Below is an example of synchronizing DolphinScheduler scheduling platform:
 user table：
 
 ```
-# DolphinScheduler库名
+# DolphinScheduler schema
 - schema: "dolphinscheduler" 
-  # DolphinScheduler user表
+  # DolphinScheduler user table
   table: "t_ds_user"
-  # compass user表        
+  # compass user table       
   targetTable: "user"
-  # columnMapping用于字段映射，key是compass定义的字段，值是DolphinScheduler定义的字段   
+  # columnMapping is used for field mapping, where the key is the field defined by Compass, and the value is the field defined by DolphinScheduler.
   columnMapping: 
     user_id: "id"           
     username: "user_name"
@@ -380,10 +380,10 @@ user table：
     phone: "phone"
     create_time: "create_time"
     update_time: "update_time"
-  # 字段值映射, 目标字段值, 源字段值, 字段类型
+  # Field value mapping, target field value, source field value, field type.
   columnValueMapping:
     is_admin: [ { targetValue: "0", originValue: [ "0" ] }, { targetValue: "1", originValue: [ "1" ] } ]
-  # 常量列定义
+  # Constant column definition
   constantColumn:
     scheduler_type: "DolphinScheduler"
 ```
@@ -415,7 +415,7 @@ task_instance table：
       - { targetValue: "fail", originValue: [ "6", "9" ] } 
       - { targetValue: "other", originValue: [ "0", "1", "2", "3", "4", "5", "8", "10", "11", "12", "13" ] }
   columnDep:
-    # 列字段值依赖，由于该表缺失了project_name, flow_name, execution_time字段，因此需要关联其他表查询
+    # Column field value dependency, since this table lacks the fields project_name, flow_name, execution_time, it needs to be queried in association with other tables.
     columns: [ "project_name", "flow_name", "execution_time" ]
     queries: [ "select t2.schedule_time as execution_time, t3.name as flow_name, t4.name as project_name from t_ds_task_instance as t1 inner join t_ds_process_instance as t2 on t1.process_instance_id = t2.id inner join t_ds_process_definition as t3 on t2.process_definition_code = t3.code inner join t_ds_project as t4 on t3.project_code=t4.code where t1.id=${id}" ]
 ```
@@ -471,20 +471,20 @@ Therefore, based on the above relationship changes, the absolute path is determi
 
 ```
 custom:
-  # 从上到下串行执行解析到任务的applicationId
+  # Execute parsing to the task's applicationId.
   rules:
     - logPathDep:
-        # 变量依赖查询
+        # Variable dependency query
         query: "select CASE WHEN end_time IS NOT NULL THEN DATE_ADD(end_time, INTERVAL 1 second) ELSE start_time END as end_time,log_path from t_ds_task_instance where id=${id}"     # 查询, id 是 task-instance表的id
       logPathJoins: 
         # end_time: 2023-02-18 01:43:11
         # log_path: ../logs/6354680786144_1/3/4.log
-        - { "column": "", "data": "/flume/dolphinscheduler" } # 配置存储调度日志的hdfs根目录
+        - { "column": "", "data": "/flume/dolphinscheduler" } # Configuration for storing scheduling logs in the root directory of HDFS
         - { "column": "end_time", "regex": "^.*(?<date>\\d{4}-\\d{2}-\\d{2}).+$", "name": "date" }
         - { "column": "log_path", "regex": "^.*logs/(?<logpath>.*)$", "name": "logpath" }
-      extractLog: # 根据组装的日志路径解析日志
-        regex: "^.*Submitted application (?<applicationId>application_[0-9]+_[0-9]+).*$"     # 匹配规则
-        name: "applicationId"      # 匹配文本名，最后必须有applicationId
+      extractLog: # Parse logs based on the log_path
+        regex: "^.*Submitted application (?<applicationId>application_[0-9]+_[0-9]+).*$"
+        name: "applicationId"      # Match the text name, must have applicationId at the end.
 ```
 
 Note: The native Flume-taildir-source plugin does not support recursively traversing subdirectory files, and requires modification. If your logs have already been collected, you can ignore this.
@@ -541,9 +541,9 @@ conf/application.yml
 ```
 custom:
   detectionRule:
-    # 运行耗时长配置，单位小时
+    # unit: hour
     durationWarning: 2
-    # 长期失败配置，单位天
+    # unit: day
     alwaysFailedWarning: 10 
 ```
 
@@ -604,7 +604,7 @@ For example:
     "actions": [
       {
         "action": "otherError",
-        "desc": "其他错误信息",
+        "desc": "other error info",
         "category": "otherException",
         "step": 1,
         "skip": false,
