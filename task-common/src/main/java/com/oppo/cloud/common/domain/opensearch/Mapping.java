@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * OpenSearch 字段类型
+ * OpenSearch field types
  */
 public class Mapping {
 
     /**
-     * 创建数字类型字段, t参数: long, integer, double, float
+     * Create numeric type fields, t parameters: long, integer, double, float
      */
     public static Map<String, Object> digit(String t) {
         return Stream.of(
@@ -37,7 +37,7 @@ public class Mapping {
     }
 
     /**
-     * 创建date类型字段
+     * Create date type field
      */
     public static Map<String, Object> date() {
         return Stream.of(
@@ -47,7 +47,7 @@ public class Mapping {
     }
 
     /**
-     * 创建text,keyword类型字段
+     * Create text, keyword type fields
      */
     public static Map<String, Object> text() {
         return Stream.of(
@@ -57,7 +57,7 @@ public class Mapping {
     }
 
     /**
-     * 创建users复合类型字段
+     * Create users composite type field
      */
     public static Map<String, Object> users() {
         Map<String, Object> taskUsersProperties = new HashMap<>();
@@ -68,7 +68,7 @@ public class Mapping {
     }
 
     /**
-     * 创建fields字段
+     * Create fields field
      */
     public static Map<String, Object> fields() {
         return Stream.of(
@@ -77,7 +77,7 @@ public class Mapping {
     }
 
     /**
-     * 创建keyword字段
+     * Create keyword field
      */
     public static Map<String, Object> keyword() {
         return Stream.of(
@@ -87,7 +87,7 @@ public class Mapping {
     }
 
     /**
-     * 返回 {"enabled": true or false}
+     * Return {"enabled": true or false}
      */
     public static Map<String, Object> enabled(boolean t) {
         return Stream.of(
@@ -96,7 +96,7 @@ public class Mapping {
     }
 
     /**
-     * 创建object类型
+     * Create object type
      */
     public static Map<String, Object> object() {
         return Stream.of(

@@ -33,39 +33,39 @@ public class LogSummaryMapping extends Mapping {
 
     public static Map<String, Object> build() {
         return Stream.of(
-                        /* applicationId名称 */
+                        /* applicationId */
                         new AbstractMap.SimpleEntry<>("applicationId", text()),
-                        /* 日志类型 */
+                        /* log type */
                         new AbstractMap.SimpleEntry<>("logType", text()),
-                        /* 项目名称 */
+                        /* project name */
                         new AbstractMap.SimpleEntry<>("projectName", text()),
-                        /* 工作流名称 */
+                        /* flow name */
                         new AbstractMap.SimpleEntry<>("flowName", text()),
-                        /* 任务名称 */
+                        /* task name */
                         new AbstractMap.SimpleEntry<>("taskName", text()),
-                        /* 执行周期 */
+                        /* execution date */
                         new AbstractMap.SimpleEntry<>("executionDate", date()),
-                        /* 任务重试次数 */
+                        /* retry times */
                         new AbstractMap.SimpleEntry<>("retryTimes", digit("integer")),
-                        /* 日志异常类型 */
+                        /* action type */
                         new AbstractMap.SimpleEntry<>("action", text()),
-                        /* 日志解析步骤 */
+                        /* step */
                         new AbstractMap.SimpleEntry<>("step", digit("integer")),
-                        /* 正则匹配的变量名 */
+                        /* group names */
                         new AbstractMap.SimpleEntry<>("groupNames", text()),
-                        /* 原始日志 */
+                        /* raw log */
                         new AbstractMap.SimpleEntry<>("rawLog", text()),
-                        /* 原始日志路径 */
+                        /* log path */
                         new AbstractMap.SimpleEntry<>("logPath", text()),
-                        /* 正则匹配变量值 */
+                        /* group data */
                         new AbstractMap.SimpleEntry<>("groupData", object()),
-                        /* 日志时间 */
+                        /* log timestamp */
                         new AbstractMap.SimpleEntry<>("logTimestamp", digit("integer")),
-                        /* 头匹配规则 */
+                        /* heads rule */
                         new AbstractMap.SimpleEntry<>("heads", text()),
-                        /* 中间匹配规则 */
+                        /* middles rule */
                         new AbstractMap.SimpleEntry<>("middles", text()),
-                        /* 尾匹配规则 */
+                        /* tails rule */
                         new AbstractMap.SimpleEntry<>("tails", text()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }

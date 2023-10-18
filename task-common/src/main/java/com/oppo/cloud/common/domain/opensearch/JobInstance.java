@@ -31,55 +31,55 @@ import java.util.*;
 @ApiModel("all job instance info will save in this index of es")
 public class JobInstance extends OpenSearchInfo {
 
-    @ApiModelProperty(value = "用户名称")
+    @ApiModelProperty(value = "users")
     private List<SimpleUser> users;
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @ApiModelProperty(value = "项目Id")
+    @ApiModelProperty(value = "project Id")
     private Integer projectId;
 
-    @ApiModelProperty(value = "工作流")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "工作流Id")
+    @ApiModelProperty(value = "flow Id")
     private Integer flowId;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "task name")
     private String taskName;
 
-    @ApiModelProperty(value = "任务Id")
+    @ApiModelProperty(value = "task Id")
     private Integer taskId;
 
-    @ApiModelProperty(value = "执行周期")
+    @ApiModelProperty(value = "execution date")
     private Date executionDate;
 
-    @ApiModelProperty(value = "开始时间")
+    @ApiModelProperty(value = "start time")
     private Date startTime;
 
-    @ApiModelProperty(value = "结束时间")
+    @ApiModelProperty(value = "end time")
     private Date endTime;
 
-    @ApiModelProperty(value = "任务执行耗时")
+    @ApiModelProperty(value = "duration")
     private Double duration;
 
-    @ApiModelProperty(value = "任务执行状态")
+    @ApiModelProperty(value = "task state")
     private String taskState;
 
-    @ApiModelProperty(value = "执行所消耗所有memory·seconds")
+    @ApiModelProperty(value = "memory·seconds")
     private Double memorySeconds;
 
-    @ApiModelProperty(value = "执行所消耗所有vcore·seconds")
+    @ApiModelProperty(value = "vcore·seconds")
     private Double vcoreSeconds;
 
-    @ApiModelProperty(value = "任务类型")
+    @ApiModelProperty(value = "task type")
     private String taskType;
 
-    @ApiModelProperty(value = "任务重试次数")
+    @ApiModelProperty(value = "retry times")
     private Integer retryTimes;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "create time")
     private Date createTime;
 
     public Map<String, Object> genDoc() throws Exception {
