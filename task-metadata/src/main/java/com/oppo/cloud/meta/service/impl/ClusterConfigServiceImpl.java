@@ -68,7 +68,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
 
 
     /**
-     * 获取spark history server列表
+     * Get spark history servers
      */
     @Override
     public List<String> getSparkHistoryServers() {
@@ -76,7 +76,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
     }
 
     /**
-     * 获取yarn rm列表
+     * Get Yarn clusters
      */
     @Override
     public Map<String, String> getYarnClusters() {
@@ -86,7 +86,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
 
 
     /**
-     * 更新集群信息
+     * Update cluster config
      */
     @Override
     public void updateClusterConfig() {
@@ -99,7 +99,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
 
         // cache yarn server
         List<YarnConf> yarnConfList = config.getYarn();
-        // resourceManager 对应的 jobHistoryServer
+        // the jobHistoryServer corresponding to resourceManager
         Map<String, String> rmJhsMap = new HashMap<>();
         yarnConfList.forEach(clusterInfo -> clusterInfo.getResourceManager()
                 .forEach(rm -> rmJhsMap.put(rm, clusterInfo.getJobHistoryServer())));
@@ -111,7 +111,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
     }
 
     /**
-     * 更新配置中jobhistoryserver hdfs路径信息
+     * Update the jobhistoryserver hdfs path information in the configuration
      */
     public void updateJHSConfig(List<YarnConf> list) {
         for (YarnConf yarnClusterInfo : list) {
@@ -137,7 +137,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
     }
 
     /**
-     * 获取jobhistoryserver hdfs路径信息
+     * Get jobhistoryserver hdfs path information
      */
     public YarnPathInfo getYarnPathInfo(String ip) {
         String url = String.format(YARN_CONF, ip);
