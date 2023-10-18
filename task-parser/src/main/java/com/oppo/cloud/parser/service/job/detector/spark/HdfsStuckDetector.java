@@ -61,7 +61,7 @@ public class HdfsStuckDetector implements IDetector {
                             continue;
                         }
                         double duration = (double) (task.getFinishTime() - task.getLaunchTime());
-                        // task读取数据量(MB)/耗时分布(s)
+                        // Task data read volume (MB) / time distribution (s)
                         double taskSize = task.getBytesRead() / 1024.0 / 1024.0;
 
                         if (taskSize < this.config.getTaskSize() || duration < this.config.getDuration()) {
@@ -88,7 +88,7 @@ public class HdfsStuckDetector implements IDetector {
         return detectorResult;
     }
 
-    // 卡顿判断
+    // Threshold judgment
     private void judge(List<HdfsStuckGraph> hdfsSlowGraphList,
                        List<HdfsStuckAbnormal> hdfsSlowAbnormalList,
                        DetectorResult detectorResult,
@@ -141,11 +141,11 @@ public class HdfsStuckDetector implements IDetector {
                 graphs = hdfsSlowGraphList.subList(hdfsSlowGraphList.size() - 30,
                         hdfsSlowGraphList.size());
             }
-            // 统计类型处理
+            // Statistical type processing
             graphs.forEach(data -> {
                 HdfsStuckGraph cache = statisticsMap.get(data.getTaskId());
                 if (cache != null) {
-                    // 类型替换
+                    // Type replacement
                     data.setGraphType(cache.getGraphType());
                     statisticsMap.remove(cache.getTaskId());
                 }

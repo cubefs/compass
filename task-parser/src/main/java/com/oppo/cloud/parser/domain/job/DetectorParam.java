@@ -30,27 +30,27 @@ import java.util.Date;
 public class DetectorParam {
 
     /**
-     * 工作流名称
+     * flow name
      */
     private String flowName;
 
     /**
-     * 项目名称
+     * project name
      */
     private String projectName;
 
     /**
-     * 任务名称
+     * task name
      */
     private String taskName;
 
     /**
-     * 任务执行周期
+     * execution time
      */
     private Date executionTime;
 
     /**
-     * 任务总重试次数
+     * try number
      */
     private Integer tryNumber;
 

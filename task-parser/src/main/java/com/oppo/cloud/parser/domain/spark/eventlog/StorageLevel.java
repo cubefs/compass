@@ -29,7 +29,7 @@ public class StorageLevel {
     private boolean useMemory;
 
     /**
-     * 2.4.0 没有
+     * The version 2.4.0 does not exist
      */
     @JsonProperty("Use OffHeap")
     private boolean useOffHeap;

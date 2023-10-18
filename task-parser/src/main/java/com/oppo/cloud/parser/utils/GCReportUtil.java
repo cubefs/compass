@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- * gc日志解析
+ * GC log parsing util
  */
 @Slf4j
 public class GCReportUtil {

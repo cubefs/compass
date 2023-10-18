@@ -28,7 +28,9 @@ public class StageDetectionInfo {
     private Integer id;
     private Integer attemptId;
     /**
-     * stage duration计算用的开始时间，是用其下task最小的firstLaunchTime，而不是submissionTime
+     * The submission time for a stage is misleading because it counts the time.
+     * the stage waits to be launched. (SPARK-10930)
+     * refer to <a href="https://github.com/apache/spark/pull/9051">https://github.com/apache/spark/pull/9051</a>
      */
     private Long firstLaunchTime;
     private Long submissionTime;

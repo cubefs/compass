@@ -85,10 +85,10 @@ public class JobDurationDetector implements IDetector {
             if (lists.size() == 0) {
                 continue;
             }
-            // 按开始时间排序
+            // Sorted by firstLaunchTime
             lists.sort(Comparator.comparing(StageDetectionInfo::getFirstLaunchTime));
 
-            // stage累计时间
+            // Cumulative stage time
             long stageAcc = 0;
             StageDetectionInfo cur = lists.get(0);
             long start = cur.getFirstLaunchTime();
@@ -112,7 +112,7 @@ public class JobDurationDetector implements IDetector {
             long duration = this.config.getDuration();
             double ratio = ((double) (jobDuration - stageAcc) / jobDuration) * 100;
             if (ratio > threshold && jobDuration > duration) {
-                // 耗时异常
+                // Abnormal duration
                 jobLists.add(
                         new JobDurationAbnormal(job.getKey(), jobDuration, stageAcc, ratio, threshold, duration, true));
                 detectorResult.setAbnormal(true);

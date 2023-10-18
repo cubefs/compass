@@ -34,7 +34,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import java.util.*;
 
 /**
- * 数据倾斜检测
+ * Data Skew Detector
  */
 @Slf4j
 public class DataSkewDetector implements IDetector {
@@ -76,7 +76,7 @@ public class DataSkewDetector implements IDetector {
             if (stage.getSubmissionTimeMap().size() == 0 || stage.getCompleteTimeMap().size() == 0) {
                 continue;
             }
-            // 注意：同一个stage有重试的，要区分不同重试的submissionTime和launchTime
+            // for stages with retries, the submissionTime and launchTime of different retries should be distinguished.
             for (Map.Entry<Integer, Long> entry : stage.getSubmissionTimeMap().entrySet()) {
                 Integer attemptId = entry.getKey();
                 Long submissionTime = entry.getValue();
@@ -132,7 +132,7 @@ public class DataSkewDetector implements IDetector {
                 if (dataSkew) {
                     detectorResult.setAbnormal(true);
                     dataSkewGraphs.sort(Comparator.comparing(DataSkewGraph::getTotalShuffleReadBytes));
-                    // 统计值处理
+                    // get statistics data
                     Map<Long, DataSkewGraph> statisticsMap = getStatisticsMap(dataSkewGraphs);
 
                     if (dataSkewGraphs.size() <= 30) {
@@ -145,7 +145,7 @@ public class DataSkewDetector implements IDetector {
                     taskDataSkew.getDataSkewGraphs().forEach(data -> {
                         DataSkewGraph cache = statisticsMap.get(data.getTaskId());
                         if (cache != null) {
-                            // 类型替换
+                            // type replacement
                             data.setGraphType(cache.getGraphType());
                             statisticsMap.remove(cache.getTaskId());
                         }
@@ -159,7 +159,7 @@ public class DataSkewDetector implements IDetector {
     }
 
     /**
-     * 数据倾斜判断
+     * Data skew judgment
      */
     private boolean judgeDataSkew(DataSkewAbnormal taskDataSkew, double max, double median, float percentage) {
         double threshold = 0;
@@ -174,7 +174,7 @@ public class DataSkewDetector implements IDetector {
         if (threshold == 0) {
             return false;
         }
-        // stage耗时/任务总耗时 占比小于阈值的stage or app duration < configDuration
+        // Stage duration / total task duration ratio less than the threshold stage or app duration < configDuration
         if (percentage < this.config.getStageDurationPercentage()
                 || this.param.getAppDuration() < this.config.getDuration()) {
             return false;
@@ -183,7 +183,7 @@ public class DataSkewDetector implements IDetector {
     }
 
     /**
-     * 获取阈值
+     * Get the threshold
      */
     private Float getThreshold(double size) {
         for (MedianInterval interval : this.config.getInterval()) {
@@ -198,7 +198,7 @@ public class DataSkewDetector implements IDetector {
     }
 
     /**
-     * 统计值处理
+     * Statistical value processing
      */
     private Map<Long, DataSkewGraph> getStatisticsMap(List<DataSkewGraph> dataSkewGraphs) {
         Map<Long, DataSkewGraph> statisticsMap = new HashMap<>();

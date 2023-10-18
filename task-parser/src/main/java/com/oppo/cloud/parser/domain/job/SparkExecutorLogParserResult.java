@@ -28,19 +28,19 @@ import java.util.Map;
 public class SparkExecutorLogParserResult {
 
     /**
-     * 日志路径
+     * log path
      */
     private String logPath;
     /**
-     * 解析结果
+     * parser result
      */
     private Map<String, ParserAction> actionMap;
     /**
-     * gc报告
+     * gc reports
      */
     private List<GCReport> gcReports;
     /**
-     *  异常类型
+     *  abnormal categories
      */
     private List<String> categories;
 }

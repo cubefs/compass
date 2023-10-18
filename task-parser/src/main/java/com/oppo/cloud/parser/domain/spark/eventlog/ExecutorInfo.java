@@ -34,19 +34,19 @@ public class ExecutorInfo {
     private Map<String, String> logUrlMap;
 
     /**
-     * 2.4.0 没有
+     * The version 2.4.0 does not exist
      */
     @JsonProperty("Attributes")
     private Map<String, String> attributes;
 
     /**
-     * 2.4.0 没有
+     * The version 2.4.0 does not exist
      */
     @JsonProperty("Resources")
     private Map<String, ResourceInformation> resourceInfo;
 
     /**
-     * 2.4.0 没有
+     * The version 2.4.0 does not exist
      */
     @JsonProperty("Resource Profile Id")
     private Integer resourceProfileId;

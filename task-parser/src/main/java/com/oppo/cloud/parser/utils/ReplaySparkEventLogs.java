@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * spark event log 解析
+ * spark event log parser
  */
 @Slf4j
 @Data
@@ -97,7 +97,7 @@ public class ReplaySparkEventLogs {
     }
 
     /**
-     * 按行解析
+     * Parse line by line
      */
     private void parseLine(String line) throws Exception {
         SparkListenerEvent event;
@@ -164,13 +164,13 @@ public class ReplaySparkEventLogs {
                 }
                 SparkJob job = new SparkJob(sparkListenerJobStart);
                 this.jobs.put(job.getJobId(), job);
-                // jobId sql.execution.id关系映射
+                // JobId sql.execution.id relationship mapping
                 String sqlExecutionID = sparkListenerJobStart.getProperties().getProperty("spark.sql.execution" +
                         ".id");
                 if (!StringUtils.isEmpty(sqlExecutionID)) {
                     jobSQLExecIDMap.put(job.getJobId(), Long.valueOf(sqlExecutionID));
                 }
-                // stateId jobId关系映射
+                // StateId jobId relationship mapping
                 if (sparkListenerJobStart.getStageInfos() != null) {
                     sparkListenerJobStart.getStageInfos().forEach(stageInfo -> {
                         stageIDToJobID.put(stageInfo.getStageId(), sparkListenerJobStart.getJobId());
@@ -224,7 +224,7 @@ public class ReplaySparkEventLogs {
                         SparkListenerTaskEnd.class);
                 Long taskId = sparkListenerTaskEnd.getTaskInfo().getTaskId();
                 this.tasks.get(taskId).finish(sparkListenerTaskEnd);
-                // 更新job数据
+                // Update job data
                 Integer jobID = stageIDToJobID.get(sparkListenerTaskEnd.getStageId());
                 if (jobID != null && sparkListenerTaskEnd.getTaskMetrics() != null) {
                     SparkJob sparkJob = jobs.get(jobID);
@@ -252,7 +252,7 @@ public class ReplaySparkEventLogs {
     }
 
     /**
-     * 相关数据处理
+     * Related data processing
      */
     private void correlate() {
         for (SparkBlockManager blockManager : this.blockManagers) {
@@ -268,7 +268,7 @@ public class ReplaySparkEventLogs {
             this.executors.get(task.getExecutorId()).getTasks().add(task);
             for (SparkJob job : this.jobs.values()) {
                 for (SparkStage stage : job.getStages()) {
-                    // 重试stageId映射
+                    // Retry stageId mapping
                     for (Map.Entry<Integer, Long> entry : stage.getSubmissionTimeMap().entrySet()) {
                         Integer attemptId = entry.getKey();
                         if (stage.getStageId().equals(task.getStageId())

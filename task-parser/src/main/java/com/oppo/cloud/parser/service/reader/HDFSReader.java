@@ -28,16 +28,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 读取HDFS类型日志
+ * HDFS logs reader
  */
 public class HDFSReader implements IReader {
 
     /**
-     * 路径
+     * Log Path
      */
     private final LogPath logPath;
     /**
-     * nameNode配置
+     * NameNode configuration
      */
     private final NameNodeConf nameNode;
 
