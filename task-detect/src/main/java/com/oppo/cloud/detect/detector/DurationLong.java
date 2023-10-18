@@ -35,7 +35,7 @@ public class DurationLong extends DetectServiceImpl {
 
     @Override
     public void detect(JobAnalysis jobAnalysis) throws Exception {
-        // 失败任务不进行运行时长检测
+        // Failed tasks are not subject to the long runtime detection.
         if (jobAnalysis.getTaskState().equals(TaskStateEnum.fail.name())) {
             return;
         }
