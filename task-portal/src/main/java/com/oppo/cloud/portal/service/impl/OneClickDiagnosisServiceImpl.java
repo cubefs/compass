@@ -284,7 +284,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
                 categories.add(AppCategoryEnum.OTHER_EXCEPTION.getCategory());
             }
             taskApp.setCategories(categories);
-            openSearchService.insertOrUpDate(taskApp.genIndex(taskAppsIndex), taskApp.genDocId(), taskApp.genDoc());
+            openSearchService.insertOrUpdate(taskApp.genIndex(taskAppsIndex), taskApp.genDocId(), taskApp.genDoc());
         }
 
         logRecord.setIsOneClick(true);

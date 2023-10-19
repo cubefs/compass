@@ -30,7 +30,7 @@ public class SparkJob {
     private Long endTime;
     private JobResult jobResult;
     /**
-     * executor 运行时间
+     * executor run time
      */
     private Long executorRunTime = 0L;
 

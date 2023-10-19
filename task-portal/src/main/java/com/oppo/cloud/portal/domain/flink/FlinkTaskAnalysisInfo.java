@@ -35,37 +35,37 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-@ApiModel(value = "flink task web 信息结构")
+@ApiModel(value = "flink task web information")
 public class FlinkTaskAnalysisInfo {
 
-    @ApiModelProperty(value = "记录id")
+    @ApiModelProperty(value = "id")
     private String id;
 
     @ApiModelProperty(value = "yarn applicationId")
     private String applicationId;
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "task name")
     private String taskName;
 
-    @ApiModelProperty(value = "作业名称")
+    @ApiModelProperty(value = "job name")
     private String jobName;
 
-    @ApiModelProperty(value = "运行开始时间")
+    @ApiModelProperty(value = "start time")
     private String startTime;
 
-    @ApiModelProperty(value = "时间消耗")
+    @ApiModelProperty(value = "time cost")
     private String timeCost;
 
-    @ApiModelProperty(value = "队列*")
+    @ApiModelProperty(value = "queue")
     private String queue;
 
-    @ApiModelProperty(value = "并行度*")
+    @ApiModelProperty(value = "parallel")
     private Integer parallel;
 
     /* flink slot */
@@ -84,53 +84,53 @@ public class FlinkTaskAnalysisInfo {
     /* flink task manager num */
     private Integer tmNum;
 
-    @ApiModelProperty(value = "资源消耗")
+    @ApiModelProperty(value = "resource cost")
     private String resourceCost;
 
-    @ApiModelProperty(value = "创建人")
+    @ApiModelProperty(value = "username")
     private String username;
 
-    @ApiModelProperty(value = "内存资源消耗")
+    @ApiModelProperty(value = "mem cost")
     private String memCost;
 
-    @ApiModelProperty(value = "诊断类型")
+    @ApiModelProperty(value = "rule names")
     private List<String> ruleNames;
 
     @ApiModelProperty(value = "flink track url")
     private String flinkTrackUrl;
 
-    @ApiModelProperty(value = "诊断建议")
+    @ApiModelProperty(value = "resource advice")
     private String resourceAdvice;
 
-    @ApiModelProperty(value = "开始诊断时间")
+    @ApiModelProperty(value = "diagnosis start time")
     private String diagnosisStartTime;
 
-    @ApiModelProperty(value = "结束诊断时间")
+    @ApiModelProperty(value = "diagnosis end time")
     private String diagnosisEndTime;
 
-    /* 建议并行度 */
+    /* diagnosis parallel */
     private Integer diagnosisParallel;
 
-    /* 建议job manager 内存大小单位MB */
+    /* diagnosis job manager memory unit: MB */
     private Integer diagnosisJmMemory;
 
-    /* 建议task manager 内存大小单位MB */
+    /* diagnosis task manager memory unit: MB */
     private Integer diagnosisTmMemory;
 
-    /* 建议tm的slot数量 */
+    /* diagnosis tm slot number */
     private Integer diagnosisTmSlotNum;
 
-    /* 建议tm的core数量 */
+    /* diagnosis tm core number */
     private Integer diagnosisTmCoreNum;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "create time")
     private String createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "update time")
     private String updateTime;
 
     /**
-     * 换行格式
+     * format FlinkTaskAnalysis
      *
      * @param item
      * @return

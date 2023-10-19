@@ -153,7 +153,7 @@ public abstract class DetectServiceImpl implements DetectService {
 
 
     /**
-     * 生成发送日志解析的消息体
+     * Generate LogRecord
      */
     public LogRecord genLogRecord(AbnormalTaskAppInfo abnormalTaskAppInfo, JobAnalysis detectJobAnalysis) {
         LogRecord logRecord = new LogRecord();
@@ -173,7 +173,7 @@ public abstract class DetectServiceImpl implements DetectService {
     }
 
     /**
-     * 发送解析
+     * Send LogRecord
      */
     public void sendLogRecordMsg(LogRecord logRecord) {
         Long size = redisService.lLeftPush(logRecordQueue, JSONObject.toJSONString(logRecord));
@@ -181,12 +181,12 @@ public abstract class DetectServiceImpl implements DetectService {
     }
 
     /**
-     * 保存异常任务数据
+     * Save exception task data
      */
     public void addOrUpdate(JobAnalysis detectJobAnalysis) throws Exception {
         JobAnalysis esJobAnalysis = abnormalJobService.searchJob(detectJobAnalysis);
         if (esJobAnalysis != null) {
-            // 更新操作
+            // Update operation
             esJobAnalysis.getCategories().addAll(detectJobAnalysis.getCategories());
             if (Strings.isNotBlank(detectJobAnalysis.getSuccessExecutionDay())) {
                 esJobAnalysis.setSuccessExecutionDay(detectJobAnalysis.getSuccessExecutionDay());
@@ -204,13 +204,13 @@ public abstract class DetectServiceImpl implements DetectService {
             openSearchService.insertOrUpDate(esJobAnalysis.getIndex(), esJobAnalysis.getDocId(),
                     esJobAnalysis.genDoc());
         } else {
-            // 新增操作
+            // Add operation
             detectJobAnalysis.setCreateTime(new Date());
             detectJobAnalysis.setUpdateTime(new Date());
             String index = detectJobAnalysis.genIndex(jobIndex);
             String docId = detectJobAnalysis.genDocId();
             openSearchService.insertOrUpDate(index, docId, detectJobAnalysis.genDoc());
-            // 记录索引信息和Id
+            // Record index information and docId
             detectJobAnalysis.setIndex(index);
             detectJobAnalysis.setDocId(docId);
         }
@@ -218,7 +218,7 @@ public abstract class DetectServiceImpl implements DetectService {
 
 
     /**
-     * 补充任务的用户信息
+     * Update user information of the task
      */
     public void updateUserInfo(JobAnalysis detectJobAnalysis) {
         Task task = taskService.getTask(detectJobAnalysis.getProjectName(), detectJobAnalysis.getFlowName(),
@@ -245,11 +245,11 @@ public abstract class DetectServiceImpl implements DetectService {
 
     public double[] getEndTimeBaseline(JobAnalysis detectJobAnalysis) throws Exception {
         Date startTime = DateUtil.getOffsetDate(detectJobAnalysis.getExecutionDate(), -30);
-        // 获取近一个月内的数据
+        // Get data within the last month
         List<Double> relativeEndDateHistory = taskInstanceService.searchTaskRelativeEndTime(
                 detectJobAnalysis.getProjectName(), detectJobAnalysis.getFlowName(),
                 detectJobAnalysis.getTaskName(), detectJobAnalysis.getExecutionDate(), startTime, 20);
-        // 样本值小于10的，不进行异常检测
+        // If the sample value is less than 10, do not perform anomaly detection
         if (relativeEndDateHistory.size() < 10) {
             return null;
         }
@@ -265,18 +265,18 @@ public abstract class DetectServiceImpl implements DetectService {
 
     public double[] getDurationBaseline(JobAnalysis detectJobAnalysis) throws Exception {
         Date startTime = DateUtil.getOffsetDate(detectJobAnalysis.getExecutionDate(), 30);
-        // 查询近一个月的历史数据
+        // Query the historical data of the last month
         List<Double> durationHistory = taskInstanceService.searchTaskDurationHistory(detectJobAnalysis.getProjectName(),
                 detectJobAnalysis.getFlowName(), detectJobAnalysis.getTaskName(), detectJobAnalysis.getExecutionDate(),
                 startTime, 20);
-        // 样本值小于10的，不进行异常检测
+        // If the sample value is less than 10, do not perform anomaly detection
         if (durationHistory.size() < 10) {
             return null;
         }
         Double[] durationData = durationHistory.toArray(new Double[0]);
-        // 箱线图法
+        // Box plot method
         double[] durationBeginAndEnd = DetectorUtil.boxplotValue(durationData);
-        // 极端异常值
+        // Extreme outliers
         double normalDurationBegin = durationBeginAndEnd[0];
         double normalDurationEnd = durationBeginAndEnd[4];
         return new double[]{normalDurationBegin, normalDurationEnd};

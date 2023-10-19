@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 运行耗时异常基类
+ * RunTime base service
  */
 @Slf4j
 public abstract class RunTimeBaseService<T extends IsAbnormal> implements Generate {
@@ -52,27 +52,27 @@ public abstract class RunTimeBaseService<T extends IsAbnormal> implements Genera
     String detectIndex;
 
     /**
-     * 获取app异常类型(需要子类实现)
+     * Get app category
      */
     public abstract String getCategory();
 
     /**
-     * 根据es元数据生成分析报告数据(需要子类实现)
+     * Generate data
      */
     public abstract T generateData(DetectorResult detectorResult, DetectorConfig config) throws Exception;
 
     /**
-     * 分析结论说明（需要各个子类实现）
+     * Generate conclusion description
      */
     public abstract String generateConclusionDesc(Map<String, String> thresholdMap);
 
     /**
-     * 报告描述（需要各个子类实现）
+     * Generate item description
      */
     public abstract String generateItemDesc();
 
     /**
-     * 图表类型
+     * Get chart type
      */
     public abstract String getType();
 
@@ -81,14 +81,12 @@ public abstract class RunTimeBaseService<T extends IsAbnormal> implements Genera
         T data = null;
         String error = null;
         Conclusion conclusion = null;
-        // es查询元数据
+
         try {
             if (detectorStorage.getDataList() != null) {
                 for (DetectorResult detectorResult : detectorStorage.getDataList()) {
                     if (detectorResult.getAppCategory().equals(this.getCategory())) {
-                        // 根据es元数据生成诊断报告
                         data = this.generateData(detectorResult, detectorStorage.getConfig());
-                        // 根据诊断结果数据中var变量生成诊断建议
                         conclusion = this.generateConclusion(data);
                         break;
                     }
@@ -100,12 +98,12 @@ public abstract class RunTimeBaseService<T extends IsAbnormal> implements Genera
             log.error(baos.toString());
             error = baos.toString();
         }
-        // 生成建议
+
         return this.generateItem(data, error, conclusion);
     }
 
     /**
-     * 生成完整的诊断报告数据
+     * generate item data
      */
     public Item<T> generateItem(T data, String error, Conclusion conclusion) {
         Item<T> res = new Item<>();
@@ -118,7 +116,7 @@ public abstract class RunTimeBaseService<T extends IsAbnormal> implements Genera
     }
 
     /**
-     * 生成报告结论
+     * generate conclusion
      */
     public Conclusion generateConclusion(IsAbnormal isAbnormal) {
         if (isAbnormal == null) {

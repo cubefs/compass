@@ -33,59 +33,59 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-@ApiModel(value = "Job展示结构")
+@ApiModel(value = "Job information")
 @NoArgsConstructor
 public class JobInfo {
 
     @JsonIgnore
     private String Id;
 
-    @ApiModelProperty(value = "用户名称")
+    @ApiModelProperty(value = "users")
     private String users;
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @ApiModelProperty(value = "工作流")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "task name")
     private String taskName;
 
-    @ApiModelProperty(value = "执行周期")
+    @ApiModelProperty(value = "execution date")
     private String executionDate;
 
-    @ApiModelProperty(value = "开始时间")
+    @ApiModelProperty(value = "start time")
     private String startTime;
 
-    @ApiModelProperty(value = "结束时间")
+    @ApiModelProperty(value = "end time")
     private String endTime;
 
-    @ApiModelProperty(value = "任务执行耗时")
+    @ApiModelProperty(value = "duration")
     private String duration;
 
-    @ApiModelProperty(value = "任务执行状态")
+    @ApiModelProperty(value = "task state")
     private String taskState;
 
-    @ApiModelProperty(value = "诊断类型")
+    @ApiModelProperty(value = "categories")
     private List<String> categories;
 
-    @ApiModelProperty(value = "资源消耗")
+    @ApiModelProperty(value = "resource")
     private String resource;
 
-    @ApiModelProperty(value = "重试次数")
+    @ApiModelProperty(value = "try number")
     private Integer tryNumber;
 
-    @ApiModelProperty(value = "其他信息")
+    @ApiModelProperty(value = "Others")
     private List<String> Others;
 
-    @ApiModelProperty(value = "任务处理状态：未处理(0)、已处理(1)")
+    @ApiModelProperty(value = "task processing status: unprocessed (0), processed (1)")
     private Integer taskStatus;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "create time")
     private String createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "update time")
     private String updateTime;
 
     public static JobInfo from(JobAnalysis jobAnalysis, Object stateCache) {

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Task Application表构建
+ * Task Application Mapping
  */
 public class TaskAppMapping extends Mapping {
 
@@ -37,65 +37,65 @@ public class TaskAppMapping extends Mapping {
         return Stream.of(
                         /* application ID */
                         new AbstractMap.SimpleEntry<>("applicationId", text()),
-                        /* application 类型： Spark, MR... */
+                        /* application type： Spark, MR... */
                         new AbstractMap.SimpleEntry<>("applicationType", text()),
-                        /* 任务执行用户 */
+                        /* execute user */
                         new AbstractMap.SimpleEntry<>("executeUser", text()),
-                        /* 任务执行队列 */
+                        /* queue */
                         new AbstractMap.SimpleEntry<>("queue", text()),
-                        /* 集群信息 */
+                        /* cluster name */
                         new AbstractMap.SimpleEntry<>("clusterName", text()),
-                        /* 任务所属用户: [{userId: 23432, username: "someone"}] */
+                        /* users: [{userId: 23432, username: "someone"}] */
                         new AbstractMap.SimpleEntry<>("users", users()),
-                        /* 项目名称 */
+                        /* project name */
                         new AbstractMap.SimpleEntry<>("projectName", text()),
-                        /* 项目ID */
+                        /* projectID */
                         new AbstractMap.SimpleEntry<>("projectId", digit("integer")),
-                        /* 工作流名称 */
+                        /* flow name */
                         new AbstractMap.SimpleEntry<>("flowName", text()),
-                        /* 工作流ID */
+                        /* flow ID */
                         new AbstractMap.SimpleEntry<>("flowId", digit("integer")),
-                        /* 任务名称 */
+                        /* task name */
                         new AbstractMap.SimpleEntry<>("taskName", text()),
-                        /* 任务ID */
+                        /* task ID */
                         new AbstractMap.SimpleEntry<>("taskId", digit("integer")),
-                        /* 整个工作流开始执行时间 */
+                        /* execution date */
                         new AbstractMap.SimpleEntry<>("executionDate", date()),
-                        /* 任务开始执行时间 */
+                        /* start time */
                         new AbstractMap.SimpleEntry<>("startTime", date()),
-                        /* 任务结束执行时间 */
+                        /* finish time */
                         new AbstractMap.SimpleEntry<>("finishTime", date()),
-                        /* 任务执行耗时 */
+                        /* elapsed time */
                         new AbstractMap.SimpleEntry<>("elapsedTime", digit("double")),
-                        /* 任务执行状态: success、fail */
+                        /* task app state: success、fail */
                         new AbstractMap.SimpleEntry<>("taskAppState", text()),
-                        /* 运行所需要application memory·second */
+                        /* application memory·second */
                         new AbstractMap.SimpleEntry<>("memorySeconds", digit("double")),
-                        /* 运行所需要application vcore·second */
+                        /* application vcore·second */
                         new AbstractMap.SimpleEntry<>("vcoreSeconds", digit("double")),
-                        /* am异常信息 */
+                        /* am diagnostics */
                         new AbstractMap.SimpleEntry<>("diagnostics", text()),
-                        /* 失败重试次数 */
+                        /* retry times */
                         new AbstractMap.SimpleEntry<>("retryTimes", digit("integer")),
-                        /* 异常类型，列表：["memoryWaste", "cpuWaste", ...] */
+                        /* abnormal type,List:["memoryWaste", "cpuWaste", ...] */
                         new AbstractMap.SimpleEntry<>("categories", text()),
-                        /* 任务处理状态：未处理(0)、已查看(1)、已处理(2) */
+                        /* task processing status: unprocessed (0), processed (1) */
                         new AbstractMap.SimpleEntry<>("taskStatus", digit("integer")),
-                        /* 诊断结果: abnormal, normal */
+                        /* diagnose result: abnormal, normal */
                         new AbstractMap.SimpleEntry<>("diagnoseResult", text()),
-                        /* eventLog日志路径 */
+                        /* eventLog path */
                         new AbstractMap.SimpleEntry<>("eventLogPath", text()),
-                        /* yarnLog日志路径 */
+                        /* yarnLog path */
                         new AbstractMap.SimpleEntry<>("yarnLogPath", text()),
-                        /* amHost路径 */
+                        /* amHost path */
                         new AbstractMap.SimpleEntry<>("amHost", text()),
-                        /* 是否删除 */
+                        /* task deletion status: not deleted (0), deleted (1) */
                         new AbstractMap.SimpleEntry<>("deleted", digit("integer")),
-                        /* 跳转SparkUI */
+                        /* SparkUI */
                         new AbstractMap.SimpleEntry<>("sparkUI", text()),
-                        /* 记录创建时间 */
+                        /* create time */
                         new AbstractMap.SimpleEntry<>("createTime", date()),
-                        /* 记录更新时间 */
+                        /* update time */
                         new AbstractMap.SimpleEntry<>("updateTime", date()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }

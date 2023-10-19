@@ -25,11 +25,11 @@ public class OneClickDiagnosisRequest {
      */
     private String appId;
     /**
-     * 时间戳秒
+     * end timestamp
      */
     private Long end;
     /**
-     * 时间戳秒
+     * start timestamp
      */
     private Long  start;
 }

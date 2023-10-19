@@ -19,30 +19,52 @@ package com.oppo.cloud.portal.domain.statistics;
 import lombok.Data;
 
 /**
- * Flink作业概览数据统计
+ * Overview of Flink Jobs Data Statistics
  */
 @Data
 public class FlinkStatisticsData {
-    /*诊断作业数*/
+    /**
+     * Diagnostic jobs count
+     */
     private long jobCount;
-    /*异常作业数*/
+    /**
+     * Exception jobs count
+     */
     private long exceptionJobCount;
-    /*异常作业占比*/
+    /**
+     * Ratio of exception jobs
+     */
     private double exceptionJobRatio;
-    /*可优化资源作业数*/
+    /**
+     * Optimizable resources job count
+     */
     private long resourceJobCount;
-    /*可优化资源作业占比*/
+    /**
+     * Ratio of jobs with optimizable resources
+     */
     private double resourceJobRatio;
-    /*可优化CPU数*/
+    /**
+     * Optimizable CPU count
+     */
     private double decrCPUCount;
-    /*总CPU数*/
+    /**
+     * Total number of CPU
+     */
     private double totalCPUCount;
-    /*可优化CPU占比*/
+    /**
+     * Ratio of optimizable CPU
+     */
     private double decrCPURatio;
-    /*可优化内存数*/
+    /**
+     * Number of optimizable memory
+     */
     private double decrMemory;
-    /*总内存*/
+    /**
+     * Total memory
+     */
     private double totalMemory;
-    /*可优化内存占比*/
+    /**
+     * Ratio of optimizable memory
+     */
     private double decrMemoryRatio;
 }

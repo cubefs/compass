@@ -27,10 +27,10 @@ import java.util.Map;
 
 
 @Data
-@ApiModel("大表扫描")
+@ApiModel("Big table scan information")
 public class BigTableScan extends IsAbnormal {
 
-    @ApiModelProperty(value = "大表扫描表单数据")
+    @ApiModelProperty(value = "table information")
     private Table<TaskInfo> table = new Table<>();
 
     public BigTableScan() {
@@ -44,13 +44,13 @@ public class BigTableScan extends IsAbnormal {
     @Data
     public static class TaskInfo {
 
-        @ApiModelProperty(value = "扫描的hive表名称")
+        @ApiModelProperty(value = "hive table info")
         private String hiveTable;
 
-        @ApiModelProperty(value = "扫描行数")
+        @ApiModelProperty(value = "columns")
         private String columns;
 
-        @ApiModelProperty(value = "阈值")
+        @ApiModelProperty(value = "threshold")
         private String threshold;
     }
 }

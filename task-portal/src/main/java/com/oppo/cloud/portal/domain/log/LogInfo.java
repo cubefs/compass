@@ -30,22 +30,22 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@ApiModel("日志内容")
+@ApiModel("Log information")
 public class LogInfo {
 
-    @ApiModelProperty(value = "日志类型")
+    @ApiModelProperty(value = "log type")
     private String logType;
 
-    @ApiModelProperty(value = "事件描述")
+    @ApiModelProperty(value = "event description")
     private String event;
 
-    @ApiModelProperty(value = "时间")
+    @ApiModelProperty(value = "time")
     private String logTime;
 
-    @ApiModelProperty(value = "关键日志")
+    @ApiModelProperty(value = "log content")
     private String logContent;
 
-    @ApiModelProperty(value = "诊断建议")
+    @ApiModelProperty(value = "advice")
     private String advice;
 
     @ApiModelProperty(value = "action")

@@ -23,12 +23,12 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@ApiModel(value = "作业列表相应")
+@ApiModel(value = "Jobs Response")
 public class JobsResponse {
 
-    @ApiModelProperty(value = "作业层列表")
+    @ApiModelProperty(value = "job information")
     private List<JobInfo> jobInfos;
 
-    @ApiModelProperty(value = "总数")
+    @ApiModelProperty(value = "count")
     private Long count;
 }

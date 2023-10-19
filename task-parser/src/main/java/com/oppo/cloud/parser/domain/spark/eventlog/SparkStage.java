@@ -38,7 +38,7 @@ public class SparkStage {
     private String name;
     private Map<Integer, List<SparkTask>> tasksMap;
     /**
-     * 有重试的stage
+     * Stage with retry
      */
     private Map<Integer, Boolean> failed;
     private Map<Integer, Long> completeTimeMap;

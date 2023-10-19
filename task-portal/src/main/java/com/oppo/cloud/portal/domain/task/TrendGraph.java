@@ -24,16 +24,16 @@ import java.util.List;
 public class TrendGraph {
 
     /**
-     * 趋势图名称
+     * name
      */
     private String name;
     /**
-     * 单位
+     * unit
      */
     private String unit;
 
     /**
-     * 名值
+     * data
      */
     private List<IndicatorData> data;
 

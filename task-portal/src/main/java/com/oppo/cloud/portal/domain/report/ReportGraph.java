@@ -24,22 +24,22 @@ import lombok.Data;
 public class ReportGraph {
 
     /**
-     * 趋势图：CPU/内存/数量
+     * Trend Graph：CPU/MEMORY/NUMBER
      */
     private TrendGraph trendGraph;
 
     /**
-     * 分布图：CPU
+     * Distribution Graph：CPU
      */
     private DistributionGraph cpu;
 
     /**
-     * 分布图：内存
+     * Distribution Graph：MEMORY
      */
     private DistributionGraph mem;
 
     /**
-     * 分布图：数量
+     * Distribution Graph：NUMBER
      */
     private DistributionGraph num;
 }

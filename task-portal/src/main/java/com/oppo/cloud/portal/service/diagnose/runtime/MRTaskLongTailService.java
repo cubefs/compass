@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * MR任务长尾异常
+ * MRTaskLongTail Service
  */
 @Order(2)
 @Slf4j

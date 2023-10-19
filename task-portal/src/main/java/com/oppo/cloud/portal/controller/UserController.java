@@ -41,7 +41,7 @@ public class UserController {
     private UserService userService;
 
     /**
-     * 登录接口
+     * login api
      */
     @ApiOperation("login")
     @PostMapping(value = "/login")

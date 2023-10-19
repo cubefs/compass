@@ -31,46 +31,46 @@ import java.util.Map;
 @Data
 public class LogSummary extends OpenSearchInfo {
 
-    @ApiModelProperty(value = "applicationId名称")
+    @ApiModelProperty(value = "applicationId")
     private String applicationId;
 
-    @ApiModelProperty(value = "日志类型")
+    @ApiModelProperty(value = "log type")
     private String logType;
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "task name")
     private String taskName;
 
-    @ApiModelProperty(value = "执行周期")
+    @ApiModelProperty(value = "execution date")
     private Date executionDate;
 
-    @ApiModelProperty(value = "任务重试次数")
+    @ApiModelProperty(value = "retry times")
     private Integer retryTimes;
 
-    @ApiModelProperty(value = "日志异常类型")
+    @ApiModelProperty(value = "action type")
     private String action;
 
-    @ApiModelProperty(value = "日志解析步骤")
+    @ApiModelProperty(value = "step")
     private Integer step;
 
-    @ApiModelProperty(value = "正则匹配的变量名")
+    @ApiModelProperty(value = "group names")
     private List<String> groupNames;
 
-    @ApiModelProperty(value = "原始日志")
+    @ApiModelProperty(value = "raw log")
     private String rawLog;
 
-    @ApiModelProperty(value = "原始日志路径")
+    @ApiModelProperty(value = "log path")
     private String logPath;
 
-    @ApiModelProperty(value = "正则匹配变量值")
+    @ApiModelProperty(value = "group data")
     private Map<String, String> groupData;
 
-    @ApiModelProperty(value = "日志时间")
+    @ApiModelProperty(value = "log timestamp")
     private Integer logTimestamp;
 
     public Map<String, Object> genDoc() throws Exception {

@@ -25,12 +25,12 @@ import java.util.List;
 
 
 @Data
-@ApiModel("指标数据信息")
+@ApiModel("Metric information")
 public class MetricInfo {
 
-    @ApiModelProperty(value = "横坐标值")
+    @ApiModelProperty(value = "X-axis value")
     private String xValue;
 
-    @ApiModelProperty(value = "指标值(同一个横坐标对应多个y值)")
+    @ApiModelProperty(value = "Metric value (the same X-axis corresponds to multiple Y values)")
     private List<ValueInfo> yValues = new ArrayList<>();
 }

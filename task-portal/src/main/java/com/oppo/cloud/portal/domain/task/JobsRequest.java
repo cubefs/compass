@@ -34,43 +34,43 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@ApiModel(value = "作业层列表请求参数")
+@ApiModel(value = "Jobs Request")
 public class JobsRequest {
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "task name")
     private String taskName;
 
-    @ApiModelProperty(value = "开始时间")
+    @ApiModelProperty(value = "start time")
     private long start = 0;
 
-    @ApiModelProperty(value = "结束时间")
+    @ApiModelProperty(value = "end time")
     private long end = 0;
 
-    @ApiModelProperty(value = "创建者")
+    @ApiModelProperty(value = "username")
     private String username;
 
-    @ApiModelProperty(value = "异常类型")
+    @ApiModelProperty(value = "categories")
     private List<String> categories;
 
-    @ApiModelProperty(value = "趋势图类型, 可选值：cpuTrend(cpu消耗趋势), memoryTrend(内存消耗趋势), numTrend(数量趋势)")
+    @ApiModelProperty(value = "graph type, optional：cpuTrend, memoryTrend, numTrend")
     private String graphType;
 
-    @ApiModelProperty(value = "页码")
-    @Min(value = 1, message = "page 不能小于1")
+    @ApiModelProperty(value = "page")
+    @Min(value = 1, message = "page cannot be less than 1")
     private Integer page = 1;
 
-    @ApiModelProperty(value = "每页数量")
-    @Max(value = 500, message = "pageSize 不能大于500")
+    @ApiModelProperty(value = "Number per page")
+    @Max(value = 500, message = "pageSize cannot be greater than 500")
     private Integer pageSize = 15;
 
     /**
-     * 获取TermQuery, 方便构建elk查询条件
+     * Get TermQuery
      */
     @JsonIgnore
     public Map<String, Object> getTermQuery() {
@@ -100,7 +100,7 @@ public class JobsRequest {
     }
 
     /**
-     * 获取排序规则
+     * Get sort order
      */
     @JsonIgnore
     public Map<String, SortOrder> getSortOrder() {
@@ -128,7 +128,7 @@ public class JobsRequest {
     }
 
     /**
-     * 分页开始的条数
+     * Get from page number
      */
     @JsonIgnore
     public Integer getFrom() {
@@ -136,7 +136,7 @@ public class JobsRequest {
     }
 
     /**
-     * 每页大小
+     * Get page size
      */
     @JsonIgnore
     public Integer getSize() {

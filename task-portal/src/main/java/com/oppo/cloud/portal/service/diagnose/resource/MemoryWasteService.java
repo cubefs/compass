@@ -40,7 +40,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * 内存资源浪费
+ * MemoryWaste Service
  */
 @Order(2)
 @Service
@@ -64,25 +64,24 @@ public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
     public MemoryWaste generateData(DetectorResult detectorResult, DetectorConfig config,
                                     String applicationId) throws Exception {
         MemoryWaste memoryWaste = new MemoryWaste();
-        // 获取es中driver、executor的时间
+
         MemWasteAbnormal memWasteAbnormal =
                 ((JSONObject) detectorResult.getData()).toJavaObject(MemWasteAbnormal.class);
         if (memWasteAbnormal == null) {
             return null;
         }
-        // 获取gc报告(包括executor、driver峰值内存以及相应的gc报告数据)
+
         List<GCReport> gcReportList = memWasteAbnormal.getGcReportList();
         if (gcReportList.size() == 0) {
             return null;
         }
-        // executor、driver峰值内存
+        // executor/driver peak memory
         List<ExecutorPeakMemory> executorPeakMemoryList = memWasteAbnormal.getExecutorPeakMemoryList();
-        // executor、driver峰值内存图表数据
+        // executor/driver chart data
         Chart<MetricInfo> chart = this.getChart(executorPeakMemoryList, memWasteAbnormal, memoryWaste.getVars());
-        // GC报告列表
+        // GC report data
         List<MemoryWaste.ComputeNode> computeNodeList = getGcLogList(gcReportList);
         if (computeNodeList.size() > 1) {
-            // 说明有Executor,则显示分配的内存
             memoryWaste.getVars().put("executorMemory",
                     String.format("%.2fGB", UnitUtil.transferBToGB((memWasteAbnormal.getExecutorMemory()))));
         } else {
@@ -90,7 +89,6 @@ public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
         }
         memoryWaste.getChartList().add(chart);
         memoryWaste.setComputeNodeList(computeNodeList);
-        // 计算内存浪费
         memoryWaste.setAbnormal(memWasteAbnormal.getAbnormal());
         Float wasteRatio = memWasteAbnormal.getWastePercent();
         memoryWaste.getVars().put("wasteRatio", String.format("%.2f%%", wasteRatio == null ? 0 : wasteRatio));
@@ -117,14 +115,13 @@ public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
     }
 
     /**
-     * 生成GC分析列表
+     * Get Gc report data
      *
      * @param gcReportList
      * @return
      */
     private List<MemoryWaste.ComputeNode> getGcLogList(List<GCReport> gcReportList) {
         List<MemoryWaste.ComputeNode> computeNodeList = new ArrayList<>();
-        // 去重
         Set<Integer> check = new HashSet<>();
         for (GCReport gcReport : gcReportList) {
             if (check.add(gcReport.getExecutorId())) {
@@ -148,7 +145,7 @@ public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
     }
 
     /**
-     * 根据内存数据生成图表数据
+     * Get chart data
      */
     private Chart<MetricInfo> getChart(List<ExecutorPeakMemory> executorPeakMemories, MemWasteAbnormal memWasteAbnormal,
                                        Map<String, String> vars) {
@@ -185,34 +182,9 @@ public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
         return chart;
     }
 
-    /**
-     * 查询es获取GC报告数据
-     */
-    private List<GCReport> getGcReport(String applicationId) throws Exception {
-        HashMap<String, Object> termQueryConditions = new HashMap<>(1);
-        termQueryConditions.put("applicationId.keyword", applicationId);
-        return openSearchService.find(GCReport.class, termQueryConditions, gcIndex + "-*");
-    }
 
     /**
-     * 查询es获取内存分析报告(driver和executor数据分开存放)
-     *
-     * @param applicationId
-     * @return
-     */
-    private List<MemoryAnalyze> getMemoryAnalyze(String applicationId) throws Exception {
-        HashMap<String, Object> termQueryConditions = new HashMap<>(1);
-        termQueryConditions.put("applicationId.keyword", applicationId);
-        List<MemoryAnalyze> memoryAnalyzeList =
-                openSearchService.find(MemoryAnalyze.class, termQueryConditions, gcIndex + "-*");
-        if (memoryAnalyzeList.size() != 2) {
-            log.error("get getMemoryAnalyze from es abnormal, applicationId:{}", applicationId);
-        }
-        return memoryAnalyzeList;
-    }
-
-    /**
-     * 补充图表信息
+     * build chart information
      *
      * @param chart
      */
@@ -227,22 +199,5 @@ public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
         dataCategory.put("peak", new Chart.ChartInfo("峰值内存", UIUtil.KEY_COLOR));
 
         chart.setDataCategory(dataCategory);
-    }
-
-    /**
-     * 获取driver、executor内存浪费分析数据
-     */
-    private MemWasteAbnormal getDurationInfo(String applicationId) throws Exception {
-        HashMap<String, Object> termQueryConditions = new HashMap<>();
-        termQueryConditions.put("applicationId.keyword", applicationId);
-        termQueryConditions.put("appCategory.keyword", AppCategoryEnum.MEMORY_WASTE.getCategory());
-        // es查询元数据
-        List<DetectionStorage> detectionStorageList =
-                openSearchService.find(DetectionStorage.class, termQueryConditions, detectIndex);
-        if (detectionStorageList.size() != 0) {
-            DetectionStorage detectionStorage = detectionStorageList.get(0);
-            return detectionStorage.getMemWasteAbnormal();
-        }
-        return null;
     }
 }

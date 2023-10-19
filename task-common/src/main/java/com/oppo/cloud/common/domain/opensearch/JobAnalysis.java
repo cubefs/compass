@@ -30,85 +30,85 @@ import java.util.*;
 @ApiModel("all abnormal job instance info will save in this index of es")
 public class JobAnalysis extends OpenSearchInfo {
 
-    @ApiModelProperty(value = "用户名称")
+    @ApiModelProperty(value = "users")
     private List<SimpleUser> users;
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @ApiModelProperty(value = "项目Id")
+    @ApiModelProperty(value = "project Id")
     private Integer projectId;
 
-    @ApiModelProperty(value = "工作流")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "工作流Id")
+    @ApiModelProperty(value = "flow Id")
     private Integer flowId;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "task name")
     private String taskName;
 
-    @ApiModelProperty(value = "任务Id")
+    @ApiModelProperty(value = "task Id")
     private Integer taskId;
 
-    @ApiModelProperty(value = "执行周期")
+    @ApiModelProperty(value = "execution date")
     private Date executionDate;
 
-    @ApiModelProperty(value = "开始时间")
+    @ApiModelProperty(value = "start time")
     private Date startTime;
 
-    @ApiModelProperty(value = "结束时间")
+    @ApiModelProperty(value = "end time")
     private Date endTime;
 
-    @ApiModelProperty(value = "任务执行耗时")
+    @ApiModelProperty(value = "duration")
     private Double duration;
 
-    @ApiModelProperty(value = "任务执行状态")
+    @ApiModelProperty(value = "task state")
     private String taskState;
 
-    @ApiModelProperty(value = "执行所消耗所有memory·seconds")
+    @ApiModelProperty(value = "memory·seconds")
     private Double memorySeconds;
 
-    @ApiModelProperty(value = "执行所消耗所有vcore·seconds")
+    @ApiModelProperty(value = "vcore·seconds")
     private Double vcoreSeconds;
 
-    @ApiModelProperty(value = "任务类型")
+    @ApiModelProperty(value = "task type")
     private String taskType;
 
-    @ApiModelProperty(value = "任务重试次数")
+    @ApiModelProperty(value = "retry times")
     private Integer retryTimes;
 
-    @ApiModelProperty(value = "诊断类型")
+    @ApiModelProperty(value = "categories")
     private List<String> categories;
 
-    @ApiModelProperty(value = "运行耗时基线值")
+    @ApiModelProperty(value = "baseline duration")
     private String durationBaseline;
 
-    @ApiModelProperty(value = "结束时间基线值")
+    @ApiModelProperty(value = "baseline end time")
     private String endTimeBaseline;
 
-    @ApiModelProperty(value = "最近一次成功时间(长期失败任务)")
+    @ApiModelProperty(value = "last successful time(Long-term failed task)")
     private String successExecutionDay;
 
-    @ApiModelProperty(value = "距离最近一次成功的天数(长期失败任务)")
+    @ApiModelProperty(value = "days since the last success(Long-term failed task)")
     private String successDays;
 
-    @ApiModelProperty(value = "任务使用内存(OOM预警)")
+    @ApiModelProperty(value = "task used memory(Memory overflow warning)")
     private Double memory;
 
-    @ApiModelProperty(value = "内存占比(OOM预警)")
+    @ApiModelProperty(value = "memory usage ratio(Memory overflow warning)")
     private Double memoryRatio;
 
-    @ApiModelProperty(value = "是否删除")
+    @ApiModelProperty(value = "task deletion status: not deleted (0), deleted (1)")
     private Integer deleted = 0;
 
-    @ApiModelProperty(value = "任务处理状态：未处理(0)、已处理(1)")
+    @ApiModelProperty(value = "task processing status: unprocessed (0), processed (1)")
     private Integer taskStatus = 0;
 
-    @ApiModelProperty(value = "创建时间")
+    @ApiModelProperty(value = "create time")
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
+    @ApiModelProperty(value = "update time")
     private Date updateTime;
 
     public Map<String, Object> genDoc() throws Exception {

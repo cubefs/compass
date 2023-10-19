@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 单位转换工具
+ * Unit conversion util
  **/
 
 @Slf4j
@@ -32,7 +32,7 @@ public class UnitUtil {
     public static Pattern UnitRegex = Pattern.compile("(?<num>[0-9]+)(?<unit>[a-zA-Z]+)");
 
     /**
-     * 其他单位转Byte
+     * Other units convert to Byte
      */
     public static Long toBytes(String s) {
         if (StringUtils.isEmpty(s)) {

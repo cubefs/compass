@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * MR推测执行
+ * MRSpeculativeTask Service
  */
 @Order(3)
 @Service

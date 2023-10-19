@@ -80,7 +80,7 @@ public class ReportServiceImpl implements ReportService {
         UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
         PeriodTime periodTime = new PeriodTime(1);
 
-        // 本周期
+        // this period
         long endTimestamp = periodTime.getEndTimestamp();
         long startTimestamp = periodTime.getStartTimestamp();
         CompletableFuture<StatisticsData> thisPeriodCompletableFuture = CompletableFuture.supplyAsync(() -> {
@@ -91,7 +91,7 @@ public class ReportServiceImpl implements ReportService {
             }
 
         });
-        // 环比
+        // last day period
         long lastStartTimestamp = periodTime.getLastDayPeriod().getStartTimestamp();
         long lastEndTimestamp = periodTime.getLastDayPeriod().getEndTimestamp();
         CompletableFuture<StatisticsData> lastPeriodCompletableFuture = CompletableFuture.supplyAsync(() -> {
@@ -101,7 +101,7 @@ public class ReportServiceImpl implements ReportService {
                 throw new CompletionException(e);
             }
         });
-        // 同比
+        // last week period
         long lastWeekStartTimestamp = periodTime.getLastWeekPeriod().getStartTimestamp();
         long lastWeekEndTimestamp = periodTime.getLastWeekPeriod().getEndTimestamp();
         CompletableFuture<StatisticsData> lastWeekPeriodCompletableFuture = CompletableFuture.supplyAsync(() -> {
@@ -135,7 +135,7 @@ public class ReportServiceImpl implements ReportService {
             return result;
         }
 
-        // 异常任务数占比的环比
+        // Chain ratio of abnormal jobs
         double exceptionChainRatio = lastResult.getAbnormalJobNumRatio() == 0 ? 1
                 : (result.getAbnormalJobNumRatio() - lastResult.getAbnormalJobNumRatio())
                 / lastResult.getAbnormalJobNumRatio();
@@ -143,7 +143,7 @@ public class ReportServiceImpl implements ReportService {
             exceptionChainRatio = 0.0;
         }
         result.setAbnormalJobNumChainRatio(exceptionChainRatio);
-        // 异常任务数占比的同比
+        // Day On Day ratio of abnormal jobs
         double exceptionDayOnDayRatio = lastWeekResult.getAbnormalJobNumRatio() == 0 ? 1
                 : (result.getAbnormalJobNumRatio() - lastWeekResult.getAbnormalJobNumRatio())
                 / lastWeekResult.getAbnormalJobNumRatio();
@@ -152,7 +152,7 @@ public class ReportServiceImpl implements ReportService {
         }
         result.setAbnormalJobNumDayOnDay(exceptionDayOnDayRatio);
 
-        // 异常实例数占比的环比
+        // Chain ratio of abnormal instances
         double exceptionJobInstanceChainRatio = lastResult.getAbnormalJobInstanceNumRatio() == 0 ? 1
                 : (result.getAbnormalJobInstanceNumRatio() - lastResult.getAbnormalJobInstanceNumRatio())
                 / lastResult.getAbnormalJobInstanceNumRatio();
@@ -161,7 +161,7 @@ public class ReportServiceImpl implements ReportService {
         }
         result.setAbnormalJobInstanceNumChainRatio(exceptionJobInstanceChainRatio);
 
-        // 异常实例数占比的同比
+        // Day On Day ratio of abnormal instances
         double exceptionExecutionDateDayOnDayCostRatio = lastWeekResult.getAbnormalJobInstanceNumRatio() == 0 ? 1
                 : (result.getAbnormalJobInstanceNumRatio() - lastWeekResult.getAbnormalJobInstanceNumRatio())
                 / lastWeekResult.getAbnormalJobInstanceNumRatio();
@@ -170,7 +170,7 @@ public class ReportServiceImpl implements ReportService {
         }
         result.setAbnormalJobInstanceNumDayOnDay(exceptionExecutionDateDayOnDayCostRatio);
 
-        // 异常任务cpu占比的环比
+        // Chain ratio of job CPU number
         double exceptionCpuChainRatio = lastResult.getAbnormalJobCpuNumRatio() == 0 ? 1
                 : (result.getAbnormalJobCpuNumRatio() - lastResult.getAbnormalJobCpuNumRatio())
                 / lastResult.getAbnormalJobCpuNumRatio();
@@ -179,7 +179,7 @@ public class ReportServiceImpl implements ReportService {
         }
         result.setAbnormalJobCpuNumChainRatio(exceptionCpuChainRatio);
 
-        // 异常任务cpu占比的同比
+        // Day On Day ratio of job CPU number
         double exceptionDayOnDayCpuRatio = lastWeekResult.getAbnormalJobCpuNumRatio() == 0 ? 1
                 : (result.getAbnormalJobCpuNumRatio() - lastWeekResult.getAbnormalJobCpuNumRatio())
                 / lastWeekResult.getAbnormalJobCpuNumRatio();
@@ -188,7 +188,7 @@ public class ReportServiceImpl implements ReportService {
         }
         result.setAbnormalJobCpuNumDayOnDay(exceptionDayOnDayCpuRatio);
 
-        // 异常任务内存占比的环比
+        // Chain ratio of job memory number
         double exceptionMemoryChainRatio = lastResult.getAbnormalJobMemoryNumRatio() == 0 ? 1
                 : (result.getAbnormalJobMemoryNumRatio() - lastResult.getAbnormalJobMemoryNumRatio())
                 / lastResult.getAbnormalJobMemoryNumRatio();
@@ -197,7 +197,7 @@ public class ReportServiceImpl implements ReportService {
         }
         result.setAbnormalJobMemoryNumChainRatio(exceptionMemoryChainRatio);
 
-        // 异常任务内存占比的同比
+        // Day On Day ratio of job memory number
         double exceptionDayOnDayMemoryRatio = lastWeekResult.getAbnormalJobMemoryNumRatio() == 0 ? 1
                 : (result.getAbnormalJobMemoryNumRatio() - lastWeekResult.getAbnormalJobMemoryNumRatio())
                 / lastWeekResult.getAbnormalJobMemoryNumRatio();
@@ -228,7 +228,7 @@ public class ReportServiceImpl implements ReportService {
             throws Exception {
         StatisticsData statisticsData = new StatisticsData();
 
-        // 不包含当天0点
+        // Does not include 00:00 of the current day
         endTimestamp = endTimestamp - 1000;
         Map<String, Object> termQuery = new HashMap<>();
         if (StringUtils.isNotBlank(projectName)) {
@@ -244,7 +244,7 @@ public class ReportServiceImpl implements ReportService {
         SearchSourceBuilder searchSourceBuilder =
                 openSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
 
-        // 诊断任务数
+        // Number of abnormal jobs
         AggregationBuilder aggregationBuilderAbnormalJobCount =
                 AggregationBuilders.cardinality("groupByCount")
                         .script(new Script("doc['projectName.keyword'].value+'@@'+doc['flowName.keyword'].value+'@@'+doc['taskName.keyword'].value")
@@ -261,15 +261,15 @@ public class ReportServiceImpl implements ReportService {
         Long abnormalJobCount = cardinality.getValue();
         statisticsData.setAbnormalJobNum(abnormalJobCount.intValue());
 
-        // 活跃任务数
+        // Number of active jobs
         int jobCount = taskInstanceExtendMapper.searchJobCount(new Date(startTimestamp), new Date(endTimestamp));
         statisticsData.setJobNum(jobCount);
 
-        // 诊断实例数
+        //Number of abnormal instances
         long abnormalJobInstanceCount = openSearchService.count(searchSourceBuilder, jobIndex + "-*");
         statisticsData.setAbnormalJobInstanceNum((int) abnormalJobInstanceCount);
 
-        // 运行实例数
+        // Number of job instances
         int jobInstanceCount =
                 taskInstanceExtendMapper.searchJobInstanceCount(new Date(startTimestamp), new Date(endTimestamp));
         statisticsData.setJobInstanceNum(jobInstanceCount);
@@ -280,7 +280,7 @@ public class ReportServiceImpl implements ReportService {
                 jobInstanceCount == 0 ? 0 : (double) abnormalJobInstanceCount / jobInstanceCount;
         statisticsData.setAbnormalJobInstanceNumRatio(abnormalJobInstanceRatio);
 
-        // 异常任务CPU、内存统计
+        // Abnormal jobs CPU and memory statistics
         searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
         searchSourceBuilder.aggregation(AggregationBuilders.sum("cpu").field("vcoreSeconds"));
         searchSourceBuilder.aggregation(AggregationBuilders.sum("memory").field("memorySeconds"));
@@ -294,7 +294,7 @@ public class ReportServiceImpl implements ReportService {
         double abnormalJobInstanceMemory = memory.getValue();
         statisticsData.setAbnormalJobMemoryNum(abnormalJobInstanceMemory);
 
-        // 全量任务CPU、内存统计
+        // All jobs CPU and memory statistics
         searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
         searchSourceBuilder.aggregation(AggregationBuilders.sum("cpu").field("vcoreSeconds"));
         searchSourceBuilder.aggregation(AggregationBuilders.sum("memory").field("memorySeconds"));
@@ -317,7 +317,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     /**
-     * 获取报告总览图表
+     * Get the graph chart of the report
      */
     @Override
     public ReportGraph getGraph(ReportRequest reportRequest) throws Exception {
@@ -329,7 +329,7 @@ public class ReportServiceImpl implements ReportService {
         JobsRequest request = new JobsRequest();
         request.setProjectName(reportRequest.getProjectName());
         request.setStart(reportRequest.getStart() * 1000);
-        // 不包含结束时间当天
+        // Excludes the end day.
         request.setEnd((reportRequest.getEnd() - 1) * 1000);
 
         ReportGraph graph = new ReportGraph();
@@ -351,7 +351,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     /**
-     * 资源消耗趋势
+     * Resource consumption trend
      */
     public TrendGraph getResourceTrendData(JobsRequest request, String field) throws Exception {
 
@@ -407,7 +407,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     /**
-     * 数量趋势
+     * Number trend
      */
     public TrendGraph getNumTrendData(JobsRequest request) throws Exception {
         TrendGraph trendGraph = new TrendGraph();
@@ -428,7 +428,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     /**
-     * 获取资源/数量分布图
+     * Distribution Graph
      */
     public ReportGraph getDistributionGraph(ReportRequest reportRequest) throws Exception {
         ReportGraph graph = new ReportGraph();
@@ -504,7 +504,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     /**
-     * 获取项目列表
+     * Get projects
      */
     @Override
     public Set<String> getProjects() throws Exception {

@@ -21,7 +21,7 @@ import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import java.util.List;
 
 /**
- * 读取日志接口
+ * Log reader interface
  */
 public interface IReader {
 

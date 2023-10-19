@@ -30,20 +30,20 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 /**
- * pbkdf2_sha256加密验证算法
- * airflow各个版本的加解密包werkzeug中的常量值不同,如:
+ * pbkdf2_sha256 encryption and verification algorithm
+ * The encryption package in different versions of Airflow, such as Werkzeug, has different constant values:
  * Werkzeug-0.14.1    DEFAULT_PBKDF2_ITERATIONS:50000
  * Werkzeug-1.0.1     DEFAULT_PBKDF2_ITERATIONS:150000
  * Werkzeug-2.2.1     DEFAULT_PBKDF2_ITERATIONS:260000
- * 目前默认使用的是 1.0.1 版本,如使用其他版本werkzeug,需变更参数值,
- * 在airflow安装节点上输入命令进行查询,如: pip index versions Werkzeug
- * 根据查询出来的INSTALLED版本进行变更即可;
+ * The current default version is 1.0.1. If you use a different version of Werkzeug, you need to change the parameter value accordingly.
+ * To check the versions of Werkzeug installed in your Airflow installation, run the following command on the airflow installation node: `pip index versions Werkzeug`.
+ * Based on the installed version returned by the query, modify the parameter accordingly.
  */
 @Slf4j
 @Component
 public class CryptoUtil {
     /**
-     * 默认迭代次数
+     * Default iterations
      */
     private static Integer DEFAULT_ITERATIONS;
 
@@ -96,13 +96,13 @@ public class CryptoUtil {
      * @return
      */
     private static String encode(String password, String salt, int iterations) {
-        // 返回哈希密码，以及算法、迭代次数和salt
+        // Return the hashed password along with the algorithm, iteration count, and salt
         String hash = getEncodedHash(password, salt, iterations);
         return String.format("%s:%d$%s$%s", algorithm, iterations, salt, hash);
     }
 
     /**
-     * 校验密码
+     * Check password
      *
      * @param password
      * @param hashedPassword
@@ -110,13 +110,15 @@ public class CryptoUtil {
      */
     public static boolean checkPassword(String password, String hashedPassword) {
 
-        /*
-         * <algorithm>$<iterations>$<salt>$<hash> 以美元字符分分隔并由哈希算法、算法迭代次数（工作因数）、随机的salt、以及生成的密码哈希值组成
-         */
+
+        // <algorithm>$<iterations>$<salt>$<hash>
+        // Composed of the hashed algorithm, algorithm iteration count (work factor), random salt,
+        // and the resulting password hash, separated by dollar signs $.
+
 
         String[] parts = hashedPassword.split("\\$");
         if (parts.length != 3) {
-            // 格式错误
+            // Format error
             return false;
         }
 

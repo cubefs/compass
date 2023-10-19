@@ -24,13 +24,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-@ApiModel("是否为异常项")
+@ApiModel("Abnormal item")
 public class IsAbnormal {
 
     private Boolean abnormal = false;
 
     private String info;
 
-    @ApiModelProperty(value = "分析结论所需的局部变量")
+    @ApiModelProperty(value = "Local variables required for analysis conclusions")
     private Map<String, String> vars = new HashMap<>();
 }

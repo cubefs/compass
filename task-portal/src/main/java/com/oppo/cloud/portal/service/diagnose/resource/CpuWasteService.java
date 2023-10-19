@@ -29,7 +29,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 /**
- * cpu资源浪费
+ * CpuWaste Service
  */
 @Order(1)
 @Service

@@ -49,7 +49,7 @@ public class DetectorUtil {
                     Arrays.toString(simpleData)));
         }
         res[0] = q1 - 3 * iQR;
-        // 如果小于零则取最小值
+        // If it is less than zero, take the minimum value
         res[0] = res[0] > 0 ? res[0] : simpleData[0];
         res[1] = q1 - 1.5 * iQR;
         res[2] = q2;

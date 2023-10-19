@@ -84,7 +84,8 @@ public class OOMWarnService extends RunTimeBaseService<OOMWarn> {
     }
 
     /**
-     * 这个异常类型有两种建议，需要重写父类的方法
+     * there are two suggestions for this exception type,
+     * and the parent class method needs to be overridden.
      *
      * @param isAbnormal
      * @return

@@ -27,7 +27,7 @@ import java.util.LinkedHashMap;
 @Data
 public class GlobalSort extends IsAbnormal {
 
-    @ApiModelProperty(value = "全局排序异常列表")
+    @ApiModelProperty(value = "table information")
     private Table<GlobalSortTable> table = new Table<>();
 
     public GlobalSort() {
@@ -49,13 +49,13 @@ public class GlobalSort extends IsAbnormal {
         @ApiModelProperty(value = "stageId")
         private String stageId;
 
-        @ApiModelProperty(value = "任务个数")
+        @ApiModelProperty(value = "task number")
         private String taskNum;
 
-        @ApiModelProperty(value = "处理数据量")
+        @ApiModelProperty(value = "task size")
         private String dataOfColumns;
 
-        @ApiModelProperty(value = "执行耗时")
+        @ApiModelProperty(value = "duration")
         private String duration;
     }
 }

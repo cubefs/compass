@@ -84,7 +84,7 @@ public class JobServiceImpl implements JobService {
     private RedisService redisService;
 
     /**
-     * 搜索作业层列表
+     * Search jobs
      */
     @Override
     public JobsResponse searchJobs(JobsRequest request) throws Exception {
@@ -120,7 +120,7 @@ public class JobServiceImpl implements JobService {
         jobInfo.setTryNumber(TryNumberUtil.updateTryNumber(jobInfo.getTryNumber(), userInfo.getSchedulerType()));
         List<TaskApp> taskApps = openSearchService.find(TaskApp.class, builder, taskAppIndex + "-*");
         Map<String, List<TaskAppInfo>> taskAppMap = this.formatJobApps(taskApps, userInfo.getSchedulerType());
-        // 构造完整的taskApp
+        // build TaskAppInfo
         for (int i = 0; i <= jobInfo.getTryNumber(); i++) {
             String key = String.format("第%d次执行", i + 1);
             if (!taskAppMap.containsKey(key)) {
@@ -154,13 +154,13 @@ public class JobServiceImpl implements JobService {
             return res;
         }
         List<TaskApp> taskApps = openSearchService.find(TaskApp.class, builder, taskAppIndex + "-*");
-        // 获取Yarn异常日志
+        // Get Yarn diagnostic summary
         CompletableFuture<String> completableFutureYarn = CompletableFuture.supplyAsync(() -> this.getDiagnosticDetectSum(taskApps));
-        // 调度器异常汇总
-        CompletableFuture<String> completableFutureOflow = CompletableFuture.supplyAsync(() -> this.getSchedulerDetectSum(jobDetailRequest));
-        // app级别的诊断汇总
+        // Get scheduler diagnostic summary
+        CompletableFuture<String> completableFutureScheduler = CompletableFuture.supplyAsync(() -> this.getSchedulerDetectSum(jobDetailRequest));
+        // Get application diagnostic summary
         CompletableFuture<List<String>> completableFutureApps = CompletableFuture.supplyAsync(() -> this.getJobAppDetectSum(taskApps));
-        // 任务级别的任务异常汇总
+        // Get job diagnostic summary
         List<String> taskCategory = new ArrayList<>();
         JobAnalysis jobAnalysis = items.get(0);
         List<String> categoryCh = JobCategoryEnum.getJobCategoryCh(jobAnalysis.getCategories());
@@ -172,8 +172,8 @@ public class JobServiceImpl implements JobService {
         if (completableFutureYarn.get() != null) {
             res.add(completableFutureYarn.get());
         }
-        if (completableFutureOflow.get() != null) {
-            res.add(completableFutureOflow.get());
+        if (completableFutureScheduler.get() != null) {
+            res.add(completableFutureScheduler.get());
         }
         if (completableFutureApps.get() != null) {
             List<String> appSummary = completableFutureApps.get();
@@ -350,12 +350,12 @@ public class JobServiceImpl implements JobService {
     }
 
     /**
-     * 更新任务状态
+     * Update job state
      */
     @Override
     public void updateJobState(JobDetailRequest request) throws Exception {
         Map<String, Object> termQuery = request.getTermQuery();
-        // 将在此执行周期前的job都标记为已处理
+        // Mark all jobs before this execution period as processed.
         termQuery.remove("executionDate");
         HashMap<String, Object[]> rangeQuery = new HashMap<>();
         rangeQuery.put("executionDate", new Object[]{null, DateUtil.timestampToUTCDate(request.getExecutionDate().getTime())});
@@ -384,7 +384,7 @@ public class JobServiceImpl implements JobService {
     }
 
     /**
-     * 生成运行耗时异常的分析结论
+     * Generate duration conclusions.
      */
     private String getDurationConclusion(JobAnalysis jobAnalysis) {
         String info = String.format("本任务运行耗时为%s", UnitUtil.transferRed(UnitUtil.transferSecond(jobAnalysis.getDuration() == null ? 0 : jobAnalysis.getDuration())));
@@ -400,7 +400,7 @@ public class JobServiceImpl implements JobService {
     }
 
     /**
-     * 获取diagnostic的诊断汇总信息
+     * Get Yarn diagnostic summary
      */
     private String getDiagnosticDetectSum(List<TaskApp> taskApps) {
         List<LogInfo> yarnDetectLog = logService.getDiagnosticDetect(taskApps);
@@ -416,7 +416,7 @@ public class JobServiceImpl implements JobService {
     }
 
     /**
-     * 获取调度日志的诊断汇总信息
+     * Get scheduler diagnostic summary
      */
     private String getSchedulerDetectSum(JobDetailRequest jobDetailRequest) {
         List<LogInfo> logInfoList = logService.getLogDetect(jobDetailRequest, "scheduler");
@@ -432,7 +432,7 @@ public class JobServiceImpl implements JobService {
     }
 
     /**
-     * 获取Job的异常汇总信息
+     * Get job diagnostic summary
      */
     private List<String> getJobAppDetectSum(List<TaskApp> taskApps) {
         Map<String, List<String>> categoryApps = new HashMap<>();
@@ -453,7 +453,7 @@ public class JobServiceImpl implements JobService {
             List<String> appSum = categoryApps.get(categoryStr);
             for (String app : appSum) {
                 if (i % 3 == 0) {
-                    // 每四个进行换行
+                    // Change to a new line after every four app
                     stringBuilder.append(app).append("<br/>");
                 } else {
                     stringBuilder.append(app).append(",");
@@ -469,7 +469,7 @@ public class JobServiceImpl implements JobService {
     }
 
     /**
-     * 将taskApps按执行次数进行格式化存储
+     * Format job apps
      *
      * @param taskApps
      * @return
@@ -478,14 +478,14 @@ public class JobServiceImpl implements JobService {
         Map<String, List<TaskAppInfo>> taskAppMap = new LinkedHashMap<>();
         for (TaskApp taskApp : taskApps) {
             if (taskApp.getApplicationId() == null) {
-                // appId不存在情况
+                // appId does not exist
                 taskApp.setApplicationId("applicationId不存在");
             }
             TaskAppInfo taskAppInfo = TaskAppInfo.from(taskApp);
             taskAppInfo.setTryNumber(TryNumberUtil.updateTryNumber(taskAppInfo.getTryNumber(), schedulerType));
             String key = String.format("第%d次执行", taskAppInfo.getTryNumber() + 1);
             List<TaskAppInfo> tryNumberTaskApps = taskAppMap.getOrDefault(key, new ArrayList<>());
-            // appId去重
+            // Deduplication of appId
             boolean contains = false;
             for (TaskAppInfo temp : tryNumberTaskApps) {
                 if (temp.getApplicationId().equals(taskAppInfo.getApplicationId())) {

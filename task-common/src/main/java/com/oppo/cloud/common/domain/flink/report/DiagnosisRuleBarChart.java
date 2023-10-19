@@ -22,32 +22,32 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 诊断规则柱状图
+ * Diagnosis rules bar chart.
  */
 @Data
 public class DiagnosisRuleBarChart implements IDiagnosisRuleChart {
     /**
-     * 图表类型
+     * Chart type.
      */
     String type = "Bar";
     /**
-     * 标题
+     * Title
      */
     String title;
     /**
-     * y轴单位
+     * Y-axis unit.
      */
     String yAxisUnit;
     /**
-     * 柱状图
+     * bars
      */
     List<DiagnosisRulePoint> bars;
     /**
-     * y轴最大值
+     * Maximum value of the Y-axis.
      */
     Double yAxisMax;
     /**
-     * y轴最小值
+     * Minimum value of the Y-axis.
      */
     Double yAxisMin;
 }

@@ -46,7 +46,7 @@ public class BlocklistServiceImpl implements BlocklistService {
     private BlocklistMapper blocklistMapper;
 
     /**
-     * 分页查询白名单列表
+     * Search blocklist
      */
     @Override
     public List<Blocklist> search(BlocklistReq blocklistReq) throws Exception {
@@ -73,7 +73,7 @@ public class BlocklistServiceImpl implements BlocklistService {
     }
 
     /**
-     * 批量删除任务白名单
+     * Batch delete
      */
     @Override
     public void deleteByIds(List<Integer> blocklistIds) throws Exception {
@@ -86,7 +86,7 @@ public class BlocklistServiceImpl implements BlocklistService {
     }
 
     /**
-     * 任务查询
+     * Search tasks
      */
     @Override
     public List<Task> searchTasks(BlocklistAddReq blocklistAddReq) throws Exception {
@@ -98,13 +98,13 @@ public class BlocklistServiceImpl implements BlocklistService {
     }
 
     /**
-     * 添加任务白名单
+     * Add blocklist
      */
     @Override
     public void addBlocklist(BlocklistAddReq blocklistAddReq) throws Exception {
         UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
 
-        // 查询白名单是否已经存在
+        // Check if the blocklist already exists
         BlocklistExample blocklistExample = new BlocklistExample();
         BlocklistExample.Criteria criteria = blocklistExample.createCriteria()
                 .andTaskNameEqualTo(blocklistAddReq.getTaskName())

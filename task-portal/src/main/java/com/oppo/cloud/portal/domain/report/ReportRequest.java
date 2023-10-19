@@ -26,22 +26,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 报告总览接口参数
+ * Report request parameter
  */
 @Data
 public class ReportRequest {
 
-    @ApiModelProperty(value = "项目名")
+    @ApiModelProperty(value = "project Name")
     private String projectName;
 
-    @ApiModelProperty(value = "开始时间")
+    @ApiModelProperty(value = "start timestamp")
     private Long start;
 
-    @ApiModelProperty(value = "结束时间")
+    @ApiModelProperty(value = "end timestamp")
     private Long end;
 
-    @ApiModelProperty(value = "趋势图类型, 可选值：cpuTrend(cpu消耗趋势), memoryTrend(cpu消耗趋势), numTrend(数量趋势), " +
-            "distribution(资源/数量分布)")
+    @ApiModelProperty(value = "trend graph type, Optional：cpuTrend, memoryTrend, numTrend, " +
+            "distribution(resource/number)")
     private String graphType;
 
     private String username;

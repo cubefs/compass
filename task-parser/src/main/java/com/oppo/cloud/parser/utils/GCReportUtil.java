@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * gc日志解析
+ * GC log parsing util
  */
 @Slf4j
 public class GCReportUtil {

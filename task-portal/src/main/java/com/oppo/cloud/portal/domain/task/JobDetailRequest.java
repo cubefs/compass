@@ -32,24 +32,24 @@ import java.util.Map;
 @Data
 public class JobDetailRequest {
 
-    @ApiModelProperty("项目名称")
+    @ApiModelProperty("project name")
     @NotNull
     private String projectName;
 
-    @ApiModelProperty("流程名称")
+    @ApiModelProperty("flow name")
     @NotNull
     private String flowName;
 
-    @ApiModelProperty("任务名称")
+    @ApiModelProperty("task name")
     @NotNull
     private String taskName;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", locale = "zh", timezone = "GMT+8")
-    @ApiModelProperty("执行周期")
+    @ApiModelProperty("execution date")
     @NotNull
     private Date executionDate;
 
-    @ApiModelProperty("Job第几次重试")
+    @ApiModelProperty("try number")
     private Integer tryNumber;
 
     public JobDetailRequest() {

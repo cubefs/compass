@@ -24,27 +24,27 @@ import com.oppo.cloud.portal.domain.blocklist.BlocklistReq;
 import java.util.List;
 
 /**
- * 白名单管理Service
+ * Blocklist Service
  */
 public interface BlocklistService {
 
     /**
-     * 分页查询白名单列表
+     * Search blocklist
      */
     List<Blocklist> search(BlocklistReq blocklistReq) throws Exception;
 
     /**
-     *批量删除任务白名单
+     * Batch delete
      */
     void deleteByIds(List<Integer> blocklistIds) throws Exception;
 
     /**
-     * 任务查询
+     * Search tasks
      */
     List<Task> searchTasks(BlocklistAddReq blocklistAddReq) throws Exception;
 
     /**
-     * 添加任务白名单
+     * Add blocklist
      */
     void addBlocklist(BlocklistAddReq blocklistAddReq) throws Exception;
 

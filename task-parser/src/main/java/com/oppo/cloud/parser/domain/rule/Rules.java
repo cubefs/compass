@@ -22,17 +22,17 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 规则列表
+ * Diagnostic rule
  */
 @Data
 public class Rules {
 
     /**
-     * 类型
+     * log type
      */
     private String logType;
     /**
-     * 规则action列表
+     * parser action
      */
     private List<ParserAction> actions;
 }

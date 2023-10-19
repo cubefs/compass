@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ApiModel(value = "Applications搜索列表")
+@ApiModel(value = "Applications Response")
 public class TaskAppsResponse {
 
-    @ApiModelProperty(value = "applications列表")
+    @ApiModelProperty(value = "application list")
     private List<TaskAppInfo> taskApps = new ArrayList<>();
 
-    @ApiModelProperty(value = "总数")
+    @ApiModelProperty(value = "count")
     private Long count;
 }

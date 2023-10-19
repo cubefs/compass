@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * stage耗时异常
+ * StageDuration Service
  */
 @Service
 public class StageDurationService extends RunTimeBaseService<StageDuration> {
@@ -66,12 +66,12 @@ public class StageDurationService extends RunTimeBaseService<StageDuration> {
             MetricInfo metricInfo = new MetricInfo();
             metricInfo.setXValue(String.valueOf(stageDurationAbnormal.getStageId()));
             List<ValueInfo> yValues = metricInfo.getYValues();
-            // 计算时间
+            // compute time
             ValueInfo yValue1 = new ValueInfo();
             yValue1.setType("compute");
             yValue1.setValue(UnitUtil.transferDouble(stageDurationAbnormal.getTaskAccDuration() / 1000.0));
 
-            // 空闲时间
+            // idle time
             ValueInfo yValue2 = new ValueInfo();
             yValue2.setType("idle");
             yValue2.setValue(UnitUtil.transferDouble(stageDurationAbnormal.getStageDuration() / 1000.0

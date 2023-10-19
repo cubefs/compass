@@ -29,23 +29,23 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 诊断规则配置
+ *  Diagnostic rule configuration
  */
 @Slf4j
 public class DiagnosisConfig {
 
     /**
-     * 配置实例
+     * configuration instance
      */
     private static final DiagnosisConfig INSTANCE = new DiagnosisConfig();
 
     /**
-     * 文本类诊断规则
+     * text type diagnostic rule
      */
     public Map<String, String> ruleConfig = new HashMap<>();
 
     /**
-     * Spark EventLog 诊断配置
+     * spark eventLog diagnostic configuration
      */
     public DetectorConfig detectorConfig;
 

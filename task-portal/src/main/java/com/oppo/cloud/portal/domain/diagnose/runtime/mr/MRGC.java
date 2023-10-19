@@ -30,7 +30,7 @@ import java.util.List;
 @ApiModel("MRGC")
 public class MRGC extends IsAbnormal {
 
-    @ApiModelProperty(value = "图表信息")
+    @ApiModelProperty(value = "chart list")
     private List<Chart<MetricInfo>> chartList = new ArrayList<>();
 
 }

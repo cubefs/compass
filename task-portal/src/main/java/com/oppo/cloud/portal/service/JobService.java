@@ -29,37 +29,37 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 作业层服务
+ * JobService
  */
 public interface JobService {
 
     /**
-     * 作业层列表
+     * search jobs
      */
     JobsResponse searchJobs(JobsRequest request) throws Exception;
 
     /**
-     * 作业详情
+     * search job apps
      */
     JobAppsRespone searchJobApps(JobDetailRequest jobDetailRequest) throws Exception;
 
     /**
-     * 作业诊断概览数据
+     * search job diagnose
      */
     List<String> searchJobDiagnose(JobDetailRequest jobDetailRequest) throws Exception;
 
     /**
-     * 作业异常日志信息
+     * search log  information
      */
     Item<TableData<LogInfo>> searchLogInfo(JobDetailRequest jobDetailRequest) throws Exception;
 
     /**
-     * 作业执行耗时趋势图
+     * search duration trend
      */
     Item<ChartData> searchDurationTrend(JobDetailRequest jobDetailRequest) throws Exception;
 
     /**
-     * 作业基线图
+     * search job datum
      */
     Item<Datum> searchJobDatum(JobDetailRequest jobDetailRequest) throws Exception;
 

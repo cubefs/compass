@@ -32,11 +32,11 @@ import javax.validation.constraints.NotEmpty;
 public class LoginRequest {
 
     @NotBlank
-    @ApiModelProperty(value = "用户名")
+    @ApiModelProperty(value = "username")
     private String username;
 
     @NotEmpty
-    @ApiModelProperty(value = "用户密码")
+    @ApiModelProperty(value = "password")
     private String password;
 
 }

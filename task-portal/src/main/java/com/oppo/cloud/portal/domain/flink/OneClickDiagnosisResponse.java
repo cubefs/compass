@@ -22,10 +22,10 @@ import lombok.Data;
 
 @Data
 public class OneClickDiagnosisResponse {
-    @ApiModelProperty(value = "诊断状态(failed, succeed, processing)")
+    @ApiModelProperty(value = "diagnosis state(failed, succeed, processing)")
     private String status;
-    @ApiModelProperty(value = "异常信息")
+    @ApiModelProperty(value = "error message")
     private String errorMsg;
-    @ApiModelProperty(value = "实时诊断结果")
+    @ApiModelProperty(value = "flink Diagnosis result")
     private FlinkTaskAnalysis flinkTaskAnalysis;
 }

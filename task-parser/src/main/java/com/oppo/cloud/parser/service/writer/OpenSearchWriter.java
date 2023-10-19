@@ -85,9 +85,7 @@ public class OpenSearchWriter {
     }
 
     /**
-     * 保存匹配结果
-     *
-     * @return action对应category
+     * Save matching results
      */
     public List<String> saveParserActions(String logType, String logPath, ParserParam param, Map<String, ParserAction> results) {
         List<String> categories = new ArrayList<>();
@@ -99,16 +97,16 @@ public class OpenSearchWriter {
             }
             for (ParserAction parserAction : list) {
                 categories.add(parserAction.getCategory());
-                writeToEs(logType, logPath, param, parserAction);
+                writeToOpenSearch(logType, logPath, param, parserAction);
             }
         });
         return categories;
     }
 
     /**
-     * 匹配结果写到ES
+     * Write matching results to OpenSearch
      */
-    public void writeToEs(String logType, String logPath, ParserParam param, ParserAction parserAction) {
+    public void writeToOpenSearch(String logType, String logPath, ParserParam param, ParserAction parserAction) {
         if (parserAction.getParserResults() != null) {
             List<Map<String, Object>> docs = new ArrayList<>();
             for (ParserResult parserResult : parserAction.getParserResults()) {
@@ -143,7 +141,7 @@ public class OpenSearchWriter {
     }
 
     /**
-     * 获取文档内容
+     * Get document content
      */
     public Map<String, Object> getDoc(String logType, ParserResult parserResult, String logPath, ParserParam param,
                                       ParserAction parserAction) throws Exception {
@@ -197,7 +195,7 @@ public class OpenSearchWriter {
     }
 
     /**
-     * 更新job categories信息
+     * Update job categories information
      */
     public void updateJob(JobAnalysis jobAnalysis, Map<String, Boolean> categoryMap) throws Exception {
         if (jobAnalysis == null || jobAnalysis.getTaskName() == null) {
@@ -248,7 +246,7 @@ public class OpenSearchWriter {
     }
 
     /**
-     * 更新task-app categories信息
+     * Update task-app categories information
      */
     public void updateTaskApp(TaskApp taskApp, Map<String, Boolean> categoryMap) throws Exception {
         String index = taskAppPrefix + DateUtil.formatToDay(taskApp.getExecutionDate());

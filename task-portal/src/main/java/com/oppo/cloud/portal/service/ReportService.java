@@ -20,26 +20,25 @@ import com.oppo.cloud.portal.domain.report.ReportGraph;
 import com.oppo.cloud.portal.domain.report.ReportRequest;
 import com.oppo.cloud.portal.domain.statistics.StatisticsData;
 
-import java.util.List;
 import java.util.Set;
 
 /**
- * 报告总览接口
+ * ReportService
  */
 public interface ReportService {
 
     /**
-     * get statistics data
+     * Get statistics data
      */
     StatisticsData getStatisticsData(String projectName) throws Exception;
 
     /**
-     * 获取资源/数量趋势/分布图
+     * Get the graph chart of the report
      */
     ReportGraph getGraph(ReportRequest reportRequest) throws Exception;
 
     /**
-     * 获取项目列表
+     * Get projects
      */
     Set<String> getProjects() throws Exception;
 }

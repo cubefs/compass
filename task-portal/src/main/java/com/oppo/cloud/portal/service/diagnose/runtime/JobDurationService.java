@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * job耗时异常
+ * JobDuration Service
  */
 @Service
 public class JobDurationService extends RunTimeBaseService<JobDuration> {
@@ -67,20 +67,20 @@ public class JobDurationService extends RunTimeBaseService<JobDuration> {
             metricInfo.setXValue(String.valueOf(jobDurationAbnormal.getJobId()));
             List<ValueInfo> yValues = metricInfo.getYValues();
 
-            // 空闲时间
+            // idle time
             ValueInfo yValue1 = new ValueInfo();
             yValue1.setValue(UnitUtil.transferDouble(jobDurationAbnormal.getJobDuration() / 1000.0
                     - jobDurationAbnormal.getStageAccDuration() / 1000.0));
             yValue1.setType("idle");
 
-            // 计算时间
+            // compute time
             ValueInfo yValue2 = new ValueInfo();
             yValue2.setValue(UnitUtil.transferDouble(jobDurationAbnormal.getStageAccDuration() / 1000.0));
             yValue2.setType("compute");
             yValues.add(yValue2);
             yValues.add(yValue1);
             metricInfoList.add(metricInfo);
-            // 判断是否异常
+            // judge abnormal
             if (jobDurationAbnormal.getAbnormal()) {
                 values.add(String.format("%.2f%%", jobDurationAbnormal.getRatio()));
                 jobIds.add(String.format("job[<span style=\"color: #e24a4a;\">%d</span>]",

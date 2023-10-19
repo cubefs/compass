@@ -54,9 +54,9 @@ public class OtherExceptionService extends RunErrorBaseService {
 
     @Override
     public List<LogInfo> generateData(String applicationId) throws Exception {
-        // driver/executor日志
+        // driver/executor log
         List<LogInfo> executorLog = super.generateData(applicationId);
-        // yarn日志
+        // yarn log
         HashMap<String, Object> termQuery = new HashMap<>();
         termQuery.put("applicationId.keyword", applicationId);
         List<TaskApp> taskAppList = openSearchService.find(TaskApp.class, termQuery, appIndex + "-*");
