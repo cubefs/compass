@@ -1,38 +1,32 @@
-# Compass(罗盘) 系统设计文档
+# System Design Document
 
-## 相关文章
+## System Architecture
 
-[OPPO大数据诊断平台设计与实践](https://mp.weixin.qq.com/s/Bkw_pN_CSIOtepN2LrjcLQ)
+### System Architecture Diagram
 
+![Architecture](img/architecture-en.png)
 
-## 系统架构
+### Architecture Description
 
-### 系统架构图
+The overall architecture is divided into 3 layers:
 
-![Compass架构](img/architecture.png)
+- Scheduling System Docking Layer: Implements docking with schedulers, Yarn, Spark, Flink, HDFS and other systems, synchronizing tasks and their log metadata to the diagnostic system;
 
-### 架构说明
+- Service Layer: Includes data collection, metadata association & model standardization, anomaly detection, resource diagnosis, Portal module;
 
-整体架构分3层：
+- Basic Component Layer: Includes MySQL, OpenSearch, Kafka, Redis, Zookeeper and other components.
 
-- 调度系统对接层：实现对接调度器、Yarn、Spark、Flink、HDFS等系统，同步任务及其日志元数据到诊断系统；
+Specific module process stages:
 
-- 服务层：包括数据采集、元数据关联&模型标准化、异常检测、资源诊断、Portal模块；
+- Data Collection Stage: The task-canal/adapter module subscribes to synchronize the user, DAG, job, execution record and other workflow metadata of the scheduling system to the diagnostic platform; the task-metadata module periodically synchronizes Yarn ResourceManager, Spark HistoryServer App metadata to the diagnostic system, associating log storage paths, as a basis for subsequent data processing stages;
 
-- 基础组件层：包括MySQL、 OpenSearch、Kafka、Redis、Zookeeper等组件。
+- Data Association and Model Standardization Stage: The task-syncer module standardizes the synchronized data into User, Project, Flow, Task, TaskInstance models; the task-application module associates workflow layer and engine layer metadata;
 
-具体模块流程阶段：
+- Workflow Layer & Engine Layer Anomaly Detection Stage: At this point, the standard data model has been obtained, and further Workflow anomaly detection processes are carried out for the standard model. The task-detect module performs workflow layer anomaly task detection, such as `Failed task`, `Abnormal time-elapsed task`, etc.; the task-parser module performs engine layer anomaly task detection, such as `Failed SQL task`, `Shuffle failed task`, etc.; the task-flink module performs flink job resource and anomaly detection, such as `Low CPU usage`, `Low memory usage`, etc.;
 
-- 数据采集阶段：task-canal/adapter模块订阅同步调度系统的用户、DAG、作业、执行记录等工作流元数据同步至诊断平台；task-metadata模块定时同步Yarn ResourceManager、Spark HistoryServer App元数据至诊断系统，关联日志存储路径，为后续数据处理阶段作基础；
+- Business View: The task-portal module provides user report overview, one-click diagnosis, workflow layer task diagnosis, engine layer job Application diagnosis, diagnostic suggestions and detailed reports, whitelist and other functions.
 
-- 数据关联与模型标准化阶段：task-syncer模块将同步的数据标准化为User、Project、Flow、Task、TaskInstance模型；task-application模块将工作流层与引擎层元数据关联；
-
-- 工作流层&引擎层异常检测阶段：至此已经获得数据标准模型，针对标准模型进一步Workflow异常检测流程。task-detect模块进行工作流层异常任务检测，例如运行失败、基线耗时异常等；task-parser模块进行引擎层异常任务检测，例如SQL失败、Shuffle失败等；task-flink模块进行flink作业资源及异常检测，例如cpu利用率低，内存利用率低等；
-
-- 业务视图：task-portal模块提供用户报告总览、一键诊断、工作流层任务诊断、引擎层作业Application诊断、诊断建议和详细报告、白名单等功能。
-
-
-更多细节请参考[部署指南](./deployment.md)
+For more details, please refer to [deployment document](./deployment.md)
 
 
 

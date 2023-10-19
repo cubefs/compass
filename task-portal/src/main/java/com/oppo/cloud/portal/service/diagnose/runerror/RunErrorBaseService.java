@@ -39,7 +39,7 @@ import java.io.PrintStream;
 import java.util.*;
 
 /**
- * 运行错误基类
+ * RunError Base Service
  */
 @Slf4j
 public abstract class RunErrorBaseService implements Generate {
@@ -54,22 +54,22 @@ public abstract class RunErrorBaseService implements Generate {
     String logIndex;
 
     /**
-     * 获取app异常类型(需要子类实现)
+     * Get app category
      */
     public abstract String getCategory();
 
     /**
-     * 报告描述（需要各个子类实现）
+     * Generate item description
      */
     public abstract String generateItemDesc();
 
     /**
-     * 生产分析结论
+     * Generate conclusion
      */
     public abstract Conclusion generateConclusion();
 
     /**
-     * 产生该模块的诊断建议集合,需要各个子类实现
+     * Get diagnosis advice
      */
     public List<TaskDiagnosisAdvice> getDiagnosisAdvice() {
         TaskDiagnosisAdviceExample diagnoseAdviceExample = new TaskDiagnosisAdviceExample();
@@ -78,7 +78,7 @@ public abstract class RunErrorBaseService implements Generate {
     }
 
     /**
-     * 产生该类报告的模板方法
+     * generate report
      */
     @Override
     public Item<RunError> generate(DetectorStorage detectorStorage) {
@@ -90,9 +90,9 @@ public abstract class RunErrorBaseService implements Generate {
             e.printStackTrace(new PrintStream(baos));
             return this.generateItem(null, baos.toString());
         }
-        // 统一规范，没有数据的都为null
+        // Uniform specifications, all values without data are set as null
         res = res.size() == 0 ? null : res;
-        // 生成诊断报告
+
         return this.generateItem(res, null);
     }
 
@@ -105,9 +105,9 @@ public abstract class RunErrorBaseService implements Generate {
             e.printStackTrace(new PrintStream(baos));
             return this.generateItem(null, baos.toString());
         }
-        // 统一规范，没有数据的都为null
+        // Uniform specifications, all values without data are set as null
         res = res.size() == 0 ? null : res;
-        // 生成诊断报告
+
         return this.generateItem(res, null);
     }
 
@@ -127,11 +127,11 @@ public abstract class RunErrorBaseService implements Generate {
         termQueryConditions.put("action.keyword", actionList);
         // todo
         // sortConditions.put("timestamp", SortOrder.ASC);
-        // 查询Es信息
+
         SearchSourceBuilder searchSourceBuilder =
                 openSearchService.genSearchBuilder(termQueryConditions, null, sortConditions, null);
         List<LogSummary> logSumList = openSearchService.find(LogSummary.class, searchSourceBuilder, logIndex + "-*");
-        // 根据es产生诊断数据
+
         Set<Integer> logSet = new HashSet<>();
         for (LogSummary logSum : logSumList) {
             int logKey = (logSum.getAction() + logSum.getRawLog()).hashCode();

@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 
 /**
- * 用户登录拦截器
+ * User login interceptor
  */
 @Component
 @Slf4j
@@ -78,7 +78,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * 将拦截器中的异常返回给前端
+     * handle exception response
      */
     private void handleFalseResponse(HttpServletResponse response, String msg) {
         response.setStatus(401);

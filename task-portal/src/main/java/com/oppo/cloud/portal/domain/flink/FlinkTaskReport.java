@@ -21,20 +21,20 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * Elasticsearch Flink Report
+ * OpenSearch Flink Report
  */
 @Data
 public class FlinkTaskReport {
     /**
-     * flink task analysis表关联Id
+     * flink task analysisId
      */
     private String flinkTaskAnalysisId;
     /**
-     * 诊断结果图表Json数据
+     * report json
      */
     private String reportJson;
     /**
-     * 创建时间
+     * create time
      */
     private Date createTime;
 }

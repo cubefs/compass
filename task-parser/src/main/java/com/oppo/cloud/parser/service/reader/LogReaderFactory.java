@@ -19,7 +19,7 @@ package com.oppo.cloud.parser.service.reader;
 import com.oppo.cloud.common.domain.job.LogPath;
 
 /**
- * 日志读取工厂
+ * Log reader factory
  */
 public class LogReaderFactory {
 
@@ -27,7 +27,7 @@ public class LogReaderFactory {
     private static final String S3 = "s3";
 
     /**
-     * 创建读取类型
+     * Create reader type
      */
     public static IReader create(LogPath logPath) throws Exception {
         switch (logPath.getProtocol()) {

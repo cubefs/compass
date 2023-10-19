@@ -26,9 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * 项目列表查询服务实现类
- */
+
 @Service
 public class ProjectServiceImpl implements ProjectService {
 

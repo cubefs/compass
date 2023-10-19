@@ -21,7 +21,7 @@ import com.oppo.cloud.portal.domain.base.Conclusion;
 import org.springframework.stereotype.Service;
 
 /**
- * shuffle失败
+ * ShuffleFailed Service
  */
 @Service
 public class ShuffleFailedService extends RunErrorBaseService {

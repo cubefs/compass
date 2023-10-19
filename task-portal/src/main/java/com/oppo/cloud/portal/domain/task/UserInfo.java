@@ -19,11 +19,9 @@ package com.oppo.cloud.portal.domain.task;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
-/**
- * 登录用户信息
- */
+
 @Data
-@ApiModel("登录用户信息")
+@ApiModel("User information")
 public class UserInfo {
     private Integer userId;
 

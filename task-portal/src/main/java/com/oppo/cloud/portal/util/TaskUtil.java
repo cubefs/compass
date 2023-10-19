@@ -17,7 +17,7 @@
 package com.oppo.cloud.portal.util;
 
 /**
- * 异常任务工具类
+ * Task util
  */
 public class TaskUtil {
 

@@ -91,7 +91,7 @@ public class TaskAppServiceImpl implements TaskAppService {
 
 
     /**
-     * Application列表
+     * Search application list
      */
     @Override
     public TaskAppsResponse searchTaskApps(TaskAppsRequest request) throws Exception {
@@ -113,7 +113,7 @@ public class TaskAppServiceImpl implements TaskAppService {
     }
 
     /**
-     * 生成诊断报
+     * Generate report
      */
     @Override
     public DiagnoseReport generateReport(String applicationId) throws Exception {
@@ -132,7 +132,7 @@ public class TaskAppServiceImpl implements TaskAppService {
         } else {
             detectorStorage = detectorStorageList.get(0);
         }
-        // 生成运行信息
+        // Generate run info
         DetectorStorage finalDetectorStorage = detectorStorage;
         CompletableFuture<DiagnoseReport.RunInfo> runInfoCompletableFuture = CompletableFuture.supplyAsync(() -> {
             long startTime = System.currentTimeMillis();
@@ -141,7 +141,7 @@ public class TaskAppServiceImpl implements TaskAppService {
             log.info("{} finished，duration:{}", runInfoService.getClass().getName(), (endTime - startTime) / 1000);
             return runInfo;
         }, executor);
-        // 生成运行错误类型报告
+        // generate run error
         List<CompletableFuture<Item<RunError>>> runErrorItemCompletableFutureList = new ArrayList<>();
         for (RunErrorBaseService runErrorBaseService : runErrorServiceList) {
             runErrorItemCompletableFutureList.add(CompletableFuture.supplyAsync(() -> {
@@ -153,7 +153,7 @@ public class TaskAppServiceImpl implements TaskAppService {
                 return runErrorItem;
             }, executor));
         }
-        // 生成运行耗时类型报告
+        // generate run time
         List<CompletableFuture<Item>> runTimeItemCompletableFutureList = new ArrayList<>();
         for (RunTimeBaseService runTimeBaseService : runtimeServiceList) {
             runTimeItemCompletableFutureList.add(CompletableFuture.supplyAsync(() -> {
@@ -165,7 +165,7 @@ public class TaskAppServiceImpl implements TaskAppService {
                 return item;
             }, executor));
         }
-        // 生成资源类型报告
+        // generate resource report
         List<CompletableFuture<Item>> resourceItemCompletableFutureList = new ArrayList<>();
         for (ResourceBaseService resourceBaseService : resourceServiceList) {
             resourceItemCompletableFutureList.add(CompletableFuture.supplyAsync(() -> {
@@ -177,7 +177,7 @@ public class TaskAppServiceImpl implements TaskAppService {
                 return item;
             }, executor));
         }
-        // 获取异步结果
+        // get result
         diagnoseReport.setRunInfo(runInfoCompletableFuture.get());
         for (CompletableFuture<Item<RunError>> completableFuture : runErrorItemCompletableFutureList) {
             runErrorItemList.add(completableFuture.get());
@@ -192,7 +192,7 @@ public class TaskAppServiceImpl implements TaskAppService {
             if (o1.getItem() != null && o2.getItem() != null) {
                 if (o1.getItem() instanceof IsAbnormal && o2.getItem() instanceof IsAbnormal) {
                     if (((IsAbnormal) o1.getItem()).getAbnormal() && !((IsAbnormal) o2.getItem()).getAbnormal()) {
-                        // 结果为-1则o1往前排
+                        // move o1 forward
                         return -1;
                     } else if (o1.getItem() != null) {
                         if (((IsAbnormal) o1.getItem()).getAbnormal()) {
@@ -241,7 +241,7 @@ public class TaskAppServiceImpl implements TaskAppService {
                     new TypeReference<List<Item<RunError>>>() {
                     });
         } else {
-            // 生成运行错误类型报告
+            // generate RunError
             List<CompletableFuture<Item<RunError>>> runErrorItemCompletableFutureList = new ArrayList<>();
             for (RunErrorBaseService runErrorBaseService : runErrorServiceList) {
                 runErrorItemCompletableFutureList.add(CompletableFuture.supplyAsync(() -> {
@@ -281,7 +281,7 @@ public class TaskAppServiceImpl implements TaskAppService {
                 redisService.set(taskAppTempKey, JSONObject.toJSONString(detectorStorage), 24 * 3600L);
             }
         }
-        // 生成运行耗时类型报告
+        // generate run time report
         List<CompletableFuture<Item>> runTimeItemCompletableFutureList = new ArrayList<>();
         for (RunTimeBaseService runTimeBaseService : runtimeServiceList) {
             runTimeItemCompletableFutureList.add(CompletableFuture.supplyAsync(() -> {
@@ -300,7 +300,7 @@ public class TaskAppServiceImpl implements TaskAppService {
             if (o1.getItem() != null && o2.getItem() != null) {
                 if (o1.getItem() instanceof IsAbnormal && o2.getItem() instanceof IsAbnormal) {
                     if (((IsAbnormal) o1.getItem()).getAbnormal() && !((IsAbnormal) o2.getItem()).getAbnormal()) {
-                        // 结果为-1则o1往前排
+                        // move o1 forward
                         return -1;
                     } else if (o1.getItem() != null) {
                         if (((IsAbnormal) o1.getItem()).getAbnormal()) {
@@ -338,7 +338,7 @@ public class TaskAppServiceImpl implements TaskAppService {
                 redisService.set(taskAppTempKey, JSONObject.toJSONString(detectorStorage), 24 * 3600L);
             }
         }
-        // 生成资源类型报告
+        // generate resource report
         List<CompletableFuture<Item>> resourceItemCompletableFutureList = new ArrayList<>();
         for (ResourceBaseService resourceBaseService : resourceServiceList) {
             resourceItemCompletableFutureList.add(CompletableFuture.supplyAsync(() -> {
@@ -357,7 +357,7 @@ public class TaskAppServiceImpl implements TaskAppService {
     }
 
     /**
-     * job trend graph
+     * Job trend graph
      */
     @Override
     public TrendGraph getGraph(JobsRequest request) throws Exception {
@@ -429,10 +429,10 @@ public class TaskAppServiceImpl implements TaskAppService {
             detectorStorage = detectorStorageList.get(0);
         }
         DetectorStorage finalDetectorStorage = detectorStorage;
-        // 生成运行错误类型报告
+        // generate run error report
         List<CompletableFuture<Item<RunError>>> runErrorItemCompletableFutureList = new ArrayList<>();
         for (RunErrorBaseService runErrorBaseService : runErrorServiceList) {
-            // 只生成目标异常类型的诊断报告
+            // only generate abnormal type
             if (!category.contains(runErrorBaseService.getCategory())) {
                 continue;
             }
@@ -445,10 +445,10 @@ public class TaskAppServiceImpl implements TaskAppService {
                 return runErrorItem;
             }, executor));
         }
-        // 生成运行耗时类型报告
+        // generate run time report
         List<CompletableFuture<Item>> runTimeItemCompletableFutureList = new ArrayList<>();
         for (RunTimeBaseService runTimeBaseService : runtimeServiceList) {
-            // 只生成目标异常类型的诊断报告
+            // only generate abnormal type
             if (!category.contains(runTimeBaseService.getCategory())) {
                 continue;
             }
@@ -461,7 +461,7 @@ public class TaskAppServiceImpl implements TaskAppService {
                 return item;
             }, executor));
         }
-        // 生成资源类型报告
+        // generate resource report
         List<CompletableFuture<Item>> resourceItemCompletableFutureList = new ArrayList<>();
         for (ResourceBaseService resourceBaseService : resourceServiceList) {
             if (!category.contains(resourceBaseService.getCategory())) {

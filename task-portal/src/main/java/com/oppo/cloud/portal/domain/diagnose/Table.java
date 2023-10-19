@@ -26,15 +26,15 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@ApiModel("表格类")
+@ApiModel("Table")
 public class Table<T> {
 
-    @ApiModelProperty(value = "表头")
+    @ApiModelProperty(value = "titles")
     LinkedHashMap<String, String> titles = new LinkedHashMap<>();
 
-    @ApiModelProperty(value = "表格描述")
+    @ApiModelProperty(value = "description")
     private String des;
 
-    @ApiModelProperty(value = "表格内容")
+    @ApiModelProperty(value = "data")
     List<T> data = new ArrayList<>();
 }

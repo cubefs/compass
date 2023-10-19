@@ -21,22 +21,22 @@ import com.oppo.cloud.model.Project;
 import java.util.List;
 
 /**
- * 项目列表查询Service
+ * ProjectService
  */
 public interface ProjectService {
 
     /**
-     * 项目列表查询
+     * Get all project by useId
      */
     List<Project> getAllProject(Integer userId);
 
     /**
-     * 项目列表查询
+     * Get all project
      */
     List<Project> getAllProject();
 
     /**
-     * 项目名称列表查询
+     * Get project names by useId
      */
     List<String> getProjectNames(Integer userId);
 }

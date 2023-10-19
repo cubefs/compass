@@ -29,49 +29,49 @@ import java.util.Set;
 public interface TaskAppService {
 
     /**
-     * 查询任务下的app列表
+     * Search application list
      */
     TaskAppsResponse searchTaskApps(TaskAppsRequest request) throws Exception;
 
     /**
-     * 生成app的诊断报告
+     * Generate report
      */
     DiagnoseReport generateReport(String applicationId) throws Exception;
 
 
     /**
-     * job trend graph
+     * Job trend graph
      */
     TrendGraph getGraph(JobsRequest request) throws Exception;
 
     /**
-     * get part of diagnose Report
+     * Get part of diagnose report
      */
     List<Item> generatePartOfReport(String applicationId, Set<String> category) throws Exception;
 
 
     /**
-     * get run info of diagnose report
+     * Get run info of diagnose report
      */
     DiagnoseReport.RunInfo diagnoseRunInfo(String applicationId) throws Exception;
 
     /**
-     * get run error of diagnose report
+     * Get run error of diagnose report
      */
     List<Item<RunError>> diagnoseRunError(String applicationId) throws Exception;
 
     /**
-     * get run time of diagnose report
+     * Get run time of diagnose report
      */
     List<Item> diagnoseRunTime(String applicationIId) throws Exception;
 
     /**
-     * get run resource of diagnose report
+     * Get run resource of diagnose report
      */
     List<Item> diagnoseRunResource(String applicationId) throws Exception;
 
     /**
-     * getGcReport
+     * Get gc report
      */
     GCReportResp getGcReport(String applicationId, String executorId) throws Exception;
 }

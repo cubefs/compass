@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
 
 
 /**
- * 实时任务查询接口
+ * Flink task query service
  */
 @Service
 @Slf4j
@@ -76,7 +76,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
 
 
     /**
-     * 分页查询作业
+     * Paging query for jobs
      *
      * @param req
      * @return
@@ -105,7 +105,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
     public FlinkStatisticsData getStatisticsData(UserInfo userInfo, long startTimestamp, long endTimestamp) throws Exception {
         FlinkStatisticsData statisticsData = new FlinkStatisticsData();
 
-        // 不包含当天0点
+        // Does not include 00:00 of the current day
         endTimestamp = endTimestamp - 1000; // millis
 
         Map<String, Object> termQuery = new HashMap<>();
@@ -118,22 +118,22 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
 
         SearchSourceBuilder searchSourceBuilder =
                 openSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
-        // 诊断作业数
+        // Number of diagnostic jobs
         long jobCount = openSearchService.count(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
-        // 异常作业数
+        // Number of abnormal jobs
         termQuery.put("diagnosisResourceType", new Integer[]{4});
         searchSourceBuilder = openSearchService.genSearchBuilder(termQuery, rangeQuery, null, null);
         long abnormalJobCount = openSearchService.count(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
-        // 异常占比
+        // Ratio of abnormal job
         double abnormalJobRatio = jobCount == 0 ? 0 : (double) abnormalJobCount / jobCount;
 
         statisticsData.setJobCount(jobCount);
         statisticsData.setExceptionJobCount(abnormalJobCount);
         statisticsData.setExceptionJobRatio(abnormalJobRatio);
 
-        // 优化资源作业数： 2， 3
+        // Number of jobs with optimizable resources: 2, 3
         Map<String, Object> resourceTermQuery = new HashMap<>();
         if (!userInfo.isAdmin()) {
             resourceTermQuery.put("users.username", userInfo.getUsername());
@@ -142,13 +142,13 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         searchSourceBuilder = openSearchService.genSearchBuilder(resourceTermQuery, rangeQuery, null, null);
         long resourceJobCount = openSearchService.count(searchSourceBuilder, flinkTaskAnalysisIndex + "-*");
 
-        // 占比
+        // Ratio
         double resourceJobRatio = jobCount == 0 ? 0 : (double) resourceJobCount / jobCount;
 
         statisticsData.setResourceJobCount(resourceJobCount);
         statisticsData.setResourceJobRatio(resourceJobRatio);
 
-        // 总的CPU
+        // Total CPU
         Map<String, Object> cpuTermQuery = new HashMap<>();
         if (!userInfo.isAdmin()) {
             cpuTermQuery.put("users.username", userInfo.getUsername());
@@ -160,7 +160,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         double totalCPUCount = totalCPU == null ? 0 : totalCPU.getValue();
 
 
-        // 可优化CPU数
+        // Optimizable CPU count
         cpuTermQuery.put("diagnosisResourceType", new Integer[]{2});
         searchSourceBuilder = openSearchService.genSearchBuilder(cpuTermQuery, rangeQuery, null, null);
         searchSourceBuilder.aggregation(AggregationBuilders.sum("decrCPU").field("cutCoreNum"));
@@ -169,14 +169,14 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         ParsedSum decrCPU = aggregationCpu == null ? null : aggregationCpu.get("decrCPU");
         double decrCPUCount = decrCPU == null ? 0 : decrCPU.getValue();
 
-        // 可优化CPU占比
+        // Ratio of optimizable CPU
         double decrCPURatio = totalCPUCount == 0 ? 0 : decrCPUCount / totalCPUCount;
 
         statisticsData.setTotalCPUCount(totalCPUCount);
         statisticsData.setDecrCPUCount(decrCPUCount);
         statisticsData.setDecrCPURatio(decrCPURatio);
 
-        // 内存总数
+        // Total memory
         Map<String, Object> memTermQuery = new HashMap<>();
         if (!userInfo.isAdmin()) {
             memTermQuery.put("users.username", userInfo.getUsername());
@@ -188,7 +188,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         ParsedSum totalMemory = aggregationTotalMemory == null ? null : aggregationTotalMemory.get("totalMemory");
         double totalMemoryNum = totalMemory == null ? 0 : totalMemory.getValue();
 
-        // 可优化内存数
+        // Number of optimizable memory
         memTermQuery.put("diagnosisResourceType", new Integer[]{3});
         searchSourceBuilder = openSearchService.genSearchBuilder(memTermQuery, rangeQuery, null, null);
         searchSourceBuilder.aggregation(AggregationBuilders.sum("dercMemory").field("cutMemNum"));
@@ -197,7 +197,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         ParsedSum decrMemory = aggregationMemory == null ? null : aggregationMemory.get("dercMemory");
         double decrMemoryNum = decrMemory == null ? 0 : decrMemory.getValue();
 
-        // 可优化占比
+        // Ratio of optimizable memory
         double decrMemoryRatio = totalMemoryNum == 0 ? 0 : decrMemoryNum / totalMemoryNum;
 
         statisticsData.setTotalMemory(totalMemoryNum);
@@ -207,7 +207,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
     }
 
     /**
-     * 概览值
+     * General view
      *
      * @param request
      * @return
@@ -217,7 +217,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
     public DiagnosisGeneralViewNumberResp getGeneralViewNumber(DiagnosisGeneralViewReq request) throws Exception {
         UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
 
-        // 本周期数据
+        // This period data
         PeriodTime periodTime = new PeriodTime(1);
         long thisEndTimestamp = periodTime.getEndTimestamp();
         long thisStartTimestamp = periodTime.getStartTimestamp();
@@ -232,7 +232,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             }
         });
 
-        // 环比数据
+        // Last day period data
         long lastEndTimestamp = thisEndTimestamp - 24 * 3600 * 1000L;
         long lastStartTimestamp = thisStartTimestamp - 24 * 3600 * 1000L;
         CompletableFuture<FlinkStatisticsData> lastPeriodCompletableFuture = CompletableFuture.supplyAsync(() -> {
@@ -243,7 +243,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             }
         });
 
-        // 同比数据
+        // Last week period data
         long lastWeekEndTimestamp = thisEndTimestamp - 7 * 24 * 3600 * 1000L;
         long lastWeekStartTimestamp = thisStartTimestamp - 7 * 24 * 3600 * 1000L;
         CompletableFuture<FlinkStatisticsData> lastWeekPeriodCompletableFuture = CompletableFuture.supplyAsync(() -> {
@@ -275,7 +275,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             log.error("get last week period failed, msg:", e);
         }
 
-        // 异常作业 环比
+        // Chain ratio of the abnormal job number
         double exceptionChainRatio = lastStatisticsData.getExceptionJobRatio() == 0 ? 1
                 : (thisStatisticsData.getExceptionJobRatio() - lastStatisticsData.getExceptionJobRatio())
                 / lastStatisticsData.getExceptionJobRatio();
@@ -283,7 +283,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             exceptionChainRatio = 0.0;
         }
 
-        // 异常作业 同比
+        // Abnormal job number day on day
         double exceptionDayOnDayRatio = lastWeekStatisticsData.getExceptionJobRatio() == 0 ? 1
                 : (thisStatisticsData.getExceptionJobRatio() - lastWeekStatisticsData.getExceptionJobRatio())
                 / lastWeekStatisticsData.getExceptionJobRatio();
@@ -291,7 +291,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             exceptionDayOnDayRatio = 0.0;
         }
 
-        // 可优化资源作业数 环比
+        // Chain ratio of the resource job number
         double resourceJobNumChainRatio = lastStatisticsData.getResourceJobRatio() == 0 ? 1
                 : (thisStatisticsData.getResourceJobRatio() - lastStatisticsData.getResourceJobRatio())
                 / lastStatisticsData.getResourceJobRatio();
@@ -299,7 +299,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             resourceJobNumChainRatio = 0.0;
         }
 
-        // 可优化资源作业数 同比
+        // Resource job number day on day
         double resourceJobNumDayOnDayRatio = lastWeekStatisticsData.getResourceJobRatio() == 0 ? 1
                 : (thisStatisticsData.getResourceJobRatio() - lastWeekStatisticsData.getResourceJobRatio())
                 / lastWeekStatisticsData.getResourceJobRatio();
@@ -307,7 +307,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             resourceJobNumDayOnDayRatio = 0.0;
         }
 
-        // 可优化CPU数 环比
+        // Ratio of the resource cpu number
         double resourceCpuNumChainRatio = lastStatisticsData.getDecrCPURatio() == 0 ? 1
                 : (thisStatisticsData.getDecrCPURatio() - lastStatisticsData.getDecrCPURatio())
                 / lastStatisticsData.getDecrCPURatio();
@@ -315,7 +315,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             resourceCpuNumChainRatio = 0.0;
         }
 
-        // 可优化CPU数 同比
+        // Resource cpu number day on day(compared to yesterday)
         double resourceCpuNumDayOnDayRatio = lastWeekStatisticsData.getDecrCPURatio() == 0 ? 1
                 : (thisStatisticsData.getDecrCPURatio() - lastWeekStatisticsData.getDecrCPURatio())
                 / lastWeekStatisticsData.getDecrCPURatio();
@@ -323,7 +323,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             resourceCpuNumDayOnDayRatio = 0.0;
         }
 
-        // 可优化内存 环比
+        // Chain ratio of the resource memory number(compared to last week)
         double resourceMemoryNumChainRatio = lastStatisticsData.getDecrMemoryRatio() == 0 ? 1
                 : (thisStatisticsData.getDecrMemoryRatio() - lastStatisticsData.getDecrMemoryRatio())
                 / lastStatisticsData.getDecrMemoryRatio();
@@ -331,7 +331,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             resourceMemoryNumChainRatio = 0.0;
         }
 
-        // 可优化内存 同比
+        // Resource memory number day on day(compared to yesterday)
         double resourceMemoryNumDayOnDayRatio = lastWeekStatisticsData.getDecrMemoryRatio() == 0 ? 1
                 : (thisStatisticsData.getDecrMemoryRatio() - lastWeekStatisticsData.getDecrMemoryRatio())
                 / lastWeekStatisticsData.getDecrMemoryRatio();
@@ -339,7 +339,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             resourceMemoryNumDayOnDayRatio = 0.0;
         }
 
-        // 构造数据返回
+        // generate data
         GeneralViewNumberDto generalViewNumber = new GeneralViewNumberDto();
         generalViewNumber.setBaseTaskCntSum((int) thisStatisticsData.getJobCount());
         generalViewNumber.setExceptionTaskCntSum((int) thisStatisticsData.getExceptionJobCount());
@@ -394,7 +394,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
     }
 
     /**
-     * 获取概览趋势（内存、CPU、数量）
+     *  Get general view trends (memory, CPU, number)
      *
      * @param request
      * @return
@@ -479,7 +479,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
     }
 
     /**
-     * 获取概览分布
+     * Get general view distribute data
      *
      * @param request
      * @return
@@ -547,7 +547,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
     }
 
     /**
-     * 获取诊断报告
+     * Get report
      *
      * @param request
      * @return
@@ -586,7 +586,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
     }
 
     /**
-     * 批量上报数据
+     * Batch metadata
      *
      * @param apps
      * @return

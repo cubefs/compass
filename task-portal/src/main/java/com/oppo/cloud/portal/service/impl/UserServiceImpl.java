@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     /**
-     * 用户名获取用户信息
+     * Get user information by username
      */
     @Override
     public User getByUsername(String username) {
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 用户登录
+     * Login
      */
     @Override
     public UserInfo userLogin(HttpServletResponse httpServletResponse, String username, String password)
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         } else if (SchedulerType.Airflow.toString().equalsIgnoreCase(schedulerType)) {
             loginFlag = CryptoUtil.checkPassword(password, hashPassword);
         } else {
-            // todo 自定义需要自行实现
+            // todo customization requires self-implementation
             loginFlag = true;
         }
         if (!loginFlag) {

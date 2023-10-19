@@ -30,31 +30,31 @@ import java.util.List;
 @Data
 public class GCReportResp {
 
-    @ApiModelProperty(value = "最大分配内存")
+    @ApiModelProperty(value = "Maximum allocated memory")
     private String maxHeapAllocatedSize;
 
-    @ApiModelProperty(value = "最大内存使用")
+    @ApiModelProperty(value = "Maximum memory usage")
     private String maxHeapUsedSize;
 
-    @ApiModelProperty(value = "运行时间")
+    @ApiModelProperty(value = "Total time")
     private String totalTime;
 
-    @ApiModelProperty(value = "YG次数/耗时(s)")
+    @ApiModelProperty(value = "YG count/time (s)")
     private String YGCountAndDuration;
 
-    @ApiModelProperty(value = "FG次数/耗时(s)")
+    @ApiModelProperty(value = "FG count/time (s)")
     private String FGCountAndDuration;
 
-    @ApiModelProperty(value = "GC次数/耗时(s)")
+    @ApiModelProperty(value = "GC count/time (s)")
     private String GCCountAndDuration;
 
-    @ApiModelProperty(value = "heap使用趋势图")
+    @ApiModelProperty(value = "Heap usage trend chart")
     private List<HeapUsed> heapUsed;
 
-    @ApiModelProperty(value = "tenured使用趋势图")
+    @ApiModelProperty(value = "Tenured usage trend chart")
     private List<TenuredUsed> tenuredUsed;
 
-    @ApiModelProperty(value = "young使用趋势图")
+    @ApiModelProperty(value = "Young usage trend chart")
     private List<YoungUsed> youngUsed;
 
     public void build(GCReport gcReport) {

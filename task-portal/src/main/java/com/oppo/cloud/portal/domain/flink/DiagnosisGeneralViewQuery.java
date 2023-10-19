@@ -22,8 +22,12 @@ import java.time.LocalDateTime;
 
 @Data
 public class DiagnosisGeneralViewQuery {
-    // 开始时间戳
+    /**
+     * start timestamp
+     */
     LocalDateTime startTs;
-    // 结束时间戳
+    /**
+     * end timestamp
+     */
     LocalDateTime endTs;
 }

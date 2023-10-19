@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * hdfs卡顿
+ * HdfsStuck Service
  */
 @Service
 public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
@@ -52,7 +52,7 @@ public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
             hdfsStuckAbnormalList.add(data.toJavaObject(HdfsStuckAbnormal.class));
         }
         List<Chart<MetricInfo>> chartList = hdfsStuck.getChartList();
-        // Stage分布图表
+        // Stage chart
         Chart<MetricInfo> chartSummary = new Chart<>();
         buildSummaryChartInfo(chartSummary);
         chartSummary.setDes("每个Stage中任务处理数据速率的中位值和最小值的比值的分布图");
@@ -68,7 +68,7 @@ public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
                 ySummaryValues.add(new ValueInfo(UnitUtil.transferDouble(hdfsStuckAbnormal.getRatio()), "normal"));
             }
             metricSummaryList.add(metricSummary);
-            // Task分布图表
+            // Task chart
             if (hdfsStuckAbnormal.getGraphs() != null) {
                 chartList.add(buildTaskChart(hdfsStuckAbnormal, info));
             }
@@ -96,7 +96,7 @@ public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
     }
 
     /**
-     * 补充图表信息
+     * build chart information
      */
     private void buildChartInfo(Chart<MetricInfo> chart) {
         chart.setX("task id");
@@ -111,12 +111,12 @@ public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
     }
 
     /**
-     * 构建Task分布图
+     * build task chart
      */
     private Chart<MetricInfo> buildTaskChart(HdfsStuckAbnormal hdfsStuckAbnormal, List<String> info) {
         Chart<MetricInfo> chart = new Chart<>();
         buildChartInfo(chart);
-        // 补充图表信息
+
         chart.setDes(String.format("Job[%s] Stage[%s]每个task读取数据量与耗时比值的分布情况(%s)", hdfsStuckAbnormal.getJobId(),
                 hdfsStuckAbnormal.getStageId(), chart.getUnit()));
         long taskId = 0;
@@ -153,7 +153,7 @@ public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
     }
 
     /**
-     * 补充汇总图表信息
+     * build summary chart information
      */
     private void buildSummaryChartInfo(Chart<MetricInfo> chart) {
         chart.setX("stage id");

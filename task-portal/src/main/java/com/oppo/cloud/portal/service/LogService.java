@@ -23,17 +23,17 @@ import com.oppo.cloud.portal.domain.task.JobDetailRequest;
 import java.util.List;
 
 /**
- * 日志内容查询Service
+ * LogService
  */
 public interface LogService {
 
     /**
-     * 获取Yarn diagnostic的诊断结果
+     * Get Yarn log diagnostic information
      */
     List<LogInfo> getDiagnosticDetect(List<TaskApp> taskApps);
 
     /**
-     * 获取某种日志类型的诊断结果
+     * Get log type diagnostic information
      */
     List<LogInfo> getLogDetect(JobDetailRequest jobDetailRequest, String logType);
 }

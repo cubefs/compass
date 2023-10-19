@@ -22,7 +22,7 @@ import com.oppo.cloud.portal.domain.base.Conclusion;
 import org.springframework.stereotype.Service;
 
 /**
- * 内存溢出
+ * Memory Overflow Service
  */
 @Service
 public class MemoryOverflowService extends RunErrorBaseService {

@@ -25,7 +25,7 @@ public class DetectResult {
     private SparkPlanInfo sparkPlanInfo;
 
     /**
-     * @return 返回原始节点名称： Scan orc union_os_dw.dim_model_info
+     * @return raw node name： Scan orc union_os_dw.dim_model_info
      */
     public String getScanNodeName() {
         if (this.sparkPlanInfo != null) {
@@ -35,7 +35,7 @@ public class DetectResult {
     }
 
     /**
-     * @return 返回节点表名字 union_os_dw.dim_model_info
+     * @return node table name: union_os_dw.dim_model_info
      */
     public String getScanNodeTable() {
         if (this.sparkPlanInfo == null) {

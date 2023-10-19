@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 任务长尾异常
+ * TaskLongTail Service
  */
 @Slf4j
 @Service
@@ -63,7 +63,7 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
         }
         taskLongTail.setAbnormal(detectorResult.getAbnormal());
         List<Chart<MetricInfo>> chartList = taskLongTail.getChartList();
-        // Stage分布图表
+        // Stage chart
         Chart<MetricInfo> chartSummary = new Chart<>();
         buildSummaryChartInfo(chartSummary);
         chartSummary.setDes("每个Stage 任务运行耗时最大值与中位值比值的分布图");
@@ -85,8 +85,6 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
         }
         chartList.add(0, chartSummary);
         taskLongTail.getVars().put("taskDurationInfo", String.join(" ,", info));
-        // String reason = getReason(detectorResult.getApplicationId());
-        // taskLongTail.getVars().put("reason", reason);
         taskLongTail.getVars().put("threshold", String.valueOf(config.getTaskDurationConfig().getThreshold()));
 
         return taskLongTail;
@@ -108,7 +106,7 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
     }
 
     /**
-     * 生成任务图表信息
+     * build task chart
      */
     private Chart<MetricInfo> buildTaskChart(TaskDurationAbnormal taskDurationAbnormal, List<String> info) {
         Chart<MetricInfo> chart = new Chart<>();
@@ -142,7 +140,7 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
     }
 
     /**
-     * 补充Task图表信息
+     * build chart information
      */
     private void buildChart(Chart<MetricInfo> chart) {
         chart.setX("task id");
@@ -158,7 +156,7 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
     }
 
     /**
-     * 补充汇总图表信息
+     * build summary chart information
      */
     private void buildSummaryChartInfo(Chart<MetricInfo> chart) {
         chart.setX("stage id");
@@ -172,34 +170,4 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
         chart.setDataCategory(dataCategory);
     }
 
-    /**
-     * 判断任务是否发生数据倾斜或HDFS卡顿
-     */
-    private String getReason(String applicationId) {
-
-        HashMap<String, Object> termQuery = new HashMap<>();
-        termQuery.put("applicationId", applicationId);
-        List<String> categories = new ArrayList<>();
-        try {
-            List<TaskApp> taskAppEsList = openSearchService.find(TaskApp.class, termQuery, appIndex);
-            if (taskAppEsList.size() > 0) {
-                categories = taskAppEsList.get(0).getCategories();
-            }
-        } catch (Exception e) {
-            log.error("search taskAppEs failed, msg:{}", e.getMessage());
-        }
-        List<String> res = new ArrayList<>();
-        if (categories.contains(AppCategoryEnum.DATA_SKEW.getCategory())) {
-            res.add(AppCategoryEnum.DATA_SKEW.getDesc());
-        }
-        if (categories.contains(AppCategoryEnum.HDFS_STUCK.getCategory())) {
-            res.add(AppCategoryEnum.HDFS_STUCK.getDesc());
-        }
-        if (res.size() == 0) {
-            return "";
-        } else {
-            return String.format("同时检测出该任务发生<span style=\"color: #e24a4a;\">%s</span>, 可能是此原因导致了Task耗时异常。",
-                    String.join(",", res));
-        }
-    }
 }

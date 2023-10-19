@@ -59,7 +59,7 @@ public class SpeculativeTaskDetector implements IDetector {
                     }
                     List<Long> taskIds = new ArrayList<>();
                     for (SparkTask task : tasks) {
-                        // 推测执行
+                        // Speculative task
                         if (task.getSpeculative() != null && task.getSpeculative()) {
                             taskIds.add(task.getTaskId());
                         }

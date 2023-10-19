@@ -29,34 +29,34 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@ApiModel("诊断报告")
+@ApiModel("DiagnoseReport")
 public class DiagnoseReport {
 
-    @ApiModelProperty("运行信息")
+    @ApiModelProperty("run information")
     private RunInfo runInfo;
 
-    @ApiModelProperty("运行错误")
+    @ApiModelProperty("run error")
     private List<Item<RunError>> runErrorAnalyze = new ArrayList<>();
 
-    @ApiModelProperty("资源使用")
+    @ApiModelProperty("resources")
     private List<Item> resourcesAnalyze = new ArrayList<>();
 
-    @ApiModelProperty("运行耗时")
+    @ApiModelProperty("run time")
     private List<Item> runTimeAnalyze = new ArrayList<>();
 
     @Data
     public static class RunInfo {
 
-        @ApiModelProperty("任务运行信息")
+        @ApiModelProperty("task information")
         private TaskInfo taskInfo;
 
-        @ApiModelProperty("集群信息")
+        @ApiModelProperty("cluster information")
         private ClusterInfo clusterInfo;
 
-        @ApiModelProperty("app运行参数")
+        @ApiModelProperty("app parameter")
         private Map<String, Object> env;
 
-        @ApiModelProperty("错误信息")
+        @ApiModelProperty("error information")
         private String error;
     }
 

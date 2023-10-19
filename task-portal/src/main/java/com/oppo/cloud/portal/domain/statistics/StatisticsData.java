@@ -22,69 +22,69 @@ import lombok.Data;
 @Data
 public class StatisticsData {
 
-    @ApiModelProperty(value = "诊断任务数")
+    @ApiModelProperty(value = "Number of abnormal jobs")
     private Integer abnormalJobNum;
 
-    @ApiModelProperty(value = "活跃任务数")
+    @ApiModelProperty(value = "Number of active jobs")
     private Integer jobNum;
 
-    @ApiModelProperty(value = "诊断任务数占比")
+    @ApiModelProperty(value = "Ratio of abnormal jobs")
     private Double abnormalJobNumRatio;
 
-    @ApiModelProperty(value = "诊断任务数环比")
+    @ApiModelProperty(value = "Chain ratio of abnormal jobs")
     private Double abnormalJobNumChainRatio;
 
-    @ApiModelProperty(value = "诊断任务数同比")
+    @ApiModelProperty(value = "Day On Day ratio of abnormal jobs")
     private Double abnormalJobNumDayOnDay;
 
-    @ApiModelProperty(value = "诊断实例数")
+    @ApiModelProperty(value = "Number of abnormal instances")
     private Integer abnormalJobInstanceNum;
 
-    @ApiModelProperty(value = "运行实例数")
+    @ApiModelProperty(value = "Number of job instances")
     private Integer jobInstanceNum;
 
-    @ApiModelProperty(value = "诊断实例数占比")
+    @ApiModelProperty(value = "Ratio of abnormal instances")
     private Double abnormalJobInstanceNumRatio;
 
-    @ApiModelProperty(value = "诊断实例数环比")
+    @ApiModelProperty(value = "Chain ratio of abnormal instances")
     private Double abnormalJobInstanceNumChainRatio;
 
-    @ApiModelProperty(value = "诊断实例数同比")
+    @ApiModelProperty(value = "Day On Day ratio of abnormal instances")
     private Double abnormalJobInstanceNumDayOnDay;
 
-    @ApiModelProperty(value = "任务CPU消耗数")
+    @ApiModelProperty(value = "Abnormal Job CPU number")
     private Double abnormalJobCpuNum;
 
-    @ApiModelProperty(value = "总CPU消耗数")
+    @ApiModelProperty(value = "Job CPU number")
     private Double jobCpuNum;
 
-    @ApiModelProperty(value = "cpu消耗单位")
+    @ApiModelProperty(value = "CPU unit")
     private String cpuUnit = "vcore·s";
 
-    @ApiModelProperty(value = "任务CPU消耗数占比")
+    @ApiModelProperty(value = "Ratio of job CPU number")
     private Double abnormalJobCpuNumRatio;
 
-    @ApiModelProperty(value = "任务CPU消耗数环比")
+    @ApiModelProperty(value = "Chain ratio of job CPU number")
     private Double abnormalJobCpuNumChainRatio;
 
-    @ApiModelProperty(value = "任务CPU消耗数同比")
+    @ApiModelProperty(value = "Day On Day ratio of job CPU number")
     private Double abnormalJobCpuNumDayOnDay;
 
-    @ApiModelProperty(value = "任务内存消耗数")
+    @ApiModelProperty(value = "Abnormal job memory number")
     private Double abnormalJobMemoryNum;
 
-    @ApiModelProperty(value = "总内存消耗数")
+    @ApiModelProperty(value = "Job memory number")
     private Double jobMemoryNum;
 
-    @ApiModelProperty(value = "cpu消耗单位")
+    @ApiModelProperty(value = "Memory unit")
     private String memoryUnit = "G·s";
 
-    @ApiModelProperty(value = "任务CPU消耗数占比")
+    @ApiModelProperty(value = "Ratio of job memory number")
     private Double abnormalJobMemoryNumRatio;
 
-    @ApiModelProperty(value = "任务CPU消耗数环比")
+    @ApiModelProperty(value = "Chain ratio of job memory number")
     private Double abnormalJobMemoryNumChainRatio;
 
-    @ApiModelProperty(value = "任务CPU消耗数同比")
+    @ApiModelProperty(value = "Day On Day ratio of job memory number")
     private Double abnormalJobMemoryNumDayOnDay;
 }

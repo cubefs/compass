@@ -113,7 +113,7 @@ class JobControllerTest {
         indexName += DateUtil.format(jobAnalysis.getExecutionDate(), "yyyy-MM-dd");
         Map<String, Object> map = jobAnalysis.genDoc();
         System.out.println(map);
-        openSearchService.insertOrUpDate(indexName, UUID.randomUUID().toString(), jobAnalysis.genDoc());
+        openSearchService.insertOrUpdate(indexName, UUID.randomUUID().toString(), jobAnalysis.genDoc());
     }
 
     @Test
@@ -160,7 +160,7 @@ class JobControllerTest {
         appIndexName += DateUtil.format(taskApp.getExecutionDate(), "yyyy-MM-dd");
         Map<String, Object> map = taskApp.genDoc();
         System.out.println(map);
-        openSearchService.insertOrUpDate(appIndexName, "352c06de-a313-4e60-965a-5b2e3705b198", map);
+        openSearchService.insertOrUpdate(appIndexName, "352c06de-a313-4e60-965a-5b2e3705b198", map);
     }
 
     @Test
@@ -217,7 +217,7 @@ class JobControllerTest {
         logSummary.setApplicationId("");
         logSummary.setStep(0);
         logSummary.setLogTimestamp(1666713600);
-        openSearchService.insertOrUpDate(logIndex + "-" + "2022-10-26", UUID.randomUUID().toString(),
+        openSearchService.insertOrUpdate(logIndex + "-" + "2022-10-26", UUID.randomUUID().toString(),
                 logSummary.genDoc());
     }
 
@@ -230,7 +230,7 @@ class JobControllerTest {
             taskApp.setApplicationId("application_1662709492856_0271_1");
             taskApp.setCategories(
                     Arrays.asList("otherException", "stageDurationAbnormal", "speculativeTask", "cpuWaste"));
-            openSearchService.insertOrUpDate(taskApp.genIndex(appIndex), taskApp.genDocId(), taskApp.genDoc());
+            openSearchService.insertOrUpdate(taskApp.genIndex(appIndex), taskApp.genDocId(), taskApp.genDoc());
             break;
         }
     }
@@ -247,7 +247,7 @@ class JobControllerTest {
                     detectorResult.setAbnormal(false);
                 }
             }
-            openSearchService.insertOrUpDate("compass-detector-app-2022-11-07",
+            openSearchService.insertOrUpdate("compass-detector-app-2022-11-07",
                     "bbde0eda-8888-4198-bda9-a92d4723ce31", detectorStorage);
             break;
         }

@@ -62,12 +62,7 @@ public class OpenSearchServiceImpl implements OpenSearchService {
     private RestHighLevelClient restHighLevelClient;
 
     /**
-     * 根据查询条件对象和索引查询原始数据
-     *
-     * @param builder 查询条件
-     * @param indexes 查询索引
-     * @return
-     * @throws Exception
+     * Find by SearchSourceBuilder
      */
     @Override
     public SearchHits find(SearchSourceBuilder builder, String... indexes) throws Exception {
@@ -121,12 +116,7 @@ public class OpenSearchServiceImpl implements OpenSearchService {
     }
 
     /**
-     * 根据条件查询记录条数
-     *
-     * @param builder
-     * @param indexes
-     * @return
-     * @throws Exception
+     * Count by SearchSourceBuilder
      */
     @Override
     public Long count(SearchSourceBuilder builder, String... indexes) throws Exception {
@@ -139,14 +129,7 @@ public class OpenSearchServiceImpl implements OpenSearchService {
     }
 
     /**
-     * 根据查询条件和索引查询数据
-     *
-     * @param itemType 查询对象类型
-     * @param builder  查询条件
-     * @param indexes  查询索引
-     * @param <T>      数据类型
-     * @return
-     * @throws Exception
+     * Find by Class type and SearchSourceBuilder
      */
     @Override
     public <T> List<T> find(Class<T> itemType, SearchSourceBuilder builder, String... indexes) throws Exception {
@@ -163,8 +146,8 @@ public class OpenSearchServiceImpl implements OpenSearchService {
                     }
                     items.add(value);
                 } catch (Exception e) {
-                    log.error("解析Json数据异常，原始数据: {}, 异常: {}", hit.getSourceAsString(), e.getMessage());
-                    throw new Exception(String.format("解析Json数据异常: %s", e.getMessage()));
+                    log.error("parse json exception,: hit: {}, exception: {}", hit.getSourceAsString(), e.getMessage());
+                    throw new Exception(String.format("parse json exception: %s", e.getMessage()));
                 }
             }
         } catch (Exception e) {
@@ -182,7 +165,7 @@ public class OpenSearchServiceImpl implements OpenSearchService {
     }
 
     /**
-     * 构建通用查询条件
+     * Generate SearchBuilder
      */
     @Override
     public SearchSourceBuilder genSearchBuilder(Map<String, Object> termQuery, Map<String, Object[]> rangeConditions,
@@ -190,29 +173,29 @@ public class OpenSearchServiceImpl implements OpenSearchService {
                                                 Map<String, Object> or) {
         SearchSourceBuilder builder = new SearchSourceBuilder();
         BoolQueryBuilder boolQuery = new BoolQueryBuilder();
-        // 查询条件
+        // query condition
         if (termQuery != null) {
             for (String key : termQuery.keySet()) {
                 Object value = termQuery.get(key);
                 if (value == null) {
-                    // null值查询
+                    // Query for null value
                     boolQuery.mustNot(QueryBuilders.existsQuery(key));
                 } else if ("".equals(value)) {
-                    // 不匹配任何有效字符串
+                    // Does not match any valid string
                     boolQuery.mustNot(QueryBuilders.wildcardQuery(key, "*"));
                 } else if (value instanceof java.util.List) {
-                    // 列表查询
+                    // List query
                     boolQuery.filter(QueryBuilders.termsQuery(key, (List<Object>) value));
                 } else if (value instanceof Object[]) {
-                    // 列表数组
+                    //  List array
                     boolQuery.filter(QueryBuilders.termsQuery(key, (Object[]) value));
                 } else {
-                    // 单字符串查询
+                    // Single string query
                     boolQuery.filter(QueryBuilders.termQuery(key, value));
                 }
             }
         }
-        // or条件查询[xx and (a=1 or c=2)]
+        // or condition query[xx and (a=1 or c=2)]
         if (or != null) {
             BoolQueryBuilder boolOrQueryBuilder = new BoolQueryBuilder();
             for (String key : or.keySet()) {
@@ -227,7 +210,7 @@ public class OpenSearchServiceImpl implements OpenSearchService {
             }
             boolQuery.must(boolOrQueryBuilder);
         }
-        // 范围查询
+        // range condition
         if (rangeConditions != null) {
             for (String key : rangeConditions.keySet()) {
                 RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(key);
@@ -252,7 +235,7 @@ public class OpenSearchServiceImpl implements OpenSearchService {
     }
 
     @Override
-    public UpdateResponse insertOrUpDate(String index, String id, Object document) throws Exception {
+    public UpdateResponse insertOrUpdate(String index, String id, Object document) throws Exception {
         String json = "";
         try {
             json = JSON.toJSONString(document);
@@ -272,7 +255,7 @@ public class OpenSearchServiceImpl implements OpenSearchService {
     }
 
     /**
-     * 按查询条件更新数据
+     * Update by BoolQueryBuilder
      */
     @Override
     public void updateByQuery(BoolQueryBuilder boolQueryBuilder, Script script, String... indexNames) throws Exception {
@@ -283,7 +266,7 @@ public class OpenSearchServiceImpl implements OpenSearchService {
     }
 
     /**
-     * 按天聚合字段值和
+     * Aggregate field values by day
      */
     @Override
     public List<IndicatorData> sumAggregationByDay(SearchSourceBuilder builder, long start, long end, String index, String aggField, String field) throws Exception {
@@ -303,7 +286,7 @@ public class OpenSearchServiceImpl implements OpenSearchService {
     }
 
     /**
-     * 按天统计数量聚合
+     *  Aggregate the count of document by day
      */
     @Override
     public List<IndicatorData> countDocByDay(SearchSourceBuilder builder, long start, long end, String index, String aggField) throws Exception {

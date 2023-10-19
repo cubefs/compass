@@ -25,10 +25,10 @@ import java.util.Map;
 @Data
 public class JobAppsRespone {
 
-    @ApiModelProperty(value = "任务相关信息")
+    @ApiModelProperty(value = "job information")
     JobInfo jobInfo;
 
-    @ApiModelProperty(value = "taskApps 数据")
+    @ApiModelProperty(value = "taskApps data")
     Map<String, List<TaskAppInfo>> taskApps;
 
 }

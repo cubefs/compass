@@ -27,25 +27,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ApiModel("内存浪费分析")
+@ApiModel("MemoryWaste Information")
 public class MemoryWaste extends IsAbnormal {
 
-    @ApiModelProperty(value = "图表信息")
+    @ApiModelProperty(value = "chat list")
     private List<Chart<MetricInfo>> chartList = new ArrayList<>();
 
-    @ApiModelProperty(value = "GC分析")
+    @ApiModelProperty(value = "GC information")
     private List<ComputeNode> computeNodeList;
 
     @Data
     public static class ComputeNode {
 
-        @ApiModelProperty(value = "节点名称")
+        @ApiModelProperty(value = "executor Id")
         private Integer executorId;
 
-        @ApiModelProperty(value = "主机名称")
+        @ApiModelProperty(value = "host name")
         private String hostName;
 
-        @ApiModelProperty(value = "节点类型(driver/executor)")
+        @ApiModelProperty(value = "node type(driver/executor)")
         private String nodeType;
 
     }

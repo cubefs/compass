@@ -26,6 +26,6 @@ import java.util.List;
 @Data
 public class TableData<T> {
 
-    @ApiModelProperty(value = "数据表")
+    @ApiModelProperty(value = "table information")
     List<Table<T>> tableList = new ArrayList<>();
 }

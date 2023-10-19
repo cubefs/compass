@@ -33,39 +33,39 @@ public class JobInstanceMapping extends Mapping {
 
     public static Map<String, Object> build() {
         return Stream.of(
-                /* 任务所属用户: [{userId: 23432, username: "someone"}] */
+                /* users: [{userId: 23432, username: "someone"}] */
                 new AbstractMap.SimpleEntry<>("users", users()),
-                /* 项目名称 */
+                /* project name */
                 new AbstractMap.SimpleEntry<>("projectName", text()),
-                /* 项目ID */
+                /* project Id */
                 new AbstractMap.SimpleEntry<>("projectId", digit("integer")),
-                /* 工作流名称 */
+                /* flow name */
                 new AbstractMap.SimpleEntry<>("flowName", text()),
-                /* 工作流ID */
+                /* flow ID */
                 new AbstractMap.SimpleEntry<>("flowId", digit("integer")),
-                /* 任务名称 */
+                /* task name */
                 new AbstractMap.SimpleEntry<>("taskName", text()),
-                /* 任务ID */
+                /* task ID */
                 new AbstractMap.SimpleEntry<>("taskId", digit("integer")),
-                /* 整个工作流开始执行时间 */
+                /* execution date */
                 new AbstractMap.SimpleEntry<>("executionDate", date()),
-                /* 任务开始执行时间 */
+                /* start time */
                 new AbstractMap.SimpleEntry<>("startTime", date()),
-                /* 任务结束执行时间 */
+                /* end time */
                 new AbstractMap.SimpleEntry<>("endTime", date()),
-                /* 任务执行耗时 */
+                /* duration */
                 new AbstractMap.SimpleEntry<>("duration", digit("double")),
-                /* 任务执行状态: success、fail */
+                /* task state: success、fail */
                 new AbstractMap.SimpleEntry<>("taskState", text()),
-                /* 运行所需要application memory·second */
+                /* application memory·second */
                 new AbstractMap.SimpleEntry<>("memorySeconds", digit("double")),
-                /* 运行所需要application vcore·second */
+                /* application vcore·second */
                 new AbstractMap.SimpleEntry<>("vcoreSeconds", digit("double")),
-                /* 任务类型： SHELL, PYTHON, SPARK */
+                /* task type： SHELL, PYTHON, SPARK */
                 new AbstractMap.SimpleEntry<>("taskType", text()),
-                /* 失败重试次数 */
+                /* retry times */
                 new AbstractMap.SimpleEntry<>("retryTimes", digit("integer")),
-                /* 创建时间 */
+                /* create time */
                 new AbstractMap.SimpleEntry<>("createTime", date()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }

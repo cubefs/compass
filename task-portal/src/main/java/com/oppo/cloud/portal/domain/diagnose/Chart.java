@@ -25,25 +25,25 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@ApiModel("图表类")
+@ApiModel("Chart Type")
 public class Chart<T> {
 
-    @ApiModelProperty(value = "横坐标")
+    @ApiModelProperty(value = "X-axis")
     private String x;
 
-    @ApiModelProperty(value = "纵坐标")
+    @ApiModelProperty(value = "Y-axis")
     private String y;
 
-    @ApiModelProperty(value = "纵坐标单位")
+    @ApiModelProperty(value = "Y-axis unit")
     private String unit;
 
-    @ApiModelProperty(value = "图表数据")
+    @ApiModelProperty(value = "Chart data")
     private List<T> dataList = new ArrayList<>();
 
-    @ApiModelProperty(value = "数据分类说明(不同数据展示不同颜色)")
+    @ApiModelProperty(value = "Data category description (different data displayed in different colors)")
     private Map<String, ChartInfo> dataCategory;
 
-    @ApiModelProperty(value = "图表说明")
+    @ApiModelProperty(value = "Chart description")
     private String des;
 
     @Data

@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
- * SparkListenerSQLAdaptiveExecutionUpdate 在2.4.0不存在
+ * SparkListenerSQLAdaptiveExecutionUpdate,the version 2.4.0 does not exist
  */
 @Data
 public class SparkListenerSQLAdaptiveExecutionUpdate extends SparkListenerEvent {

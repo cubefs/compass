@@ -34,46 +34,46 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ApplicationId 列表诊断请求
+ * ApplicationId request information
  */
 @Data
-@ApiModel(value = "ApplicationId诊断列表请求参数")
+@ApiModel(value = "ApplicationId request information")
 public class TaskAppsRequest {
 
     @ApiModelProperty(value = "applicationId")
     private String applicationId;
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @ApiModelProperty(value = "工作流")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "实例")
+    @ApiModelProperty(value = "task name")
     private String taskName;
 
-    @ApiModelProperty(value = "开始时间")
+    @ApiModelProperty(value = "start time")
     private long start = 0;
 
-    @ApiModelProperty(value = "结束时间")
+    @ApiModelProperty(value = "end time")
     private long end = 0;
 
-    @ApiModelProperty(value = "创建者")
+    @ApiModelProperty(value = "username")
     private String username;
 
-    @ApiModelProperty(value = "异常类型")
+    @ApiModelProperty(value = "categories")
     private List<String> categories;
 
-    @ApiModelProperty(value = "页码")
-    @Min(value = 1, message = "page 不能小于1")
+    @ApiModelProperty(value = "page")
+    @Min(value = 1, message = "\"page cannot be less than 1")
     private Integer page = 1;
 
-    @ApiModelProperty(value = "每页数量")
-    @Max(value = 500, message = "pageSize 不能大于500")
+    @ApiModelProperty(value = "number per page")
+    @Max(value = 500, message = "pageSize cannot be greater than 500")
     private Integer pageSize = 15;
 
     /**
-     * 获取TermQuery, 方便构建elk查询条件
+     * Get TermQuery
      */
     @JsonIgnore
     public Map<String, Object> getTermQuery() {
@@ -106,7 +106,7 @@ public class TaskAppsRequest {
     }
 
     /**
-     * 获取排序规则
+     * Get sort order
      */
     @JsonIgnore
     public Map<String, SortOrder> getSortOrder() {
@@ -134,7 +134,7 @@ public class TaskAppsRequest {
     }
 
     /**
-     * 分页开始的条数
+     * Get from page number
      */
     @JsonIgnore
     public Integer getFrom() {
@@ -142,7 +142,7 @@ public class TaskAppsRequest {
     }
 
     /**
-     * 每页大小
+     * Get page size
      */
     @JsonIgnore
     public Integer getSize() {

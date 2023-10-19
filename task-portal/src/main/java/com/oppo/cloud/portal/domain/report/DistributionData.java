@@ -19,17 +19,17 @@ package com.oppo.cloud.portal.domain.report;
 import lombok.Data;
 
 /**
- * 分布图数据
+ * Distribution Data
  */
 @Data
 public class DistributionData {
 
     /**
-     * 名称
+     * name
      */
     private String name;
     /**
-     * 值
+     * value
      */
     private Double value;
 

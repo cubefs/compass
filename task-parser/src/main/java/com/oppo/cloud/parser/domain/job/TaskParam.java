@@ -26,31 +26,31 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 任务基本信息
+ * Task Param Information
  */
 @Slf4j
 @Data
 public class TaskParam {
 
     /**
-     * 任务类型
+     * log group type
      */
     private LogGroupType category;
     /**
-     * job元数据
+     * LogRecord information
      */
     private LogRecord logRecord;
     /**
-     * app元数据
+     * app information
      */
     private App app;
     /**
-     * 日志信息
+     * log information
      */
     private LogInfo logInfo;
 
     /**
-     * 任务重试次数
+     * task retry number
      */
     private int retry;
 

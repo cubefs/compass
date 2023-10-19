@@ -21,17 +21,17 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 分布图数据
+ * Distribution Graph
  */
 @Data
 public class DistributionGraph {
 
     /**
-     * 名称
+     * name
      */
     private String name;
     /**
-     * 值
+     * data
      */
     List<DistributionData> data;
 }

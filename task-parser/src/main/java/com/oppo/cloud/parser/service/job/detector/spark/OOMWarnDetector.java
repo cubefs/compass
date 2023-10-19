@@ -165,7 +165,7 @@ public class OOMWarnDetector implements IDetector {
     }
 
     /**
-     * 获取基本数据
+     * Get action data
      */
     public Map<String, String> getActionData(int thresholdType) {
         Map<String, String> m = new HashMap<>();
@@ -185,7 +185,7 @@ public class OOMWarnDetector implements IDetector {
     }
 
     /**
-     * 获取vars数据
+     * Get vars data
      */
     public Map<String, String> getVars(String execType, String action, Long driverMemory, Long executorMemory,
                                        Long useMemory, String scanNodeTable, String usePercent, Long maxRows) {
@@ -202,15 +202,15 @@ public class OOMWarnDetector implements IDetector {
     }
 
     /**
-     * 使用内存超过阈值，或者广播过滤数据行数是否超过阈值
+     * Memory usage exceeds threshold, or broadcast filter data row count exceeds threshold
      */
     public int isOverThreshold(float usePercent, Long maxRows) {
-        // 广播过滤数据行数过多
+        // Too many broadcast filter data rows
         if (((maxRows >= this.config.getBroadcastRows()) && (usePercent >= this.config.getBroadcastRowsOom())) &&
                 this.param.getAppDuration() > this.config.getDuration()) {
             return 0;
         }
-        // 内存超过阈值
+        // Memory exceeds threshold
         if (usePercent >= this.config.getOom() && this.param.getAppDuration() > this.config.getDuration()) {
             return 1;
         }

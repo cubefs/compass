@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Job表构建
+ * Job Analysis Mapping
  */
 public class JobAnalysisMapping extends Mapping {
 
@@ -35,59 +35,59 @@ public class JobAnalysisMapping extends Mapping {
 
     public static Map<String, Object> build() {
         return Stream.of(
-                        /* 任务所属用户: [{userId: 23432, username: "someone"}] */
+                        /* users: [{userId: 23432, username: "someone"}] */
                         new AbstractMap.SimpleEntry<>("users", users()),
-                        /* 项目名称 */
+                        /* project name */
                         new AbstractMap.SimpleEntry<>("projectName", text()),
-                        /* 项目ID */
+                        /* project Id */
                         new AbstractMap.SimpleEntry<>("projectId", digit("integer")),
-                        /* 工作流名称 */
+                        /* flow name */
                         new AbstractMap.SimpleEntry<>("flowName", text()),
-                        /* 工作流ID */
+                        /* flow ID */
                         new AbstractMap.SimpleEntry<>("flowId", digit("integer")),
-                        /* 任务名称 */
+                        /* task name */
                         new AbstractMap.SimpleEntry<>("taskName", text()),
-                        /* 任务ID */
+                        /* task ID */
                         new AbstractMap.SimpleEntry<>("taskId", digit("integer")),
-                        /* 整个工作流开始执行时间 */
+                        /* execution date */
                         new AbstractMap.SimpleEntry<>("executionDate", date()),
-                        /* 任务开始执行时间 */
+                        /* start time */
                         new AbstractMap.SimpleEntry<>("startTime", date()),
-                        /* 任务结束执行时间 */
+                        /* end time */
                         new AbstractMap.SimpleEntry<>("endTime", date()),
-                        /* 任务执行耗时 */
+                        /* duration */
                         new AbstractMap.SimpleEntry<>("duration", digit("double")),
-                        /* 任务执行状态: success、fail */
+                        /* task state: success、fail */
                         new AbstractMap.SimpleEntry<>("taskState", text()),
-                        /* 运行所需要application memory·second */
+                        /* application memory·second */
                         new AbstractMap.SimpleEntry<>("memorySeconds", digit("double")),
-                        /* 运行所需要application vcore·second */
+                        /* application vcore·second */
                         new AbstractMap.SimpleEntry<>("vcoreSeconds", digit("double")),
-                        /* 任务类型： SHELL, PYTHON, SPARK */
+                        /* task type： SHELL, PYTHON, SPARK */
                         new AbstractMap.SimpleEntry<>("taskType", text()),
-                        /* 失败重试次数 */
+                        /* retry times */
                         new AbstractMap.SimpleEntry<>("retryTimes", digit("integer")),
-                        /* 异常类型，列表：["memoryWaste", "cpuWaste", ...] */
+                        /* abnormal type,List: ["memoryWaste", "cpuWaste", ...] */
                         new AbstractMap.SimpleEntry<>("categories", text()),
-                        /* 正常运行耗时区间 */
+                        /* baseline duration */
                         new AbstractMap.SimpleEntry<>("durationBaseline", text()),
-                        /* 正常结束时间区间 */
+                        /* baseline end time */
                         new AbstractMap.SimpleEntry<>("endTimeBaseline", text()),
-                        /* 最近一次成功时间(长期失败任务),普通时间类型 */
+                        /* last successful time(Long-term failed task) */
                         new AbstractMap.SimpleEntry<>("successExecutionDay", text()),
-                        /* 距离最近一次成功的天数(长期失败任务) */
+                        /* days since the last success(Long-term failed task) */
                         new AbstractMap.SimpleEntry<>("successDays", text()),
-                        /* 任务使用内存(OOM预警) */
+                        /* task used memory(Memory overflow warning) */
                         new AbstractMap.SimpleEntry<>("memory", digit("double")),
-                        /* 内存占比(OOM预警) */
+                        /* memory usage ratio(Memory overflow warning) */
                         new AbstractMap.SimpleEntry<>("memoryRatio", digit("double")),
-                        /* 是否删除 */
+                        /* task deletion status: not deleted (0), deleted (1) */
                         new AbstractMap.SimpleEntry<>("deleted", digit("integer")),
-                        /* 任务处理状态：未处理(0)、已查看(1)、已处理(2) */
+                        /* task processing status: unprocessed (0), processed (1) */
                         new AbstractMap.SimpleEntry<>("taskStatus", digit("integer")),
-                        /* 记录创建时间 */
+                        /* create time */
                         new AbstractMap.SimpleEntry<>("createTime", date()),
-                        /* 记录更新时间 */
+                        /* update time */
                         new AbstractMap.SimpleEntry<>("updateTime", date()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }

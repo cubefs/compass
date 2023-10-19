@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * 任务异常类型
+ * Task abnormal result
  */
 @Data
 @NoArgsConstructor

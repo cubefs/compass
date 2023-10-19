@@ -21,13 +21,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel("spark运行配置")
+@ApiModel("SparkConfig")
 public class SparkConfig {
 
-    @ApiModelProperty(value = "driver内存")
+    @ApiModelProperty(value = "driver memory")
     private double sparkDriverMemory;
 
-    @ApiModelProperty(value = "executor内存")
+    @ApiModelProperty(value = "executor memory")
     private double sparkExecutorMemory;
 
     public SparkConfig(double sparkDriverMemory, double sparkExecutorMemory) {

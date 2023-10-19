@@ -28,6 +28,6 @@ import java.util.List;
 @Data
 public class SpeculativeTask extends IsAbnormal {
 
-    @ApiModelProperty(value = "数据图表")
+    @ApiModelProperty(value = "chart list")
     private List<Chart<MetricInfo>> chartList = new ArrayList<>();
 }

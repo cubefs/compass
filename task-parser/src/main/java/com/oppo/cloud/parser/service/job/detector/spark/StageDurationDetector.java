@@ -73,11 +73,11 @@ public class StageDurationDetector implements IDetector {
                     }
 
                     Long completeTime = stage.getCompleteTimeMap().get(attemptId);
+                    // refer to https://github.com/apache/spark/pull/9051
                     long stageDuration = completeTime - firstLaunchTime;
 
-                    // 计算stage是否耗时异常
                     taskDetectionInfoList.sort(Comparator.comparing(TaskDetectionInfo::getFirstLaunchTime));
-                    // task累计时间
+                    // Cumulative task time
                     TaskDetectionInfo curTask = taskDetectionInfoList.get(0);
                     long start = curTask.getFirstLaunchTime();
                     long taskAcc = 0;
@@ -85,7 +85,7 @@ public class StageDurationDetector implements IDetector {
                     for (int i = 1; i < taskDetectionInfoList.size(); i++) {
                         TaskDetectionInfo taskInfo = taskDetectionInfoList.get(i);
                         if (curTask.getFinishTime() <= taskInfo.getFirstLaunchTime()) {
-                            // 完成时间为0，可能发生speculative
+                            // finishTime is 0, speculative may have occurred
                             if (curTask.getFinishTime() != 0) {
                                 taskAcc += curTask.getFinishTime() - start;
                             }
@@ -97,7 +97,7 @@ public class StageDurationDetector implements IDetector {
                     }
 
                     taskAcc += curTask.getFinishTime() - start;
-                    // 完成时间为0,stage中task出现一直running状态
+                    // finishTime time is 0, tasks in stage are always in running state
                     if (taskAcc <= 0) {
                         log.warn("taskAcc less than zero:{},{},{},{}", param.getAppId(),
                                 stage.getStageId(), stageDuration, taskAcc);
@@ -111,7 +111,7 @@ public class StageDurationDetector implements IDetector {
                     double threshold = this.config.getThreshold();
                     long duration = this.config.getDuration();
                     if (ratio > threshold && stageDuration > duration) {
-                        // 耗时异常
+                        // Abnormal duration
                         stageList.add(new StageDurationAbnormal(jobs.getKey(), stage.getStageId(), attemptId,
                                 stageDuration, taskAcc, ratio, threshold, duration, true));
                         detectorResult.setAbnormal(true);

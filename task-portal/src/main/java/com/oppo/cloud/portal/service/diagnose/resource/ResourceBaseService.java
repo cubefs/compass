@@ -37,7 +37,7 @@ import java.io.PrintStream;
 import java.util.List;
 
 /**
- * 资源分析基类
+ * Resource Base Service
  */
 @Slf4j
 @Service
@@ -53,23 +53,23 @@ public abstract class ResourceBaseService<T extends IsAbnormal> implements Gener
     String detectIndex;
 
     /**
-     * 获取app异常类型(需要子类实现)
+     * Get app category
      */
     public abstract String getCategory();
 
     /**
-     * 获取图表类型
+     * Get chart type
      */
     public abstract String getType();
 
     /**
-     * 产生诊断报告数据,由子类实现
+     * Generate data
      */
     public abstract T generateData(DetectorResult detectorResult, DetectorConfig config,
                                    String applicationId) throws Exception;
 
     /**
-     * 产生分析结论
+     * Generate conclusion
      */
     public Conclusion generateConclusion(T data) {
         if (data == null) {
@@ -98,17 +98,17 @@ public abstract class ResourceBaseService<T extends IsAbnormal> implements Gener
     }
 
     /**
-     * 产生分析结论说明
+     * Generate conclusion description
      */
     public abstract String generateConclusionDesc(IsAbnormal isAbnormal);
 
     /**
-     * 报告描述（需要各个子类实现）
+     * Generate item description
      */
     public abstract String generateItemDesc();
 
     /**
-     * 产生报告模板方法
+     * Generate report
      */
     @Override
     public Item<T> generate(DetectorStorage detectorStorage) {
@@ -119,10 +119,10 @@ public abstract class ResourceBaseService<T extends IsAbnormal> implements Gener
             if (detectorStorage.getDataList() != null) {
                 for (DetectorResult detectorResult : detectorStorage.getDataList()) {
                     if (detectorResult.getAppCategory().equals(this.getCategory())) {
-                        // 根据es元数据生成诊断报告
+                        // generate report
                         data = this.generateData(detectorResult, detectorStorage.getConfig(),
                                 detectorStorage.getApplicationId());
-                        // 根据诊断结果数据中var变量生成诊断建议
+                        // generate conclusion
                         conclusion = this.generateConclusion(data);
                         break;
                     }

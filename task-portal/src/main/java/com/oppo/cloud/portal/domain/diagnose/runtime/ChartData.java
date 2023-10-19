@@ -27,9 +27,9 @@ import java.util.List;
 @Data
 public class ChartData {
 
-    @ApiModelProperty(value = "数据图")
+    @ApiModelProperty(value = "chart list")
     private List<Chart<MetricInfo>> chartList = new ArrayList<>();
 
-    @ApiModelProperty(value = "阈值")
+    @ApiModelProperty(value = "threshold")
     private double threshold;
 }

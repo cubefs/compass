@@ -84,9 +84,9 @@ public class TaskDurationDetector implements IDetector {
 
                     TaskDurationAbnormal taskDurationAbnormal = new TaskDurationAbnormal(job.getKey(),
                             stage.getStageId(), attemptId, median, max, ratio, null, false);
-                    // 阈值判断
+
+                    // Threshold judgment
                     if (ratio > threshold && this.param.getAppDuration() > duration) {
-                        // 统计值处理
                         Map<Long, TaskDurationGraph> statisticsMap = getStatisticsMap(taskDurationGraphList);
                         List<TaskDurationGraph> graphs;
                         if (taskDurationGraphList.size() <= 30) {
@@ -100,7 +100,7 @@ public class TaskDurationDetector implements IDetector {
                             TaskDurationGraph cache = statisticsMap.get(data.getTaskId());
                             {
                                 if (cache != null) {
-                                    // 类型替换
+                                    // Type replacement
                                     data.setGraphType(cache.getGraphType());
                                     statisticsMap.remove(cache.getTaskId());
                                 }
@@ -122,7 +122,7 @@ public class TaskDurationDetector implements IDetector {
     }
 
     /**
-     * 统计值处理
+     * Statistical value processing
      */
     private Map<Long, TaskDurationGraph> getStatisticsMap(List<TaskDurationGraph> taskDurationGraphs) {
         Map<Long, TaskDurationGraph> statisticsMap = new HashMap<>();

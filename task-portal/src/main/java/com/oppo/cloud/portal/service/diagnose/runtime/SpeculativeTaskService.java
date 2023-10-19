@@ -62,7 +62,7 @@ public class SpeculativeTaskService extends RunTimeBaseService<SpeculativeTask> 
             ValueInfo yValue = new ValueInfo();
             yValue.setValue(speculativeTaskAbnormal.getSpeculativeCount());
             yValue.setType("normal");
-            // 判断是否异常
+            // judge abnormal
             if (speculativeTaskAbnormal.getAbnormal()) {
                 yValue.setType("abnormal");
                 values.add(String.format("%d个", speculativeTaskAbnormal.getSpeculativeCount()));

@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * MR大表扫描
+ * MRBigTableScan Service
  */
 @Order(4)
 @Service

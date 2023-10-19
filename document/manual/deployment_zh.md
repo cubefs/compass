@@ -6,15 +6,18 @@ Compass 依赖了调度平台、Hadoop、Spark、Canal、MySQL、Kafka、Redis�
 
 ## 环境要求
 |Dependency|Version|Optional|Description|
-|----------|-------|--------|----|
+|----------|------|--------|----|
 |Canal|v1.1.6+|yes| needed by Airflow,DolphinScheduler|
 |MySQL|5.7+|no||
 |Kafka|all|no||
 |Redis|all|no|deployed in cluster mode|
 |Zookeeper|3.4.5|no|needed by canal|
-|OpenSearch(Elasticsearch)|1.3.12 (7.0+ for es)|no||
+|OpenSearch|1.3.12|no||
+
+OpenSearch兼容Elasticsearch 7.0+。
 
 Compass 支持单机和集群部署，可按模块弹性扩缩容。
+
 ## 编译
 Use JDK 8 and maven 3.6.0+ to Compile
 ```

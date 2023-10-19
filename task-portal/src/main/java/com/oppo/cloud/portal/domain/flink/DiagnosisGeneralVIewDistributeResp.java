@@ -28,17 +28,17 @@ public class DiagnosisGeneralVIewDistributeResp {
     Map<String,Long> taskNumDistribute;
 
     /**
-     * 分布图：CPU
+     * Distribution graph：CPU
      */
     private DistributionGraph cpu;
 
     /**
-     * 分布图：内存
+     * Distribution graph：memory
      */
     private DistributionGraph mem;
 
     /**
-     * 分布图：数量
+     * Distribution graph：number
      */
     private DistributionGraph num;
 }

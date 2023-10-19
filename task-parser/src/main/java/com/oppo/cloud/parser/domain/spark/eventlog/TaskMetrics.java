@@ -51,7 +51,7 @@ public class TaskMetrics {
     @JsonProperty("Disk Bytes Spilled")
     private Long diskBytesSpilled;
     /**
-     * 2.4.0没有
+     * The version 2.4.0 does not exist
      */
     @JsonProperty("peakExecutionMemory")
     private Long peakExecutionMemory;
