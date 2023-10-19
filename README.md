@@ -1,5 +1,5 @@
 # Compass
-[中文文档](README_zh.md)
+[Chinese Document](README_zh.md)
 
 ### Abstract
 Compass is a platform to diagnose computing engines and schedulers around big data ecosystem, which aims to improve the 
