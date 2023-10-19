@@ -30,7 +30,7 @@ import java.util.List;
 @ApiModel("TaskLongTail")
 public class TaskLongTail extends IsAbnormal {
 
-    @ApiModelProperty(value = "chart lList")
+    @ApiModelProperty(value = "chart list")
     private List<Chart<MetricInfo>> chartList = new ArrayList<>();
 
 }

@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 报告总览接口参数
+ * Report request parameter
  */
 @Data
 public class ReportRequest {

@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 运行耗时异常基类
+ * RunTime base service
  */
 @Slf4j
 public abstract class RunTimeBaseService<T extends IsAbnormal> implements Generate {

@@ -284,7 +284,7 @@ public class FlinkTaskDiagnosisController {
     }
 
     /**
-     * 获取内存趋势、CPU趋势、数量趋势
+     * Get memory trend,CPu trend,number trend
      *
      * @param request
      * @return
