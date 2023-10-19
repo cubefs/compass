@@ -3,13 +3,15 @@
 Compass depends on Canal,MySQL,Kafka,Redis,Zookeeper,OpenSearch
 ## Required Environment 
 |Dependency|Version|Optional|Description|
-|----------|-------|--------|----|
+|----------|------|--------|----|
 |Canal|v1.1.6+|yes| needed by Airflow,DolphinScheduler|
 |MySQL|5.7+|no||
 |Kafka|all|no||
 |Redis|all|no|deployed in cluster mode|
 |Zookeeper|3.4.5|no|needed by canal|
-|OpenSearch(Elasticsearch)|1.3.12 (7.0+ for es)|no||
+|OpenSearch|1.3.12|no||
+
+OpenSearch is compatible with Elasticsearch 7.0+.
 
 Compass supports single-machine and cluster deployment, with elastic scalability by module.
 
