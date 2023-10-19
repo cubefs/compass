@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public interface OpenSearchService {
     /**
-     * 按条件查询记录, 分页查询
+     * Find by SearchSourceBuilder
      */
     SearchHits find(SearchSourceBuilder builder, String... indexes) throws Exception;
 
@@ -43,46 +43,46 @@ public interface OpenSearchService {
     Aggregations findRawAggregations(SearchSourceBuilder builder, String... indexes) throws Exception;
 
     /**
-     * 按天分桶查询
+     * Query by bucketing by day
      */
     List<IndicatorData> findValueByDayBuckets(String bucket, SearchSourceBuilder builder, String... indexes) throws Exception;
 
     <T> List<T> find(Class<T> itemType, SearchSourceBuilder builder, String... indexes) throws Exception;
 
     /**
-     * 只诊断term查询
+     * Find by termQuery
      */
     <T> List<T> find(Class<T> itemType, Map<String, Object> termQueryConditions, String... indexes) throws Exception;
 
     /**
-     * 按条件查询记录条数
+     * Count by SearchSourceBuilder
      */
     Long count(SearchSourceBuilder builder, String... indexes) throws Exception;
 
     /**
-     * 构建通用查询条件
+     * Generate SearchSourceBuilder
      */
     SearchSourceBuilder genSearchBuilder(Map<String, Object> termQuery, Map<String, Object[]> rangeConditions,
                                          Map<String, SortOrder> sort,
                                          Map<String, Object> or);
 
     /**
-     * 插入或更新
+     * Insert or update document
      */
-    UpdateResponse insertOrUpDate(String index, String id, Object document) throws Exception;
+    UpdateResponse insertOrUpdate(String index, String id, Object document) throws Exception;
 
     /**
-     * update by query
+     * Update by query
      */
     void updateByQuery(BoolQueryBuilder boolQueryBuilder, Script script, String... indexNames) throws Exception;
 
     /**
-     * 按天聚合字段值和
+     * Aggregate field values by day
      */
     List<IndicatorData> sumAggregationByDay(SearchSourceBuilder builder, long start, long end, String index, String aggField, String filed) throws Exception;
 
     /**
-     * 按天统计数量聚合
+     * Aggregate the count of document by day
      */
     List<IndicatorData> countDocByDay(SearchSourceBuilder builder, long start, long end, String index, String aggField) throws Exception;
 }

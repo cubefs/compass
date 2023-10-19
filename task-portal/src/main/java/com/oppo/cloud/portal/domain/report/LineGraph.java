@@ -25,11 +25,11 @@ import java.util.List;
 public class LineGraph {
 
     /**
-     * 名称
+     * name
      */
     private String name;
     /**
-     * 名值
+     * data
      */
     private List<IndicatorData> data;
 }

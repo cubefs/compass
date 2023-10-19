@@ -19,25 +19,25 @@ package com.oppo.cloud.portal.domain.report;
 import lombok.Data;
 
 /**
- * 趋势图数据
+ * Trend Graph
  */
 @Data
 public class TrendGraph {
 
     /**
-     * 趋势图名称
+     * name
      */
     private String name;
     /**
-     * 单位
+     * unit
      */
     private String unit;
     /**
-     * 异常任务消耗数
+     * job usage
      */
     private LineGraph jobUsage;
     /**
-     * 总消耗数
+     * total usage
      */
     private LineGraph totalUsage;
 

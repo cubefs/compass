@@ -26,10 +26,10 @@ import java.util.LinkedHashMap;
 
 
 @Data
-@ApiModel("MR大表扫描")
+@ApiModel("MR table scan information")
 public class MRBigTableScan extends IsAbnormal {
 
-    @ApiModelProperty(value = "大表扫描表单数据")
+    @ApiModelProperty(value = "table information")
     private Table<TaskInfo> table = new Table<>();
 
     public MRBigTableScan() {

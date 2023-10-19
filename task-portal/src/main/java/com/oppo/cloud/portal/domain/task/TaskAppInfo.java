@@ -31,51 +31,51 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-@ApiModel(value = "Application展示结构")
+@ApiModel(value = "Application information")
 @NoArgsConstructor
 public class TaskAppInfo {
 
-    @ApiModelProperty(value = "appId名称")
+    @ApiModelProperty(value = "appId")
     private String applicationId;
 
-    @ApiModelProperty(value = "applicationType类型")
+    @ApiModelProperty(value = "application type")
     private String applicationType;
 
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "task name")
     private String taskName;
 
-    @ApiModelProperty(value = "执行周期")
+    @ApiModelProperty(value = "execution date")
     private String executionDate;
 
-    @ApiModelProperty(value = "诊断类型")
+    @ApiModelProperty(value = "categories")
     private List<String> categories;
 
-    @ApiModelProperty(value = "运行耗时")
+    @ApiModelProperty(value = "duration")
     private String duration;
 
-    @ApiModelProperty(value = "重试次数")
+    @ApiModelProperty(value = "try number")
     private Integer tryNumber;
 
-    @ApiModelProperty(value = "运行消耗资源")
+    @ApiModelProperty(value = "resource")
     private String resource;
 
-    @ApiModelProperty(value = "创建人")
+    @ApiModelProperty(value = "users")
     private String users;
 
     @ApiModelProperty(value = "sparkUI")
     private String sparkUI;
 
-    @ApiModelProperty(value = "任务执行状态")
+    @ApiModelProperty(value = "task app state")
     private String taskAppState;
 
     /**
-     * 转换格式
+     * format TaskApp
      */
     public static TaskAppInfo from(TaskApp taskApp) {
         TaskAppInfo taskAppInfo = new TaskAppInfo();

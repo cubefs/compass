@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ApiModel("HDFS卡顿")
+@ApiModel("HdfsStuck")
 public class HdfsStuck extends IsAbnormal {
 
-    @ApiModelProperty(value = "数据图表")
+    @ApiModelProperty(value = "chart list")
     private List<Chart<MetricInfo>> chartList = new ArrayList<>();
 
 }

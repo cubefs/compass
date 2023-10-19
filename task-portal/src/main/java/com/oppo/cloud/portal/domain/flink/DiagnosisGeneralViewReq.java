@@ -26,9 +26,13 @@ import java.util.HashMap;
 @Data
 @Slf4j
 public class DiagnosisGeneralViewReq {
-    // 开始时间戳秒
+    /**
+     * start timestamp
+     */
     private Long startTs;
-    // 结束时间戳秒
+    /**
+     * end timestamp
+     */
     private Long endTs;
 
     @JsonIgnore

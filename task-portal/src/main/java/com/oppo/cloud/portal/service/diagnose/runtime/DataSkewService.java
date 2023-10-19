@@ -37,21 +37,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 数据倾斜
+ * DataSkew Service
  */
 @Service
 public class DataSkewService extends RunTimeBaseService<DataSkew> {
 
-    /**
-     * 获取该子类异常类型
-     */
+
     @Override
     public String getCategory() {
         return AppCategoryEnum.DATA_SKEW.getCategory();
     }
 
     /**
-     * 产生该异常类型的报告
+     * generate report data
      */
     @Override
     public DataSkew generateData(DetectorResult detectorResult, DetectorConfig config) throws Exception {
@@ -62,7 +60,7 @@ public class DataSkewService extends RunTimeBaseService<DataSkew> {
         }
         dataSkew.setAbnormal(detectorResult.getAbnormal());
         List<Chart<MetricInfo>> chartList = dataSkew.getChartList();
-        // Stage图表信息
+        // Stage chart
         Chart<MetricInfo> chartSummary = new Chart<>();
         buildSummaryChartInfo(chartSummary);
         chartSummary.setDes("Stage中任务Shuffle Read Records最大值与中位值比值的分布图");
@@ -78,7 +76,7 @@ public class DataSkewService extends RunTimeBaseService<DataSkew> {
                 ySummaryValues.add(new ValueInfo(UnitUtil.transferDouble(dataSkewTask.getRatio()), "normal"));
             }
             metricSummaryList.add(metricSummary);
-            // 异常Stage的task图表信息
+            // Chart information for tasks in the abnormal stage.
             if (dataSkewTask.getDataSkewGraphs() != null) {
                 chartList.add(buildTaskChart(dataSkewTask, info));
             }
@@ -118,7 +116,7 @@ public class DataSkewService extends RunTimeBaseService<DataSkew> {
     }
 
     /**
-     * 补充图表信息
+     * build chart information
      */
     private void buildChartInfo(Chart<MetricInfo> chart) {
         chart.setX("task id");
@@ -132,12 +130,12 @@ public class DataSkewService extends RunTimeBaseService<DataSkew> {
     }
 
     /**
-     * 构建Task分布图
+     * build task chart
      */
     private Chart<MetricInfo> buildTaskChart(DataSkewAbnormal dataSkewTask, List<String> info) {
         Chart<MetricInfo> chart = new Chart<>();
         buildChartInfo(chart);
-        // 补充图表信息
+
         chart.setDes(String.format("Stage[%s]Reduce任务Shuffle Read Records",
                 dataSkewTask.getStageId()));
         List<MetricInfo> metricInfoList = chart.getDataList();
@@ -170,7 +168,7 @@ public class DataSkewService extends RunTimeBaseService<DataSkew> {
     }
 
     /**
-     * 补充汇总图表信息
+     * build summary chart information
      */
     private void buildSummaryChartInfo(Chart<MetricInfo> chart) {
         chart.setX("stage id");

@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ApiModel("job耗时异常")
+@ApiModel("JobDuration")
 public class JobDuration extends IsAbnormal {
 
-    @ApiModelProperty(value = "数据图表")
+    @ApiModelProperty(value = "chart list")
     private List<Chart<MetricInfo>> chartList = new ArrayList<>();
 }

@@ -22,10 +22,10 @@ import lombok.Data;
 
 
 @Data
-@ApiModel("值信息")
+@ApiModel("Value information")
 public class ValueInfo {
 
-    @ApiModelProperty(value = "指标值")
+    @ApiModelProperty(value = "value")
     private double value;
 
     @ApiModelProperty(value = "type")

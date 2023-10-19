@@ -21,7 +21,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 周期开始和结束时间戳
+ * Period time
  */
 @Data
 @NoArgsConstructor

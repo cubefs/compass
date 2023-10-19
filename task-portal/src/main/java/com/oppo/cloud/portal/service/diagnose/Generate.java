@@ -22,7 +22,7 @@ import com.oppo.cloud.portal.domain.diagnose.Item;
 public interface Generate {
 
     /**
-     * 报告产生
+     * generate report
      */
     Item generate(DetectorStorage detectorStorage) throws Exception;
 }

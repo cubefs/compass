@@ -27,17 +27,17 @@ import java.util.List;
 public interface TaskInstanceService {
 
     /**
-     * 获取任务运行趋势图
+     * Get job duration trend
      */
     List<MetricInfo> getJobDurationTrend(JobDetailRequest jobDetailRequest) throws Exception;
 
     /**
-     * 获取任务基线图数据
+     * Get job datum
      */
     Datum getJobDatum(JobDetailRequest jobDetailRequest) throws Exception;
 
     /**
-     * 查询某个具体执行周期的聚合后的任务
+     * Search task instance
      */
     TaskInstance searchTaskSum(String projectName, String flowName, String taskName,
                                Date executionTime);

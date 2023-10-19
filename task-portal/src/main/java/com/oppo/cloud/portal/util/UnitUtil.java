@@ -32,7 +32,7 @@ public class UnitUtil {
     private static final long DAY = 360000000;
 
     /**
-     * 字节大小动态转换
+     * Transfer Byte to other unit
      */
     public static String transferByte(double v) {
         if (v < 1024) {
@@ -43,7 +43,7 @@ public class UnitUtil {
     }
 
     /**
-     * 行数动态转换
+     * Transfer rows
      */
     public static String transferRows(double data) {
         if (data < Math.pow(10, 4)) {
@@ -56,7 +56,7 @@ public class UnitUtil {
     }
 
     /**
-     * 资源消耗转换
+     * Transfer vcore·s
      */
     public static String transferVcoreS(long data) {
         if (data > 3600) {
@@ -67,7 +67,7 @@ public class UnitUtil {
     }
 
     /**
-     * 资源消耗转换
+     * Transfer memory·s
      */
     public static String transferMemGbS(long data) {
         if (data > 3600) {
@@ -78,35 +78,35 @@ public class UnitUtil {
     }
 
     /**
-     * B转GB
+     * Transfer Byte to GB
      */
     public static double transferBToGB(Long v) {
         return v / (1024.0 * 1024.0 * 1024.0);
     }
 
     /**
-     * KB转GB
+     * Transfer KB to GB
      */
     public static double transferKBToGB(Long v) {
         return transferDouble(v / (1024.0 * 1024.0));
     }
 
     /**
-     * B转MB
+     * Transfer Byte to MB
      */
     public static double transferBToMB(Long v) {
         return v / (1024.0 * 1024.0);
     }
 
     /**
-     * MB转GB
+     * Transfer MB to GB
      */
     public static double transferMBToGB(Long v) {
         return transferDouble(v / 1024.0);
     }
 
     /**
-     * double保留两位小数，太小的就返回原始值
+     * Transfer double
      */
     public static double transferDouble(double data) {
         double value = (double) Math.round(data * 100) / 100;
@@ -114,7 +114,7 @@ public class UnitUtil {
     }
 
     /**
-     * 将时间戳动态转换为秒、分钟、小时的字符串
+     * Transfer timestamp to string
      */
 
     public static String transferSecond(double timestamp) {
@@ -131,7 +131,7 @@ public class UnitUtil {
     }
 
     /**
-     * 耗时字符串动态转化为秒
+     * Transfer string to second
      */
     public static double transferSecond(String durationStr) {
         String unit = "";
@@ -148,7 +148,7 @@ public class UnitUtil {
     }
 
     /**
-     * 报告总览单位转化
+     * Get time unit
      */
     public static String getTimeUnit(double time) {
         if (time <= HOUR) {
@@ -161,7 +161,7 @@ public class UnitUtil {
     }
 
     /**
-     * vcoreSeconds单位转化
+     * Convert cpu unit
      */
     public static double convertCpuUnit(String timeUnit, double value) {
         switch (timeUnit) {
@@ -175,7 +175,7 @@ public class UnitUtil {
     }
 
     /**
-     * memorySeconds(MB-Seconds)单位转化
+     * Convert memorySeconds(MB-Seconds) unit
      */
     public static double convertMemoryUnit(String timeUnit, double value) {
         double result = 0.0;
@@ -196,7 +196,7 @@ public class UnitUtil {
     }
 
     /**
-     * 字符串颜色加红色标签
+     * Add red color
      */
     public static String transferRed(String keyword) {
         return String.format("<span style=\"color: #e24a4a;\">%s</span>", keyword);
@@ -207,7 +207,7 @@ public class UnitUtil {
     }
 
     /**
-     * 毫秒数转换为自然时间
+     * Transfer millisecond to date string
      *
      * @return
      */

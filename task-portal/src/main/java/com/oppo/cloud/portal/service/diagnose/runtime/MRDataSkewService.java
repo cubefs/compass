@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * MR数据倾斜
+ * MRDataSkew Service
  */
 @Order(1)
 @Service

@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ApiModel("数据倾斜")
+@ApiModel("DataSkew")
 public class DataSkew extends IsAbnormal {
 
-    @ApiModelProperty(value = "数据图表")
+    @ApiModelProperty(value = "chart list")
     private List<Chart<MetricInfo>> chartList = new ArrayList<>();
 
 }

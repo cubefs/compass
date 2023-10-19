@@ -72,7 +72,7 @@ class TaskAppServiceImplTest {
                 openSearchService.find(DetectorStorage.class, searchSourceBuilder, "compass-detector-app" + "-*");
         for (DetectorStorage detectorStorage : detectionStorageList) {
             detectorStorage.setApplicationId("application_1662709492856_1124");
-            openSearchService.insertOrUpDate("compass-detector-app-2022-10-24",
+            openSearchService.insertOrUpdate("compass-detector-app-2022-10-24",
                     "bacf1ef9-daf3-4c4d-806d-503546cecff2", detectorStorage);
         }
     }

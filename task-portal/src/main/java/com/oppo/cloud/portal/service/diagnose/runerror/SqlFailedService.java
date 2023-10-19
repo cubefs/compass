@@ -21,7 +21,7 @@ import com.oppo.cloud.portal.domain.base.Conclusion;
 import org.springframework.stereotype.Service;
 
 /**
- * sql失败
+ * SqlFailed Service
  */
 @Service
 public class SqlFailedService extends RunErrorBaseService {

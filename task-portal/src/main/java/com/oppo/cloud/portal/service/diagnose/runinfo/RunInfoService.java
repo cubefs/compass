@@ -45,7 +45,7 @@ public class RunInfoService {
     String appIndex;
 
     /**
-     * 产生诊断报告的运行信息
+     * generate report
      * @param detectorStorage
      * @return
      */

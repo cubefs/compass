@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ApiModel("任务长尾")
+@ApiModel("TaskLongTail")
 public class TaskLongTail extends IsAbnormal {
 
-    @ApiModelProperty(value = "数据图表")
+    @ApiModelProperty(value = "chart lList")
     private List<Chart<MetricInfo>> chartList = new ArrayList<>();
 
 }

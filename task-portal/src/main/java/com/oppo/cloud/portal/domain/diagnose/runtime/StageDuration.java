@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@ApiModel("stage耗时异常")
+@ApiModel("StageDuration")
 public class StageDuration extends IsAbnormal {
 
-    @ApiModelProperty(value = "数据图表")
+    @ApiModelProperty(value = "chart list")
     private List<Chart<MetricInfo>> chartList = new ArrayList<>();
 }

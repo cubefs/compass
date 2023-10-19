@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * 初始化服务
+ * Initializer Service
  */
 @Slf4j
 @Component
@@ -95,7 +95,7 @@ public class Initializer implements CommandLineRunner {
     private RestHighLevelClient client;
 
     /**
-     * 运行初始化服务: 创建模板表
+     * Create opensearch template
      */
     @Override
     public void run(String... args) throws Exception {

@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * 大表扫描
+ * BigTableScan Service
  */
 @Service
 public class BigTableScanService extends RunTimeBaseService<BigTableScan> {
@@ -58,7 +58,7 @@ public class BigTableScanService extends RunTimeBaseService<BigTableScan> {
         bigTableScan.setAbnormal(largeTableScanAbnormal.getAbnormal() != null && largeTableScanAbnormal.getAbnormal());
         Table<BigTableScan.TaskInfo> taskInfoTable = bigTableScan.getTable();
         List<BigTableScan.TaskInfo> taskInfoList = taskInfoTable.getData();
-        // 建议中的变量值
+        // Variable values in the suggestion
         List<String> tables = new ArrayList<>();
         List<String> values = new ArrayList<>();
         for (Map<String, Object> map : largeTableScanAbnormal.getTables()) {

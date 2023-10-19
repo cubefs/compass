@@ -27,7 +27,7 @@ import java.util.Map;
 @Data
 public class OOMWarn extends IsAbnormal {
 
-    @ApiModelProperty(value = "广播表列表")
+    @ApiModelProperty(value = "table information")
     private Table<BoardCastTable> table = new Table<>();
 
     public OOMWarn() {
@@ -41,13 +41,13 @@ public class OOMWarn extends IsAbnormal {
     @Data
     public static class BoardCastTable {
 
-        @ApiModelProperty(value = "广播表名称")
+        @ApiModelProperty(value = "hive table")
         private String hiveTable;
 
-        @ApiModelProperty(value = "过滤后输出行数")
+        @ApiModelProperty(value = "output of columns")
         private String outputOfColumns;
 
-        @ApiModelProperty(value = "占用内存大小")
+        @ApiModelProperty(value = "memory usage")
         private String memoryUsed;
     }
 

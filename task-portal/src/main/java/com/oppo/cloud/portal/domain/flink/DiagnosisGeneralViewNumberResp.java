@@ -24,59 +24,59 @@ public class DiagnosisGeneralViewNumberResp {
     private GeneralViewNumberDto generalViewNumberDtoDay1Before;
     private GeneralViewNumberDto generalViewNumberDtoDay7Before;
     /**
-     * 异常作业数占比
+     * Ratio of the abnormal job number
      */
     private Float abnormalJobNumRatio = 0f;
     /**
-     * 异常作业数环比占比(与上周比)
+     * Chain ratio of the abnormal job number(compared to last week)
      */
     private Float abnormalJobNumChainRatio = 0f;
     /**
-     * 异常作业数同比占比(与昨天比)
+     * Abnormal job number day on day(compared to yesterday)
      */
     private Float abnormalJobNumDayOnDay = 0f;
     /**
-     * 资源优化作业数占比
+     * Ratio of the resource job number
      */
     private Float resourceJobNumRatio = 0f;
     /**
-     * 资源优化作业数环比占比(与上周比)
+     * Chain ratio of the resource job number(compared to last week)
      */
     private Float resourceJobNumChainRatio = 0f;
     /**
-     * 资源优化作业数同比占比(与昨天比)
+     * Resource job number day on day(compared to yesterday)
      */
     private Float resourceJobNumDayOnDay = 0f;
     /**
-     * cpu单位个
+     * CPU unit
      */
     private String cpuUnit = "个";
     /**
-     * 资源优化cpu数占比
+     * Ratio of the resource cpu number
      */
     private Float resourceCpuNumRatio = 0f;
     /**
-     * 资源优化cpu数环比占比(与上周比)
+     * Chain ratio of the resource cpu number(compared to last week)
      */
     private Float resourceCpuNumChainRatio =0f;
     /**
-     * 资源优化cpu数同比占比(与昨天比)
+     * Resource cpu number day on day(compared to yesterday)
      */
     private Float resourceCpuNumDayOnDay = 0f;
     /**
-     * memory单位MB
+     * Memory unit
      */
     private String memoryUnit = "MB";
     /**
-     * 资源优化memory数占比
+     * Ratio of the resource memory number
      */
     private Float resourceMemoryNumRatio = 0f;
     /**
-     * 资源优化memory数环比占比(与上周比)
+     * Chain ratio of the resource memory number(compared to last week)
      */
     private Float resourceMemoryNumChainRatio=0f;
     /**
-     * 资源优化memory数同比占比(与昨天比)
+     * Resource memory number day on day(compared to yesterday)
      */
     private Float resourceMemoryNumDayOnDay = 0f;
 }

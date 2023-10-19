@@ -33,71 +33,69 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-@ApiModel("实时任务诊断结果分页查询")
+@ApiModel("Realtime task diagnostic result pagination query")
 public class DiagnosisAdviceListReq {
-    @ApiModelProperty(value = "项目名称")
+    @ApiModelProperty(value = "project name")
     private String projectName;
 
-    @ApiModelProperty(value = "工作流名称")
+    @ApiModelProperty(value = "flow name")
     private String flowName;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "task name")
     private String taskName;
 
-    @ApiModelProperty(value = "任务名称")
+    @ApiModelProperty(value = "job name")
     private String jobName;
 
-    @ApiModelProperty(value = "任务状态")
+    @ApiModelProperty(value = "task state")
     private String taskState;
 
-    @ApiModelProperty(value = "诊断开始时间秒")
+    @ApiModelProperty(value = "start timestamp")
     private Long startTs;
 
-    @ApiModelProperty(value = "诊断结束时间秒")
+    @ApiModelProperty(value = "end timestamp")
     private Long endTs;
 
-    @ApiModelProperty(value = "创建者")
+    @ApiModelProperty(value = "username")
     private String username;
 
     @ApiModelProperty(value = "app id")
     private String applicationId;
 
-    @ApiModelProperty("排序列")
+    @ApiModelProperty("order column")
     private String orderColumn;
 
-    @ApiModelProperty("排序顺序")
+    @ApiModelProperty("order type")
     private String orderType;
 
-    @ApiModelProperty("包括规则的中文名称")
+    @ApiModelProperty("including the Chinese name of the rule")
     private List<String> includeCategories;
 
-    @ApiModelProperty("包括规则")
+    @ApiModelProperty("including the rule")
     private List<Integer> diagnosisRule;
 
-    @ApiModelProperty("排除规则")
+    @ApiModelProperty("exclude the rule")
     private List<Integer> diagnosisRuleNe;
 
-    @ApiModelProperty("包括资源类型")
+    @ApiModelProperty("including the resource type")
     private List<Integer> resourceDiagnosisType;
 
-    @ApiModelProperty("排除资源类型")
+    @ApiModelProperty("exclude the resource type")
     private List<Integer> resourceDiagnosisTypeNe;
 
-    @ApiModelProperty("诊断来源")
+    @ApiModelProperty("diagnostic source")
     private List<Integer> diagnosisFrom;
 
-    @ApiModelProperty(value = "页码")
-    @Min(value = 1, message = "page 不能小于1")
+    @ApiModelProperty(value = "page")
+    @Min(value = 1, message = "page cannot be less than 1")
     private Integer page = 1;
 
-    @ApiModelProperty(value = "每页数量")
-    @Max(value = 500, message = "pageSize 不能大于500")
+    @ApiModelProperty(value = "number per page")
+    @Max(value = 500, message = "pageSize cannot be greater than 500")
     private Integer pageSize = 15;
 
     /**
-     * 构建ES查询条件
-     *
-     * @return
+     * Get TermQuery
      */
     @JsonIgnore
     public Map<String, Object> getTermQuery() {
@@ -126,9 +124,7 @@ public class DiagnosisAdviceListReq {
     }
 
     /**
-     * 获取排序字段
-     *
-     * @return
+     * Get sort order
      */
     @JsonIgnore
     public Map<String, SortOrder> getSortOrder() {
@@ -138,9 +134,7 @@ public class DiagnosisAdviceListReq {
     }
 
     /**
-     * 查询范围条件
-     *
-     * @return
+     * Get range condition
      */
     @JsonIgnore
     public Map<String, Object[]> getRangeCondition() {
@@ -163,9 +157,7 @@ public class DiagnosisAdviceListReq {
     }
 
     /**
-     * 分页开始的条数
-     *
-     * @return
+     * Get from page number
      */
     @JsonIgnore
     public Integer getFrom() {
@@ -173,9 +165,7 @@ public class DiagnosisAdviceListReq {
     }
 
     /**
-     * 每页大小
-     *
-     * @return
+     * Get page size
      */
     @JsonIgnore
     public Integer getSize() {

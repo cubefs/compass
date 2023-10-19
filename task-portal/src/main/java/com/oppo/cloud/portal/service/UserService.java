@@ -22,21 +22,20 @@ import com.oppo.cloud.portal.domain.task.UserInfo;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 用户管理Service
+ * UserService
  */
 public interface UserService {
 
     /**
-     * 根据用户名获取用户信息
+     * Get user information by username
      */
     User getByUsername(String username);
 
 
-
     /**
-     * 用户登录
+     * Login
      */
-    UserInfo userLogin( HttpServletResponse httpServletResponse,String username, String password) throws  Exception;
+    UserInfo userLogin(HttpServletResponse httpServletResponse, String username, String password) throws Exception;
 
 
 }

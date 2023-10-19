@@ -26,10 +26,10 @@ import lombok.Data;
 import java.util.LinkedHashMap;
 
 @Data
-@ApiModel("运行错误")
+@ApiModel("RunError information")
 public class RunError extends IsAbnormal {
 
-    @ApiModelProperty("异常日志信息")
+    @ApiModelProperty("abnormal log information")
     private Table<LogInfo> table = new Table<>();
 
     public RunError() {

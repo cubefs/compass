@@ -22,21 +22,21 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel("各个模块诊断报告的基类")
+@ApiModel("Item")
 public class Item<T> {
 
-    @ApiModelProperty(value = "分析项")
+    @ApiModelProperty(value = "name")
     private String name;
 
-    @ApiModelProperty("结论信息")
+    @ApiModelProperty("conclusion")
     private Conclusion conclusion;
 
-    @ApiModelProperty("诊断内容")
+    @ApiModelProperty("item content")
     private T item;
 
-    @ApiModelProperty("诊断错误信息")
+    @ApiModelProperty("error")
     private String error;
 
-    @ApiModelProperty("图表类型")
+    @ApiModelProperty("type")
     private String type;
 }
