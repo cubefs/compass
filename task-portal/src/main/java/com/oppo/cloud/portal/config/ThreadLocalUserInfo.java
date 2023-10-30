@@ -16,14 +16,14 @@
 
 package com.oppo.cloud.portal.config;
 
-import com.oppo.cloud.portal.domain.task.UserInfoResponse;
+import com.oppo.cloud.portal.domain.task.UserResponse;
 
 /**
  *  User info caches in ThreadLocal
  */
 public class ThreadLocalUserInfo {
 
-    private static final ThreadLocal<UserInfoResponse> USER_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<UserResponse> USER_THREAD_LOCAL = new ThreadLocal<>();
 
     /**
      * clear userinfo
@@ -35,14 +35,14 @@ public class ThreadLocalUserInfo {
     /**
      * save userinfo
      */
-    public static void set(UserInfoResponse userInfo) {
+    public static void set(UserResponse userInfo) {
         USER_THREAD_LOCAL.set(userInfo);
     }
 
     /**
      * get userinfo
      */
-    public static UserInfoResponse getCurrentUser() {
+    public static UserResponse getCurrentUser() {
         return USER_THREAD_LOCAL.get();
     }
 }

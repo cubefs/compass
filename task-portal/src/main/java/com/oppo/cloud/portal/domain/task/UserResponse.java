@@ -22,7 +22,7 @@ import lombok.Data;
 
 @Data
 @ApiModel("User information")
-public class UserInfoResponse {
+public class UserResponse {
     private Integer userId;
 
     private String username;
