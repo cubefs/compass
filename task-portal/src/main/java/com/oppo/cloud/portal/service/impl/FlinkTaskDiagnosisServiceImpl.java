@@ -29,7 +29,7 @@ import com.oppo.cloud.portal.domain.report.TrendGraph;
 import com.oppo.cloud.portal.domain.statistics.FlinkStatisticsData;
 import com.oppo.cloud.portal.domain.statistics.PeriodTime;
 import com.oppo.cloud.portal.domain.task.IndicatorData;
-import com.oppo.cloud.portal.domain.task.UserInfo;
+import com.oppo.cloud.portal.domain.task.UserInfoResponse;
 import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.FlinkTaskDiagnosisService;
 import com.oppo.cloud.portal.util.HttpUtil;
@@ -102,7 +102,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         return CommonStatus.success(resp);
     }
 
-    public FlinkStatisticsData getStatisticsData(UserInfo userInfo, long startTimestamp, long endTimestamp) throws Exception {
+    public FlinkStatisticsData getStatisticsData(UserInfoResponse userInfo, long startTimestamp, long endTimestamp) throws Exception {
         FlinkStatisticsData statisticsData = new FlinkStatisticsData();
 
         // Does not include 00:00 of the current day
@@ -215,7 +215,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
      */
     @Override
     public DiagnosisGeneralViewNumberResp getGeneralViewNumber(DiagnosisGeneralViewReq request) throws Exception {
-        UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
+        UserInfoResponse userInfo = ThreadLocalUserInfo.getCurrentUser();
 
         // This period data
         PeriodTime periodTime = new PeriodTime(1);

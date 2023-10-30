@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.syncer.util;
+package com.oppo.cloud.portal.domain.task;
 
-import com.oppo.cloud.model.UserInfo;
-import com.oppo.cloud.syncer.util.databuild.UserBuilder;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import io.swagger.annotations.ApiModel;
+import lombok.Data;
 
-import java.util.HashMap;
 
-public class TestDataUtil {
+@Data
+@ApiModel("User information")
+public class UserInfoResponse {
+    private Integer userId;
 
-    @Test
-    public void testParseInstance() {
-        UserInfo user = (UserInfo) DataUtil.parseInstance(new HashMap<>(), UserBuilder.class);
-        Assertions.assertTrue(user != null);
-    }
+    private String username;
+
+    private boolean isAdmin;
+
+    private String schedulerType;
+
+    private String token;
 }

@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.oppo.cloud.syncer.dao.UserExtendMapper">
-    <insert id="save" parameterType="com.oppo.cloud.model.User">
-        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
-        replace into user (id, user_id, username, `password`, is_admin,
+    <insert id="save" parameterType="com.oppo.cloud.model.UserInfo">
+        insert into user_info (id, user_id, username, password, is_admin,
         icon, email, phone,
         create_time, update_time, login_time,
-        `status`, scheduler_type)
-        values (#{id,javaType=INTEGER}, #{userId,javaType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{isAdmin,jdbcType=INTEGER},
+        status, scheduler_type)
+        values (#{id,javaType=INTEGER}, #{userId,javaType=INTEGER}, #{username,jdbcType=VARCHAR},
+        #{password,jdbcType=VARCHAR}, #{isAdmin,jdbcType=INTEGER},
         #{icon,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
         #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{loginTime,jdbcType=TIMESTAMP},
         #{status,jdbcType=INTEGER}, #{schedulerType,jdbcType=VARCHAR})
     </insert>
-    <insert id="saveSelective" parameterType="com.oppo.cloud.model.User">
+    <insert id="saveSelective" parameterType="com.oppo.cloud.model.UserInfo">
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
             SELECT LAST_INSERT_ID()
         </selectKey>
-        replace into user
+        replace into user_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -30,7 +28,7 @@
                 username,
             </if>
             <if test="password != null">
-                `password`,
+                password,
             </if>
             <if test="isAdmin != null">
                 is_admin,
@@ -54,7 +52,7 @@
                 login_time,
             </if>
             <if test="status != null">
-                `status`,
+                status,
             </if>
             <if test="schedulerType != null">
                 scheduler_type,

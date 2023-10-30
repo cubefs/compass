@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oppo.cloud.application.dao.TaskApplicationExtendMapper">
+    <insert id="save" parameterType="com.oppo.cloud.model.TaskApplication">
+        insert into task_application (application_id, task_name, flow_name,
+        project_name, execute_time, retry_times,
+        create_time, update_time, log_path
+        )
+        values (#{applicationId,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR}, #{flowName,jdbcType=VARCHAR},
+        #{projectName,jdbcType=VARCHAR}, #{executeTime,jdbcType=TIMESTAMP}, #{retryTimes,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{logPath,jdbcType=LONGVARCHAR}
+        )
+    </insert>
+</mapper>

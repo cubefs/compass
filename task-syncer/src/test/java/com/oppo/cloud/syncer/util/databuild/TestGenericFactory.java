@@ -16,8 +16,7 @@
 
 package com.oppo.cloud.syncer.util.databuild;
 
-import com.oppo.cloud.model.User;
-import org.junit.jupiter.api.Assertions;
+import com.oppo.cloud.model.UserInfo;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -29,7 +28,7 @@ public class TestGenericFactory {
         DataFactory<DataBuilder> dataFactory = new GenericFactory<>();
         DataBuilder builder = dataFactory.getBuilder(UserBuilder.class);
 
-        User u = (User) builder.run(new HashMap<>());
-        System.out.println(User.class.getSimpleName());
+        UserInfo u = (UserInfo) builder.run(new HashMap<>());
+        System.out.println(UserInfo.class.getSimpleName());
     }
 }

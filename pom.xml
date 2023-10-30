@@ -43,6 +43,7 @@
         <mybatis-generator.version>1.4.0</mybatis-generator.version>
         <mybatis.version>3.5.11</mybatis.version>
         <mysql-connector.version>8.0.29</mysql-connector.version>
+        <postgresql.version>42.6.0</postgresql.version>
         <spring-data-commons.version>2.4.5</spring-data-commons.version>
         <spring-dynamic-datasource.version>3.1.0</spring-dynamic-datasource.version>
         <jjwt.version>0.9.0</jjwt.version>
@@ -185,6 +186,12 @@
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-connector.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
             </dependency>
 
             <dependency>

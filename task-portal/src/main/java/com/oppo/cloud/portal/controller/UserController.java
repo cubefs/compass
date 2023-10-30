@@ -17,7 +17,6 @@
 package com.oppo.cloud.portal.controller;
 
 import com.oppo.cloud.common.api.CommonStatus;
-import com.oppo.cloud.portal.domain.task.UserInfo;
 import com.oppo.cloud.portal.domain.user.LoginRequest;
 import com.oppo.cloud.portal.service.UserService;
 import io.swagger.annotations.Api;

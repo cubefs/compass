@@ -51,7 +51,7 @@ public abstract class DetectServiceImpl implements DetectService {
     public TaskService taskService;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserInfoMapper userMapper;
 
     @Autowired
     private LogRecordService logRecordService;
@@ -230,11 +230,11 @@ public abstract class DetectServiceImpl implements DetectService {
         detectJobAnalysis.setTaskId(task.getId());
         detectJobAnalysis.setProjectId(task.getProjectId());
         detectJobAnalysis.setFlowId(task.getFlowId());
-        UserExample userExample = new UserExample();
+        UserInfoExample userExample = new UserInfoExample();
         userExample.createCriteria().andUserIdEqualTo(task.getUserId());
-        List<User> users = userMapper.selectByExample(userExample);
+        List<UserInfo> users = userMapper.selectByExample(userExample);
         if (users.size() > 0) {
-            User user = users.get(0);
+            UserInfo user = users.get(0);
             SimpleUser simpleUser = new SimpleUser();
             simpleUser.setUserId(user.getUserId());
             simpleUser.setUsername(user.getUsername());

@@ -16,15 +16,14 @@
 
 package com.oppo.cloud.portal.config;
 
-import com.oppo.cloud.portal.domain.task.UserInfo;
-import lombok.extern.slf4j.Slf4j;
+import com.oppo.cloud.portal.domain.task.UserInfoResponse;
 
 /**
  *  User info caches in ThreadLocal
  */
 public class ThreadLocalUserInfo {
 
-    private static final ThreadLocal<UserInfo> USER_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<UserInfoResponse> USER_THREAD_LOCAL = new ThreadLocal<>();
 
     /**
      * clear userinfo
@@ -36,14 +35,14 @@ public class ThreadLocalUserInfo {
     /**
      * save userinfo
      */
-    public static void set(UserInfo userInfo) {
+    public static void set(UserInfoResponse userInfo) {
         USER_THREAD_LOCAL.set(userInfo);
     }
 
     /**
      * get userinfo
      */
-    public static UserInfo getCurrentUser() {
+    public static UserInfoResponse getCurrentUser() {
         return USER_THREAD_LOCAL.get();
     }
 }

@@ -89,7 +89,7 @@ public class TaskInstanceService extends CommonService implements ActionService 
                 if (instance.getCreateTime() == null) {
                     instance.setCreateTime(new Date());
                 }
-                taskInstanceMapper.saveSelective(instance);
+                taskInstanceMapper.save(instance);
                 break;
             case "UPDATE":
                 if (instance.getUpdateTime() == null) {

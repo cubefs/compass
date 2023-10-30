@@ -29,7 +29,7 @@ import com.oppo.cloud.portal.domain.statistics.PeriodTime;
 import com.oppo.cloud.portal.domain.statistics.StatisticsData;
 import com.oppo.cloud.portal.domain.task.IndicatorData;
 import com.oppo.cloud.portal.domain.task.JobsRequest;
-import com.oppo.cloud.portal.domain.task.UserInfo;
+import com.oppo.cloud.portal.domain.task.UserInfoResponse;
 import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.ReportService;
 import com.oppo.cloud.portal.util.UnitUtil;
@@ -77,7 +77,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public StatisticsData getStatisticsData(String projectName) throws Exception {
-        UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
+        UserInfoResponse userInfo = ThreadLocalUserInfo.getCurrentUser();
         PeriodTime periodTime = new PeriodTime(1);
 
         // this period
@@ -224,7 +224,7 @@ public class ReportServiceImpl implements ReportService {
         result.setJobMemoryNum(UnitUtil.convertMemoryUnit(memUnit, result.getJobMemoryNum()));
     }
 
-    public StatisticsData getStaticsDataByReportData(UserInfo userInfo, String projectName, long startTimestamp, long endTimestamp)
+    public StatisticsData getStaticsDataByReportData(UserInfoResponse userInfo, String projectName, long startTimestamp, long endTimestamp)
             throws Exception {
         StatisticsData statisticsData = new StatisticsData();
 
@@ -508,7 +508,7 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public Set<String> getProjects() throws Exception {
-        UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
+        UserInfoResponse userInfo = ThreadLocalUserInfo.getCurrentUser();
         Set<String> projectList = new HashSet<>();
         ProjectExample projectExample = new ProjectExample();
         if (!userInfo.isAdmin()) {

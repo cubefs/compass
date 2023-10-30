@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.syncer.util.databuild;
 
-import com.oppo.cloud.model.User;
+import com.oppo.cloud.model.UserInfo;
 import com.oppo.cloud.syncer.util.DataUtil;
 
 import java.util.Map;
@@ -24,11 +24,12 @@ import java.util.Map;
 /**
  * User build
  */
-public class UserBuilder implements DataBuilder<User> {
+public class UserBuilder implements DataBuilder<UserInfo> {
 
     @Override
-    public User run(Map<String, String> data) {
-        User user = new User();
+    public UserInfo run(Map<String, String> data) {
+        UserInfo user = new UserInfo();
+        user.setId(DataUtil.parseInteger(data.get("user_id")));
         user.setUserId(DataUtil.parseInteger(data.get("user_id")));
         user.setUsername(data.get("username"));
         user.setPassword(data.get("password"));

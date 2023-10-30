@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Flow implements Serializable {
-
     @ApiModelProperty(value = "Flow id")
     private Integer id;
 
@@ -37,11 +36,11 @@ public class Flow implements Serializable {
     @ApiModelProperty(value = "Flow enable status: 0->disabled; 1->enabled")
     private Integer flowStatus;
 
-    @ApiModelProperty(value = "Project name")
-    private String projectName;
-
     @ApiModelProperty(value = "Project id")
     private Integer projectId;
+
+    @ApiModelProperty(value = "Project name")
+    private String projectName;
 
     @ApiModelProperty(value = "Create time")
     private Date createTime;
@@ -59,12 +58,12 @@ public class Flow implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
+    public String getFlowName() {
         return flowName;
     }
 
-    public void setName(String name) {
-        this.flowName = name;
+    public void setFlowName(String flowName) {
+        this.flowName = flowName;
     }
 
     public String getDescription() {
@@ -83,20 +82,12 @@ public class Flow implements Serializable {
         this.userId = userId;
     }
 
-    public Integer getStatus() {
+    public Integer getFlowStatus() {
         return flowStatus;
     }
 
-    public void setStatus(Integer status) {
-        this.flowStatus = status;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setFlowStatus(Integer flowStatus) {
+        this.flowStatus = flowStatus;
     }
 
     public Integer getProjectId() {
@@ -105,6 +96,14 @@ public class Flow implements Serializable {
 
     public void setProjectId(Integer projectId) {
         this.projectId = projectId;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     public Date getCreateTime() {
@@ -130,12 +129,12 @@ public class Flow implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", name=").append(flowName);
+        sb.append(", flowName=").append(flowName);
         sb.append(", description=").append(description);
         sb.append(", userId=").append(userId);
-        sb.append(", status=").append(flowStatus);
-        sb.append(", projectName=").append(projectName);
+        sb.append(", flowStatus=").append(flowStatus);
         sb.append(", projectId=").append(projectId);
+        sb.append(", projectName=").append(projectName);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);

@@ -5,7 +5,8 @@ Compass depends on Canal,MySQL,Kafka,Redis,Zookeeper,OpenSearch
 |Dependency|Version|Optional|Description|
 |----------|------|--------|----|
 |Canal|v1.1.6+|yes| needed by Airflow,DolphinScheduler|
-|MySQL|5.7+|no||
+| MySQL      | 5.7+    | yes      ||
+| PostgreSQL | 10.0+   | no       ||
 |Kafka|all|no||
 |Redis|all|no|deployed in cluster mode|
 |Zookeeper|3.4.5|no|needed by canal|
@@ -46,14 +47,38 @@ compass
 ```
 ### Initialize database
 
-Initialize the database and tables, please execute document/sql/compass.sql first
+Support for PostgreSQL or MySQL as metadata storage, table structure consists of two parts:
 
-If you are using the DolphinScheduler, please execute document/sql/dolphinscheduler.sql (need to be modified according to the actual version used, supporting 2.x and 3.x).
-
-If you are using the Airflow, please execute document/sql/airflow.sql (need to be modified according to the actual version used)
+One is document/sql/compass_.sql, the other is document/sql/dolphinscheduler_.sql (needs to be modified according to the actual used version, supports 2.x and 3.x) or document/sql/airflow_*.sql (supports 2.x).
 
 If you are using a self-developed scheduling platform, please refer to the [task-syncer](#task-syncer) module to determine which tables need to be synchronized.
 
+If the scheduling platform database is MySQL and the Compass database is PostgreSQL, you can use [pgloader](https://github.com/dimitri/pgloader) to create dependent tables and synchronize historical full data.
+
+Synchronize dolphinscheduler table:
+```
+LOAD DATABASE
+     FROM mysql://root:password@localhost:3306/dolphinscheduler
+     INTO postgresql://postgres@localhost:5432/compass
+     ALTER SCHEMA 'dolphinscheduler' RENAME TO 'public'
+     INCLUDING ONLY TABLE NAMES MATCHING 't_ds_process_definition','t_ds_process_instance','t_ds_process_task_relation','t_ds_project','t_ds_task_definition','t_ds_task_instance','t_ds_user';
+```
+
+Synchronize airflow table:
+```
+LOAD DATABASE
+     FROM mysql://root:password@localhost:3306/airflow
+     INTO postgresql://postgres@localhost:5432/compass_airflow
+     ALTER SCHEMA 'airflow' RENAME TO 'public'
+     INCLUDING ONLY TABLE NAMES MATCHING 'task_instance','dag_run','ab_user','dag','serialized_dag'
+     ALTER TABLE NAMES MATCHING 'task_instance' RENAME TO 'tb_task_instance'
+     ALTER TABLE NAMES MATCHING 'dag_run'  RENAME TO 'tb_dag_run'
+     ALTER TABLE NAMES MATCHING 'ab_user'  RENAME TO 'tb_ab_user'
+     ALTER TABLE NAMES MATCHING 'dag'  RENAME TO 'tb_dag'
+     ALTER TABLE NAMES MATCHING 'serialized_dag'  RENAME TO 'tb_serialized_dag';
+```
+
+If Compass uses MySQL database, you need to manually download [mysql-connector-java](https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.29/mysql-connector-java-8.0.29.jar) and copy it to the lib directory of task-application, task-detect, task-flink, task-portal, task-parser, and task-syncer.
 
 ### Configuration
 

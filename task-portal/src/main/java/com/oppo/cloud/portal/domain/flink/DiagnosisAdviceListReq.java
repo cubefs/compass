@@ -19,7 +19,7 @@ package com.oppo.cloud.portal.domain.flink;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.portal.config.ThreadLocalUserInfo;
-import com.oppo.cloud.portal.domain.task.UserInfo;
+import com.oppo.cloud.portal.domain.task.UserInfoResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -110,7 +110,7 @@ public class DiagnosisAdviceListReq {
             termQuery.put("taskName.keyword", taskName);
         }
 
-        UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
+        UserInfoResponse userInfo = ThreadLocalUserInfo.getCurrentUser();
         if (StringUtils.isNotEmpty(username)) {
             termQuery.put("users.username", username);
         } else if (!userInfo.isAdmin()) {

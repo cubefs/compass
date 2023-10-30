@@ -16,18 +16,13 @@
 
 package com.oppo.cloud.syncer.service.impl;
 
-import com.oppo.cloud.model.User;
-import com.oppo.cloud.model.UserExample;
+import com.oppo.cloud.model.UserInfo;
+import com.oppo.cloud.model.UserInfoExample;
 import com.oppo.cloud.syncer.dao.UserExtendMapper;
-import com.oppo.cloud.syncer.domain.ColumnDep;
 import com.oppo.cloud.syncer.domain.Mapping;
 import com.oppo.cloud.syncer.domain.RawTable;
 import com.oppo.cloud.syncer.service.ActionService;
 import com.oppo.cloud.syncer.util.DataUtil;
-import com.oppo.cloud.syncer.util.StringUtil;
-import com.oppo.cloud.syncer.util.databuild.DataBuilder;
-import com.oppo.cloud.syncer.util.databuild.DataFactory;
-import com.oppo.cloud.syncer.util.databuild.GenericFactory;
 import com.oppo.cloud.syncer.util.databuild.UserBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +30,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * User table synchronization operation service
@@ -80,7 +73,7 @@ public class UserService extends CommonService implements ActionService {
      */
     @Override
     public void dataSave(Map<String, String> data, Mapping mapping, String action) {
-        User instance = (User) DataUtil.parseInstance(data, UserBuilder.class);
+        UserInfo instance = (UserInfo) DataUtil.parseInstance(data, UserBuilder.class);
         if (action.equals("INSERT")) {
             userMapper.saveSelective(instance);
         } else if (action.equals("UPDATE")) {
@@ -90,8 +83,8 @@ public class UserService extends CommonService implements ActionService {
     /**
      * Build update query conditions
      */
-    public UserExample buildUserExample(Map<String, String> data) {
-        UserExample example = new UserExample();
+    public UserInfoExample buildUserExample(Map<String, String> data) {
+        UserInfoExample example = new UserInfoExample();
         example.createCriteria().andUsernameEqualTo(data.get("user_id"));
         return example;
     }

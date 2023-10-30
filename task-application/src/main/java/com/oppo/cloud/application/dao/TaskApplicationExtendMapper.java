@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.portal.domain.task;
+package com.oppo.cloud.application.dao;
 
-import io.swagger.annotations.ApiModel;
-import lombok.Data;
+import com.oppo.cloud.mapper.TaskApplicationMapper;
+import com.oppo.cloud.model.TaskApplication;
 
+public interface TaskApplicationExtendMapper extends TaskApplicationMapper {
 
-@Data
-@ApiModel("User information")
-public class UserInfo {
-    private Integer userId;
+    int save(TaskApplication record);
 
-    private String username;
-
-    private boolean isAdmin;
-
-    private String schedulerType;
-
-    private String token;
 }

@@ -2,9 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.oppo.cloud.syncer.dao.TaskInstanceExtendMapper">
   <insert id="save" parameterType="com.oppo.cloud.model.TaskInstance">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-        SELECT LAST_INSERT_ID()
-    </selectKey>
     insert into task_instance (id, project_name, flow_name, task_name,
       start_time, end_time, execution_time,
       task_state, task_type, retry_times, max_retry_times,

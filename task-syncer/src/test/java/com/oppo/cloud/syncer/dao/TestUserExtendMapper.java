@@ -16,7 +16,7 @@
 
 package com.oppo.cloud.syncer.dao;
 
-import com.oppo.cloud.model.User;
+import com.oppo.cloud.model.UserInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,7 +31,7 @@ public class TestUserExtendMapper {
 
     @Test
     public void testSave() {
-        User user = new User();
+        UserInfo user = new UserInfo();
         user.setUserId(200);
         user.setUsername("testUsername");
         user.setEmail("test@email.com");

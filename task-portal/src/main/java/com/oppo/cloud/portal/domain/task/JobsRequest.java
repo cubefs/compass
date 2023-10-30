@@ -90,7 +90,7 @@ public class JobsRequest {
             categoriesEnglish.addAll(AppCategoryEnum.getAppCategoryEn(categories));
             termQuery.put("categories.keyword", categoriesEnglish);
         }
-        UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
+        UserInfoResponse userInfo = ThreadLocalUserInfo.getCurrentUser();
         if (StringUtils.isNotBlank(username)) {
             termQuery.put("users.username", username);
         } else if (!userInfo.isAdmin()) {

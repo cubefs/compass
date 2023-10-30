@@ -21,11 +21,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.oppo.cloud.common.util.DateUtil;
-import com.oppo.cloud.model.User;
-import com.oppo.cloud.portal.domain.task.UserInfo;
+import com.oppo.cloud.model.UserInfo;
+import com.oppo.cloud.portal.domain.task.UserInfoResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 
 import java.util.Date;
 
@@ -36,7 +35,7 @@ public class JWTUtil {
     @Value("${custom.jwt.secret}")
     private String secret;
 
-    public String createToken(User user) throws Exception {
+    public String createToken(UserInfo user) throws Exception {
         boolean isAdmin = user.getIsAdmin() == 0;
         return JWT.create()
                 .withIssuer("compass")
@@ -48,7 +47,7 @@ public class JWTUtil {
                 .sign(Algorithm.HMAC256(secret));
     }
 
-    public UserInfo verifyToken(String token) {
+    public UserInfoResponse verifyToken(String token) {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))
                 .withIssuer("compass")
                 .build();
@@ -57,7 +56,7 @@ public class JWTUtil {
         String username = decodedJWT.getClaim("username").asString();
         Boolean isAdmin = decodedJWT.getClaim("isAdmin").asBoolean();
         String schedulerType = decodedJWT.getClaim("schedulerType").asString();
-        UserInfo userInfo = new UserInfo();
+        UserInfoResponse userInfo = new UserInfoResponse();
         userInfo.setUserId(userId);
         userInfo.setUsername(username);
         userInfo.setAdmin(isAdmin);

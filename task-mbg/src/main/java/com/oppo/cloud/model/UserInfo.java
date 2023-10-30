@@ -20,8 +20,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 
-public class User implements Serializable {
-
+public class UserInfo implements Serializable {
     @ApiModelProperty(value = "User record id")
     private Integer id;
 
@@ -58,6 +57,7 @@ public class User implements Serializable {
     @ApiModelProperty(value = "Account activation status: 0->disabled; 1->enabled")
     private Integer status;
 
+    @ApiModelProperty(value = "scheduler type: dolphin, airflow, etc")
     private String schedulerType;
 
     private static final long serialVersionUID = 1L;

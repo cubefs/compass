@@ -2,13 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.oppo.cloud.syncer.dao.FlowExtendMapper">
     <insert id="save" parameterType="com.oppo.cloud.model.Flow">
-        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
         insert into flow (id, flow_name, description, user_id,
         flow_status, project_name, project_id,
         create_time, update_time)
-        values (#{id,jdbcType=INTEGER}, #{flowName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER},
+        values (#{id,jdbcType=INTEGER}, #{flowName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+        #{userId,jdbcType=INTEGER},
         #{flowStatus,jdbcType=INTEGER}, #{projectName,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER},
         #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
     </insert>
@@ -22,7 +20,7 @@
                 id,
             </if>
             <if test="flowName != null">
-                `flow_name`,
+                flow_name,
             </if>
             <if test="description != null">
                 description,
@@ -31,7 +29,7 @@
                 user_id,
             </if>
             <if test="flowStatus != null">
-                `flow_status`,
+                flow_status,
             </if>
             <if test="projectName != null">
                 project_name,
@@ -76,5 +74,17 @@
             </if>
         </trim>
     </insert>
+    <update id="updateByFlow" parameterType="com.oppo.cloud.model.Flow">
+        update flow
+        set flow_name = #{flowName,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        user_id = #{userId,jdbcType=INTEGER},
+        flow_status = #{flowStatus,jdbcType=INTEGER},
+        project_name = #{projectName,jdbcType=VARCHAR},
+        project_id = #{projectId,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where flow_name = #{flowName,jdbcType=VARCHAR}
+    </update>
 </mapper>
 

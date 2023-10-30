@@ -17,17 +17,18 @@
 package com.oppo.cloud.portal.service.impl;
 
 import com.oppo.cloud.common.constant.SchedulerType;
-import com.oppo.cloud.mapper.UserMapper;
-import com.oppo.cloud.model.User;
-import com.oppo.cloud.model.UserExample;
+import com.oppo.cloud.mapper.UserInfoMapper;
+import com.oppo.cloud.model.UserInfo;
+import com.oppo.cloud.model.UserInfoExample;
 import com.oppo.cloud.portal.config.ThreadLocalUserInfo;
-import com.oppo.cloud.portal.domain.task.UserInfo;
+import com.oppo.cloud.portal.domain.task.UserInfoResponse;
 import com.oppo.cloud.portal.service.ProjectService;
 import com.oppo.cloud.portal.service.UserService;
 import com.oppo.cloud.portal.util.CryptoUtil;
 import com.oppo.cloud.portal.util.EncryptionUtils;
 import com.oppo.cloud.portal.util.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -45,20 +46,19 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JWTUtil jwtUtil;
     @Autowired
-    private UserMapper userMapper;
+    private UserInfoMapper userMapper;
 
     /**
      * Get user information by username
      */
     @Override
-    public User getByUsername(String username) {
-        UserExample example = new UserExample();
+    public UserInfo getByUsername(String username) {
+        UserInfoExample example = new UserInfoExample();
         example.createCriteria().andUsernameEqualTo(username);
-        List<User> users = userMapper.selectByExample(example);
+        List<UserInfo> users = userMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(users)) {
             return null;
         }
-
         return users.get(0);
     }
 
@@ -66,10 +66,10 @@ public class UserServiceImpl implements UserService {
      * Login
      */
     @Override
-    public UserInfo userLogin(HttpServletResponse httpServletResponse, String username, String password)
+    public UserInfoResponse userLogin(HttpServletResponse httpServletResponse, String username, String password)
             throws Exception {
 
-        User user = getByUsername(username);
+        UserInfo user = getByUsername(username);
         if (user == null) {
             throw new Exception("用户名不存在");
         }
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
             throw new Exception("用户名或密码错误");
         }
 
-        UserInfo userInfo = new UserInfo();
+        UserInfoResponse userInfo = new UserInfoResponse();
         userInfo.setAdmin(user.getIsAdmin() == 0);
         userInfo.setUsername(user.getUsername());
         userInfo.setSchedulerType(schedulerType);
