@@ -110,11 +110,11 @@ public class InitService implements CommandLineRunner {
         if (mapping == null) {
             log.error("can not find `user` table mapping");
         } else {
-            // 保存用户数据表
+            //  save user table data
             initTable(mapping, (Map<String, String> data) -> {
-                User user = (User) DataUtil.parseInstance(data, UserBuilder.class);
+                UserInfo user = (UserInfo) DataUtil.parseInstance(data, UserBuilder.class);
                 try {
-                    userMapper.saveSelective(user);
+                    userMapper.save(user);
                 } catch (Exception e) {
                     log.error(e.getMessage());
                 }
@@ -125,11 +125,11 @@ public class InitService implements CommandLineRunner {
         if (mapping == null) {
             log.error("can not find `project` table mapping");
         } else {
-            // 保存项目数据表
+            // save project table data
             initTable(mapping, (Map<String, String> data) -> {
                 Project project = (Project) DataUtil.parseInstance(data, ProjectBuilder.class);
                 try {
-                    projectMapper.saveSelective(project);
+                    projectMapper.save(project);
                 } catch (Exception e) {
                     log.error(e.getMessage());
                 }
@@ -145,7 +145,7 @@ public class InitService implements CommandLineRunner {
             initTable(mapping, (Map<String, String> data) -> {
                 Flow flow = (Flow) DataUtil.parseInstance(data, FlowBuilder.class);
                 try {
-                    flowMapper.saveSelective(flow);
+                    flowMapper.save(flow);
                 } catch (Exception e) {
                     log.error(e.getMessage());
                 }
@@ -161,7 +161,7 @@ public class InitService implements CommandLineRunner {
             initTable(mapping, (Map<String, String> data) -> {
                 Task task = (Task) DataUtil.parseInstance(data, TaskBuilder.class);
                 try {
-                    taskMapper.saveSelective(task);
+                    taskMapper.save(task);
                 } catch (Exception e) {
                     log.error(e.getMessage());
                 }

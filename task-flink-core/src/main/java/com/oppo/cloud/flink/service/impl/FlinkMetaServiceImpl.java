@@ -29,10 +29,7 @@ import com.oppo.cloud.common.domain.flink.enums.YarnApplicationState;
 import com.oppo.cloud.flink.config.FlinkYarnConfig;
 import com.oppo.cloud.flink.service.FlinkMetaService;
 import com.oppo.cloud.flink.util.MemorySize;
-import com.oppo.cloud.mapper.FlinkTaskAppMapper;
-import com.oppo.cloud.mapper.FlinkTaskMapper;
-import com.oppo.cloud.mapper.TaskMapper;
-import com.oppo.cloud.mapper.UserMapper;
+import com.oppo.cloud.mapper.*;
 import com.oppo.cloud.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.action.search.SearchRequest;
@@ -91,7 +88,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
     public TaskMapper taskMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserInfoMapper userMapper;
 
     @Autowired
     private FlinkTaskAppMapper flinkTaskAppMapper;
@@ -265,13 +262,13 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         return null;
     }
 
-    public User getUserById(Integer id) {
-        UserExample userExample = new UserExample();
+    public UserInfo getUserById(Integer id) {
+        UserInfoExample userExample = new UserInfoExample();
         userExample.createCriteria()
                 .andUserIdEqualTo(id);
-        List<User> users = userMapper.selectByExample(userExample);
+        List<UserInfo> users = userMapper.selectByExample(userExample);
         if (users != null && users.size() > 0) {
-            User user = users.get(0);
+            UserInfo user = users.get(0);
             return user;
         }
         return null;
@@ -279,7 +276,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
 
     public void saveRealtimeTaskApp(FlinkTaskApp flinkTaskApp, YarnApp yarnApp, Task task,
                                     TaskApplication taskApplication) {
-        User user = getUserById(task.getUserId());
+        UserInfo user = getUserById(task.getUserId());
         if (
                 yarnApp.getState().equalsIgnoreCase(YarnApplicationState.FINISHED.getDesc()) ||
                         yarnApp.getState().equalsIgnoreCase(YarnApplicationState.FAILED.getDesc()) ||
@@ -458,7 +455,7 @@ public class FlinkMetaServiceImpl implements FlinkMetaService {
         } else {
             rt = flinkTaskApps.get(0);
         }
-        User user = getUserById(task.getUserId());
+        UserInfo user = getUserById(task.getUserId());
         rt.setUsername(user.getUsername());
         rt.setUserId(user.getUserId());
         rt.setProjectName(task.getProjectName());

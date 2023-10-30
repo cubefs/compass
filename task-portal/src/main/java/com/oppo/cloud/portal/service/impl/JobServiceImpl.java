@@ -107,7 +107,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public JobAppsRespone searchJobApps(JobDetailRequest jobDetailRequest) throws Exception {
-        UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
+        UserResponse userInfo = ThreadLocalUserInfo.getCurrentUser();
         JobAppsRespone jobAppsRespone = new JobAppsRespone();
         Map<String, Object> termQuery = jobDetailRequest.getTermQuery();
         SearchSourceBuilder builder = openSearchService.genSearchBuilder(termQuery, null, null, null);

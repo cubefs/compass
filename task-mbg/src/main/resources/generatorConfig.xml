@@ -11,7 +11,7 @@
         <property name="endingDelimiter" value="`"/>
         <property name="javaFileEncoding" value="UTF-8"/>
         <!-- Whether to use delimiters to enclose database keywords -->
-        <property name="autoDelimitKeywords" value="true"/>
+        <property name="autoDelimitKeywords" value="${autoDelimitKeywords}"/>
         <!-- Generate serialization methods for models -->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         <!-- Create a toString method for the generated Java model -->
@@ -35,7 +35,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.oppo.cloud.mapper"
                              targetProject="task-mbg\src\main\java"/>
         <!-- Generate all tables and set tableName to % -->
-        <table tableName="flink_task_app">
+        <table tableName="${tableName}">
             <generatedKey column="id" sqlStatement="MySql" identity="true" />
         </table>
     </context>

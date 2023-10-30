@@ -24,7 +24,7 @@ import com.oppo.cloud.portal.config.ThreadLocalUserInfo;
 import com.oppo.cloud.portal.dao.TaskExtendMapper;
 import com.oppo.cloud.portal.domain.blocklist.BlocklistAddReq;
 import com.oppo.cloud.portal.domain.blocklist.BlocklistReq;
-import com.oppo.cloud.portal.domain.task.UserInfo;
+import com.oppo.cloud.portal.domain.task.UserResponse;
 import com.oppo.cloud.portal.service.BlocklistService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +50,7 @@ public class BlocklistServiceImpl implements BlocklistService {
      */
     @Override
     public List<Blocklist> search(BlocklistReq blocklistReq) throws Exception {
-        UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
+        UserResponse userInfo = ThreadLocalUserInfo.getCurrentUser();
         BlocklistExample blocklistExample = new BlocklistExample();
         BlocklistExample.Criteria criteria = blocklistExample.createCriteria();
         if (StringUtils.isNotBlank(blocklistReq.getComponent())) {
@@ -102,7 +102,7 @@ public class BlocklistServiceImpl implements BlocklistService {
      */
     @Override
     public void addBlocklist(BlocklistAddReq blocklistAddReq) throws Exception {
-        UserInfo userInfo = ThreadLocalUserInfo.getCurrentUser();
+        UserResponse userInfo = ThreadLocalUserInfo.getCurrentUser();
 
         // Check if the blocklist already exists
         BlocklistExample blocklistExample = new BlocklistExample();

@@ -16,20 +16,20 @@
 
 package com.oppo.cloud.syncer.dao;
 
-import com.oppo.cloud.mapper.UserMapper;
-import com.oppo.cloud.model.User;
+import com.oppo.cloud.mapper.UserInfoMapper;
+import com.oppo.cloud.model.UserInfo;
 
 /**
  * User Extend Mapper
  */
-public interface UserExtendMapper extends UserMapper {
+public interface UserExtendMapper extends UserInfoMapper {
 
     /**
      * Save data
      */
-    int save(User record);
+    int save(UserInfo record);
     /**
      * Save selective data
      */
-    int saveSelective(User record);
+    int saveSelective(UserInfo record);
 }

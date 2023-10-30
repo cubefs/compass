@@ -16,8 +16,8 @@
 
 package com.oppo.cloud.portal.service.impl;
 
-import com.oppo.cloud.mapper.UserMapper;
-import com.oppo.cloud.model.User;
+import com.oppo.cloud.mapper.UserInfoMapper;
+import com.oppo.cloud.model.UserInfo;
 import com.oppo.cloud.portal.service.UserService;
 import com.oppo.cloud.portal.util.EncryptionUtils;
 import org.junit.jupiter.api.Assertions;
@@ -34,17 +34,17 @@ import java.util.List;
 class UserServiceImplTest {
 
     @MockBean(name = "userMapper")
-    UserMapper userMapper;
+    UserInfoMapper userMapper;
 
     @Autowired
     UserService userService;
 
     @Test
     void getUser() {
-        List<User> users = new ArrayList<>();
-        users.add(new User());
+        List<UserInfo> users = new ArrayList<>();
+        users.add(new UserInfo());
         Mockito.when(userMapper.selectByExample(Mockito.any())).thenReturn(users);
-        User user = userService.getByUsername("username_test");
+        UserInfo user = userService.getByUsername("username_test");
         Assertions.assertNotNull(user);
     }
 

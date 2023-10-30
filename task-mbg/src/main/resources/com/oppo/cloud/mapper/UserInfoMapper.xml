@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oppo.cloud.mapper.UserMapper">
-  <resultMap id="BaseResultMap" type="com.oppo.cloud.model.User">
+<mapper namespace="com.oppo.cloud.mapper.UserInfoMapper">
+  <resultMap id="BaseResultMap" type="com.oppo.cloud.model.UserInfo">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="username" jdbcType="VARCHAR" property="username" />
@@ -15,7 +15,6 @@
     <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="scheduler_type" jdbcType="VARCHAR" property="schedulerType" />
-
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -76,16 +75,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, username, `password`, is_admin, icon, email, phone, create_time, update_time, 
-    login_time, `status`, scheduler_type
+    id, user_id, username, password, is_admin, icon, email, phone, create_time, update_time, 
+    login_time, status, scheduler_type
   </sql>
-  <select id="selectByExample" parameterType="com.oppo.cloud.model.UserExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.oppo.cloud.model.UserInfoExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from user
+    from user_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -96,27 +95,27 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from user
+    from user_info
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from user
+    delete from user_info
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.oppo.cloud.model.UserExample">
-    delete from user
+  <delete id="deleteByExample" parameterType="com.oppo.cloud.model.UserInfoExample">
+    delete from user_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.oppo.cloud.model.User">
+  <insert id="insert" parameterType="com.oppo.cloud.model.UserInfo">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into user (user_id, username, `password`, 
+    insert into user_info (user_id, username, password, 
       is_admin, icon, email, 
       phone, create_time, update_time, 
-      login_time, `status`, scheduler_type
+      login_time, status, scheduler_type
       )
     values (#{userId,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{isAdmin,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
@@ -124,11 +123,11 @@
       #{loginTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{schedulerType,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.oppo.cloud.model.User">
+  <insert id="insertSelective" parameterType="com.oppo.cloud.model.UserInfo">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into user
+    insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="userId != null">
         user_id,
@@ -137,7 +136,7 @@
         username,
       </if>
       <if test="password != null">
-        `password`,
+        password,
       </if>
       <if test="isAdmin != null">
         is_admin,
@@ -161,7 +160,7 @@
         login_time,
       </if>
       <if test="status != null">
-        `status`,
+        status,
       </if>
       <if test="schedulerType != null">
         scheduler_type,
@@ -206,14 +205,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.oppo.cloud.model.UserExample" resultType="java.lang.Long">
-    select count(*) from user
+  <select id="countByExample" parameterType="com.oppo.cloud.model.UserInfoExample" resultType="java.lang.Long">
+    select count(*) from user_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update user
+    update user_info
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
@@ -225,7 +224,7 @@
         username = #{record.username,jdbcType=VARCHAR},
       </if>
       <if test="record.password != null">
-        `password` = #{record.password,jdbcType=VARCHAR},
+        password = #{record.password,jdbcType=VARCHAR},
       </if>
       <if test="record.isAdmin != null">
         is_admin = #{record.isAdmin,jdbcType=INTEGER},
@@ -249,7 +248,7 @@
         login_time = #{record.loginTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.status != null">
-        `status` = #{record.status,jdbcType=INTEGER},
+        status = #{record.status,jdbcType=INTEGER},
       </if>
       <if test="record.schedulerType != null">
         scheduler_type = #{record.schedulerType,jdbcType=VARCHAR},
@@ -260,11 +259,11 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update user
+    update user_info
     set id = #{record.id,jdbcType=INTEGER},
       user_id = #{record.userId,jdbcType=INTEGER},
       username = #{record.username,jdbcType=VARCHAR},
-      `password` = #{record.password,jdbcType=VARCHAR},
+      password = #{record.password,jdbcType=VARCHAR},
       is_admin = #{record.isAdmin,jdbcType=INTEGER},
       icon = #{record.icon,jdbcType=VARCHAR},
       email = #{record.email,jdbcType=VARCHAR},
@@ -272,14 +271,14 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       login_time = #{record.loginTime,jdbcType=TIMESTAMP},
-      `status` = #{record.status,jdbcType=INTEGER},
+      status = #{record.status,jdbcType=INTEGER},
       scheduler_type = #{record.schedulerType,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.User">
-    update user
+  <update id="updateByPrimaryKeySelective" parameterType="com.oppo.cloud.model.UserInfo">
+    update user_info
     <set>
       <if test="userId != null">
         user_id = #{userId,jdbcType=INTEGER},
@@ -288,7 +287,7 @@
         username = #{username,jdbcType=VARCHAR},
       </if>
       <if test="password != null">
-        `password` = #{password,jdbcType=VARCHAR},
+        password = #{password,jdbcType=VARCHAR},
       </if>
       <if test="isAdmin != null">
         is_admin = #{isAdmin,jdbcType=INTEGER},
@@ -312,7 +311,7 @@
         login_time = #{loginTime,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
-        `status` = #{status,jdbcType=INTEGER},
+        status = #{status,jdbcType=INTEGER},
       </if>
       <if test="schedulerType != null">
         scheduler_type = #{schedulerType,jdbcType=VARCHAR},
@@ -320,11 +319,11 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.User">
-    update user
+  <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.UserInfo">
+    update user_info
     set user_id = #{userId,jdbcType=INTEGER},
       username = #{username,jdbcType=VARCHAR},
-      `password` = #{password,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
       is_admin = #{isAdmin,jdbcType=INTEGER},
       icon = #{icon,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
@@ -332,7 +331,7 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       login_time = #{loginTime,jdbcType=TIMESTAMP},
-      `status` = #{status,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
       scheduler_type = #{schedulerType,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

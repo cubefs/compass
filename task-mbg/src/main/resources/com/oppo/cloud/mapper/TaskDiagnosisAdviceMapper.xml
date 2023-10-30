@@ -75,11 +75,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, log_type, parent_action, `action`, description, `variables`, category, deleted, 
-    normal_advice
+    id, log_type, parent_action, action, description, variables, category, deleted, normal_advice
   </sql>
   <sql id="Blob_Column_List">
-    abnormal_advice, `rule`
+    abnormal_advice, rule
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.oppo.cloud.model.TaskDiagnosisAdviceExample" resultMap="ResultMapWithBLOBs">
     select
@@ -133,10 +132,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into task_diagnosis_advice (log_type, parent_action, `action`, 
-      description, `variables`, category, 
+    insert into task_diagnosis_advice (log_type, parent_action, action, 
+      description, variables, category, 
       deleted, normal_advice, abnormal_advice, 
-      `rule`)
+      rule)
     values (#{logType,jdbcType=VARCHAR}, #{parentAction,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR}, 
       #{description,jdbcType=VARCHAR}, #{variables,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, 
       #{deleted,jdbcType=INTEGER}, #{normalAdvice,jdbcType=VARCHAR}, #{abnormalAdvice,jdbcType=LONGVARCHAR}, 
@@ -155,13 +154,13 @@
         parent_action,
       </if>
       <if test="action != null">
-        `action`,
+        action,
       </if>
       <if test="description != null">
         description,
       </if>
       <if test="variables != null">
-        `variables`,
+        variables,
       </if>
       <if test="category != null">
         category,
@@ -176,7 +175,7 @@
         abnormal_advice,
       </if>
       <if test="rule != null">
-        `rule`,
+        rule,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -231,13 +230,13 @@
         parent_action = #{record.parentAction,jdbcType=VARCHAR},
       </if>
       <if test="record.action != null">
-        `action` = #{record.action,jdbcType=VARCHAR},
+        action = #{record.action,jdbcType=VARCHAR},
       </if>
       <if test="record.description != null">
         description = #{record.description,jdbcType=VARCHAR},
       </if>
       <if test="record.variables != null">
-        `variables` = #{record.variables,jdbcType=VARCHAR},
+        variables = #{record.variables,jdbcType=VARCHAR},
       </if>
       <if test="record.category != null">
         category = #{record.category,jdbcType=VARCHAR},
@@ -252,7 +251,7 @@
         abnormal_advice = #{record.abnormalAdvice,jdbcType=LONGVARCHAR},
       </if>
       <if test="record.rule != null">
-        `rule` = #{record.rule,jdbcType=LONGVARCHAR},
+        rule = #{record.rule,jdbcType=LONGVARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -264,14 +263,14 @@
     set id = #{record.id,jdbcType=INTEGER},
       log_type = #{record.logType,jdbcType=VARCHAR},
       parent_action = #{record.parentAction,jdbcType=VARCHAR},
-      `action` = #{record.action,jdbcType=VARCHAR},
+      action = #{record.action,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
-      `variables` = #{record.variables,jdbcType=VARCHAR},
+      variables = #{record.variables,jdbcType=VARCHAR},
       category = #{record.category,jdbcType=VARCHAR},
       deleted = #{record.deleted,jdbcType=INTEGER},
       normal_advice = #{record.normalAdvice,jdbcType=VARCHAR},
       abnormal_advice = #{record.abnormalAdvice,jdbcType=LONGVARCHAR},
-      `rule` = #{record.rule,jdbcType=LONGVARCHAR}
+      rule = #{record.rule,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -281,9 +280,9 @@
     set id = #{record.id,jdbcType=INTEGER},
       log_type = #{record.logType,jdbcType=VARCHAR},
       parent_action = #{record.parentAction,jdbcType=VARCHAR},
-      `action` = #{record.action,jdbcType=VARCHAR},
+      action = #{record.action,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
-      `variables` = #{record.variables,jdbcType=VARCHAR},
+      variables = #{record.variables,jdbcType=VARCHAR},
       category = #{record.category,jdbcType=VARCHAR},
       deleted = #{record.deleted,jdbcType=INTEGER},
       normal_advice = #{record.normalAdvice,jdbcType=VARCHAR}
@@ -301,13 +300,13 @@
         parent_action = #{parentAction,jdbcType=VARCHAR},
       </if>
       <if test="action != null">
-        `action` = #{action,jdbcType=VARCHAR},
+        action = #{action,jdbcType=VARCHAR},
       </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
       <if test="variables != null">
-        `variables` = #{variables,jdbcType=VARCHAR},
+        variables = #{variables,jdbcType=VARCHAR},
       </if>
       <if test="category != null">
         category = #{category,jdbcType=VARCHAR},
@@ -322,7 +321,7 @@
         abnormal_advice = #{abnormalAdvice,jdbcType=LONGVARCHAR},
       </if>
       <if test="rule != null">
-        `rule` = #{rule,jdbcType=LONGVARCHAR},
+        rule = #{rule,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -331,23 +330,23 @@
     update task_diagnosis_advice
     set log_type = #{logType,jdbcType=VARCHAR},
       parent_action = #{parentAction,jdbcType=VARCHAR},
-      `action` = #{action,jdbcType=VARCHAR},
+      action = #{action,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
-      `variables` = #{variables,jdbcType=VARCHAR},
+      variables = #{variables,jdbcType=VARCHAR},
       category = #{category,jdbcType=VARCHAR},
       deleted = #{deleted,jdbcType=INTEGER},
       normal_advice = #{normalAdvice,jdbcType=VARCHAR},
       abnormal_advice = #{abnormalAdvice,jdbcType=LONGVARCHAR},
-      `rule` = #{rule,jdbcType=LONGVARCHAR}
+      rule = #{rule,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.oppo.cloud.model.TaskDiagnosisAdvice">
     update task_diagnosis_advice
     set log_type = #{logType,jdbcType=VARCHAR},
       parent_action = #{parentAction,jdbcType=VARCHAR},
-      `action` = #{action,jdbcType=VARCHAR},
+      action = #{action,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
-      `variables` = #{variables,jdbcType=VARCHAR},
+      variables = #{variables,jdbcType=VARCHAR},
       category = #{category,jdbcType=VARCHAR},
       deleted = #{deleted,jdbcType=INTEGER},
       normal_advice = #{normalAdvice,jdbcType=VARCHAR}

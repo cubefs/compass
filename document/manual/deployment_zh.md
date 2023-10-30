@@ -5,14 +5,15 @@
 Compass 依赖了调度平台、Hadoop、Spark、Canal、MySQL、Kafka、Redis、Zookeeper、OpenSearch，需要提前准备好相关环境。
 
 ## 环境要求
-|Dependency|Version|Optional|Description|
-|----------|------|--------|----|
-|Canal|v1.1.6+|yes| needed by Airflow,DolphinScheduler|
-|MySQL|5.7+|no||
-|Kafka|all|no||
-|Redis|all|no|deployed in cluster mode|
-|Zookeeper|3.4.5|no|needed by canal|
-|OpenSearch|1.3.12|no||
+| Dependency | Version | Optional |Description|
+|------------|---------|----------|----|
+| Canal      | v1.1.6+ | yes      | needed by Airflow,DolphinScheduler|
+| MySQL      | 5.7+    | yes      ||
+| PostgreSQL | 10.0+   | no       ||
+| Kafka      | all     | no       ||
+| Redis      | all     | no       |deployed in cluster mode|
+| Zookeeper  | 3.4.5   | no       |needed by canal|
+| OpenSearch | 1.3.12  | no       ||
 
 OpenSearch兼容Elasticsearch 7.0+。
 
@@ -50,13 +51,38 @@ compass
 ```
 ### 初始化数据库
 
-初始化数据库和表，请先执行document/sql/compass.sql
+支持 PostgreSQL 或 MySQL 作为元数据存储，表结构由两部分组成：
 
-如果您使用的是DolphinScheduler调度平台，请执行document/sql/dolphinscheduler.sql（需要根据实际使用版本修改，支持2.x和3.x）
+一部分是document/sql/compass_*.sql，另一个部分是document/sql/dolphinscheduler_*.sql（需要根据实际使用版本修改，支持2.x和3.x）或document/sql/airflow_*.sql（支持2.x）。
 
-如果您使用的是Airflow调度平台，请执行document/sql/airflow.sql（需要根据实际使用版本修改）
+如果您使用的是自研调度平台，请参考[task-syncer](#task-syncer)模块，确定需要同步的表。
 
-如果您使用的是自研调度平台，请参考[task-syncer](#task-syncer)模块，确定需要同步的表
+如果调度平台的数据库是MySQL，Compass数据库是PostgreSQL，可使用[pgloader](https://github.com/dimitri/pgloader)创建依赖表和同步历史全量数据
+
+同步dolphinscheduler表：
+```
+LOAD DATABASE
+     FROM mysql://root:password@localhost:3306/dolphinscheduler
+     INTO postgresql://postgres@localhost:5432/compass
+     ALTER SCHEMA 'dolphinscheduler' RENAME TO 'public'
+     INCLUDING ONLY TABLE NAMES MATCHING 't_ds_process_definition','t_ds_process_instance','t_ds_process_task_relation','t_ds_project','t_ds_task_definition','t_ds_task_instance','t_ds_user';
+```
+
+同步airflow表：
+```
+LOAD DATABASE
+     FROM mysql://root:password@localhost:3306/airflow
+     INTO postgresql://postgres@localhost:5432/compass_airflow
+     ALTER SCHEMA 'airflow' RENAME TO 'public'
+     INCLUDING ONLY TABLE NAMES MATCHING 'task_instance','dag_run','ab_user','dag','serialized_dag'
+     ALTER TABLE NAMES MATCHING 'task_instance' RENAME TO 'tb_task_instance'
+     ALTER TABLE NAMES MATCHING 'dag_run'  RENAME TO 'tb_dag_run'
+     ALTER TABLE NAMES MATCHING 'ab_user'  RENAME TO 'tb_ab_user'
+     ALTER TABLE NAMES MATCHING 'dag'  RENAME TO 'tb_dag'
+     ALTER TABLE NAMES MATCHING 'serialized_dag'  RENAME TO 'tb_serialized_dag';
+```
+如果Compass使用MySQL数据库，则需要手动下载[mysql-connector-java](https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.29/mysql-connector-java-8.0.29.jar)
+复制到task-application、task-detect、task-flink、task-portal、task-parser、task-syncer lib目录下
 
 
 ### 关键脚本和配置

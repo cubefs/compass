@@ -30,10 +30,10 @@ public class FlowBuilder implements DataBuilder<Flow> {
     public Flow run(Map<String, String> data) {
         Flow flow = new Flow();
         flow.setId(DataUtil.parseInteger(data.get("id")));
-        flow.setName(data.get("flow_name"));
+        flow.setFlowName(data.get("flow_name"));
         flow.setDescription(data.get("description"));
         flow.setUserId(DataUtil.parseInteger(data.get("user_id")));
-        flow.setStatus(DataUtil.parseInteger(data.get("flow_status")));
+        flow.setFlowStatus(DataUtil.parseInteger(data.get("flow_status")));
         flow.setProjectName(data.get("project_name"));
         flow.setProjectId(DataUtil.parseInteger(data.get("project_id")));
         flow.setCreateTime(DataUtil.parseDate(data.get("create_time")));

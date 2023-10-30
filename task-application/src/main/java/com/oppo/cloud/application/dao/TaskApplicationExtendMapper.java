@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.syncer.util;
+package com.oppo.cloud.application.dao;
 
-import com.oppo.cloud.model.UserInfo;
-import com.oppo.cloud.syncer.util.databuild.UserBuilder;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import com.oppo.cloud.mapper.TaskApplicationMapper;
+import com.oppo.cloud.model.TaskApplication;
 
-import java.util.HashMap;
+public interface TaskApplicationExtendMapper extends TaskApplicationMapper {
 
-public class TestDataUtil {
+    int save(TaskApplication record);
 
-    @Test
-    public void testParseInstance() {
-        UserInfo user = (UserInfo) DataUtil.parseInstance(new HashMap<>(), UserBuilder.class);
-        Assertions.assertTrue(user != null);
-    }
 }

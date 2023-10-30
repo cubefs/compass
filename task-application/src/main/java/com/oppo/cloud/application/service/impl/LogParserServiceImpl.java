@@ -22,6 +22,7 @@ import com.oppo.cloud.application.config.CustomConfig;
 import com.oppo.cloud.application.config.HadoopConfig;
 import com.oppo.cloud.application.config.KafkaConfig;
 import com.oppo.cloud.application.constant.RetCode;
+import com.oppo.cloud.application.dao.TaskApplicationExtendMapper;
 import com.oppo.cloud.application.domain.LogPathJoin;
 import com.oppo.cloud.application.domain.ParseRet;
 import com.oppo.cloud.application.domain.Rule;
@@ -31,7 +32,6 @@ import com.oppo.cloud.application.util.EscapePathUtil;
 import com.oppo.cloud.application.util.HDFSUtil;
 import com.oppo.cloud.application.util.StringUtil;
 import com.oppo.cloud.common.domain.cluster.hadoop.NameNodeConf;
-import com.oppo.cloud.mapper.TaskApplicationMapper;
 import com.oppo.cloud.model.TaskApplication;
 import com.oppo.cloud.model.TaskInstance;
 import lombok.extern.slf4j.Slf4j;
@@ -77,7 +77,7 @@ public class LogParserServiceImpl implements LogParserService {
      * task application table management
      */
     @Autowired
-    private TaskApplicationMapper taskApplicationMapper;
+    private TaskApplicationExtendMapper taskApplicationExtendMapper;
     /**
      * Hadoop file read node configuration
      */
@@ -263,7 +263,7 @@ public class LogParserServiceImpl implements LogParserService {
         taskApplication.setUpdateTime(new Date());
 
         try {
-            taskApplicationMapper.insertSelective(taskApplication);
+            taskApplicationExtendMapper.save(taskApplication);
         } catch (DuplicateKeyException e) {
             return;
             // duplicate key with return

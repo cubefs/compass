@@ -25,7 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TaskDiagnosisAdvice implements Serializable {
-
     @ApiModelProperty(value = "id")
     private Integer id;
 
@@ -41,7 +40,7 @@ public class TaskDiagnosisAdvice implements Serializable {
     @ApiModelProperty(value = "Exceptional description")
     private String description;
 
-    @ApiModelProperty(value = "Advice (variables are represented by {variable name})")
+    @ApiModelProperty(value = "Variable name list ( , is the delimiter)")
     private String variables;
 
     @ApiModelProperty(value = "Exception type")
@@ -171,9 +170,7 @@ public class TaskDiagnosisAdvice implements Serializable {
     }
 
     /**
-     * 对diagnostics进行匹配诊断（针对Yarn的diagnostics信息）
-     * @param diagnostics
-     * @return
+     * detect Yarn diagnostics
      */
     public String detectDiagnostics(String diagnostics) {
         String result = null;
@@ -194,10 +191,7 @@ public class TaskDiagnosisAdvice implements Serializable {
     }
 
     /**
-     * 根据es中的变量信息，生成完整的诊断建议
-     * @param vars
-     * @return
-     * @throws Exception
+     * generate advice by vars
      */
     public String genAdvice(Map<String, String> vars) throws Exception {
         String advice = this.getAbnormalAdvice();

@@ -16,8 +16,8 @@
 
 package com.oppo.cloud.portal.service;
 
-import com.oppo.cloud.model.User;
-import com.oppo.cloud.portal.domain.task.UserInfo;
+import com.oppo.cloud.model.UserInfo;
+import com.oppo.cloud.portal.domain.task.UserResponse;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,13 +29,13 @@ public interface UserService {
     /**
      * Get user information by username
      */
-    User getByUsername(String username);
+    UserInfo getByUsername(String username);
 
 
     /**
      * Login
      */
-    UserInfo userLogin(HttpServletResponse httpServletResponse, String username, String password) throws Exception;
+    UserResponse userLogin(HttpServletResponse httpServletResponse, String username, String password) throws Exception;
 
 
 }

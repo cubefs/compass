@@ -18,7 +18,7 @@ package com.oppo.cloud.portal.interceptor;
 
 import com.oppo.cloud.common.api.CommonStatus;
 import com.oppo.cloud.portal.config.ThreadLocalUserInfo;
-import com.oppo.cloud.portal.domain.task.UserInfo;
+import com.oppo.cloud.portal.domain.task.UserResponse;
 import com.oppo.cloud.portal.util.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +58,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        UserInfo userInfo;
+        UserResponse userInfo;
         try {
             userInfo = jwtUtil.verifyToken(token);
         } catch (Exception e) {

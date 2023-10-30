@@ -25,6 +25,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@MapperScan({"com.oppo.cloud.mapper"})
+@MapperScan({"com.oppo.cloud.mapper", "com.oppo.cloud.application.dao"})
 public class MyBatisConfig {
 }

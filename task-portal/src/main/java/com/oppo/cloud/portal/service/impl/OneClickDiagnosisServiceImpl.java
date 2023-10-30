@@ -31,7 +31,7 @@ import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.mapper.TaskApplicationMapper;
 import com.oppo.cloud.mapper.TaskMapper;
-import com.oppo.cloud.mapper.UserMapper;
+import com.oppo.cloud.mapper.UserInfoMapper;
 import com.oppo.cloud.model.*;
 import com.oppo.cloud.portal.common.CommonCode;
 import com.oppo.cloud.portal.domain.diagnose.oneclick.DiagnoseResult;
@@ -80,7 +80,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
     private TaskMapper taskMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserInfoMapper userMapper;
 
     /**
      * one click diagnosis
@@ -368,11 +368,11 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
             taskApp.setTaskId(task.getId());
             taskApp.setProjectId(task.getProjectId());
             taskApp.setFlowId(task.getFlowId());
-            UserExample userExample = new UserExample();
+            UserInfoExample userExample = new UserInfoExample();
             userExample.createCriteria().andUserIdEqualTo(task.getUserId());
-            List<User> users = userMapper.selectByExample(userExample);
+            List<UserInfo> users = userMapper.selectByExample(userExample);
             if (users.size() > 0) {
-                User user = users.get(0);
+                UserInfo user = users.get(0);
                 SimpleUser esSimpleUser = new SimpleUser();
                 esSimpleUser.setUserId(user.getUserId());
                 esSimpleUser.setUsername(user.getUsername());

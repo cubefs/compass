@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDiagnosisAdviceExample {
-
     protected String orderByClause;
 
     protected boolean distinct;
@@ -81,7 +80,6 @@ public class TaskDiagnosisAdviceExample {
     }
 
     protected abstract static class GeneratedCriteria {
-
         protected List<Criterion> criteria;
 
         protected GeneratedCriteria() {
@@ -323,72 +321,72 @@ public class TaskDiagnosisAdviceExample {
         }
 
         public Criteria andActionIsNull() {
-            addCriterion("`action` is null");
+            addCriterion("action is null");
             return (Criteria) this;
         }
 
         public Criteria andActionIsNotNull() {
-            addCriterion("`action` is not null");
+            addCriterion("action is not null");
             return (Criteria) this;
         }
 
         public Criteria andActionEqualTo(String value) {
-            addCriterion("`action` =", value, "action");
+            addCriterion("action =", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionNotEqualTo(String value) {
-            addCriterion("`action` <>", value, "action");
+            addCriterion("action <>", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionGreaterThan(String value) {
-            addCriterion("`action` >", value, "action");
+            addCriterion("action >", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionGreaterThanOrEqualTo(String value) {
-            addCriterion("`action` >=", value, "action");
+            addCriterion("action >=", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionLessThan(String value) {
-            addCriterion("`action` <", value, "action");
+            addCriterion("action <", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionLessThanOrEqualTo(String value) {
-            addCriterion("`action` <=", value, "action");
+            addCriterion("action <=", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionLike(String value) {
-            addCriterion("`action` like", value, "action");
+            addCriterion("action like", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionNotLike(String value) {
-            addCriterion("`action` not like", value, "action");
+            addCriterion("action not like", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionIn(List<String> values) {
-            addCriterion("`action` in", values, "action");
+            addCriterion("action in", values, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionNotIn(List<String> values) {
-            addCriterion("`action` not in", values, "action");
+            addCriterion("action not in", values, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionBetween(String value1, String value2) {
-            addCriterion("`action` between", value1, value2, "action");
+            addCriterion("action between", value1, value2, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionNotBetween(String value1, String value2) {
-            addCriterion("`action` not between", value1, value2, "action");
+            addCriterion("action not between", value1, value2, "action");
             return (Criteria) this;
         }
 
@@ -463,72 +461,72 @@ public class TaskDiagnosisAdviceExample {
         }
 
         public Criteria andVariablesIsNull() {
-            addCriterion("`variables` is null");
+            addCriterion("variables is null");
             return (Criteria) this;
         }
 
         public Criteria andVariablesIsNotNull() {
-            addCriterion("`variables` is not null");
+            addCriterion("variables is not null");
             return (Criteria) this;
         }
 
         public Criteria andVariablesEqualTo(String value) {
-            addCriterion("`variables` =", value, "variables");
+            addCriterion("variables =", value, "variables");
             return (Criteria) this;
         }
 
         public Criteria andVariablesNotEqualTo(String value) {
-            addCriterion("`variables` <>", value, "variables");
+            addCriterion("variables <>", value, "variables");
             return (Criteria) this;
         }
 
         public Criteria andVariablesGreaterThan(String value) {
-            addCriterion("`variables` >", value, "variables");
+            addCriterion("variables >", value, "variables");
             return (Criteria) this;
         }
 
         public Criteria andVariablesGreaterThanOrEqualTo(String value) {
-            addCriterion("`variables` >=", value, "variables");
+            addCriterion("variables >=", value, "variables");
             return (Criteria) this;
         }
 
         public Criteria andVariablesLessThan(String value) {
-            addCriterion("`variables` <", value, "variables");
+            addCriterion("variables <", value, "variables");
             return (Criteria) this;
         }
 
         public Criteria andVariablesLessThanOrEqualTo(String value) {
-            addCriterion("`variables` <=", value, "variables");
+            addCriterion("variables <=", value, "variables");
             return (Criteria) this;
         }
 
         public Criteria andVariablesLike(String value) {
-            addCriterion("`variables` like", value, "variables");
+            addCriterion("variables like", value, "variables");
             return (Criteria) this;
         }
 
         public Criteria andVariablesNotLike(String value) {
-            addCriterion("`variables` not like", value, "variables");
+            addCriterion("variables not like", value, "variables");
             return (Criteria) this;
         }
 
         public Criteria andVariablesIn(List<String> values) {
-            addCriterion("`variables` in", values, "variables");
+            addCriterion("variables in", values, "variables");
             return (Criteria) this;
         }
 
         public Criteria andVariablesNotIn(List<String> values) {
-            addCriterion("`variables` not in", values, "variables");
+            addCriterion("variables not in", values, "variables");
             return (Criteria) this;
         }
 
         public Criteria andVariablesBetween(String value1, String value2) {
-            addCriterion("`variables` between", value1, value2, "variables");
+            addCriterion("variables between", value1, value2, "variables");
             return (Criteria) this;
         }
 
         public Criteria andVariablesNotBetween(String value1, String value2) {
-            addCriterion("`variables` not between", value1, value2, "variables");
+            addCriterion("variables not between", value1, value2, "variables");
             return (Criteria) this;
         }
 
@@ -734,14 +732,12 @@ public class TaskDiagnosisAdviceExample {
     }
 
     public static class Criteria extends GeneratedCriteria {
-
         protected Criteria() {
             super();
         }
     }
 
     public static class Criterion {
-
         private String condition;
 
         private Object value;

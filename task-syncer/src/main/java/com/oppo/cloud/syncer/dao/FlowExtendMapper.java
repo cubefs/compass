@@ -32,4 +32,8 @@ public interface FlowExtendMapper extends FlowMapper {
      * Save selective data
      */
     int saveSelective(Flow record);
+    /**
+     * Update by flow
+     */
+    int updateByFlow(Flow record);
 }
