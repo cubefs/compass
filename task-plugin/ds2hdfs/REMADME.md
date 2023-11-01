@@ -4,8 +4,11 @@
 The native flume-taildir-source plugin does not support recursive traversal of subdirectories. This plugin accomplishes directory recursion using Python code.
 
 ## Version Dependencies
-- python3.7+ (requires watchdog, threading, and time modules)
+- python3.7+ (requires watchdog modules)
 - flume-1.11.0
+```
+Install python dependencies: pip install -r requirements.txt
+```
 
 ## Environment Dependencies
 - DolphinScheduler worker can access HDFS correctly
