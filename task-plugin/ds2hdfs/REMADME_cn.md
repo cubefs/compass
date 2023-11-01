@@ -4,9 +4,11 @@
 原生flume-taildir-source插件是不支持递归遍历子目录文件的，本插件通过python代码实现目录递归解析。
 
 ## 版本依赖
-  - python3.7+ (依赖 watchdog threading time 模块)
+  - python3.7+ (依赖 watchdog 模块)
   - flume-1.11.0
-
+```
+安装Python依赖: pip install -r requirements.txt
+```
 ## 环境依赖
   - DolphinScheduler worker 能正常访问hdfs 
 

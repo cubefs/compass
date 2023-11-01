@@ -5,7 +5,9 @@ import subprocess
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-
+'''
+   Flume plugin to collect log
+'''
 class FlumeHandler:
     def __init__(self, file_name, relative_path, log_file):
         self.file_name = file_name
@@ -19,7 +21,7 @@ class FlumeHandler:
         self.flume_flag = '_'.join(self.relative_path.replace('/', '_').split('/') + self.file_name.split('.')[:-1])
 
     def init_flume_config(self):
-        # 构建Flume配置内容
+        # Building flume configuration contents
         config_content = f"""
 compass_{self.flume_flag}.sinks=ds2hdfsSink_{self.flume_flag}
 compass_{self.flume_flag}.channels=ds2hdfsCh_{self.flume_flag}
@@ -53,7 +55,7 @@ compass_{self.flume_flag}.sinks.ds2hdfsSink_{self.flume_flag}.hdfs.kerberosKeyta
 compass_{self.flume_flag}.sinks.ds2hdfsSink_{self.flume_flag}.hdfs.useLocalTimeStamp=true
 """
 
-        # 将配置内容保存到临时配置文件
+        # Save configuration contents to a temporary configuration file
         config_file = f'./flume_{self.flume_flag}.conf'
         with open(config_file, 'w') as f:
             f.write(config_content)
@@ -61,29 +63,29 @@ compass_{self.flume_flag}.sinks.ds2hdfsSink_{self.flume_flag}.hdfs.useLocalTimeS
         return config_file
 
     def start_flume(self):
-        # 生成Flume配置文件
+        # Generate flume configuration file
         config_file = self.init_flume_config()
 
-        # 启动Flume进程，传递文件名、相对路径和绝对路径作为参数
+        # Start flume process, passing file name, relative path, and absolute path as arguments
         cmd = f'./flume-1.11.0/bin/flume-ng agent -n compass_{self.flume_flag} -c ./flume-1.11.0/conf/ -f {config_file}'
         self.flume_process = subprocess.Popen(cmd, shell=True)
 
     def stop_flume(self):
         if self.flume_process:
             print(f"File done: {self.log_file}")
-            # 终止Flume进程
+            # Terminate flume process
             self.flume_process.terminate()
             self.flume_process.wait()
             self.flume_process = None
 
-            # 删除配置文件
+            # Delete configuration file
             config_file = self.init_flume_config()
             os.remove(config_file)
 
     def update_status(self, is_updated):
         self.is_updated = is_updated
         if not self.is_updated:
-            # 文件不再更新，释放信号量
+            # Release semaphore as file is no longer updating
             self.semaphore.release()
 
     def set_processing_status(self, is_processing):
@@ -91,12 +93,12 @@ compass_{self.flume_flag}.sinks.ds2hdfsSink_{self.flume_flag}.hdfs.useLocalTimeS
         self.is_processing = is_processing
 
     def start_timer(self, interval):
-        # 启动定时器，如果在指定的时间间隔内文件没有更新，则停止Flume进程
+        # Start timer to stop the flume process if the file is not updated within the specified time interval.
         self.timer = threading.Timer(interval, self.stop_flume)
         self.timer.start()
 
     def stop_timer(self):
-        # 停止定时器
+        # Stop timer
         if self.timer and self.timer.is_alive():
             self.timer.cancel()
 
@@ -108,41 +110,41 @@ class LogFileEventHandler(FileSystemEventHandler):
 
     def on_modified(self, event):
         if event.is_directory:
-            return  # 忽略目录的变化
+            return  # Ignore changes in directory
         elif not os.path.basename(event.src_path).startswith(tuple(map(str, range(10)))):
-            return  # 忽略ds本身日志
+            return  # Ignore logs from the ds application itself
         elif event.event_type == 'modified':
-            # 处理文件内容修改
+            # Process file content modifications
             print(f"File modified: {event.src_path}")
             log_file = event.src_path
             file_name = os.path.basename(event.src_path)
             relative_path = os.path.dirname(os.path.relpath(log_file, self.root_directory))
             file_path = log_file
             if file_path not in self.flume_handlers:
-                # 创建FlumeHandler并启动Flume进程
+                # Create FlumeHandler and start flume process
                 flume_handler = FlumeHandler(file_name, relative_path, log_file)
                 flume_handler.start_flume()
                 self.flume_handlers[file_path] = flume_handler
 
             flume_handler = self.flume_handlers[file_path]
             if not flume_handler.is_processing:
-                # 如果文件不在处理中，更新文件状态为已更新
+                # If file is not being processed, update file status to updated
                 flume_handler.update_status(True)
                 flume_handler.stop_timer()
             else:
-                # 如果文件在处理中，忽略此次修改事件
+                # If file is being processed, ignore this modification event
                 return
 
-            # 启动定时器，设置文件不再更新的时间间隔为180秒
+            # Start timer and set time interval for file to stop updating as 180 seconds
             flume_handler.start_timer(180)
 
     def on_created(self, event):
         if event.is_directory:
-            return  # 忽略目录的变化
+            return  # Ignore changes in directory
         elif not os.path.basename(event.src_path).startswith(tuple(map(str, range(10)))):
-            return  # 忽略ds本身日志
+            return  # Ignore logs from the ds application itself
         elif event.event_type == 'created':
-            # 处理新创建的文件
+            # Process newly created file
             print(f"File created: {event.src_path}")
             log_file = event.src_path
             file_name = os.path.basename(event.src_path)
@@ -150,28 +152,28 @@ class LogFileEventHandler(FileSystemEventHandler):
 
             file_path = log_file
             if file_path not in self.flume_handlers:
-                # 创建FlumeHandler并启动Flume进程
+                # Create FlumeHandler and start flume process
                 flume_handler = FlumeHandler(file_name, relative_path, log_file)
                 flume_handler.start_flume()
                 self.flume_handlers[file_path] = flume_handler
             flume_handler = self.flume_handlers[file_path]
             if not flume_handler.is_processing:
-                # 如果文件不在处理中，更新文件状态为已更新
+                # If file is not being processed, update file status to updated
                 flume_handler.update_status(True)
                 flume_handler.stop_timer()
             else:
-                # 如果文件在处理中，忽略此次创建事件
+                # If the file is being processed, ignore this creation event.
                 return
 
-            # 启动定时器，设置文件不再更新的时间间隔为180秒
+            # Start timer and set time interval for file to stop updating as 180 seconds
             flume_handler.start_timer(180)
 
 
 if __name__ == "__main__":
-    # 设置工作目录
+    # Set working directory
     working_directory = "/opt/ds2hdfs/"
     os.chdir(working_directory)
-    # 监听的根目录
+    # Watch the root path of log
     directory_to_watch = "/opt/soft/dolphinscheduler/logs/"
     event_handler = LogFileEventHandler(directory_to_watch)
     observer = Observer()
