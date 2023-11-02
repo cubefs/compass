@@ -202,7 +202,7 @@ public class InitService implements CommandLineRunner {
                         depQuery = StringUtil.replaceParams(depQuery, data);
                         Map<String, Object> result = null;
                         try {
-                            result = jdbcTemplate.queryForMap(depQuery);
+                            result = sourceJdbcTemplate.queryForMap(depQuery);
                         } catch (Exception e) {
                             log.error("failed to execute dep query: {},{}", depQuery, e.getMessage());
                         }
