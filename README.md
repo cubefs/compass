@@ -27,6 +27,20 @@ runs with heuristic rules to identify problem and offers tuning advice.
 - [ ] Oozie
 - [ ] Other(Any suggestions are welcomed, high valued)...
 
+###  Documents
+
+[Deployment document](document/manual/deployment.md)
+
+[Architecture document](document/manual/architecture.md)
+
+### Community
+Welcome to join the community for the usage or development of Compass.
+- Submit an [issue](https://github.com/cubefs/compass/issues).
+- Submit a pull request, please read the [contributing guideline](https://github.com/cubefs/compass/blob/main/CONTRIBUTING.md),
+- Discuss [idea & question](https://github.com/cubefs/compass/discussions)
+
+Usually We will reply it quickly.
+
 ### Categories of Diagnosis
 
 |   Category  |     Scope   |  Dimension |   Description      |
@@ -67,20 +81,6 @@ runs with heuristic rules to identify problem and offers tuning advice.
 |High delay|Flink|Runtime Analysis|There is high delay in a flink job|
 
 
-###  Documents
-
-[Deployment document](document/manual/deployment.md)
-
-[Architecture document](document/manual/architecture.md)
-
-### Community
-Welcome to join the community for the usage or development of Compass.
-- Submit an [issue](https://github.com/cubefs/compass/issues).
-- Submit a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/committing-changes-to-a-pull-request-branch-created-from-a-fork)
-- Discuss [idea & question](https://github.com/cubefs/compass/discussions)
-- Communicate in Chinese or English.
-
-We will response it as soon as possible.
 
 ### UI
 

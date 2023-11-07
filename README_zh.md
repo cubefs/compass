@@ -13,6 +13,20 @@
 - 支持引擎层异常诊断，包含数据倾斜、大表扫描、内存浪费等14种异常类型。
 - 支持各种日志匹配规则编写和异常阈值调整，可自行根据实际场景优化。
 
+## 文档
+
+[部署指南](document/manual/deployment_zh.md)
+
+[架构文档](document/manual/architecture.md)
+
+## 社区
+
+欢迎加入社区咨询使用或成为 Compass 开发者。以下是获得帮助的方法：
+
+- 提交 [issue](https://github.com/cubefs/compass/issues).
+- 提交 pull request, 请阅读 [contributing guideline](https://github.com/cubefs/compass/blob/main/CONTRIBUTING.md),
+- 讨论 [Idea & Question](https://github.com/cubefs/compass/discussions).
+
 罗盘已支持诊断类型概览：
 
 <table>
@@ -191,21 +205,6 @@
         <td>检测作业的kafka延迟是否高于阈值</td>
     </tr>
 </table>
-
-
-## 文档
-
-[部署指南](document/manual/deployment_zh.md)
-
-[架构文档](document/manual/architecture.md)
-
-## 社区
-
-欢迎加入社区咨询使用或成为 Compass 开发者。以下是获得帮助的方法：
-
-- 提交 [issue](https://github.com/cubefs/compass/issues).
-- 讨论 [Idea & Question](https://github.com/cubefs/compass/discussions).
-- 可以使用中文或者英文交流
 
 ## UI
 
