@@ -17,9 +17,10 @@ COPY compass-v1.1.2.tar.gz /opt
 RUN tar -xzf /opt/compass-*.tar.gz -C /opt && \
     rm /opt/compass-*.tar.gz && \
     ln -s /opt/compass-* /opt/compass && \
-    rm /opt/compass/bin/ompass_env.sh
+    rm /opt/compass/bin/compass_env.sh
 
 COPY conf/compass_env.sh /opt/compass/bin
 
 
-ENTRYPOINT ["/opt/compass/bin/start_all.sh", "run"]
+# ENTRYPOINT ["/opt/compass/bin/start_all.sh"]
+CMD /opt/compass/bin/start_all.sh && /bin/bash

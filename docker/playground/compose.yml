@@ -173,8 +173,10 @@ services:
     build:
       context: ./
       dockerfile: dockerfiles/compass.Dockerfile
-    profiles: ["compass"]
+    ports:
+      - "7075:7075"
     tty: true
+    profiles: ["compass"]
     depends_on:
       - postgres
       - zookeeper

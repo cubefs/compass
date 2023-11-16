@@ -17,7 +17,7 @@ Included components:
 Build compass distribution and copy it to docker/playground:
 
 ```
-mvn package -DskipTests -Pdist
+mvn clean package -DskipTests -Pdist
 
 cp dist/compass-v1.1.2.tar.gz docker/playground
 ```
@@ -40,3 +40,5 @@ docker compose --profile dolphinscheduler up -d
 ## Start compass
 docker compose --profile compass up -d
 ```
+
+Web UI : http://127.0.0.1:7075/compass
