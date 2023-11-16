@@ -19,9 +19,14 @@ cp /${HOME_DIR}/conf/application-hadoop.yml ${HOME_DIR}/task-metadata/conf
 cp /${HOME_DIR}/conf/application-hadoop.yml ${HOME_DIR}/task-parser/conf
 cp /${HOME_DIR}/conf/application-hadoop.yml ${HOME_DIR}/task-flink/conf
 
+TASK_CANAL_ENABLE=False
+TASK_CANAL_ENABLE=${TASK_CANAL_ENABLE:-"True"}
+
 start() {
   for dir in ${HOME_DIR}/task-*; do
-    if [ -d $dir ]; then
+    if [ "$TASK_CANAL_ENABLE" != "True" ] && [[ "$dir" == *task-canal* ]]; then
+      echo "Skip $dir"
+    elif [ -d $dir ]; then
       cd $dir
       echo $dir
       bash bin/startup.sh
