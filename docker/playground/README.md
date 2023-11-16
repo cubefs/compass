@@ -25,6 +25,8 @@ cp dist/compass-v1.1.2.tar.gz docker/playground
 Create and start all containers:
 
 ```
+cd docker/playground
+
 ## Start dependent components
 docker compose up -d
 
