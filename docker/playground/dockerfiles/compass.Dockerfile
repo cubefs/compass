@@ -11,6 +11,8 @@ RUN set -x && \
 
 ENV PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/busybox
 
+ENV TASK_CANAL_ENABLE="False"
+
 COPY compass-v1.1.2.tar.gz /opt
 
 # compass

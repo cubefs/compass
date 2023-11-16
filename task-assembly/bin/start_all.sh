@@ -19,7 +19,6 @@ cp /${HOME_DIR}/conf/application-hadoop.yml ${HOME_DIR}/task-metadata/conf
 cp /${HOME_DIR}/conf/application-hadoop.yml ${HOME_DIR}/task-parser/conf
 cp /${HOME_DIR}/conf/application-hadoop.yml ${HOME_DIR}/task-flink/conf
 
-TASK_CANAL_ENABLE=False
 TASK_CANAL_ENABLE=${TASK_CANAL_ENABLE:-"True"}
 
 start() {
