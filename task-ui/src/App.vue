@@ -1,11 +1,13 @@
 <script setup lang="ts">
 // elementplus中文包
-import zhCn from 'element-plus/lib/locale/lang/zh-cn'
+import zh_CN from 'element-plus/lib/locale/lang/zh-cn'
+import en_US from 'element-plus/lib/locale/lang/en'
 import Default from '~/layouts/default.vue'
+import { useLocaleStore } from '~/store/locale.ts'
 useHead({
-  title: '罗盘',
+  title: 'Compass',
 })
-const locale = $ref(zhCn)
+const localeStore = useLocaleStore()
 
 onMounted(() => {
   document.body.style.setProperty('--el-color-primary', '#00bfbf')
@@ -15,7 +17,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <el-config-provider :locale="locale">
+  <el-config-provider :locale="localeStore.locale === 'zh_CN' ? zh_CN : en_US" :key="localeStore.locale">
     <Default style="font-family: auto;" />
   </el-config-provider>
 </template>

@@ -10,12 +10,13 @@ const props = defineProps({
     default: '',
   },
 })
+const { t } = useI18n()
 const emit = defineEmits(['tabChange'])
 const activeName: string = $ref('memory')
 const tabList = [
-  { label: '内存趋势', name: 'memory' },
-  { label: 'CPU趋势', name: 'cpu' },
-  { label: '数量趋势', name: 'num' },
+  { label: t('common.memoryTrend'), name: 'memory' },
+  { label: t('common.cpuTrend'), name: 'cpu' },
+  { label: t('common.numTrend'), name: 'num' },
 ]
 const option = {
   xAxis: {
@@ -61,7 +62,7 @@ watch(
     const xData = props.data.map(item => item.date.slice(0, 10))
     const yData = props.data.map(item => item.count)
     option.xAxis.data = xData
-    option.yAxis.name = props.unit ? `单位（${props.unit}）` : ''
+    option.yAxis.name = props.unit ? `${t('common.unit')} (${props.unit})` : ''
     option.series[0].data = yData
     option.series[0].name = tabList.find(item => item.name === activeName)?.label
     chart.setOption(option)

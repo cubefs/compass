@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import * as echarts from 'echarts'
+const { t } = useI18n()
 const props = defineProps({
   data: {
     type: Object,
@@ -27,7 +28,7 @@ const option = {
   },
   yAxis: {
     type: 'category',
-    data: ['executor资源', 'driver资源'],
+    data: [t('application.executorResource'), t('application.driverResource')],
   },
   barMaxWidth: 30,
   series: [],

@@ -40,7 +40,7 @@ const props = defineProps({
     </div> -->
     <div v-if="conclusion && conclusion.conclusion" class="item-footer">
       <div class="item-footer-title">
-        分析结论：
+        {{ $t('application.conclusion') }}：
         <el-tooltip placement="top">
           <template  #content>
             <div v-html="conclusion.conclusionDesc"></div>

@@ -54,12 +54,12 @@ watch(
     option.xAxis.data = props.data.jobUsage.map(item => item.date)
     option.series = [
       {
-        name: '任务CPU消耗数',
+        name: '',
         type: 'line',
         data: props.data.jobUsage.map(item => item.count),
       },
       {
-        name: '总CPU消耗数',
+        name: '',
         type: 'line',
         data: props.data.totalUsage.map(item => item.count),
       },

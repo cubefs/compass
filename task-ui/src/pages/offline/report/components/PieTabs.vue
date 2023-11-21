@@ -8,6 +8,7 @@ const props = defineProps({
     default: '',
   },
 })
+const { t } = useI18n()
 const circleTab: string = $ref('first')
 let firstChart = $ref({})
 let secondChart = $ref({})
@@ -124,15 +125,15 @@ onBeforeUnmount(() => {
         v-model="time"
         type="daterange"
         range-separator="-"
-        start-placeholder="开始时间"
-        end-placeholder="结束时间"
+        :start-placeholder="t('common.startPlaceholder')"
+        :end-placeholder="t('common.endPlaceholder')"
         value-format="x"
         @change="getPieChart"
       />
       <div style="width:8%" />
     </div>
-    <el-tab-pane label="资源分布" name="first" />
-    <el-tab-pane label="数量分布" name="second" />
+    <el-tab-pane :label="$t('report.resourceTrend')" name="first" />
+    <el-tab-pane :label="$t('report.amountTrend')" name="second" />
     <div flex="~">
       <div id="chart3" style="height:250px;width:50%" />
       <div v-show="circleTab === 'first'" id="chart4" style="height:250px;width:50%" />

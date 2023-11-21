@@ -10,12 +10,13 @@ const props = defineProps({
     default: '',
   },
 })
+const { t } = useI18n()
 const emit = defineEmits(['tabChange'])
 const activeName: string = $ref('memory')
 const tabList = [
-  { label: '内存趋势', name: 'memory' },
-  { label: 'CPU趋势', name: 'cpu' },
-  { label: '数量趋势', name: 'num' },
+  { label: t('common.memoryTrend'), name: 'memory' },
+  { label: t('common.cpuTrend'), name: 'cpu' },
+  { label: t('common.numTrend'), name: 'num' },
 ]
 const option = {
   xAxis: {
@@ -40,7 +41,7 @@ const option = {
   legend: {},
   series: [
     {
-      name: '可优化量',
+      name: t('scheduler.optimized'),
       data: [],
       type: 'bar',
       itemStyle: {
@@ -50,7 +51,7 @@ const option = {
       },
     },
     {
-      name: '总使用量',
+      name: t('scheduler.usage'),
       data: [],
       type: 'bar',
       itemStyle: {

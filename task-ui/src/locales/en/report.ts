@@ -1,0 +1,27 @@
+export default {
+    project: 'Project',
+    latestPeriod: 'Latest period',
+    refresh: 'Refresh',
+    abnormalJobNum: 'abnormalJobNum',
+    jobNum: 'jobNum',
+    abnormalJobInstanceNum: 'abnormalJobInstanceNum',
+    jobInstanceNum: 'jobInstanceNum',
+    abnormalJobCpuNum: 'abnormalJobCpuNum',
+    jobCpuNum: 'jobCpuNum',
+    abnormalJobMemoryNum: 'abnormalJobMemoryNum',
+    jobMemoryNum: 'jobMemoryNum',
+    ratio: 'ratio',
+    chainRatio: 'chainRatio',
+    dayOnDay: 'dayOnDay',
+    resourceTrend: 'Resource Trend',
+    amountTrend: 'Amount Trend',
+    // flink
+    exceptionTaskCntSum: 'exceptionTaskCntSum',
+    baseTaskCntSum: 'baseTaskCntSum',
+    resourceTaskCntSum: 'resourceTaskCntSum',
+    cutCoreNumSum: 'cutCoreNumSum',
+    totalCoreNumSum: 'totalCoreNumSum',
+    cutMemNumSum: 'cutMemNumSum',
+    totalMemNumSum: 'totalMemNumSum',
+
+}

@@ -13,67 +13,67 @@ const props = defineProps({
 <template>
   <div>
     <div class="item-title">
-      基本信息
+      {{ $t('application.basicInfo') }}
     </div>
     <div style="border-left: 1px solid #d7d7d7; border-right: 1px solid #d7d7d7;">
       <div class="text-group">
-        <span class="text">applicationID: &nbsp;{{ info?.applicationId || '-' }}</span>
-        <span class="text">任务流: &nbsp;{{ info?.flowName || '-' }}</span>
-        <span class="text">实例: &nbsp;{{ info?.taskName || '-' }}</span>
+        <span class="text">{{ $t('common.applicationId') }}: &nbsp;{{ info?.applicationId || '-' }}</span>
+        <span class="text">{{ $t('common.flowName') }}: &nbsp;{{ info?.flowName || '-' }}</span>
+        <span class="text">{{ $t('common.taskName') }}: &nbsp;{{ info?.taskName || '-' }}</span>
       </div>
       <div class="text-group">
-        <span class="text">运行耗时: &nbsp;{{ info?.duration || '-' }}</span>
-        <span class="text">{{ `内存消耗: &nbsp;${info?.memCost}` || '-' }}</span>
-        <span class="text">{{ `CPU消耗: &nbsp;${info?.resourceCost}` || '-' }}</span>
+        <span class="text">{{ $t('common.duration') }}: &nbsp;{{ info?.duration || '-' }}</span>
+        <span class="text">{{ $t('common.memCost') }}: &nbsp;{{ info?.memCost || '-' }}</span>
+        <span class="text">{{ $t('common.resourceCost') }}: &nbsp;{{ info?.resourceCost || '-' }}</span>
       </div>
       <div class="text-group">
-        <span class="text">作业名: &nbsp;{{ info?.jobName || '-' }}</span>
+        <span class="text">{{ $t('common.jobName') }}: &nbsp;{{ info?.jobName || '-' }}</span>
       </div>
     </div>
     <div class="item-title">
-      集群信息
+      {{ $t('application.clusterInfo') }}
     </div>
     <div style="border-left: 1px solid #d7d7d7; border-right: 1px solid #d7d7d7;">
       <div class="text-group">
-        <span class="text">集群名称: &nbsp;{{ info?.clusterName || '-' }}</span>
-        <span class="text">执行队列: &nbsp;{{ info?.queue || '-' }}</span>
-        <span class="text">执行用户: &nbsp;{{ info?.username || '-' }}</span>
+        <span class="text">{{ $t('application.clusterName') }}: &nbsp;{{ info?.clusterName || '-' }}</span>
+        <span class="text">{{ $t('application.queue') }}: &nbsp;{{ info?.queue || '-' }}</span>
+        <span class="text">{{ $t('application.user') }}: &nbsp;{{ info?.username || '-' }}</span>
       </div>
     </div>
     <div class="item-title">
-      运行参数
+      {{ $t('application.environment') }}
     </div>
     <div style="border: 1px solid #d7d7d7; border-top: none;">
       <div class="text-group">
-        <span class="text">并行度: &nbsp;{{ info?.parallel || '-' }}</span>
+        <span class="text">{{ $t('application.parallel') }}: &nbsp;{{ info?.parallel || '-' }}</span>
         <span class="text">Tm Slot: &nbsp;{{ info?.tmSlot || '-' }}</span>
         <span class="text">Tm Core: &nbsp;{{ info?.tmCore || '-' }}</span>
       </div>
       <div class="text-group">
         <span class="text">Tm Memory: &nbsp;{{ info?.tmMem || '-' }}</span>
         <span class="text">Jm Memory: &nbsp;{{ info?.jmMem || '-' }}</span>
-        <span class="text">Tm 个数: &nbsp;{{ info?.tmNum || '-' }}</span>
+        <span class="text">{{ $t('application.tmNum') }}: &nbsp;{{ info?.tmNum || '-' }}</span>
       </div>
     </div>
     <div class="item-title">
-      诊断参数
+      {{ $t('application.diagnosisParameters') }}
     </div>
     <div style="border: 1px solid #d7d7d7; border-top: none;">
       <div class="text-group">
-        <span class="text">诊断开始时间: &nbsp;{{ info?.diagnosisStartTime || '-' }}</span>
-        <span class="text">诊断结束时间: &nbsp;{{ info?.diagnosisEndTime || '-' }}</span>
-        <span class="text">建议并行度: &nbsp;{{ info?.diagnosisParallel || '-' }}</span>
+        <span class="text">{{ $t('application.diagnosisStartTime') }}: &nbsp;{{ info?.diagnosisStartTime || '-' }}</span>
+        <span class="text">{{ $t('application.diagnosisEndTime') }}: &nbsp;{{ info?.diagnosisEndTime || '-' }}</span>
+        <span class="text">{{ $t('application.diagnosisParallel') }}: &nbsp;{{ info?.diagnosisParallel || '-' }}</span>
       </div>
       <div class="text-group">
-        <span class="text">建议Tm Mem: &nbsp;{{ info?.diagnosisTmMemory+'MB' || '-' }}</span>
-        <span class="text">建议Tm Slot: &nbsp;{{ info?.diagnosisTmSlotNum || '-' }}</span>
-        <span class="text">建议Tm Core: &nbsp;{{ info?.diagnosisTmCoreNum || '-' }}</span>
+        <span class="text">{{ $t('application.diagnosisTmMemory') }}: &nbsp;{{ info?.diagnosisTmMemory+'MB' || '-' }}</span>
+        <span class="text">{{ $t('application.diagnosisTmSlotNum') }}: &nbsp;{{ info?.diagnosisTmSlotNum || '-' }}</span>
+        <span class="text">{{ $t('application.diagnosisTmCoreNum') }}: &nbsp;{{ info?.diagnosisTmCoreNum || '-' }}</span>
       </div>
       <div class="text-group">
-        <span class="text">建议Jm Mem: &nbsp;{{ info?.diagnosisJmMemory+'MB' || '-' }}</span>
+        <span class="text">{{ $t('application.diagnosisJmMemory') }}: &nbsp;{{ info?.diagnosisJmMemory+'MB' || '-' }}</span>
       </div>
       <div class="item-title">
-        资源建议
+        {{ $t('application.resourceAdvice') }}
       </div>
       <div class="text-group">
         <span class="text">{{ info?.resourceAdvice || '-' }}</span>

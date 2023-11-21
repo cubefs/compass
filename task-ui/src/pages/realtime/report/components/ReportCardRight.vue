@@ -22,7 +22,7 @@ const props = defineProps({
 <template>
   <div class="report-card-right">
     <div class="right-first">
-      占比
+      {{ $t('report.ratio') }}
     </div>
     <div class="right-second">
       {{ (ratio * 100).toFixed(2) }}%
@@ -33,7 +33,7 @@ const props = defineProps({
           {{ chainRatio >= 0 ? '↑' : '↓' }}&nbsp;{{ (chainRatio * 100).toFixed(2) }}%
         </div>
         <div style="color:#7f7f7f">
-          环比
+          {{ $t('report.chainRatio') }}
         </div>
       </div>
       <div flex="~" flex-col items-center p-l-3>
@@ -41,7 +41,7 @@ const props = defineProps({
           {{ dayOnDay >= 0 ? '↑' : '↓' }}&nbsp;{{ (dayOnDay * 100).toFixed(2) }}%
         </div>
         <div style="color:#7f7f7f">
-          同比
+          {{ $t('report.dayOnDay') }}
         </div>
       </div>
     </div>

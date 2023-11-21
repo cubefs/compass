@@ -12,22 +12,23 @@ const props = defineProps({
     default: () => [],
   },
 })
+const { t } = useI18n()
 const emit = defineEmits(['search'])
 const router = useRouter()
 const tableInfo = $ref([
-  { label: '工作流', prop: 'flowName', copy: true },
-  { label: '实例', prop: 'taskName', copy: true },
-  { label: '项目', prop: 'projectName' , copy: true},
-  { label: '作业名', prop: 'jobName', copy: true },
+  { label: t('common.flowName'), prop: 'flowName', copy: true },
+  { label: t('common.taskName'), prop: 'taskName', copy: true },
+  { label: t('common.projectName'), prop: 'projectName' , copy: true},
+  { label: t('common.jobName'), prop: 'jobName', copy: true },
   // { label: '执行周期', prop: 'executionDate', width: 200 },
-  { label: '运行开始时间', prop: 'startTime' },
-  { label: '时间消耗', prop: 'timeCost' },
-  { label: '资源消耗', prop: 'resourceCost' },
+  { label: t('common.startTime'), prop: 'startTime' },
+  { label: t('common.timeCost'), prop: 'timeCost' },
+  { label: t('common.resourceCost'), prop: 'resourceCost' },
 //  { label: '处理状态', prop: 'taskStatus' },
-  { label: '创建人', prop: 'username' },
-  { label: '诊断开始时间', prop: 'diagnosisStartTime' },
-  { label: '诊断结束时间', prop: 'diagnosisEndTime' },
-  { label: '诊断建议', prop: 'resourceAdvice' ,width:'100px'},
+  { label: t('common.creator'), prop: 'username' },
+  { label: t('common.diagnosisStartTime'), prop: 'diagnosisStartTime' },
+  { label: t('common.diagnosisEndTime'), prop: 'diagnosisEndTime' },
+  { label: t('common.resourceAdvice'), prop: 'resourceAdvice' ,width:'100px'},
 ])
 const findColor = (value: String) => {
   const result = props.colorMap.find(item => item.name === value)
@@ -40,7 +41,7 @@ const addWhite = async (row) => {
     taskName: row.taskName,
     component: 'realtime',
   })
-  ElMessage.success('添加成功')
+  ElMessage.success(t('diagnosis.addSuccess'))
 }
 const handleState = async (row) => {
   if (row.processState === 'processed')
@@ -54,7 +55,7 @@ const handleState = async (row) => {
     row.processState = null
     return
   }
-  ElMessage.success('设置成功')
+  ElMessage.success(t('common.success'))
   emit('search')
 }
 const goReport = (row) => {
@@ -95,7 +96,7 @@ const goReport = (row) => {
         <template #default="scope">
           <div class="bottom-bar">
             <div>
-              <span>诊断类型：</span>
+              <span>{{ $t('common.diagnosisType') }}：</span>
               <span v-for="item in scope.row.ruleNames" :key="item" class="category-card" :title="item"
                 :style="{ 'border-left': `3px solid ${findColor(item)}` }">
                 {{ item }}
@@ -103,10 +104,10 @@ const goReport = (row) => {
             </div>
             <div>
               <el-button type="primary" text @click="addWhite(scope.row)">
-                添加白名单
+                {{ $t('common.addBlocklist') }}
               </el-button>
               <el-button type="primary" text @click="goReport(scope.row)">
-                查看详情
+                {{ $t('common.viewDetails') }}
               </el-button>
             </div>
           </div>

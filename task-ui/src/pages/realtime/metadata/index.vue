@@ -4,6 +4,7 @@ import Table from './components/Table.vue'
 import PageBar from './components/PageBar.vue'
 import { get, post } from '~/utils/request'
 import { cloudTheme } from '~/utils/setting'
+const { t } = useI18n()
 const formInline: any = $ref({
   projectName: '',
   flowName: '',
@@ -14,11 +15,11 @@ const formInline: any = $ref({
   time: [],
 })
 const searchInfo = $ref([
-  { label: '项目：', value: 'projectName' },
-  { label: '工作流：', value: 'flowName' },
-  { label: '实例：', value: 'taskName' },
-  { label: '作业名：', value: 'jobName' },
-  { label: '创建人：', value: 'username' },
+  { label: t('common.projectName')+'：', value: 'projectName' },
+  { label: t('common.flowName')+'：', value: 'flowName' },
+  { label: t('common.taskName')+'：', value: 'taskName' },
+  { label: t('common.jobName')+'：', value: 'jobName' },
+  { label: t('common.creator')+'：', value: 'username' },
 ])
 const tableData = $ref({
   data: [],
@@ -83,9 +84,9 @@ onMounted(() => {
       <el-form-item v-for="item in searchInfo" :key="item.value" :label="item.label">
         <el-input v-model="formInline[item.value]" @keyup.enter="search" />
       </el-form-item>
-      <el-form-item label="作业状态">
+      <el-form-item :label="t('common.taskState')">
         <el-select v-model="formInline.taskState" @change="search">
-          <el-option label="全部" value=""></el-option>
+          <el-option :label="t('common.all')" value=""></el-option>
           <el-option label="RUNNING" value="RUNNING"></el-option>
           <el-option label="FINISHED" value="FINISHED"></el-option>
         </el-select>
