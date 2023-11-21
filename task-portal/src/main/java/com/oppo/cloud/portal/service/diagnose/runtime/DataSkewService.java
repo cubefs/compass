@@ -28,6 +28,7 @@ import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.DataSkew;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import org.springframework.stereotype.Service;
 
@@ -63,10 +64,13 @@ public class DataSkewService extends RunTimeBaseService<DataSkew> {
         // Stage chart
         Chart<MetricInfo> chartSummary = new Chart<>();
         buildSummaryChartInfo(chartSummary);
-        chartSummary.setDes("Stage中任务Shuffle Read Records最大值与中位值比值的分布图");
+        chartSummary.setDes(MessageSourceUtil.get("DATA_SKEW_CHART_DESC"));
         List<MetricInfo> metricSummaryList = chartSummary.getDataList();
         List<String> info = new ArrayList<>();
         for (DataSkewAbnormal dataSkewTask : dataSkewAbnormalList) {
+            if (dataSkewTask.getRatio() == null) {
+                continue;
+            }
             MetricInfo metricSummary = new MetricInfo();
             metricSummary.setXValue(String.valueOf(dataSkewTask.getStageId()));
             List<ValueInfo> ySummaryValues = metricSummary.getYValues();
@@ -91,23 +95,12 @@ public class DataSkewService extends RunTimeBaseService<DataSkew> {
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("数据倾斜诊断规则如下: <br/> " +
-                "&nbsp;  1、任务总耗时>30min<br/>" +
-                "&nbsp;  2、stage耗时/任务总耗时>45%%<br/>" +
-                "&nbsp;  3、shuffle read的数据量满足一下条件之一：<br> " +
-                "&nbsp;&nbsp;    a、当5万<中位值<=10万，且最大值/中位值>=100 <br>" +
-                "&nbsp;&nbsp;    b、当10万<中位值<100万,且最大值/中位值>=50<br/>" +
-                "&nbsp;&nbsp;    c、当100万<中位值<500万, 且最大值/中位值>=10<br/>" +
-                "&nbsp;&nbsp;    d、当500万<中位值<2000万, 且最大值/中位值>=5<br/>" +
-                "&nbsp;&nbsp;    e、当2000万<中位值<3000万, 且最大值/中位值>=3.5<br/>" +
-                "&nbsp;&nbsp;    f、当3000万<中位值<4000万, 且最大值/中位值>=3<br/>" +
-                "&nbsp;&nbsp;    g、当4000万<中位值<5000万, 且最大值/中位值>=2.25<br/>" +
-                "&nbsp;&nbsp;    h、当5000万<中位值, 且最大值/中位值>=2<br/>");
+        return String.format(MessageSourceUtil.get("DATA_SKEW_CONCLUSION_DESC"));
     }
 
     @Override
     public String generateItemDesc() {
-        return "数据倾斜分析";
+        return MessageSourceUtil.get("DATA_SKEW_ANALYSIS");
     }
 
     @Override
@@ -123,9 +116,9 @@ public class DataSkewService extends RunTimeBaseService<DataSkew> {
         chart.setY("shuffle_read");
         chart.setUnit("");
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("max", new Chart.ChartInfo("最大值", UIUtil.ABNORMAL_COLOR));
-        dataCategory.put("median", new Chart.ChartInfo("中位值", UIUtil.KEY_COLOR));
-        dataCategory.put("normal", new Chart.ChartInfo("正常值", UIUtil.NORMAL_COLOR));
+        dataCategory.put("max", new Chart.ChartInfo(MessageSourceUtil.get("DATA_SKEW_CHART_MAX"), UIUtil.ABNORMAL_COLOR));
+        dataCategory.put("median", new Chart.ChartInfo(MessageSourceUtil.get("DATA_SKEW_CHART_MEDIAN"), UIUtil.KEY_COLOR));
+        dataCategory.put("normal", new Chart.ChartInfo(MessageSourceUtil.get("DATA_SKEW_CHART_NORMAL"), UIUtil.NORMAL_COLOR));
         chart.setDataCategory(dataCategory);
     }
 
@@ -136,8 +129,7 @@ public class DataSkewService extends RunTimeBaseService<DataSkew> {
         Chart<MetricInfo> chart = new Chart<>();
         buildChartInfo(chart);
 
-        chart.setDes(String.format("Stage[%s]Reduce任务Shuffle Read Records",
-                dataSkewTask.getStageId()));
+        chart.setDes(String.format(MessageSourceUtil.get("DATA_SKEW_CHART_STAGE_DESC"), dataSkewTask.getStageId()));
         List<MetricInfo> metricInfoList = chart.getDataList();
         double max = 0.0;
         double median = 0.0;
@@ -160,8 +152,7 @@ public class DataSkewService extends RunTimeBaseService<DataSkew> {
                 median = value;
             }
         }
-        info.add(String.format(
-                "job[<span style=\"color: #e24a4a;\">%s</span>].stage[<span style=\"color: #e24a4a;\">%s</span>].task[<span style=\"color: #e24a4a;\">%s</span>]shuffle read的数据量为<span style=\"color: #e24a4a;\">%s</span> 中位值为%s",
+        info.add(String.format(MessageSourceUtil.get("DATA_SKEW_CONCLUSION_INFO"),
                 dataSkewTask.getJobId(), dataSkewTask.getStageId(),
                 taskId, UnitUtil.transferRows(max), UnitUtil.transferRows(median)));
         return chart;
@@ -175,8 +166,8 @@ public class DataSkewService extends RunTimeBaseService<DataSkew> {
         chart.setY("max/median");
         chart.setUnit("");
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("normal", new Chart.ChartInfo("数据正常Stage", UIUtil.NORMAL_COLOR));
-        dataCategory.put("abnormal", new Chart.ChartInfo("数据倾斜Stage", UIUtil.ABNORMAL_COLOR));
+        dataCategory.put("normal", new Chart.ChartInfo(MessageSourceUtil.get("DATA_SKEW_CHART_INFO_NORMAL"), UIUtil.NORMAL_COLOR));
+        dataCategory.put("abnormal", new Chart.ChartInfo(MessageSourceUtil.get("DATA_SKEW_CHART_INFO_ABNORMAL"), UIUtil.ABNORMAL_COLOR));
         chart.setDataCategory(dataCategory);
     }
 }

@@ -16,87 +16,88 @@
 
 package com.oppo.cloud.common.constant;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import org.springframework.context.i18n.LocaleContextHolder;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public enum AppCategoryEnum {
 
     // sql failed（syntax, field, permission, environment, etc）
-    SQL_FAILED("sqlFailed", "sql失败", "runError"),
+    SQL_FAILED("sqlFailed", "sql失败", "runError", "sqlFailed"),
 
     // shuffle failed
-    SHUFFLE_FAILED("shuffleFailed", "shuffle失败", "runError"),
+    SHUFFLE_FAILED("shuffleFailed", "shuffle失败", "runError", "shuffleFailed"),
 
     // memory overflow
-    MEMORY_OVERFLOW("memoryOverflow", "内存溢出", "runError"),
+    MEMORY_OVERFLOW("memoryOverflow", "内存溢出", "runError", "memoryOverflow"),
 
     // memory waste
-    MEMORY_WASTE("memoryWaste", "内存浪费", "resourceUsage"),
+    MEMORY_WASTE("memoryWaste", "内存浪费", "resourceUsage", "memoryWaste"),
 
     // CPU waste
-    CPU_WASTE("cpuWaste", "CPU浪费", "resourceUsage"),
+    CPU_WASTE("cpuWaste", "CPU浪费", "resourceUsage", "cpuWaste"),
 
     // large table scan
-    LARGE_TABLE_SCAN("largeTableScan", "大表扫描", "runPerformance"),
+    LARGE_TABLE_SCAN("largeTableScan", "大表扫描", "runPerformance", "largeTableScan"),
 
     // oom warning
-    OOMWarn("oomWarn", "OOM预警", "runPerformance"),
+    OOMWarn("oomWarn", "OOM预警", "runPerformance", "oomWarn"),
 
     // data skew
-    DATA_SKEW("dataSkew", "数据倾斜", "runPerformance"),
+    DATA_SKEW("dataSkew", "数据倾斜", "runPerformance", "dataSkew"),
 
     // Job duration abnormal
-    JOB_DURATION("jobDurationAbnormal", "Job耗时异常", "runPerformance"),
+    JOB_DURATION("jobDurationAbnormal", "Job耗时异常", "runPerformance", "jobDurationAbnormal"),
 
     // Stage duration abnormal
-    STAGE_DURATION("stageDurationAbnormal", "Stage耗时异常", "runPerformance"),
+    STAGE_DURATION("stageDurationAbnormal", "Stage耗时异常", "runPerformance", "stageDurationAbnormal"),
 
     // Task duration abnormal
-    TASK_DURATION("taskDurationAbnormal", "Task长尾", "runPerformance"),
+    TASK_DURATION("taskDurationAbnormal", "Task长尾", "runPerformance", "taskDurationAbnormal"),
 
     // Hdfs stuck
-    HDFS_STUCK("hdfsStuck", "HDFS卡顿", "runPerformance"),
+    HDFS_STUCK("hdfsStuck", "HDFS卡顿", "runPerformance", "hdfsStuck"),
 
     // Speculative task is too many
-    SPECULATIVE_TASK("speculativeTask", "推测执行Task过多", "runPerformance"),
+    SPECULATIVE_TASK("speculativeTask", "推测执行Task过多", "runPerformance", "speculativeTask"),
 
     // global sorting exception
-    GLOBAL_SORT("globalSortAbnormal", "全局排序异常", "runPerformance"),
+    GLOBAL_SORT("globalSortAbnormal", "全局排序异常", "runPerformance", "globalSortAbnormal"),
 
     // MapReduce memory waste
-    MR_MEMORY_WASTE("mrMemoryWaste", "MR内存浪费", "resourceUsage"),
+    MR_MEMORY_WASTE("mrMemoryWaste", "MR内存浪费", "resourceUsage", "mrMemoryWaste"),
 
     // MapReduce large table scan
-    MR_LARGE_TABLE_SCAN("mrLargeTableScan", "MR大表扫描", "runPerformance"),
+    MR_LARGE_TABLE_SCAN("mrLargeTableScan", "MR大表扫描", "runPerformance", "mrLargeTableScan"),
 
     // MapReduce data skew
-    MR_DATA_SKEW("mrDataSkew", "MR数据倾斜", "runPerformance"),
+    MR_DATA_SKEW("mrDataSkew", "MR数据倾斜", "runPerformance", "mrDataSkew"),
 
     // MapReduce Task long tail
-    MR_TASK_DURATION("mrTaskDurationAbnormal", "MRTask长尾", "runPerformance"),
+    MR_TASK_DURATION("mrTaskDurationAbnormal", "MRTask长尾", "runPerformance", "mrTaskDurationAbnormal"),
 
     // MapReduce speculative task is too many
-    MR_SPECULATIVE_TASK("mrSpeculativeTask", "MR推测执行Task过多", "runPerformance"),
+    MR_SPECULATIVE_TASK("mrSpeculativeTask", "MR推测执行Task过多", "runPerformance", "mrSpeculativeTask"),
 
     // MapReduce GC exception
-    MR_GC_ABNORMAL("mrGCAbnormal", "MRGC异常", "runPerformance"),
+    MR_GC_ABNORMAL("mrGCAbnormal", "MRGC异常", "runPerformance", "mrGCAbnormal"),
 
     // other exception
-    OTHER_EXCEPTION("otherException", "其他异常", "runError");
+    OTHER_EXCEPTION("otherException", "其他异常", "runError", "otherException");
 
     private final String category;
-    private final String desc;
+    private final String zh;
     private final String classify;
+    private final String en;
 
     private static final Map<String, AppCategoryEnum> MAP;
 
-    AppCategoryEnum(String category, String desc, String classify) {
+    AppCategoryEnum(String category, String zh, String classify, String en) {
         this.category = category;
-        this.desc = desc;
+        this.zh = zh;
         this.classify = classify;
+        this.en = en;
     }
 
     static {
@@ -107,8 +108,8 @@ public enum AppCategoryEnum {
         MAP = Collections.unmodifiableMap(map);
     }
 
-    public String getDesc() {
-        return desc;
+    public String getZh() {
+        return zh;
     }
 
     public String getClassify() {
@@ -119,38 +120,27 @@ public enum AppCategoryEnum {
         return category;
     }
 
+    public String getEn() {
+        return en;
+    }
+
+
     /**
-     * Get the exception type of the app and get the Chinese list in the order of the enum
-     *
-     * @param categoryList
-     * @return
+     * Get the category name by language message
      */
-    public static List<String> getAppCategoryCh(List<String> categoryList) {
+    public static List<String> getCategoryByLangMsg(List<String> categoryList) {
         List<String> res = new ArrayList<>();
         if (categoryList == null) {
             return res;
         }
         for (AppCategoryEnum appCategory : AppCategoryEnum.values()) {
-            if (categoryList.contains(appCategory.getCategory())) {
-                res.add(appCategory.getDesc());
+            String languageMsg;
+            if (Locale.SIMPLIFIED_CHINESE.equals(LocaleContextHolder.getLocale())) {
+                languageMsg = appCategory.getZh();
+            } else {
+                languageMsg = appCategory.getEn();
             }
-        }
-        return res;
-    }
-
-    /**
-     * Get the exception type of the app and get the English list in the order of the enum.
-     *
-     * @param categoryChList
-     * @return
-     */
-    public static List<String> getAppCategoryEn(List<String> categoryChList) {
-        List<String> res = new ArrayList<>();
-        if (categoryChList == null) {
-            return res;
-        }
-        for (AppCategoryEnum appCategory : AppCategoryEnum.values()) {
-            if (categoryChList.contains(appCategory.getDesc())) {
+            if (categoryList.contains(languageMsg)) {
                 res.add(appCategory.getCategory());
             }
         }
@@ -158,37 +148,53 @@ public enum AppCategoryEnum {
     }
 
     /**
-     * Get the list of app exception types.
-     *
-     * @return
+     * Get language message by categories.
      */
-    public static List<String> getAllAppCategoryOfChina() {
+    public static List<String> getLangMsgByCategories(List<String> categoryList) {
         List<String> res = new ArrayList<>();
-        for (AppCategoryEnum appCategory : AppCategoryEnum.values()) {
-            res.add(appCategory.getDesc());
+        if (categoryList == null) {
+            return res;
+        }
+        for (String category : categoryList) {
+            if (!MAP.containsKey(category)) {
+                continue;
+            }
+            if (Locale.SIMPLIFIED_CHINESE.getLanguage().equals(LocaleContextHolder.getLocale().getLanguage())) {
+                res.add(MAP.get(category).getZh());
+            } else {
+                res.add(MAP.get(category).getEn());
+            }
         }
         return res;
     }
 
     /**
-     * Get the Chinese name of app exception types.
+     * Get the list of language message.
      */
-    @Deprecated
-    public static String getAppCategoryOfChina(String category) {
+    public static List<String> getAllLangMsg() {
+        List<String> res = new ArrayList<>();
         for (AppCategoryEnum appCategory : AppCategoryEnum.values()) {
-            if (appCategory.category.equals(category)) {
-                return appCategory.getDesc();
+            if (Locale.SIMPLIFIED_CHINESE.getLanguage().equals(LocaleContextHolder.getLocale().getLanguage())) {
+                res.add(appCategory.getZh());
+            } else {
+                res.add(appCategory.getEn());
             }
+
         }
-        return "";
+        return res;
     }
 
+
     /**
-     * Get the description of app exception types.
+     * Get the zh/en of app exception types.
      */
-    public static String getAppCategoryOfDesc(String category) {
+    public static String getAppCategory(String category) {
         if (MAP.containsKey(category)) {
-            return MAP.get(category).getDesc();
+            if (Locale.SIMPLIFIED_CHINESE.getLanguage().equals(LocaleContextHolder.getLocale().getLanguage())) {
+                return MAP.get(category).getZh();
+            } else {
+                return MAP.get(category).getEn();
+            }
         }
         return null;
     }

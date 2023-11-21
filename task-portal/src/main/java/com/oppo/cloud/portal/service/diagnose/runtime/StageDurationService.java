@@ -28,6 +28,7 @@ import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.StageDuration;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +59,7 @@ public class StageDurationService extends RunTimeBaseService<StageDuration> {
         List<Chart<MetricInfo>> chartList = stageDuration.getChartList();
         Chart<MetricInfo> chartSummary = new Chart<>();
         buildChart(chartSummary);
-        chartSummary.setDes(String.format("每个stage计算-空闲时间分布(%s)", chartSummary.getUnit()));
+        chartSummary.setDes(String.format(MessageSourceUtil.get("STAGE_DURATION_CHART_DESC"), chartSummary.getUnit()));
         List<MetricInfo> metricInfoList = chartSummary.getDataList();
         List<String> jobStageId = new ArrayList<>();
         List<String> values = new ArrayList<>();
@@ -81,7 +82,7 @@ public class StageDurationService extends RunTimeBaseService<StageDuration> {
             metricInfoList.add(metricInfo);
             if (stageDurationAbnormal.getAbnormal()) {
                 jobStageId.add(String.format("job[<span style=\"color: #e24a4a;\">%d</span>].stage[<span " +
-                        "style=\"color: #e24a4a;\">%d</span>]", stageDurationAbnormal.getJobId(),
+                                "style=\"color: #e24a4a;\">%d</span>]", stageDurationAbnormal.getJobId(),
                         stageDurationAbnormal.getStageId()));
                 values.add(String.format("%.2f%%", stageDurationAbnormal.getRatio()));
             }
@@ -95,13 +96,13 @@ public class StageDurationService extends RunTimeBaseService<StageDuration> {
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("Stage空闲时间 (stage运行时间-任务运行时间) 与stage运行时间的占比超过%s%%，即判定为Stage耗时异常",
+        return String.format(MessageSourceUtil.get("STAGE_DURATION_CONCLUSION_DESC"),
                 thresholdMap.getOrDefault("threshold", ""));
     }
 
     @Override
     public String generateItemDesc() {
-        return "Stage耗时异常分析";
+        return MessageSourceUtil.get("STAGE_DURATION_ANALYSIS");
     }
 
     @Override
@@ -114,8 +115,8 @@ public class StageDurationService extends RunTimeBaseService<StageDuration> {
         chart.setY("duration");
         chart.setUnit("s");
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("compute", new Chart.ChartInfo("stage计算时间", UIUtil.NORMAL_COLOR));
-        dataCategory.put("idle", new Chart.ChartInfo("stage空闲时间", UIUtil.PLAIN_COLOR));
+        dataCategory.put("compute", new Chart.ChartInfo(MessageSourceUtil.get("STAGE_DURATION_CHART_COMPUTE"), UIUtil.NORMAL_COLOR));
+        dataCategory.put("idle", new Chart.ChartInfo(MessageSourceUtil.get("STAGE_DURATION_CHART_IDLE"), UIUtil.PLAIN_COLOR));
         chart.setDataCategory(dataCategory);
     }
 }

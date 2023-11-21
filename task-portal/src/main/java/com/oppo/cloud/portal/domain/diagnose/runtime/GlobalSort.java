@@ -18,8 +18,10 @@ package com.oppo.cloud.portal.domain.diagnose.runtime;
 
 import com.oppo.cloud.portal.domain.diagnose.IsAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.Table;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.opensearch.common.inject.spi.Message;
 
 import java.util.LinkedHashMap;
 
@@ -34,9 +36,9 @@ public class GlobalSort extends IsAbnormal {
         LinkedHashMap<String, String> titleMap = new LinkedHashMap<>();
         titleMap.put("jobId", "JobId");
         titleMap.put("stageId", "StageId");
-        titleMap.put("taskNum", "任务个数");
-        titleMap.put("dataOfColumns", "处理数据量(行)");
-        titleMap.put("duration", "执行耗时");
+        titleMap.put("taskNum", MessageSourceUtil.get("TASK_NUM"));
+        titleMap.put("dataOfColumns", MessageSourceUtil.get("DATA_OF_COLUMN"));
+        titleMap.put("duration", MessageSourceUtil.get("DURATION"));
         table.setTitles(titleMap);
     }
 

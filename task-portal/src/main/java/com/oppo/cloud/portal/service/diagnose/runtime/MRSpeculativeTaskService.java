@@ -27,6 +27,7 @@ import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.SpeculativeTask;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,7 @@ public class MRSpeculativeTaskService extends RunTimeBaseService<SpeculativeTask
         List<Chart<MetricInfo>> chartList = speculativeTask.getChartList();
         Chart<MetricInfo> chartSummary = new Chart<>();
         buildChart(chartSummary);
-        chartSummary.setDes("每个推测执行任务耗时分布");
+        chartSummary.setDes(MessageSourceUtil.get("MR_SPECULATIVE_CHART_DESC"));
         List<MetricInfo> metricInfoList = chartSummary.getDataList();
         long maxElapsedTime = 0L;
         String attemptId = "";
@@ -85,12 +86,12 @@ public class MRSpeculativeTaskService extends RunTimeBaseService<SpeculativeTask
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("MapReduce中推测执行任务数超过%s个", thresholdMap.getOrDefault("threshold", "30"));
+        return String.format(MessageSourceUtil.get("MR_SPECULATIVE_CONCLUSION_DESC"), thresholdMap.getOrDefault("threshold", "30"));
     }
 
     @Override
     public String generateItemDesc() {
-        return "MR推测执行过多分析";
+        return MessageSourceUtil.get("MR_SPECULATIVE_ANALYSIS");
     }
 
     @Override
@@ -100,10 +101,10 @@ public class MRSpeculativeTaskService extends RunTimeBaseService<SpeculativeTask
 
     private void buildChart(Chart<MetricInfo> chart) {
         chart.setX("id");
-        chart.setY("推测执行耗时");
+        chart.setY(MessageSourceUtil.get("MR_SPECULATIVE_DURATION"));
         chart.setUnit("ms");
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("normal", new Chart.ChartInfo("推测执行耗时", UIUtil.NORMAL_COLOR));
+        dataCategory.put("normal", new Chart.ChartInfo(MessageSourceUtil.get("MR_SPECULATIVE_DURATION"), UIUtil.NORMAL_COLOR));
         chart.setDataCategory(dataCategory);
     }
 }

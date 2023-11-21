@@ -8,6 +8,12 @@ server:
       timeout: 86400
 
 spring:
+#  web:
+#    locale: en_US
+#    #localeResolver: fixed
+  messages:
+    encoding: UTF-8
+    basename: i18n/messages
   application:
     name: task-portal
   profiles:
@@ -18,9 +24,9 @@ spring:
   main:
     allow-circular-references: true
   datasource:
-    url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-    username: root
-    password: root
+    url: jdbc:mysql://localhost:3306/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username:
+    password:
     druid:
       initial-size: 5
       min-idle: 10

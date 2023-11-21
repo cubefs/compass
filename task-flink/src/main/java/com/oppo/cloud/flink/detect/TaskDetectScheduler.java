@@ -57,8 +57,8 @@ public class TaskDetectScheduler {
     /**
      * Hourly level scheduled diagnosis
      */
-    // @Scheduled(cron = "0 0/1 * * * ?") // debug for 1 minutes
-    @Scheduled(cron = "1 0 * * * ?")
+     @Scheduled(cron = "0 0/1 * * * ?") // debug for 1 minutes
+    //@Scheduled(cron = "1 0 * * * ?")
     public void detectHourly() {
         log.info("Start executing scheduled diagnostic tasks");
         LocalDateTime now = LocalDateTime.now(ZoneOffset.ofHours(8));

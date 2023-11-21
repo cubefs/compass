@@ -25,6 +25,7 @@ import com.oppo.cloud.common.util.ui.UIUtil;
 import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.IsAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.resources.CpuWasteInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
@@ -62,23 +63,17 @@ public class CpuWasteService extends ResourceBaseService<CpuWasteInfo> {
 
     @Override
     public String generateConclusionDesc(IsAbnormal data) {
-        return String.format(
-                "计算规则：<br/>&nbsp;  app消耗的计算资源 = 最大并发vCore * app运行时间<br/> &nbsp;  job消耗的计算资源 = 最大并发vCore * job运行时间 <br/> &nbsp;  task消耗的计算资源 = task计算时间累计"
-                        +
-                        "<br/> &nbsp;  driver资源浪费 = app消耗的计算资源 - job消耗的计算资源 <br/> &nbsp;  executor资源浪费 = job消耗的计算资源 - task消耗的计算资源"
-                        +
-                        "<br/>&nbsp;  当executor资源浪费占比超过阈值%s或者driver资源浪费占比超过阈值%s,即判断为发生CPU资源浪费",
-                data.getVars().get("executorThreshold"), data.getVars().get("driverThreshold"));
+        return String.format(MessageSourceUtil.get("CPU_WASTE_CONCLUSION_DESC"), data.getVars().get("executorThreshold"), data.getVars().get("driverThreshold"));
     }
 
     @Override
     public String generateItemDesc() {
-        return "CPU浪费分析";
+        return MessageSourceUtil.get("CPU_WASTE_ANALYSIS");
     }
 
     public void addColor(CpuWasteInfo cpuWasteInfo) {
-        cpuWasteInfo.getDataCategory().put("waste", new Chart.ChartInfo("浪费", UIUtil.ABNORMAL_COLOR));
-        cpuWasteInfo.getDataCategory().put("efficient", new Chart.ChartInfo("有效", UIUtil.NORMAL_COLOR));
+        cpuWasteInfo.getDataCategory().put("waste", new Chart.ChartInfo(MessageSourceUtil.get("CPU_WASTE"), UIUtil.ABNORMAL_COLOR));
+        cpuWasteInfo.getDataCategory().put("efficient", new Chart.ChartInfo(MessageSourceUtil.get("CPU_EFFICIENT"), UIUtil.NORMAL_COLOR));
     }
 
 }

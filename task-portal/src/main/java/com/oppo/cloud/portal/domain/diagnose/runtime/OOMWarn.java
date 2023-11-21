@@ -18,6 +18,7 @@ package com.oppo.cloud.portal.domain.diagnose.runtime;
 
 import com.oppo.cloud.portal.domain.diagnose.IsAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.Table;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -32,9 +33,9 @@ public class OOMWarn extends IsAbnormal {
 
     public OOMWarn() {
         LinkedHashMap<String, String> titleMap = new LinkedHashMap<>();
-        titleMap.put("hiveTable", "广播表名称");
-        titleMap.put("outputOfColumns", "过滤后输出行数");
-        titleMap.put("memoryUsed", "占用内存大小");
+        titleMap.put("hiveTable", MessageSourceUtil.get("BROADCAST_HIVE_TABLE"));
+        titleMap.put("outputOfColumns", MessageSourceUtil.get("OUTPUT_OF_COLUMNS"));
+        titleMap.put("memoryUsed", MessageSourceUtil.get("MEMORY_USED"));
         table.setTitles(titleMap);
     }
 

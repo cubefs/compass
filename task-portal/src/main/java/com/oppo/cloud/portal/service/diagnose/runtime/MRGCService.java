@@ -28,6 +28,7 @@ import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.mr.MRGC;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -80,13 +81,13 @@ public class MRGCService extends RunTimeBaseService<MRGC> {
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("Task GC平均时间/CPU平均时间比值map超过%s或者reduce超过%s",
+        return String.format(MessageSourceUtil.get("MR_GC_CONCLUSION_DESC"),
                 thresholdMap.get("mapThreshold"), thresholdMap.get("reduceThreshold"));
     }
 
     @Override
     public String generateItemDesc() {
-        return "MRGC异常分析";
+        return MessageSourceUtil.get("MR_GC_ANALYSIS");
     }
 
     private Chart<MetricInfo> getMapReduceChart(MRGCAbnormal gcAbnormal, List<String> info, DetectorConfig config) {
@@ -110,10 +111,7 @@ public class MRGCService extends RunTimeBaseService<MRGC> {
                 threshold = config.getMrGCConfig().getReduceThreshold();
             }
             info.add(String.format(
-                    "%s任务GC平均时间为：<span style=\"color: #e24a4a;\">%s ms</span>, " +
-                            "CPU平均时间为：<span style=\"color: #e24a4a;\">%s ms</span>, " +
-                            "GC时间/CPU时间为<span style=\"color: #e24a4a;\">%s</span>, " +
-                            "超过阈值<span style=\"color: #e24a4a;\">%s</span>",
+                    MessageSourceUtil.get("MR_GC_CONCLUSION_INFO"),
                     gcAbnormal.getTaskType(), UnitUtil.transferDouble(gcAbnormal.getGcTimeMedian()),
                     UnitUtil.transferDouble(gcAbnormal.getCpuTimeMedian()),
                     UnitUtil.transferDouble(gcAbnormal.getRatio()), threshold));
@@ -122,13 +120,13 @@ public class MRGCService extends RunTimeBaseService<MRGC> {
     }
 
     private void buildMapReduceChartInfo(Chart<MetricInfo> chart, String taskType) {
-        chart.setDes(String.format("%s任务的GC时间和CPU时间分布图", taskType));
+        chart.setDes(String.format(MessageSourceUtil.get("MR_GC_CHART_DESC"), taskType));
         chart.setUnit("ms");
         chart.setX("task id");
-        chart.setY("耗时");
+        chart.setY(MessageSourceUtil.get("MR_GC_CHART_Y"));
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("gcTime", new Chart.ChartInfo("GC时间", UIUtil.ABNORMAL_COLOR));
-        dataCategory.put("cpuTime", new Chart.ChartInfo("CPU时间", UIUtil.KEY_COLOR));
+        dataCategory.put("gcTime", new Chart.ChartInfo(MessageSourceUtil.get("MR_GC_CHART_GC_TIME"), UIUtil.ABNORMAL_COLOR));
+        dataCategory.put("cpuTime", new Chart.ChartInfo(MessageSourceUtil.get("MR_GC_CHART_CPU_TIME"), UIUtil.KEY_COLOR));
         chart.setDataCategory(dataCategory);
     }
 

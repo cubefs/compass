@@ -18,6 +18,7 @@ package com.oppo.cloud.portal.domain.diagnose.runtime.mr;
 
 import com.oppo.cloud.portal.domain.diagnose.IsAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.Table;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -34,18 +35,18 @@ public class MRBigTableScan extends IsAbnormal {
 
     public MRBigTableScan() {
         LinkedHashMap<String, String> titleMap = new LinkedHashMap<>();
-        titleMap.put("columns", "扫描行数");
-        titleMap.put("threshold", "阈值");
+        titleMap.put("columns", MessageSourceUtil.get("COLUMNS"));
+        titleMap.put("threshold", MessageSourceUtil.get("THRESHOLD"));
         table.setTitles(titleMap);
     }
 
     @Data
     public static class TaskInfo {
 
-        @ApiModelProperty(value = "扫描行数")
+        @ApiModelProperty(value = "columns")
         private String columns;
 
-        @ApiModelProperty(value = "阈值")
+        @ApiModelProperty(value = "threshold")
         private String threshold;
     }
 }

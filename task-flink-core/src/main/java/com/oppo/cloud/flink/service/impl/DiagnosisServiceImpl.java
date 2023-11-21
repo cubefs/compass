@@ -240,7 +240,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
 
             flinkTaskAdvice.setRuleName(advice.getRuleName());
             flinkTaskAdvice.setRuleCode(advice.getAdviceType().getCode());
-            flinkTaskAdvice.setRuleAlias(advice.getAdviceType().getName());
+            flinkTaskAdvice.setRuleAlias(advice.getAdviceType().getZh());
             flinkTaskAdvice.setHasAdvice(advice.getHasAdvice() ? 1 : 0);
             flinkTaskAdvice.setDescription(advice.getAdviceDescription());
             flinkTaskAdvices.add(flinkTaskAdvice);
@@ -391,7 +391,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
 
 
     /**
-     * 任务上线诊断,任务上线1小时候开始诊断
+     * Diagnosis starts one hour after the task goes online
      *
      * @param start
      * @param end
@@ -425,7 +425,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     }
 
     /**
-     * 填充元数据
+     * Fill meta
      *
      * @param rcJobDiagnosis
      * @param flinkTaskApp
@@ -443,7 +443,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     }
 
     /**
-     * 填充元数据
+     * Fill meta
      *
      * @param flinkTaskAnalysis
      * @param flinkTaskApp
@@ -482,7 +482,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     }
 
     /**
-     * 填充上下文诊断数据
+     * Fill context data
      *
      * @param flinkTaskAnalysis
      * @param context
@@ -506,22 +506,22 @@ public class DiagnosisServiceImpl implements DiagnosisService {
         flinkTaskAnalysis.setDiagnosisTmNum(rcJobDiagnosis.getDiagnosisTmNum());
         flinkTaskAnalysis.setCreateTime(new Date());
         flinkTaskAnalysis.setUpdateTime(new Date());
-        // 资源调优类型
+        // Resource tuning type
         if (flinkTaskAnalysis.getTmNum() != null && flinkTaskAnalysis.getTmCore() != null) {
             int preCore = flinkTaskAnalysis.getTmNum() * flinkTaskAnalysis.getTmCore();
             int newCore = flinkTaskAnalysis.getDiagnosisTmNum() * flinkTaskAnalysis.getDiagnosisTmCoreNum();
-            // 判断资源变化
+            // Judge resource changes
             if (newCore > preCore) {
                 addDiagnosisResourceTypes(flinkTaskAnalysis, DiagnosisResourceType.INCR_CPU.getCode());
             } else if (newCore < preCore) {
                 addDiagnosisResourceTypes(flinkTaskAnalysis, DiagnosisResourceType.DECR_CPU.getCode());
             }
         }
-        // 资源调优类型
+        // Resource tuning type
         if (flinkTaskAnalysis.getTmNum() != null && flinkTaskAnalysis.getTmMemory() != null) {
             int preMem = flinkTaskAnalysis.getTmNum() * flinkTaskAnalysis.getTmMemory();
             int newMem = flinkTaskAnalysis.getDiagnosisTmNum() * flinkTaskAnalysis.getDiagnosisTmMemory();
-            // 判断资源变化
+            // Judge resource changes
             if (newMem > preMem) {
                 addDiagnosisResourceTypes(flinkTaskAnalysis, DiagnosisResourceType.INCR_MEM.getCode());
             } else if (newMem < preMem) {
@@ -529,14 +529,14 @@ public class DiagnosisServiceImpl implements DiagnosisService {
             }
         }
 
-        // 诊断规则类型
+        // Add diagnosis advice
         List<RcJobDiagnosisAdvice> advices = context.getAdvices();
         for (RcJobDiagnosisAdvice rcJobDiagnosisAdvice : advices) {
             if (rcJobDiagnosisAdvice.getHasAdvice()) {
                 if (rcJobDiagnosisAdvice.getAdviceType().getCode() == DiagnosisRuleType.RuntimeExceptionRule.getCode()) {
                     addDiagnosisResourceTypes(flinkTaskAnalysis, DiagnosisResourceType.RUNTIME_EXCEPTION.getCode());
                 }
-                addDiagnosisTypes(flinkTaskAnalysis, rcJobDiagnosisAdvice.getAdviceType().getName());
+                addDiagnosisTypes(flinkTaskAnalysis, rcJobDiagnosisAdvice.getAdviceType().name());
             }
         }
     }

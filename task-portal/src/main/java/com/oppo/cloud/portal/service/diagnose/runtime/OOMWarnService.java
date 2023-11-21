@@ -26,6 +26,7 @@ import com.oppo.cloud.portal.domain.base.Conclusion;
 import com.oppo.cloud.portal.domain.diagnose.IsAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.Table;
 import com.oppo.cloud.portal.domain.diagnose.runtime.OOMWarn;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -70,12 +71,12 @@ public class OOMWarnService extends RunTimeBaseService<OOMWarn> {
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("广播表的累计内存与driver或executor任意一个内存占比超过%s%%，即判定为OOM预警", "40");
+        return MessageSourceUtil.get("OOM_WARN_CONCLUSION_DESC");
     }
 
     @Override
     public String generateItemDesc() {
-        return "OOM预警分析";
+        return MessageSourceUtil.get("OOM_WARN_ANALYSIS");
     }
 
     @Override

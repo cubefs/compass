@@ -16,10 +16,12 @@
 
 package com.oppo.cloud.portal.domain.flink;
 
+import com.oppo.cloud.common.domain.flink.enums.FlinkRule;
 import com.oppo.cloud.common.domain.opensearch.FlinkTaskAdvice;
 import com.oppo.cloud.common.domain.opensearch.FlinkTaskAnalysis;
 import com.oppo.cloud.common.domain.opensearch.SimpleUser;
 import com.oppo.cloud.common.util.DateUtil;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -152,7 +154,7 @@ public class FlinkTaskAnalysisInfo {
         info.setJmMemory(item.getJmMemory());
         info.setTmSlot(item.getTmSlot());
         info.setTmNum(item.getTmNum());
-        info.setRuleNames(item.getDiagnosisTypes());
+        info.setRuleNames(FlinkRule.getLangMsgByNameList(item.getDiagnosisTypes()));
         info.setCreateTime(DateUtil.format(item.getCreateTime()));
         info.setUpdateTime(DateUtil.format(item.getUpdateTime()));
         info.setUsername(item.getUsers().stream().map(SimpleUser::getUsername).collect(Collectors.joining(",")));
@@ -181,25 +183,26 @@ public class FlinkTaskAnalysisInfo {
         List<FlinkTaskAdvice> flinkTaskAdvices = item.getAdvices();
         List<String> advices = new ArrayList<>();
         for (FlinkTaskAdvice flinkTaskAdvice : flinkTaskAdvices) {
-            if (flinkTaskAdvice.getHasAdvice() == 1) { // has advice == 1
+            // has advice == 1
+            if (flinkTaskAdvice.getHasAdvice() == 1) {
                 advices.add(flinkTaskAdvice.getDescription());
             }
         }
 
         if (!item.getDiagnosisParallel().equals(item.getParallel())) {
-            advices.add(String.format("作业并行度:%d->%d", item.getParallel(), item.getDiagnosisParallel()));
+            advices.add(String.format("%s:%d->%d", MessageSourceUtil.get("JOB_PARALLEL"), item.getParallel(), item.getDiagnosisParallel()));
         }
         if (!item.getDiagnosisTmSlotNum().equals(item.getTmSlot())) {
-            advices.add(String.format("作业TM的Slot数:%d->%d", item.getTmSlot(), item.getDiagnosisTmSlotNum()));
+            advices.add(String.format("%s:%d->%d", MessageSourceUtil.get("JOB_SLOT_AMOUNT"), item.getTmSlot(), item.getDiagnosisTmSlotNum()));
         }
         if (!item.getDiagnosisTmCoreNum().equals(item.getTmCore())) {
-            advices.add(String.format("作业TM的Core数:%d->%d", item.getTmCore(), item.getDiagnosisTmCoreNum()));
+            advices.add(String.format("%s:%d->%d", MessageSourceUtil.get("JOB_TM_CORE_AMOUNT"), item.getTmCore(), item.getDiagnosisTmCoreNum()));
         }
         if (!item.getDiagnosisTmMemory().equals(item.getTmMemory())) {
-            advices.add(String.format("作业TM的内存:%dMB->%dMB", item.getTmMemory(), item.getDiagnosisTmMemory()));
+            advices.add(String.format("%s:%dMB->%dMB", MessageSourceUtil.get("JOB_TM_MEMORY"), item.getTmMemory(), item.getDiagnosisTmMemory()));
         }
         if (!item.getDiagnosisJmMemory().equals(item.getJmMemory())) {
-            advices.add(String.format("作业JM的内存:%dMB->%dMB", item.getJmMemory(), item.getDiagnosisJmMemory()));
+            advices.add(String.format("%s:%dMB->%dMB", MessageSourceUtil.get("JOB_JM_MEMORY"), item.getJmMemory(), item.getDiagnosisJmMemory()));
         }
         info.setResourceAdvice(String.join(";", advices));
         return info;
