@@ -36,7 +36,7 @@ const addWhite = async (row) => {
     projectName: row.projectName,
     taskName: row.taskName,
   })
-  ElMessage.success(t('diagnosis.addSuccess'))
+  ElMessage.success(t('common.success'))
 }
 const handleState = async (row) => {
   if (row.taskStatus === 1)
