@@ -5,9 +5,9 @@ Like the technical community as a whole, Compass team and community is made up o
 
 Diversity is one of our huge strengths, but it can also lead to communication issues and unhappiness. To that end, we have a few ground rules that we ask people to adhere to when they're participating within this community and project. These rules apply equally to founders, mentors and those seeking help and guidance.
 
-This isn't an exhaustive list of things that you can't do. Rather, take it in the spirit in which it's intended - a guide to make it easier to enrich all of us, the technical community and the conferences and usergroups we hope to guide new speakers to.
+This isn't an exhaustive list of things that you can't do. Rather, take it in the spirit in which it's intended - a guide to make it easier to enrich all of us, the technical communities in which we participate.
 
-This code of conduct applies to all communication: this includes IRC, the mailing list, and other forums such as Skype, Google+ Hangouts, etc.
+This code of conduct applies to all spaces managed by the Compass project. This includes IRC, the mailing list, the issue tracker and other forums created by the project team which the community use for communication.
 
 - **Be welcoming, friendly, and patient.**
 - **Be considerate.** Your work will be used by other people, and you in turn will depend on the work of others. Any decision you make will affect users and colleagues, and you should take those consequences into account when making decisions.

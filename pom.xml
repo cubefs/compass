@@ -24,6 +24,7 @@
         <module>task-flink</module>
         <module>task-assembly</module>
         <module>task-ui</module>
+        <module>task-gpt</module>
     </modules>
 
     <parent>
@@ -185,7 +186,7 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-connector.version}</version>
-                <scope>test</scope>
+<!--                <scope>test</scope>-->
             </dependency>
 
             <dependency>
