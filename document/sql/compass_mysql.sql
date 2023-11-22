@@ -266,7 +266,9 @@ CREATE TABLE `task_datum` (
 ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='Flink application table';
 
 INSERT INTO `user` (`username`, `password`) values ('compass', 'compass');
--- zh
+
+-- zh_CN
+
 INSERT INTO `task_diagnosis_advice` VALUES
 (1,'driver',NULL,'containerFailed','Container失败','{container}失败，诊断信息为{diagnostics}，退出码为{exitCode}',NULL,'container,diagnostic,exitCode','otherException',0,NULL),
 (2,'driver','','stageFailed','Stage失败','Stage{stage}连续{failedNum}次失败，此job彻底失败',NULL,'stage,failedNum','otherException',0,NULL),
@@ -317,7 +319,7 @@ INSERT INTO `task_diagnosis_advice` VALUES
 (47, 'mrJobHistory', NULL, 'mrTaskDurationAbnormal', 'MRTask长尾', '{taskDurationInfo}，{taskType}的最大运行耗时远远大于中位值，发生Task耗时异常。', NULL, 'taskDurationInfo', 'mrTaskDurationAbnormal', 0, '未检测到异常'),
 (48, 'mrJobHistory', NULL, 'mrGCAbnormal', 'MRGC异常', '{mrGCAbnormal}', NULL, 'mrGCAbnormal', 'mrGCAbnormal', 0, '未检测到异常');
 
--- en
+-- en_US
 
 --INSERT INTO `task_diagnosis_advice1` VALUES
 --(1,'driver',NULL,'containerFailed','Container failed','{container} failed with diagnostic information {diagnostics}, exit code {exitCode}',NULL,'container,diagnostic,exitCode','otherException',0,NULL),
