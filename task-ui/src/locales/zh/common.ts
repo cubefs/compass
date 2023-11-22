@@ -24,6 +24,8 @@ export default {
     inputPlaceholder: '请输入 ',
     cancel: '取消',
     confirm: '确认',
+    expand: '展开',
+    collapse: '收起',
     // flink
     jobName: '作业名',
     flinkTrackUrl: 'Tracking Url',
