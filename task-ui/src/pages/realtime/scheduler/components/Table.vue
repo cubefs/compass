@@ -41,7 +41,7 @@ const addWhite = async (row) => {
     taskName: row.taskName,
     component: 'realtime',
   })
-  ElMessage.success(t('diagnosis.addSuccess'))
+  ElMessage.success(t('common.success'))
 }
 const handleState = async (row) => {
   if (row.processState === 'processed')

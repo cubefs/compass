@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oppo.cloud.portal.dao.BlocklistExtendMapper">
+    <insert id="save" parameterType="com.oppo.cloud.model.Blocklist">
+        insert into blocklist (component, project_name, flow_name,
+        task_name, username, create_time,
+        update_time, deleted)
+        values (#{component,jdbcType=VARCHAR}, #{projectName,jdbcType=VARCHAR}, #{flowName,jdbcType=VARCHAR},
+        #{taskName,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=INTEGER})
+    </insert>
+</mapper>

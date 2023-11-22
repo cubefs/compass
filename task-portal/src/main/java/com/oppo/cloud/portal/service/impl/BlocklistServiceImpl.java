@@ -21,6 +21,7 @@ import com.oppo.cloud.model.Blocklist;
 import com.oppo.cloud.model.BlocklistExample;
 import com.oppo.cloud.model.Task;
 import com.oppo.cloud.portal.config.ThreadLocalUserInfo;
+import com.oppo.cloud.portal.dao.BlocklistExtendMapper;
 import com.oppo.cloud.portal.dao.TaskExtendMapper;
 import com.oppo.cloud.portal.domain.blocklist.BlocklistAddReq;
 import com.oppo.cloud.portal.domain.blocklist.BlocklistReq;
@@ -43,7 +44,7 @@ public class BlocklistServiceImpl implements BlocklistService {
     private TaskExtendMapper taskExtendMapper;
 
     @Autowired
-    private BlocklistMapper blocklistMapper;
+    private BlocklistExtendMapper blocklistMapper;
 
     /**
      * Search blocklist
@@ -129,7 +130,7 @@ public class BlocklistServiceImpl implements BlocklistService {
             blocklist.setDeleted(0);
             blocklist.setUsername(userInfo.getUsername());
 
-            blocklistMapper.insert(blocklist);
+            blocklistMapper.save(blocklist);
 
         } else {
             blocklists.forEach(data -> {
