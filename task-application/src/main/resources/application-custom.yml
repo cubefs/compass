@@ -14,6 +14,8 @@ spring:
       group-id: "cp-task-application"
       auto-offset-reset: "earliest"
       max-poll-interval-ms: 300000
+    producer: # save task application metadata
+      topics: "task-application"
   redis:
     cluster:
       nodes: localhost:6379
