@@ -27,6 +27,7 @@ import org.opensearch.common.xcontent.XContentType;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Batch document addition interface
@@ -38,6 +39,8 @@ public class BulkApi {
         final BulkRequest bulkRequest = new BulkRequest();
         documents.forEach(document -> {
             final IndexRequest indexRequest = new IndexRequest(index);
+            indexRequest.id((String) document.getOrDefault("docId", UUID.randomUUID().toString()));
+            document.remove("docId");
             indexRequest.source(document);
             bulkRequest.add(indexRequest);
         });

@@ -47,7 +47,7 @@ public class HDFSReader implements IReader {
                 (Map<String, NameNodeConf>) SpringBeanUtil.getBean(HadoopConfig.NAME_NODE_MAP);
         nameNode = HDFSUtil.getNameNode(nameNodeMap, logPath.getLogPath());
         if (nameNode == null) {
-            throw new Exception("cant get hdfs nameNode" + logPath.getLogPath());
+            throw new Exception("cant get hdfs nameNode " + logPath.getLogPath());
         }
     }
 

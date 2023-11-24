@@ -22,10 +22,7 @@ import lombok.Data;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Data
@@ -81,8 +78,6 @@ public class LogSummary extends OpenSearchInfo {
             String method = key.substring(0, 1).toUpperCase() + key.substring(1);
             Method getMethod = this.getClass().getMethod("get" + method);
             switch (field.getName()) {
-                case "docId":
-                    break;
                 case "executionDate":
                     Date value = (Date) getMethod.invoke(this);
                     if (value != null) {
@@ -93,6 +88,7 @@ public class LogSummary extends OpenSearchInfo {
                     res.put(key, getMethod.invoke(this));
             }
         }
+        res.put("docId", UUID.randomUUID().toString());
         return res;
     }
 }
