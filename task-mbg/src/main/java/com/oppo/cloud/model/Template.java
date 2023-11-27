@@ -5,22 +5,25 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Template implements Serializable {
-    @ApiModelProperty(value = "id")
+    @ApiModelProperty(value = "record id")
     private Integer id;
 
-    @ApiModelProperty(value = "Log cluster id")
+    @ApiModelProperty(value = "cluster id")
     private String cid;
 
-    @ApiModelProperty(value = "Update time when log matches template")
+    @ApiModelProperty(value = "update time")
     private Date updateTime;
 
-    @ApiModelProperty(value = "Create time")
+    @ApiModelProperty(value = "update time")
     private Date createTime;
 
-    @ApiModelProperty(value = "Content of template")
+    @ApiModelProperty(value = "template content")
     private String cluster;
 
-    @ApiModelProperty(value = "Raw log of template")
+    @ApiModelProperty(value = "advice")
+    private String advice;
+
+    @ApiModelProperty(value = "raw_log")
     private String rawLog;
 
     private static final long serialVersionUID = 1L;
@@ -65,6 +68,14 @@ public class Template implements Serializable {
         this.cluster = cluster;
     }
 
+    public String getAdvice() {
+        return advice;
+    }
+
+    public void setAdvice(String advice) {
+        this.advice = advice;
+    }
+
     public String getRawLog() {
         return rawLog;
     }
@@ -84,6 +95,7 @@ public class Template implements Serializable {
         sb.append(", updateTime=").append(updateTime);
         sb.append(", createTime=").append(createTime);
         sb.append(", cluster=").append(cluster);
+        sb.append(", advice=").append(advice);
         sb.append(", rawLog=").append(rawLog);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

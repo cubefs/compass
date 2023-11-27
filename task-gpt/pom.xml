@@ -19,11 +19,32 @@
     <dependencies>
         <dependency>
             <groupId>com.oppo.cloud</groupId>
+            <artifactId>task-common</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.springfox</groupId>
+                    <artifactId>springfox-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.oppo.cloud</groupId>
             <artifactId>task-mbg</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>io.springfox</groupId>
                     <artifactId>springfox-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

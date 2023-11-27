@@ -249,7 +249,25 @@ public class LogParserServiceImpl implements LogParserService {
         // write data back to Kafka subscription
         log.debug("application save: applicationId=" + applicationId + " task_instance=" + taskInstance + ",lopPath="
                 + logPath);
+        TaskApplication taskApplication = getTaskApplication(applicationId, taskInstance, logPath);
+        try {
+            taskApplicationExtendMapper.save(taskApplication);
+        } catch (DuplicateKeyException e) {
+            return;
+            // duplicate key with return
+        } catch (Exception e) {
+            log.error("insertErr:" + e.getMessage());
+        }
 
+        try {
+            messageProducer.sendMessageSync(kafkaConfig.getProducerTopics(),
+                    JSON.toJSONString(taskApplication));
+        } catch (Exception ex) {
+            log.error("failed to send insert data to kafka, err: " + ex.getMessage());
+        }
+    }
+
+    private static TaskApplication getTaskApplication(String applicationId, TaskInstance taskInstance, String logPath) {
         TaskApplication taskApplication = new TaskApplication();
         taskApplication.setApplicationId(applicationId);
         taskApplication.setProjectName(taskInstance.getProjectName());
@@ -261,22 +279,7 @@ public class LogParserServiceImpl implements LogParserService {
         taskApplication.setTaskType(taskInstance.getTaskType());
         taskApplication.setCreateTime(new Date());
         taskApplication.setUpdateTime(new Date());
-
-        try {
-            taskApplicationExtendMapper.save(taskApplication);
-        } catch (DuplicateKeyException e) {
-            return;
-            // duplicate key with return
-        } catch (Exception e) {
-            log.error("insertErr:" + e.getMessage());
-        }
-
-        try {
-            messageProducer.sendMessageSync(kafkaConfig.getTaskApplicationTopic(),
-                    JSON.toJSONString(taskApplication));
-        } catch (Exception ex) {
-            log.error("failed to send insert data to kafka, err: " + ex.getMessage());
-        }
+        return taskApplication;
     }
 
     /**

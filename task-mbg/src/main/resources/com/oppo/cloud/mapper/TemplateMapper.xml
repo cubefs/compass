@@ -9,6 +9,7 @@
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.oppo.cloud.model.Template">
     <result column="cluster" jdbcType="LONGVARCHAR" property="cluster" />
+    <result column="advice" jdbcType="LONGVARCHAR" property="advice" />
     <result column="raw_log" jdbcType="LONGVARCHAR" property="rawLog" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -73,7 +74,7 @@
     id, cid, update_time, create_time
   </sql>
   <sql id="Blob_Column_List">
-    cluster, raw_log
+    cluster, advice, raw_log
   </sql>
   <select id="selectByExampleWithBLOBs" parameterType="com.oppo.cloud.model.TemplateExample" resultMap="ResultMapWithBLOBs">
     select
@@ -128,9 +129,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into template (cid, update_time, create_time, 
-      cluster, raw_log)
+      cluster, advice, raw_log
+      )
     values (#{cid,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{cluster,jdbcType=LONGVARCHAR}, #{rawLog,jdbcType=LONGVARCHAR})
+      #{cluster,jdbcType=LONGVARCHAR}, #{advice,jdbcType=LONGVARCHAR}, #{rawLog,jdbcType=LONGVARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.oppo.cloud.model.Template">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -150,6 +153,9 @@
       <if test="cluster != null">
         cluster,
       </if>
+      <if test="advice != null">
+        advice,
+      </if>
       <if test="rawLog != null">
         raw_log,
       </if>
@@ -166,6 +172,9 @@
       </if>
       <if test="cluster != null">
         #{cluster,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="advice != null">
+        #{advice,jdbcType=LONGVARCHAR},
       </if>
       <if test="rawLog != null">
         #{rawLog,jdbcType=LONGVARCHAR},
@@ -196,6 +205,9 @@
       <if test="record.cluster != null">
         cluster = #{record.cluster,jdbcType=LONGVARCHAR},
       </if>
+      <if test="record.advice != null">
+        advice = #{record.advice,jdbcType=LONGVARCHAR},
+      </if>
       <if test="record.rawLog != null">
         raw_log = #{record.rawLog,jdbcType=LONGVARCHAR},
       </if>
@@ -211,6 +223,7 @@
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       cluster = #{record.cluster,jdbcType=LONGVARCHAR},
+      advice = #{record.advice,jdbcType=LONGVARCHAR},
       raw_log = #{record.rawLog,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -241,6 +254,9 @@
       <if test="cluster != null">
         cluster = #{cluster,jdbcType=LONGVARCHAR},
       </if>
+      <if test="advice != null">
+        advice = #{advice,jdbcType=LONGVARCHAR},
+      </if>
       <if test="rawLog != null">
         raw_log = #{rawLog,jdbcType=LONGVARCHAR},
       </if>
@@ -253,6 +269,7 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       cluster = #{cluster,jdbcType=LONGVARCHAR},
+      advice = #{advice,jdbcType=LONGVARCHAR},
       raw_log = #{rawLog,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
