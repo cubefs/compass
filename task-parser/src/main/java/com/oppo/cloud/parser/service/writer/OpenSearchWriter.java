@@ -17,6 +17,7 @@
 package com.oppo.cloud.parser.service.writer;
 
 import com.alibaba.fastjson2.JSON;
+import com.oppo.cloud.common.domain.LogMessage;
 import com.oppo.cloud.common.domain.opensearch.OpenSearchInfo;
 import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 import com.oppo.cloud.common.domain.opensearch.LogSummary;
@@ -33,6 +34,7 @@ import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.common.util.textparser.ParserActionUtil;
 import com.oppo.cloud.common.util.textparser.ParserResult;
 import com.oppo.cloud.parser.config.CustomConfig;
+import com.oppo.cloud.parser.config.KafkaConfig;
 import com.oppo.cloud.parser.config.OpenSearchConfig;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.job.TaskResult;
@@ -70,6 +72,8 @@ public class OpenSearchWriter {
 
     public String taskAppPrefix;
 
+    public KafkaConfig kafkaConfig;
+
     private OpenSearchWriter() {
         client = (RestHighLevelClient) SpringBeanUtil.getBean(OpenSearchConfig.SEARCH_CLIENT);
         CustomConfig yml = (CustomConfig) SpringBeanUtil.getBean(CustomConfig.class);
@@ -78,6 +82,7 @@ public class OpenSearchWriter {
         gcPrefix = yml.getGcPrefix();
         jobPrefix = yml.getJobPrefix();
         taskAppPrefix = yml.getTaskAppPrefix();
+        kafkaConfig = (KafkaConfig) SpringBeanUtil.getBean(KafkaConfig.class);
     }
 
     public static OpenSearchWriter getInstance() {
@@ -107,35 +112,59 @@ public class OpenSearchWriter {
      * Write matching results to OpenSearch
      */
     public void writeToOpenSearch(String logType, String logPath, ParserParam param, ParserAction parserAction) {
-        if (parserAction.getParserResults() != null) {
-            List<Map<String, Object>> docs = new ArrayList<>();
-            for (ParserResult parserResult : parserAction.getParserResults()) {
-                Map<String, Object> logSummary;
-                try {
-                    logSummary = getDoc(logType, parserResult, logPath, param, parserAction);
-                } catch (Exception e) {
-                    log.error("logSummaryGetDoc:{},{}", logPath, e);
-                    continue;
-                }
-                docs.add(logSummary);
-            }
-            if (docs.size() > 0) {
-                BulkResponse response;
-                try {
-                    String index = logSummaryPrefix + DateUtil.formatToDay(param.getLogRecord().getJobAnalysis().getExecutionDate());
-                    response = BulkApi.bulk(client, index, docs);
-                } catch (Exception e) {
-                    log.error("writeLogSummaryErr:{},{}", logPath, e);
-                    return;
-                }
-                BulkItemResponse[] responses = response.getItems();
+        if (parserAction.getParserResults() == null) {
+            return;
+        }
+        String index = logSummaryPrefix + DateUtil.formatToDay(param.getLogRecord().getJobAnalysis().getExecutionDate());
 
-                for (BulkItemResponse r : responses) {
-                    if (r.isFailed()) {
-                        log.info("writeLogSummaryErr:{},{}", logPath, r.getFailure().getCause());
-                    }
+        List<String> logMessages = new ArrayList<>();
+        List<Map<String, Object>> docs = new ArrayList<>();
+        for (ParserResult parserResult : parserAction.getParserResults()) {
+            Map<String, Object> logSummary;
+            try {
+                logSummary = getDoc(logType, parserResult, logPath, param, parserAction);
+            } catch (Exception e) {
+                log.error("logSummaryGetDoc:{},{}", logPath, e);
+                continue;
+            }
+            docs.add(logSummary);
+            if (parserAction.getAction().toUpperCase().contains("OTHER")) {
+                logMessages.add(JSON.toJSONString(new LogMessage((String) logSummary.get("docId"), index, logType, (String) logSummary.get("rawLog"))));
+            }
+        }
+
+        if (docs.size() > 0) {
+            BulkResponse response;
+            try {
+                response = BulkApi.bulk(client, index, docs);
+            } catch (Exception e) {
+                log.error("writeLogSummaryErr:{},{}", logPath, e);
+                return;
+            }
+            BulkItemResponse[] responses = response.getItems();
+
+            for (BulkItemResponse r : responses) {
+                if (r.isFailed()) {
+                    log.info("writeLogSummaryErr:{},{}", logPath, r.getFailure().getCause());
                 }
-                log.info("writeLogSummaryCount:{},{},{},{}", logType, logPath, parserAction.getAction(), docs.size());
+            }
+            log.info("writeLogSummaryCount:{},{},{},{}", logType, logPath, parserAction.getAction(), docs.size());
+        }
+
+        sendOtherErrorLogToGPT(logMessages);
+
+    }
+
+    /**
+     * Send other error log to GPT
+     */
+    public void sendOtherErrorLogToGPT(List<String> logMessages) {
+        if (logMessages != null && logMessages.size() > 0) {
+            log.info("logMessages:{}", logMessages);
+            try {
+                kafkaConfig.sendMessages(logMessages);
+            } catch (Exception e) {
+                log.info("sendMessagesErr:{}", logMessages);
             }
         }
     }
@@ -154,13 +183,11 @@ public class OpenSearchWriter {
         logSummary.setExecutionDate(param.getLogRecord().getJobAnalysis().getExecutionDate());
         logSummary.setRetryTimes(param.getApp().getTryNumber());
         logSummary.setAction(parserAction.getAction());
-        logSummary.setAction(parserAction.getAction());
         logSummary.setStep(parserAction.getStep());
         logSummary.setGroupNames(Arrays.asList(parserAction.getGroupNames()));
         logSummary.setRawLog(String.join("\n", parserResult.getLines()));
         logSummary.setLogPath(logPath);
         logSummary.setGroupData(parserResult.getGroupData());
-
         if (parserResult.getGroupData() != null) {
             long timestamp;
             try {

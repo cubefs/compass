@@ -36,6 +36,9 @@ spring:
     gc-prefix: "compass-gc-log-"
     job-prefix: "compass-job-analysis-"
     task-app-prefix: "compass-task-app-"
+  kafka:
+    bootstrap-servers: "localhost:9092"
+    topic: "task-gpt"
 
 custom:
   redisConsumer:
