@@ -64,7 +64,7 @@ public class Drain {
      */
     private int maxTokens;
 
-    public Drain(int logClusterDepth, float similarityThreshold, int maxChildren, int maxClusters, int maxTokens,
+    public Drain(int logClusterDepth, double similarityThreshold, int maxChildren, int maxClusters, int maxTokens,
                  String[] extraDelimiters, String paramHolder, boolean parametrizeNumericTokens, IdGenerator idGenerator) {
         assert logClusterDepth > 3 : "logClusterDepth must be at least 3";
         this.logClusterDepth = logClusterDepth;
@@ -385,6 +385,15 @@ public class Drain {
             }
         }
         return false;
+    }
+
+    /**
+     * Add logCluster into drain.
+     * @param logCluster
+     */
+    public void addCluster(LogCluster logCluster) {
+        this.idToCluster.put(logCluster.getId(), logCluster);
+        this.addLogClusterToPrefixTree(logCluster);
     }
 
     /**

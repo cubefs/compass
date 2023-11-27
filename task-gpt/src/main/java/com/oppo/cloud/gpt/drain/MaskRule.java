@@ -13,6 +13,9 @@ public class MaskRule {
      */
     private String regex;
 
+    public MaskRule() {
+    }
+
     public MaskRule(String regex, String maskWith) {
         this.regex = regex;
         this.maskWith = maskWith;
@@ -20,6 +23,7 @@ public class MaskRule {
 
     /**
      * Replace string with mask according to regex.
+     *
      * @param s
      * @param prefix
      * @param suffix
