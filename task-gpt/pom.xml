@@ -6,10 +6,11 @@
     <parent>
         <groupId>com.oppo.cloud</groupId>
         <artifactId>compass</artifactId>
-        <version>v1.1.2</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>task-gpt</artifactId>
+    <version>${revision}</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -45,6 +46,17 @@
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.unfbx</groupId>
+            <artifactId>chatgpt-java</artifactId>
+            <!-- version 2.13.3 contains 2 vulnerabilities -->
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
