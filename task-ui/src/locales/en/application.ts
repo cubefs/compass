@@ -1,7 +1,8 @@
 export default {
-    applicationDetails: 'Application Diagnostic Report',
-    basicInfo: 'Basic Information',
-    clusterInfo: 'Cluster Information',
+    // Spark & Flink
+    applicationDetails: 'Application Report',
+    basicInfo: 'Basic Info',
+    clusterInfo: 'Cluster Info',
     clusterName: 'Cluster Name',
     queue: 'Queue',
     user: 'User',
@@ -9,16 +10,16 @@ export default {
     conclusion: 'Conclusion',
     executorResource: 'Executor Resource',
     driverResource: 'Driver Resource',
-    // flink
+    // Flink
     parallel: 'Parallel',
     tmNum: 'Tm number',
-    diagnosisParameters: 'Diagnosis Parameters',
-    diagnosisStartTime: 'Diagnosis Start Time',
-    diagnosisEndTime: 'Diagnosis End Time',
+    diagnosisParameters: 'Param Advice',
+    diagnosisStartTime: 'Diagnostic Start Time',
+    diagnosisEndTime: 'Diagnostic End Time',
     diagnosisParallel: 'Advice Parallel',
-    diagnosisTmMemory: 'Advice Tm Mem',
-    diagnosisTmSlotNum: 'Advice Tm Slot',
-    diagnosisTmCoreNum: 'Advice Tm Core',
-    diagnosisJmMemory: 'Advice Jm Mem',
+    diagnosisTmMemory: 'Advice Taskmanger Memory',
+    diagnosisTmSlotNum: 'Advice Taskmanger Slot',
+    diagnosisTmCoreNum: 'Advice Taskmanger Cores',
+    diagnosisJmMemory: 'Advice Jobmanager Memory',
     resourceAdvice: 'Resource Advice',
 }

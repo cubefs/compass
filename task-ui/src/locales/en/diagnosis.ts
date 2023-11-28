@@ -1,18 +1,18 @@
 export default {
-    placeholder: 'Please Input ',
+    placeholder: 'Please input ',
     oneClick: 'Diagnose',
-    applicationInfo: 'Application Information',
-    diagnosticResult: 'Diagnostic Result',
+    applicationInfo: 'Application Info',
+    diagnosticResult: 'Result',
     duration: 'Duration',
     resource: 'Resources',
     state: 'State',
-    viewReport: 'Click to view diagnostic report',
+    viewReport: 'View Report',
     progress: 'Progress',
     // flink
     startTime: 'Start Time',
     taskParallel: 'Task Parallel',
-    taskTmNum: 'Task Tm Number',
-    taskTmCore: 'Task Tm Core',
-    taskTmMem: 'Task Tm Memory',
-    diagnosisFailed: 'Diagnosis failed'
+    taskTmNum: 'Taskmanager',
+    taskTmCore: 'Taskmanager Cores',
+    taskTmMem: 'Taskmanager Memory',
+    diagnosisFailed: 'Failed to diagnose job'
 }

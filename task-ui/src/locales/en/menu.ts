@@ -4,12 +4,12 @@ export default {
     realtime: 'Realtime',
     logout: 'Logout',
     reportOverview: 'Overview',
-    oneClick: 'One click',
+    oneClick: 'One Click',
     schedulerTask: 'Scheduler Task',
     computingTask: 'Computing Task',
     metadata: 'Metadata',
     blocklist: 'Blocklist',
-    open: 'open',
-    close: 'close',
+    open: 'Open',
+    close: 'Close',
     logoutSuccess: 'Logout'
 }
