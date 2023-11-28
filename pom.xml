@@ -72,6 +72,7 @@
         <assembly.skip>true</assembly.skip>
         <derby.version>10.14.2.0</derby.version>
         <testcontainers.version>1.19.0</testcontainers.version>
+        <chatgpt-java.version>1.1.3</chatgpt-java.version>
 
         <!--Vulnerability version fixes-->
         <velocity.version>1.7</velocity.version>
@@ -186,7 +187,7 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-connector.version}</version>
-<!--                <scope>test</scope>-->
+                <!--                <scope>test</scope>-->
             </dependency>
 
             <dependency>
@@ -369,6 +370,12 @@
                 <artifactId>kafka</artifactId>
                 <version>${testcontainers.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.unfbx</groupId>
+                <artifactId>chatgpt-java</artifactId>
+                <version>${chatgpt-java.version}</version>
             </dependency>
 
             <!--Vulnerability version fixes-->
