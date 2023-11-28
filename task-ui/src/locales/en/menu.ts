@@ -3,13 +3,13 @@ export default {
     offline: 'Offline',
     realtime: 'Realtime',
     logout: 'Logout',
-    reportOverview: 'Report overview',
+    reportOverview: 'Overview',
     oneClick: 'One click',
-    schedulerTask: 'Scheduler task',
-    computingTask: 'Computing task',
-    metadata: 'Metadata',    
+    schedulerTask: 'Scheduler Task',
+    computingTask: 'Computing Task',
+    metadata: 'Metadata',
     blocklist: 'Blocklist',
     open: 'open',
     close: 'close',
-    logoutSuccess: 'Logout successful' 
+    logoutSuccess: 'Logout'
 }

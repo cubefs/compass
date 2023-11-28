@@ -1,5 +1,5 @@
 export default {
-    applicationDetails: 'Application diagnostic report details',
+    applicationDetails: 'Application Diagnostic Report',
     basicInfo: 'Basic Information',
     clusterInfo: 'Cluster Information',
     clusterName: 'Cluster Name',
