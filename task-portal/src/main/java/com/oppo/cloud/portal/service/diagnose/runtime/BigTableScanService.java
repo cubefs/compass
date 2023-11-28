@@ -27,6 +27,7 @@ import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.portal.domain.diagnose.Table;
 import com.oppo.cloud.portal.domain.diagnose.runtime.BigTableScan;
 import com.oppo.cloud.portal.domain.diagnose.runtime.TableData;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,12 +83,12 @@ public class BigTableScanService extends RunTimeBaseService<BigTableScan> {
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("扫描表的行数超过%s行的任务", thresholdMap.getOrDefault("threshold", ""));
+        return String.format(MessageSourceUtil.get("BIG_TABLE_SCAN_CONCLUSION_DESC"), thresholdMap.getOrDefault("threshold", ""));
     }
 
     @Override
     public String generateItemDesc() {
-        return "大表扫描分析";
+        return MessageSourceUtil.get("BIG_TABLE_SCAN_ANALYSIS");
     }
 
     @Override

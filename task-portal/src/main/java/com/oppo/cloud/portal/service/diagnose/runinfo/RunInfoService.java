@@ -24,6 +24,7 @@ import com.oppo.cloud.portal.domain.diagnose.DiagnoseReport;
 import com.oppo.cloud.portal.domain.diagnose.info.ClusterInfo;
 import com.oppo.cloud.portal.domain.diagnose.info.TaskInfo;
 import com.oppo.cloud.portal.service.OpenSearchService;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class RunInfoService {
 
     /**
      * generate report
+     *
      * @param detectorStorage
      * @return
      */
@@ -80,16 +82,16 @@ public class RunInfoService {
             taskInfo.setTaskName(taskApp.getTaskName());
             taskInfo.setFlowName(taskApp.getFlowName());
             taskInfo.setProjectName(taskApp.getProjectName());
-            taskInfo.setMemorySeconds(String.format("%.2f GB·s", taskApp.getMemorySeconds() / 1024 ));
+            taskInfo.setMemorySeconds(String.format("%.2f GB·s", taskApp.getMemorySeconds() / 1024));
             taskInfo.setVcoreSeconds(String.format("%.2f vcore·s", taskApp.getVcoreSeconds()));
             taskInfo.setAppTime(
                     DateUtil.timeSimplify(((taskApp.getFinishTime() == null ? 0 : taskApp.getFinishTime().getTime())
                             - (taskApp.getStartTime() == null ? 0 : taskApp.getStartTime().getTime())) / 1000.0));
             taskInfo.setApplicationId(taskApp.getApplicationId());
             if (taskApp.getCategories() == null || taskApp.getCategories().size() == 0) {
-                taskInfo.setCategories(Collections.singletonList("正常"));
+                taskInfo.setCategories(Collections.singletonList(MessageSourceUtil.get("RUN_INFO_CATEGORY_NORMAL")));
             } else {
-                taskInfo.setCategories(AppCategoryEnum.getAppCategoryCh(taskApp.getCategories()));
+                taskInfo.setCategories(AppCategoryEnum.getLangMsgByCategories(taskApp.getCategories()));
             }
             runInfo.setEnv(detectorStorage.getEnv());
         } catch (Exception e) {

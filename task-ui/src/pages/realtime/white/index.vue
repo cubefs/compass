@@ -4,7 +4,7 @@ import type { FormRules } from 'element-plus'
 import Copy from '~/components/Copy.vue'
 import { post } from '~/utils/request'
 import PageBar from '~/components/PageBar.vue'
-
+const { t } = useI18n()
 const { proxy } = getCurrentInstance()
 let visible = $ref(false)
 const formInline: any = $ref({
@@ -19,9 +19,9 @@ const addForm: any = $ref({
   taskName: '',
 })
 const searchInfo = $ref([
-  { label: '工作流', value: 'flowName' },
-  { label: '实例', value: 'taskName' },
-  { label: '项目', value: 'projectName' },
+  { label: t('common.flowName'), value: 'flowName' },
+  { label: t('common.taskName'), value: 'taskName' },
+  { label: t('common.projectName'), value: 'projectName' },
 ])
 const pageQuery = $ref({
   page: 1,
@@ -34,13 +34,13 @@ const tableData = $ref({
 let selectedRow = $ref([])
 const rules = $ref<FormRules>({
   flowName: [
-    { required: true, message: '请输入', trigger: 'change' },
+    { required: true, message: t('common.inputPlaceholder'), trigger: 'change' },
   ],
   projectName: [
-    { required: true, message: '请输入', trigger: 'change' },
+    { required: true, message: t('common.inputPlaceholder'), trigger: 'change' },
   ],
   taskName: [
-    { required: true, message: '请输入', trigger: 'change' },
+    { required: true, message: t('common.inputPlaceholder'), trigger: 'change' },
   ],
 })
 const search = async () => {
@@ -65,7 +65,7 @@ const submit = async (formName: string) => {
     ...addForm,
     component:'realtime'
   })
-  ElMessage.success('添加成功')
+  ElMessage.success(t('common.success'))
   search()
   visible = false
 }
@@ -75,13 +75,13 @@ const cancel = (formName: string) => {
 }
 const remove = async () => {
   if (!selectedRow.length)
-    return ElMessage.warning('请先选择白名单')
+    return ElMessage.warning(t('white.selectWarning'))
   await post('/api/v1/blocklist/del', {
     blocklistIds: selectedRow.map(item => item.id),
   }, {
-    confirmTips: '确认删除？',
+    confirmTips: t('white.confirmTips'),
   })
-  ElMessage.success('删除成功')
+  ElMessage.success(t('common.success'))
   search()
 }
 onMounted(() => {
@@ -93,29 +93,29 @@ onMounted(() => {
   <el-dialog
     v-if="visible"
     v-model="visible"
-    title="添加白名单"
+    :title="$t('common.addBlocklist')"
     width="500px"
   >
-    <el-form ref="formRef" :model="addForm" :rules="rules" label-width="80px">
+    <el-form ref="formRef" :model="addForm" :rules="rules" label-width="30%">
       <el-form-item v-for="item in searchInfo" :key="item.value" :label="`${item.label}：`" :prop="item.value">
         <el-input v-model="addForm[item.value]" />
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="cancel('formRef')">取消</el-button>
+        <el-button @click="cancel('formRef')">{{ $t('common.cancel') }}</el-button>
         <el-button type="primary" @click="submit('formRef')">
-          确认
+          {{ $t('common.confirm') }}
         </el-button>
       </span>
     </template>
   </el-dialog>
   <el-card>
     <div class="title">
-      白名单列表
+      {{ $t('white.blocklist') }}
       <el-tooltip
         effect="dark"
-        content="加入白名单，任务将不受诊断规则检测"
+        :content="$t('white.tooltip')"
         placement="top-start"
       >
         <el-icon><QuestionFilled /></el-icon>
@@ -127,10 +127,10 @@ onMounted(() => {
       </el-form-item>
     </el-form>
     <el-button type="primary" @click="remove">
-      批量移除
+      {{ $t('white.remove') }}
     </el-button>
     <el-button type="primary" @click="visible = true">
-      添加
+      {{ $t('white.add') }}
     </el-button>
     <el-card shadow="never" class="m-t-5">
       <el-table
@@ -159,6 +159,9 @@ onMounted(() => {
 }
 :deep(.el-button--primary){
   background:#00bfbf !important;
+}
+.el-input {
+    width: 80%;
 }
 </style>
 

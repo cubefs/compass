@@ -52,7 +52,7 @@ onMounted(() => {
 
 <template>
   <el-card>
-    项目
+    {{ $t('report.project') }}
     <el-select @change="getStatistics" v-model="projectName">
       <el-option
         v-for="item in projectList"
@@ -65,9 +65,9 @@ onMounted(() => {
 
   <el-card class="m-t-5">
     <div m-b-5>
-      <span style="background: #f2f2f2; padding: 2px; font-size: 14px;">最近数据周期：{{ dayjs().format('YYYY-MM-DD') }}</span>
+      <span style="background: #f2f2f2; padding: 2px; font-size: 14px;">{{ $t('report.latestPeriod') }} {{ dayjs().format('YYYY-MM-DD') }}</span>
       <el-button type="primary" class="f-r" @click="getStatistics">
-        刷新
+        {{ $t('report.refresh') }}
       </el-button>
     </div>
     <el-scrollbar>
@@ -78,13 +78,13 @@ onMounted(() => {
         >
           <div class="report-card-left">
             <div class="left-first">
-              诊断任务数
+              {{ $t('report.abnormalJobNum') }}
             </div>
             <div class="left-second">
               {{ sData.abnormalJobNum }}
             </div>
             <div class="left-third">
-              <span m-r-3 style="color:#7f7f7f">活跃任务数</span><span>{{ sData.jobNum }}</span>
+              <span m-r-3 style="color:#7f7f7f">{{ $t('report.jobNum') }}</span><span>{{ sData.jobNum }}</span>
             </div>
           </div>
           <CardRight :chain-ratio="sData.abnormalJobNumChainRatio" :ratio="sData.abnormalJobNumRatio" :day-on-day="sData.abnormalJobNumDayOnDay" />
@@ -95,13 +95,13 @@ onMounted(() => {
         >
           <div class="report-card-left">
             <div class="left-first">
-              诊断实例数
+              {{ $t('report.abnormalJobInstanceNum') }}
             </div>
             <div class="left-second">
               {{ sData.abnormalJobInstanceNum }}
             </div>
             <div class="left-third">
-              <span m-r-3 style="color:#7f7f7f">运行实例数</span><span>{{ sData.jobInstanceNum }}</span>
+              <span m-r-3 style="color:#7f7f7f">{{ $t('report.jobInstanceNum') }}</span><span>{{ sData.jobInstanceNum }}</span>
             </div>
           </div>
           <CardRight :chain-ratio="sData.abnormalJobInstanceNumChainRatio" :ratio="sData.abnormalJobInstanceNumRatio" :day-on-day="sData.abnormalJobInstanceNumDayOnDay" />
@@ -112,13 +112,13 @@ onMounted(() => {
         >
           <div class="report-card-left">
             <div class="left-first">
-              任务CPU消耗数
+              {{ $t('report.abnormalJobCpuNum') }}
             </div>
             <div class="left-second">
               {{ sData.abnormalJobCpuNum }}&nbsp;<span class="unit">{{ sData.cpuUnit }}</span>
             </div>
             <div class="left-third">
-              <span m-r-3 style="color:#7f7f7f">总CPU消耗数</span><span>{{ sData.jobCpuNum }}</span>
+              <span m-r-3 style="color:#7f7f7f">{{ $t('report.jobCpuNum') }}</span><span>{{ sData.jobCpuNum }}</span>
             </div>
           </div>
           <CardRight :chain-ratio="sData.abnormalJobCpuNumChainRatio" :ratio="sData.abnormalJobCpuNumRatio" :day-on-day="sData.abnormalJobCpuNumDayOnDay" :unit="sData.cpuUnit" />
@@ -129,13 +129,13 @@ onMounted(() => {
         >
           <div class="report-card-left">
             <div class="left-first">
-              任务内存消耗数
+              {{ $t('report.abnormalJobMemoryNum') }}
             </div>
             <div class="left-second">
               {{ sData.abnormalJobMemoryNum }}&nbsp;<span class="unit">{{ sData.memoryUnit }}</span>
             </div>
             <div class="left-third">
-              <span m-r-3 style="color:#7f7f7f">总内存消耗数</span><span>{{ sData.jobMemoryNum }}</span>
+              <span m-r-3 style="color:#7f7f7f">{{ $t('report.jobMemoryNum') }}</span><span>{{ sData.jobMemoryNum }}</span>
             </div>
           </div>
           <CardRight :chain-ratio="sData.abnormalJobMemoryNumChainRatio" :ratio="sData.abnormalJobMemoryNumRatio" :day-on-day="sData.abnormalJobMemoryNumDayOnDay" :unit="sData.memoryUnit" />

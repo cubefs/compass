@@ -18,6 +18,7 @@ package com.oppo.cloud.portal.service.diagnose.runerror;
 
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 import com.oppo.cloud.portal.domain.base.Conclusion;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,12 +34,11 @@ public class ShuffleFailedService extends RunErrorBaseService {
 
     @Override
     public String generateItemDesc() {
-        return "shuffle失败分析";
+        return MessageSourceUtil.get("SHUFFLE_FAILED_ANALYSIS");
     }
 
     @Override
     public Conclusion generateConclusion() {
-        String conclusion = "shuffle过程发生错误，请根据关键日志和对应的诊断建议进行问题修改";
-        return new Conclusion(conclusion, "抓取Driver/Executor中shuffle错误的相关日志");
+        return new Conclusion(MessageSourceUtil.get("SHUFFLE_FAILED_CONCLUSION"), MessageSourceUtil.get("SHUFFLE_FAILED_CONCLUSION_DESC"));
     }
 }

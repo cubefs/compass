@@ -31,6 +31,7 @@ import com.oppo.cloud.portal.domain.diagnose.IsAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.resources.MemoryWaste;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -101,17 +102,12 @@ public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
 
     @Override
     public String generateConclusionDesc(IsAbnormal data) {
-        return String.format(
-                "内存浪费计算规则:<br/> &nbsp;  总内存时间 = executor配置内存大小 * executor数量 * app运行时间 <br/> &nbsp;  执行消耗内存时间 = sum(executor峰值内存 * executor执行时间) <br/>"
-                        +
-                        "&nbsp;  浪费内存的百分比 = (总内存时间-执行消耗内存时间)/总内存时间" +
-                        "<br/>&nbsp;  当内存浪费占比超过%s, 即判断发生内存浪费",
-                data.getVars().get("threshold"));
+        return String.format(MessageSourceUtil.get("MEMORY_WASTE_CONCLUSION_DESC"), data.getVars().get("threshold"));
     }
 
     @Override
     public String generateItemDesc() {
-        return "内存浪费分析";
+        return MessageSourceUtil.get("MEMORY_WASTE_ANALYSIS");
     }
 
     /**
@@ -189,14 +185,14 @@ public class MemoryWasteService extends ResourceBaseService<MemoryWaste> {
      * @param chart
      */
     private void buildChartInfo(Chart<MetricInfo> chart) {
-        chart.setDes("每个executor的峰值内存和最大内存分布图");
+        chart.setDes(MessageSourceUtil.get("MEMORY_WASTE_CHART_DESC"));
         chart.setUnit("GB");
         chart.setX("executor id");
-        chart.setY("内存");
+        chart.setY(MessageSourceUtil.get("MEMORY_WASTE_CHART_Y"));
 
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("free", new Chart.ChartInfo("空闲内存", UIUtil.PLAIN_COLOR));
-        dataCategory.put("peak", new Chart.ChartInfo("峰值内存", UIUtil.KEY_COLOR));
+        dataCategory.put("free", new Chart.ChartInfo(MessageSourceUtil.get("MEMORY_WASTE_CHART_FREE"), UIUtil.PLAIN_COLOR));
+        dataCategory.put("peak", new Chart.ChartInfo(MessageSourceUtil.get("MEMORY_WASTE_CHART_PEAK"), UIUtil.KEY_COLOR));
 
         chart.setDataCategory(dataCategory);
     }

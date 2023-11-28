@@ -25,6 +25,7 @@ import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.HdfsStuck;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import org.springframework.stereotype.Service;
 
@@ -51,11 +52,12 @@ public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
         for (JSONObject data : (List<JSONObject>) detectorResult.getData()) {
             hdfsStuckAbnormalList.add(data.toJavaObject(HdfsStuckAbnormal.class));
         }
+        hdfsStuck.setAbnormal(detectorResult.getAbnormal() != null && detectorResult.getAbnormal());
         List<Chart<MetricInfo>> chartList = hdfsStuck.getChartList();
         // Stage chart
         Chart<MetricInfo> chartSummary = new Chart<>();
         buildSummaryChartInfo(chartSummary);
-        chartSummary.setDes("每个Stage中任务处理数据速率的中位值和最小值的比值的分布图");
+        chartSummary.setDes(MessageSourceUtil.get("HDFS_STUCK_CHART_DESC"));
         List<MetricInfo> metricSummaryList = chartSummary.getDataList();
         List<String> info = new ArrayList<>();
         for (HdfsStuckAbnormal hdfsStuckAbnormal : hdfsStuckAbnormalList) {
@@ -81,13 +83,13 @@ public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("计算Stage中每个任务的处理速率(读取数据量与耗时的比值), 当处理速率的中位值与最小值的比大于%s,即判定为HDFS卡顿",
+        return String.format(MessageSourceUtil.get("HDFS_STUCK_CONCLUSION_DESC"),
                 thresholdMap.getOrDefault("threshold", "10"));
     }
 
     @Override
     public String generateItemDesc() {
-        return "HDFS卡顿分析";
+        return MessageSourceUtil.get("HDFS_STUCK_ANALYSIS");
     }
 
     @Override
@@ -102,10 +104,10 @@ public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
         chart.setX("task id");
         chart.setY("inputSize/duration");
         chart.setUnit("MB/s");
-        Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("min", new Chart.ChartInfo("最小值", UIUtil.ABNORMAL_COLOR));
-        dataCategory.put("median", new Chart.ChartInfo("中位值", UIUtil.KEY_COLOR));
-        dataCategory.put("normal", new Chart.ChartInfo("正常值", UIUtil.NORMAL_COLOR));
+        Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(4);
+        dataCategory.put("min", new Chart.ChartInfo(MessageSourceUtil.get("HDFS_STUCK_CHART_MIN"), UIUtil.ABNORMAL_COLOR));
+        dataCategory.put("median", new Chart.ChartInfo(MessageSourceUtil.get("HDFS_STUCK_CHART_MEDIAN"), UIUtil.KEY_COLOR));
+        dataCategory.put("normal", new Chart.ChartInfo(MessageSourceUtil.get("HDFS_STUCK_CHART_NORMAL"), UIUtil.NORMAL_COLOR));
 
         chart.setDataCategory(dataCategory);
     }
@@ -117,7 +119,7 @@ public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
         Chart<MetricInfo> chart = new Chart<>();
         buildChartInfo(chart);
 
-        chart.setDes(String.format("Job[%s] Stage[%s]每个task读取数据量与耗时比值的分布情况(%s)", hdfsStuckAbnormal.getJobId(),
+        chart.setDes(String.format(MessageSourceUtil.get("HDFS_STUCK_CHART_TASK_DESC"), hdfsStuckAbnormal.getJobId(),
                 hdfsStuckAbnormal.getStageId(), chart.getUnit()));
         long taskId = 0;
         long jobId = 0;
@@ -145,10 +147,7 @@ public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
                 median = hdfsStuckGraph.getPercent();
             }
         }
-        info.add(String.format("job[<span style=\"color: #e24a4a;\">%d</span>].stage[<span style=\"color: " +
-                "#e24a4a;\">%d</span>].task[<span style=\"color: #e24a4a;\">%d</span>]处理速率为<span style=\"color: #e24a4a;\">%.2f</span>MB/s 中位值为%.2fMB/s",
-                jobId,
-                stageId, taskId, min, median));
+        info.add(String.format(MessageSourceUtil.get("HDFS_STUCK_CONCLUSION_INFO"), jobId, stageId, taskId, min, median));
         return chart;
     }
 
@@ -160,8 +159,8 @@ public class HdfsStuckService extends RunTimeBaseService<HdfsStuck> {
         chart.setY("median/min");
         chart.setUnit("");
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("normal", new Chart.ChartInfo("数据正常Stage", UIUtil.NORMAL_COLOR));
-        dataCategory.put("abnormal", new Chart.ChartInfo("数据卡顿Stage", UIUtil.ABNORMAL_COLOR));
+        dataCategory.put("normal", new Chart.ChartInfo(MessageSourceUtil.get("HDFS_STUCK_CHART_STAGE_NORMAL"), UIUtil.NORMAL_COLOR));
+        dataCategory.put("abnormal", new Chart.ChartInfo(MessageSourceUtil.get("HDFS_STUCK_CHART_STAGE_ABNORMAL"), UIUtil.ABNORMAL_COLOR));
 
         chart.setDataCategory(dataCategory);
     }

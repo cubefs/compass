@@ -27,6 +27,7 @@ import com.oppo.cloud.common.domain.eventlog.config.GlobalSortConfig;
 import com.oppo.cloud.common.util.DateUtil;
 import com.oppo.cloud.portal.domain.diagnose.Table;
 import com.oppo.cloud.portal.domain.diagnose.runtime.GlobalSort;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import org.springframework.stereotype.Service;
 
@@ -63,9 +64,7 @@ public class GlobalSortService extends RunTimeBaseService<GlobalSort> {
             globalSortTable.setDuration(DateUtil.timeSimplify(globalSortAbnormal.getDuration() / 1000.0));
             globalSortTableList.add(globalSortTable);
             conf = config.getGlobalSortConfig();
-            infos.add(String.format("job[<span style=\"color: #e24a4a;\">%d</span>].stage[<span style=\"color: " +
-                    "#e24a4a;\">%d</span>]只有一个task[<span style=\"color: #e24a4a;\">%d</span>]任务,处理的数据量为<span " +
-                    "style=\"color: #e24a4a;\">%s行</span>,运行时长为<span style=\"color: #e24a4a;\">%s</span>",
+            infos.add(String.format(MessageSourceUtil.get("GLOBAL_SORT_CONCLUSION_INFO"),
                     globalSortAbnormal.getJobId(),
                     globalSortAbnormal.getStageId(), globalSortAbnormal.getTaskId(), globalSortTable.getDataOfColumns(),
                     globalSortTable.getDuration()));
@@ -74,23 +73,19 @@ public class GlobalSortService extends RunTimeBaseService<GlobalSort> {
         globalSort.getVars().put("taskCount", String.valueOf(conf.getTaskCount() == null ? 1 : conf.getTaskCount()));
         globalSort.getVars().put("records",
                 UnitUtil.transferRows(conf.getRecords() == null ? 50000000 : conf.getRecords()));
-        globalSort.getVars().put("filterMin", String.valueOf(conf.getDuration() == null ? 30 : conf.getDuration() / (1000*60)));
+        globalSort.getVars().put("filterMin", String.valueOf(conf.getDuration() == null ? 30 : conf.getDuration() / (1000 * 60)));
         return globalSort;
     }
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("诊断规则：<br/>" +
-                "&nbsp;  1、任务中有一个stage只生成%s个task<br/>" +
-                "&nbsp;  2、处理的数据量超过%s行<br/>" +
-                "&nbsp;  3、运行时长超过%s分钟<br/>" +
-                "&nbsp;  以上条件都满足则判定为全局排序异常", thresholdMap.get("taskCount"), thresholdMap.get("records"),
-                thresholdMap.get("filterMin"));
+        return String.format(MessageSourceUtil.get("GLOBAL_SORT_CONCLUSION_DESC"), thresholdMap.get("taskCount"),
+                thresholdMap.get("records"), thresholdMap.get("filterMin"));
     }
 
     @Override
     public String generateItemDesc() {
-        return "全局排序异常分析";
+        return MessageSourceUtil.get("GLOBAL_SORT_ANALYSIS");
     }
 
     @Override

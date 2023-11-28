@@ -36,10 +36,10 @@ onMounted(async () => {
 <template>
   <el-card>
     <p class="detail-title">
-      Application诊断报告详情
+      {{ $t('application.applicationDetails') }}
     </p>
     <div v-if="detailInfo.runInfo">
-      <ItemWrapper title="诊断类型" class="m-b-5">
+      <ItemWrapper :title="$t('common.diagnosisType')" class="m-b-5">
         <div>
           <span v-for="(item, index) in detailInfo.runInfo.taskInfo.categories" :key="item" class="category-card"
             :title="item" :style="{ 'border-left': `3px solid ${cloudTheme[index]}` }">

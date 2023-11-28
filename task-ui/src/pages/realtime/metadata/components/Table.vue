@@ -2,6 +2,7 @@
 import { ElMessage } from 'element-plus'
 import Copy from '~/components/Copy.vue'
 import { post } from '~/utils/request'
+const { t } = useI18n()
 const props = defineProps({
   data: {
     type: Array,
@@ -15,14 +16,14 @@ const props = defineProps({
 const emit = defineEmits(['search'])
 const router = useRouter()
 const tableInfo = $ref([
-  { label: '项目', prop: 'projectName', copy: true },
-  { label: '工作流', prop: 'flowName', copy: true },
-  { label: '实例', prop: 'taskName', copy: true },
-  { label: '作业名', prop: 'jobName', copy: true },
-  { label: 'Tracking Url', prop: 'flinkTrackUrl', copy: true },
-  { label: '运行开始时间', prop: 'startTime' },
-  { label: '创建人', prop: 'username' },
-  { label: '状态', prop: 'taskState' },
+  { label: t('common.projectName'), prop: 'projectName', copy: true },
+  { label: t('common.flowName'), prop: 'flowName', copy: true },
+  { label: t('common.taskName'), prop: 'taskName', copy: true },
+  { label: t('common.jobName'), prop: 'jobName', copy: true },
+  { label: t('common.flinkTrackUrl'), prop: 'flinkTrackUrl', copy: true },
+  { label: t('common.startTime'), prop: 'startTime' },
+  { label: t('common.creator'), prop: 'username' },
+  { label: t('common.taskState'), prop: 'taskState' },
   // { label: '', prop: '' },
 ])
 const findColor = (value: String) => {
@@ -31,7 +32,7 @@ const findColor = (value: String) => {
 }
 const delMeta = async (row) => {
   await post('/api/flink/deleteMetadata', row)
-  ElMessage.success('删除成功')
+  ElMessage.success(t('common.success'))
   emit('search')
 }
 </script>
@@ -49,11 +50,11 @@ const delMeta = async (row) => {
           <span v-else>{{ scope.row[item.prop] }}</span>
         </template>
       </el-table-column>
-      <el-table-column :key="123" :label="'操作'">
+      <el-table-column :key="123" :label="t('common.operate')">
         <template #default="scope">
         <span>
           <el-button type="primary" text @click="delMeta(scope.row)">
-            删除
+            {{ $t('common.delete') }}
           </el-button>
         </span>
       </template>

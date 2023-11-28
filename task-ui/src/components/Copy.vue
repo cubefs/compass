@@ -3,6 +3,7 @@ import {
   DocumentCopy,
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+const { t } = useI18n()
 const props = defineProps({
   value: {
     type: String,
@@ -12,8 +13,8 @@ const props = defineProps({
     type: Object,
     default: () => {
       return {
-        successMessage: '复制成功',
-        title: '点击复制',
+        successMessage: 'Success',
+        title: 'Copy',
       }
     },
   },
@@ -28,7 +29,7 @@ const contentCopy = () => {
   const bool = document.execCommand('copy')
   document.body.removeChild(input)
   if (bool)
-    ElMessage.success(props.config.successMessage)
+    ElMessage.success(t('common.success'))
 }
 </script>
 

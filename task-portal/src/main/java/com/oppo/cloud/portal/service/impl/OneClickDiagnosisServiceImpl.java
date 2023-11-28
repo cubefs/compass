@@ -39,6 +39,7 @@ import com.oppo.cloud.portal.domain.task.TaskAppInfo;
 import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.JobService;
 import com.oppo.cloud.portal.service.OneClickDiagnosisService;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -91,7 +92,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
         TaskApp taskApp = this.buildTaskApp(applicationId);
         if (!taskApp.getApplicationType().equals(ApplicationType.SPARK.getValue()) &&
                 !taskApp.getApplicationType().equals(ApplicationType.MAPREDUCE.getValue())) {
-            throw new Exception(String.format("暂不支持%s类型的任务", taskApp.getApplicationType()));
+            throw new Exception(String.format(MessageSourceUtil.get("UNSUPPORTED_TYPE"), taskApp.getApplicationType()));
         }
 
         // Check if the application is diagnosing
@@ -130,7 +131,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
             DiagnoseResult diagnoseResult = new DiagnoseResult();
             diagnoseResult.setStatus(ProgressState.SUCCEED.toString());
             diagnoseResult.setTaskAppInfo(taskAppInfo);
-            diagnoseResult.getProcessInfoList().add(new DiagnoseResult.ProcessInfo("该ApplicationId已经诊断完成", 100));
+            diagnoseResult.getProcessInfoList().add(new DiagnoseResult.ProcessInfo(MessageSourceUtil.get("APP_DIAGNOSIS_DONE"), 100));
             return diagnoseResult;
         }
         return null;
@@ -239,22 +240,22 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
                     if (count != 0) {
                         speed = 100 * Double.parseDouble(String.format("%.2f", process / (double) count));
                     }
-                    msg = String.format("%s 诊断中, 文件总数:%d, 已解析文件数:%d", logType.getDesc(), count, process);
+                    msg = String.format(MessageSourceUtil.get("APP_DIAGNOSIS_PROCESSING"), logType.getDesc(), count, process);
                     processInfoList.add(new DiagnoseResult.ProcessInfo(msg, speed));
                     break;
                 case SUCCEED:
-                    msg = String.format("%s 诊断完成", logType.getDesc());
+                    msg = String.format(MessageSourceUtil.get("APP_DIAGNOSIS_SUCCEED"), logType.getDesc());
                     processInfoList.add(new DiagnoseResult.ProcessInfo(msg, 100));
                     break;
                 case FAILED:
-                    msg = String.format("%s 诊断失败, 请联系系统管理员", logType.getDesc());
+                    msg = String.format(MessageSourceUtil.get("APP_DIAGNOSIS_FAILED"), logType.getDesc());
                     processInfoList.add(new DiagnoseResult.ProcessInfo(msg, 100));
                     break;
                 default:
                     break;
             }
         } else {
-            processInfoList.add(new DiagnoseResult.ProcessInfo(applicationId + "发送诊断中, 请稍后", 0));
+            processInfoList.add(new DiagnoseResult.ProcessInfo(applicationId + MessageSourceUtil.get("APP_DIAGNOSIS_SENDING"), 0));
         }
         return state;
     }
@@ -306,7 +307,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
         diagnoseResult.setTaskAppInfo(taskAppInfo);
         diagnoseResult.setStatus(ProgressState.PROCESSING.toString());
         List<DiagnoseResult.ProcessInfo> processInfoList = new ArrayList<>();
-        processInfoList.add(new DiagnoseResult.ProcessInfo(taskApp.getApplicationId() + "发送诊断中, 请稍后", 0));
+        processInfoList.add(new DiagnoseResult.ProcessInfo(taskApp.getApplicationId() + MessageSourceUtil.get("APP_DIAGNOSIS_SENDING"), 0));
         diagnoseResult.setProcessInfoList(processInfoList);
         return diagnoseResult;
     }

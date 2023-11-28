@@ -34,6 +34,10 @@ axios.interceptors.request.use(
     if (token) {
       config.headers['token'] = token;
     }
+    let language = localStorage.getItem('language');
+    if (language) {
+      config.headers['language'] = language;
+    }
     return config;
   },
   error => {

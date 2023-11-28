@@ -16,10 +16,9 @@
 
 package com.oppo.cloud.common.constant;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import org.springframework.context.i18n.LocaleContextHolder;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -30,24 +29,27 @@ public enum JobCategoryEnum {
     /**
      * Failed to run.
      */
-    executionFailed("运行失败", "执行失败的任务"),
+    executionFailed("运行失败", "executionFailed", "执行失败的任务"),
 
-    endTimeAbnormal("基线时间异常", "相对于历史正常结束时间，提前结束或者晚点结束的任务"),
+    endTimeAbnormal("基线时间异常", "endTimeAbnormal", "相对于历史正常结束时间，提前结束或者晚点结束的任务"),
 
-    durationAbnormal("基线耗时异常", "相对于历史正常运行时长，运行时间过长或过短的任务"),
+    durationAbnormal("基线耗时异常", "durationAbnormal", "相对于历史正常运行时长，运行时间过长或过短的任务"),
 
-    firstFailed("首次失败", "重试次数大于1的成功任务"),
+    firstFailed("首次失败", "firstFailed", "重试次数大于1的成功任务"),
 
-    alwaysFailed("长期失败", "近10天一直失败的任务"),
+    alwaysFailed("长期失败", "alwaysFailed", "近10天一直失败的任务"),
 
-    durationLong("运行耗时长", "运行时长超过2个小时");
+    durationLong("运行耗时长", "durationLong", "运行时长超过2个小时");
 
-    private final String msg;
+    private final String zh;
+    private final String en;
     private final String des;
 
     private static final Map<String, JobCategoryEnum> MAP;
-    JobCategoryEnum(String msg, String des) {
-        this.msg = msg;
+
+    JobCategoryEnum(String zh, String en, String des) {
+        this.zh = zh;
+        this.en = en;
         this.des = des;
     }
 
@@ -63,68 +65,86 @@ public enum JobCategoryEnum {
         return des;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getZh() {
+        return zh;
     }
 
-
+    public String getEn() {
+        return en;
+    }
 
     /**
      * Get the Chinese list of job exception types.
+     *
      * @return
      */
-    public static List<String> getAllAppCategoryOfChina() {
+    public static List<String> getAllLangMsg() {
         List<String> res = new ArrayList<>();
         for (JobCategoryEnum jobCategoryEnum : JobCategoryEnum.values()) {
-            res.add(jobCategoryEnum.getMsg());
+            if (Locale.SIMPLIFIED_CHINESE.getLanguage().equals(LocaleContextHolder.getLocale().getLanguage())) {
+                res.add(jobCategoryEnum.getZh());
+            } else {
+                res.add(jobCategoryEnum.getEn());
+            }
         }
         return res;
     }
 
+
     /**
-     * Get the job exception type and get the Chinese list in the order of the enum.
-     *
-     * @param categoryList
-     * @return
+     * Get the category by language message.
      */
-    public static List<String> getJobCategoryCh(List<String> categoryList) {
+    public static List<String> getCategoryByLangMsg(List<String> categoryList) {
         List<String> res = new ArrayList<>();
         if (categoryList == null) {
             return res;
         }
         for (JobCategoryEnum jobCategory : JobCategoryEnum.values()) {
-            if (categoryList.contains(jobCategory.name())) {
-                res.add(jobCategory.getMsg());
+            String languageMsg;
+            if (Locale.SIMPLIFIED_CHINESE.equals(LocaleContextHolder.getLocale())) {
+                languageMsg = jobCategory.getZh();
+            } else {
+                languageMsg = jobCategory.getEn();
             }
-        }
-        return res;
-    }
-
-    /**
-     * Get the job exception type and get the English list in the order of the enum.
-     *
-     * @param categoryChList
-     * @return
-     */
-    public static List<String> getJobCategoryEn(List<String> categoryChList) {
-        List<String> res = new ArrayList<>();
-        if (categoryChList == null) {
-            return res;
-        }
-        for (JobCategoryEnum jobCategory : JobCategoryEnum.values()) {
-            if (categoryChList.contains(jobCategory.getMsg())) {
+            if (categoryList.contains(languageMsg)) {
                 res.add(jobCategory.name());
             }
+
         }
         return res;
     }
 
     /**
-     * Get the message of job exception types.
+     * Get language message by categories.
      */
-    public static String getJobNameMsg(String category) {
+    public static List<String> getLangMsgByCategories(List<String> categoryList) {
+        List<String> res = new ArrayList<>();
+        if (categoryList == null) {
+            return res;
+        }
+        for (String category : categoryList) {
+            if (!MAP.containsKey(category)) {
+                continue;
+            }
+            if (Locale.SIMPLIFIED_CHINESE.getLanguage().equals(LocaleContextHolder.getLocale().getLanguage())) {
+                res.add(MAP.get(category).getZh());
+            } else {
+                res.add(MAP.get(category).getEn());
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Get language message by category.
+     */
+    public static String getLangMsgByCategory(String category) {
         if (MAP.containsKey(category)) {
-            return MAP.get(category).getMsg();
+            if (Locale.SIMPLIFIED_CHINESE.getLanguage().equals(LocaleContextHolder.getLocale().getLanguage())) {
+                return MAP.get(category).getZh();
+            } else {
+                return MAP.get(category).getEn();
+            }
         }
         return null;
     }

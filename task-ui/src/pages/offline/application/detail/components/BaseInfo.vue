@@ -27,32 +27,32 @@ const groupedEnv = computed(() => {
 <template>
   <div>
     <div class="item-title">
-      基本信息
+      {{ $t('application.basicInfo') }}
     </div>
     <div style="border-left: 1px solid #d7d7d7; border-right: 1px solid #d7d7d7;">
       <div class="text-group">
-        <span class="text">applicationID: &nbsp;{{ info.taskInfo?.applicationId || '-' }}</span>
-        <span class="text">任务流: &nbsp;{{ info.taskInfo?.flowName || '-' }}</span>
-        <span class="text">实例: &nbsp;{{ info.taskInfo?.taskName || '-' }}</span>
+        <span class="text">{{ $t('common.applicationId') }}: &nbsp;{{ info.taskInfo?.applicationId || '-' }}</span>
+        <span class="text">{{ $t('common.flowName') }}: &nbsp;{{ info.taskInfo?.flowName || '-' }}</span>
+        <span class="text">{{ $t('common.taskName') }}: &nbsp;{{ info.taskInfo?.taskName || '-' }}</span>
       </div>
       <div class="text-group">
-        <span class="text">运行耗时: &nbsp;{{ info.taskInfo?.appTime || '-' }}</span>
-        <span class="text">{{ `内存消耗: &nbsp;${info.taskInfo?.memorySeconds}` || '-' }}</span>
-        <span class="text">{{ `CPU消耗: &nbsp;${info.taskInfo?.vcoreSeconds}` || '-' }}</span>
+        <span class="text">{{ $t('common.duration') }}: &nbsp;{{ info.taskInfo?.appTime || '-' }}</span>
+        <span class="text">{{ $t('common.memorySeconds') }}: &nbsp;{{ info.taskInfo?.memorySeconds || '-' }}</span>
+        <span class="text">{{ $t('common.vcoreSeconds') }}: &nbsp;{{ info.taskInfo?.vcoreSeconds || '-' }}</span>
       </div>
     </div>
     <div class="item-title">
-      集群信息
+      {{ $t('application.clusterInfo') }}
     </div>
     <div style="border-left: 1px solid #d7d7d7; border-right: 1px solid #d7d7d7;">
       <div class="text-group">
-        <span class="text">集群名称: &nbsp;{{ info.clusterInfo?.clusterName || '-' }}</span>
-        <span class="text">执行队列: &nbsp;{{ info.clusterInfo?.executeQueue || '-' }}</span>
-        <span class="text">执行用户: &nbsp;{{ info.clusterInfo?.executeUser || '-' }}</span>
+        <span class="text">{{ $t('application.clusterName') }}: &nbsp;{{ info.clusterInfo?.clusterName || '-' }}</span>
+        <span class="text">{{ $t('application.queue') }}: &nbsp;{{ info.clusterInfo?.executeQueue || '-' }}</span>
+        <span class="text">{{ $t('application.user') }}: &nbsp;{{ info.clusterInfo?.executeUser || '-' }}</span>
       </div>
     </div>
     <div class="item-title">
-      运行参数
+      {{ $t('application.environment') }}
     </div>
     <div style="border: 1px solid #d7d7d7; border-top: none;">
       <div class="text-group" v-for="(group, index) in groupedEnv" :key="index">

@@ -12,15 +12,16 @@ const props = defineProps({
     default: () => [],
   },
 })
+const { t } = useI18n()
 const router = useRouter()
 const tableInfo = $ref([
-  { label: 'applicationID', prop: 'applicationId', width: 300, copy: true },
-  { label: '工作流', prop: 'flowName', copy: true },
-  { label: '实例', prop: 'taskName', copy: true },
-  { label: '执行周期', prop: 'executionDate' },
-  { label: '运行耗时', prop: 'duration' },
-  { label: '资源消耗', prop: 'resource' },
-  { label: '创建人', prop: 'users' },
+  { label: t('common.applicationId'), prop: 'applicationId', width: 300, copy: true },
+  { label: t('common.flowName'), prop: 'flowName', copy: true },
+  { label: t('common.taskName'), prop: 'taskName', copy: true },
+  { label: t('common.executionDate'), prop: 'executionDate' },
+  { label: t('common.duration'), prop: 'duration' },
+  { label: t('common.resource'), prop: 'resource' },
+  { label: t('common.creator'), prop: 'users' },
 ])
 const findColor = (value: String) => {
   const result = props.colorMap.find(item => item.name === value)
@@ -32,7 +33,7 @@ const addWhite = async (row) => {
     projectName: row.projectName,
     taskName: row.taskName,
   })
-  ElMessage.success('添加成功')
+  ElMessage.success(t('common.success'))
 }
 const goReport = (row) => {
   const routeData = router.resolve({
@@ -65,7 +66,7 @@ const goReport = (row) => {
         <template #default="scope">
           <div class="bottom-bar">
             <div>
-              <span>诊断类型：</span>
+              <span>{{ $t('common.diagnosisType') }}：</span>
               <span
                 v-for="item in scope.row.categories"
                 :key="item"
@@ -78,10 +79,10 @@ const goReport = (row) => {
             </div>
             <div>
               <el-button v-if="scope.row.applicationId" type="primary" text @click="addWhite(scope.row)">
-                添加白名单
+                {{ $t('common.addBlocklist') }}
               </el-button>
               <el-button v-if="scope.row.applicationId" type="primary" text @click="goReport(scope.row)">
-                查看详情
+                {{ $t('common.viewDetails') }}
               </el-button>
             </div>
           </div>

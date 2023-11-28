@@ -33,6 +33,7 @@ import com.oppo.cloud.portal.domain.task.UserResponse;
 import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.FlinkTaskDiagnosisService;
 import com.oppo.cloud.portal.util.HttpUtil;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.search.aggregations.AggregationBuilders;
 import org.opensearch.search.aggregations.Aggregations;
@@ -394,7 +395,7 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
     }
 
     /**
-     *  Get general view trends (memory, CPU, number)
+     * Get general view trends (memory, CPU, number)
      *
      * @param request
      * @return
@@ -430,44 +431,44 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
             totalMemData.forEach(d -> d.setCount(d.getCount() / 1024.0)); // GB
         }
         TrendGraph cpuTrend = new TrendGraph();
-        cpuTrend.setName("CPU消耗趋势");
+        cpuTrend.setName(MessageSourceUtil.get("CPU_USAGE_TREND"));
         cpuTrend.setUnit("core");
 
         LineGraph cpuDecrLine = new LineGraph();
-        cpuDecrLine.setName("可优化CPU数");
+        cpuDecrLine.setName(MessageSourceUtil.get("CPU_OPTIMIZE"));
         cpuDecrLine.setData(cutCoreData);
         cpuTrend.setJobUsage(cpuDecrLine);
 
         LineGraph cpuTotalLine = new LineGraph();
-        cpuTotalLine.setName("总CPU消耗数");
+        cpuTotalLine.setName(MessageSourceUtil.get("CPU_TOTAL_USAGE"));
         cpuTotalLine.setData(totalCoreData);
         cpuTrend.setTotalUsage(cpuTotalLine);
 
         TrendGraph memTrend = new TrendGraph();
-        memTrend.setName("内存消耗趋势");
+        memTrend.setName(MessageSourceUtil.get("MEMORY_USAGE_TREND"));
         memTrend.setUnit("GB");
 
         LineGraph memDecrLine = new LineGraph();
-        memDecrLine.setName("可优化内存数");
+        memDecrLine.setName(MessageSourceUtil.get("MEMORY_OPTIMIZE"));
         memDecrLine.setData(cutMemData);
         memTrend.setJobUsage(memDecrLine);
 
         LineGraph memTotalLine = new LineGraph();
-        memTotalLine.setName("总内存消耗数");
+        memTotalLine.setName(MessageSourceUtil.get("MEMORY_TOTAL_USAGE"));
         memTotalLine.setData(totalMemData);
         memTrend.setTotalUsage(memTotalLine);
 
         TrendGraph jobNumTrend = new TrendGraph();
-        jobNumTrend.setName("任务数趋势");
-        jobNumTrend.setUnit("个");
+        jobNumTrend.setName(MessageSourceUtil.get("JOB_AMOUNT_TREND"));
+        jobNumTrend.setUnit(MessageSourceUtil.get("JOB_AMOUNT_UNIT"));
 
         LineGraph exceptionLine = new LineGraph();
-        exceptionLine.setName("异常任务数");
+        exceptionLine.setName(MessageSourceUtil.get("JOB_AMOUNT_EXCEPTION"));
         exceptionLine.setData(exceptionData);
         jobNumTrend.setJobUsage(exceptionLine);
 
         LineGraph totalNumLine = new LineGraph();
-        totalNumLine.setName("总任务数");
+        totalNumLine.setName(MessageSourceUtil.get("TOTAL_JOB"));
         totalNumLine.setData(totalData);
         jobNumTrend.setTotalUsage(totalNumLine);
 
@@ -503,11 +504,11 @@ public class FlinkTaskDiagnosisServiceImpl implements FlinkTaskDiagnosisService 
         List<? extends Terms.Bucket> buckets = terms == null ? new ArrayList<>() : terms.getBuckets();
 
         DistributionGraph cpuGraph = new DistributionGraph();
-        cpuGraph.setName("CPU资源消耗分布");
+        cpuGraph.setName(MessageSourceUtil.get("CPU_RESOURCE_USAGE_DISTRIBUTION"));
         DistributionGraph memGraph = new DistributionGraph();
-        memGraph.setName("内存资源消耗分布");
+        memGraph.setName(MessageSourceUtil.get("MEMORY_RESOURCE_USAGE_DISTRIBUTION"));
         DistributionGraph numGraph = new DistributionGraph();
-        numGraph.setName("任务数量分布图");
+        numGraph.setName(MessageSourceUtil.get("JOB_AMOUNT_DISTRIBUTION"));
 
         List<DistributionData> cpuList = new ArrayList<>();
         List<DistributionData> memList = new ArrayList<>();

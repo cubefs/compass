@@ -23,6 +23,7 @@ let jobInfo = $ref({
   taskName: '',
 })
 let taskApps = $ref([])
+let tryTimes = $ref([])
 let summary = $ref([])
 let appInfo = $ref([])
 let timeConsuming = $ref({
@@ -40,12 +41,13 @@ let errorLog = $ref({
   name: '',
   conclusion: {},
 })
-const statusMap = ['未处理', '已处理']
+// const statusMap = ['未处理', '已处理']
 const getAppList = async () => {
   const res = await get('/api/v1/job/apps', params)
   tryNumber = Object.keys(res.taskApps)?.length
   jobInfo = res?.jobInfo
   taskApps = Object.values(res?.taskApps) || []
+  tryTimes = Object.keys(res.taskApps) || []
   nextTick(() => {
     activeNames = taskApps.map((item, index) => index)
   })
@@ -122,37 +124,37 @@ onMounted(async () => {
         <div style="margin-bottom: 5px">
           <el-row>
             <el-col :span="4">
-              作业流：{{ jobInfo.flowName }}
+              {{ $t('common.flowName') }}：{{ jobInfo.flowName }}
             </el-col>
             <el-col :span="4">
-              实例：{{ jobInfo.taskName }}
+              {{ $t('common.taskName') }}：{{ jobInfo.taskName }}
             </el-col>
             <el-col :span="8">
-              执行周期：{{ jobInfo.executionDate }}
+              {{ $t('common.executionDate') }}：{{ jobInfo.executionDate }}
             </el-col>
           </el-row>
         </div>
         <div>
           <el-row>
             <el-col :span="4">
-              CPU消耗：{{ jobInfo?.resource?.split(' ').slice(0, 2).join(' ') || '-' }}
+              {{ $t('common.vcoreSeconds') }}：{{ jobInfo?.resource?.split(' ').slice(0, 2).join(' ') || '-' }}
             </el-col>
             <el-col :span="4">
-              内存消耗：{{ jobInfo?.resource?.split(' ').slice(2).join(' ') || '-' }}
+              {{ $t('common.memorySeconds') }}：{{ jobInfo?.resource?.split(' ').slice(2).join(' ') || '-' }}
             </el-col>
-            <el-col :span="4">
+            <!-- <el-col :span="4">
               处理状态：
               <el-tag v-if="/^[0-9]+.?[0-9]*/.test(jobInfo.taskStatus)">
                 {{ statusMap[jobInfo.taskStatus] }}
               </el-tag>
               <span v-else>-</span>
-            </el-col>
+            </el-col> -->
           </el-row>
         </div>
       </div>
     </div>
     <el-button class="back-btn" @click="back">
-      <el-icon><Back /></el-icon>返回
+      <el-icon><Back /></el-icon>{{ $t('scheduler.back') }}
     </el-button>
   </el-card>
   <div v-if="taskApps.length" style="width: 100%;">
@@ -161,13 +163,13 @@ onMounted(async () => {
         <div class="detail-aside">
           <el-scrollbar>
             <div class="detail-aside-title">
-              执行次数
+              {{ $t('scheduler.tryTimes') }}
             </div>
             <div>
               <el-collapse v-model="activeNames">
                 <el-collapse-item v-for="(item, index) in taskApps" :key="index" :name="index">
                   <template #title>
-                    <span class="m-l-5">第 {{ index + 1 }} 次执行</span>
+                    <span class="m-l-5">{{ tryTimes[index] }}</span>
                   </template>
                   <div v-for="(_item, _index) in item" :key="_item.applicationId" class="detail-aside-content">
                     <div class="appCard" :style="{ background: activeCard === _index ? '#eaf9f5' : '' }" @click="handleApp(_item.applicationId, _index)">
@@ -183,7 +185,7 @@ onMounted(async () => {
                           {{ category }}
                         </span>
                       </div>
-                      <div><span class="m-r-5">运行耗时：{{ _item.duration }}</span><span>资源消耗：{{ _item.resource }}</span></div>
+                      <div><span class="m-r-5">{{ $t('common.duration') }}：{{ _item.duration }}</span><span>{{ $t('common.resource') }}：{{ _item.resource }}</span></div>
                     </div>
                     <div h-1 />
                   </div>
@@ -197,7 +199,7 @@ onMounted(async () => {
         <div class="detail-aside">
           <el-scrollbar>
             <div class="detail-aside-title">
-              诊断详情
+              {{ $t('scheduler.diagnosisDetails') }}
             </div>
             <div class="detail-content-summary">
               <div v-for="item in summary" :key="item" v-html="getFormattedItem(item)" />

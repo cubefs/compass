@@ -19,6 +19,7 @@ package com.oppo.cloud.portal.service.diagnose.runerror;
 import com.oppo.cloud.common.constant.AppCategoryEnum;
 
 import com.oppo.cloud.portal.domain.base.Conclusion;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,13 +36,12 @@ public class MemoryOverflowService extends RunErrorBaseService {
 
     @Override
     public String generateItemDesc() {
-        return "内存溢出分析";
+        return MessageSourceUtil.get("MEMORY_OVERFLOW_ANALYSIS");
     }
 
     @Override
     public Conclusion generateConclusion() {
-        String conclusion = "运行过程发生内存溢出,请根据关键日志和相应的诊断建议进行问题修复";
-        return new Conclusion(conclusion, "抓取Driver/Executor中内存溢出的相关日志");
+        return new Conclusion(MessageSourceUtil.get("MEMORY_OVERFLOW_CONCLUSION"), MessageSourceUtil.get("MEMORY_OVERFLOW_CONCLUSION_DESC"));
     }
 
 }

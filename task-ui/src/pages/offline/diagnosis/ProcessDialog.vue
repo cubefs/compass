@@ -44,7 +44,7 @@ defineExpose({
   >
     <template #header>
       <span>
-        进度
+        {{ $t('diagnosis.progress') }}
       </span>
       <el-icon v-if="loading" class="is-loading">
         <Loading />

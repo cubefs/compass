@@ -32,6 +32,7 @@ import com.oppo.cloud.portal.domain.task.JobsRequest;
 import com.oppo.cloud.portal.domain.task.UserResponse;
 import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.ReportService;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -257,7 +258,7 @@ public class ReportServiceImpl implements ReportService {
         if (aggregationsGroupByCount == null) {
             return null;
         }
-        ParsedCardinality cardinality = (ParsedCardinality)(aggregationsGroupByCount.getAsMap().get("groupByCount"));
+        ParsedCardinality cardinality = (ParsedCardinality) (aggregationsGroupByCount.getAsMap().get("groupByCount"));
         Long abnormalJobCount = cardinality.getValue();
         statisticsData.setAbnormalJobNum(abnormalJobCount.intValue());
 
@@ -378,18 +379,18 @@ public class ReportServiceImpl implements ReportService {
         String timeUnit;
         switch (field) {
             case "vcoreSeconds":
-                trendGraph.setName("CPU消耗趋势");
-                jobGraph.setName("诊断任务CPU消耗数");
-                totalGraph.setName("总CPU消耗数");
+                trendGraph.setName(MessageSourceUtil.get("CPU_USAGE_TREND"));
+                jobGraph.setName(MessageSourceUtil.get("CPU_DIAGNOSIS_TREND"));
+                totalGraph.setName(MessageSourceUtil.get("CPU_TOTAL_TREND"));
                 timeUnit = UnitUtil.getTimeUnit(maxValue);
                 jobUsageTrend.forEach(data -> data.setCount(UnitUtil.convertCpuUnit(timeUnit, data.getCount())));
                 totalUsageTrend.forEach(data -> data.setCount(UnitUtil.convertCpuUnit(timeUnit, data.getCount())));
                 trendGraph.setUnit(String.format("vcore·%s", timeUnit));
                 break;
             case "memorySeconds":
-                trendGraph.setName("内存消耗趋势");
-                jobGraph.setName("诊断任务内存消耗数");
-                totalGraph.setName("总内存消耗数");
+                trendGraph.setName(MessageSourceUtil.get("MEMORY_USAGE_TREND"));
+                jobGraph.setName(MessageSourceUtil.get("MEMORY_DIAGNOSIS_TREND"));
+                totalGraph.setName(MessageSourceUtil.get("MEMORY_TOTAL_TREND"));
                 timeUnit = UnitUtil.getTimeUnit(maxValue / 1024);
                 jobUsageTrend.forEach(data -> data.setCount(UnitUtil.convertMemoryUnit(timeUnit, data.getCount())));
                 totalUsageTrend.forEach(data -> data.setCount(UnitUtil.convertMemoryUnit(timeUnit, data.getCount())));
@@ -415,12 +416,12 @@ public class ReportServiceImpl implements ReportService {
                 request.getEnd(), jobIndex, "executionDate");
         List<IndicatorData> totalNumTrend = openSearchService.countDocByDay(getBuilder(request), request.getStart(),
                 request.getEnd(), jobInstanceIndex, "executionDate");
-        trendGraph.setName("数量趋势");
+        trendGraph.setName(MessageSourceUtil.get("AMOUNT_TREND"));
         LineGraph jobGraph = new LineGraph();
-        jobGraph.setName("诊断任务数");
+        jobGraph.setName(MessageSourceUtil.get("DIAGNOSIS_JOB"));
         jobGraph.setData(jobNumTrend);
         LineGraph totalGraph = new LineGraph();
-        totalGraph.setName("总任务数");
+        totalGraph.setName(MessageSourceUtil.get("TOTAL_JOB"));
         totalGraph.setData(totalNumTrend);
         trendGraph.setJobUsage(jobGraph);
         trendGraph.setTotalUsage(totalGraph);
@@ -452,11 +453,11 @@ public class ReportServiceImpl implements ReportService {
         }
         Terms terms = aggregations.get("distribution");
         DistributionGraph cpuGraph = new DistributionGraph();
-        cpuGraph.setName("CPU资源消耗分布");
+        cpuGraph.setName(MessageSourceUtil.get("CPU_RESOURCE_USAGE_DISTRIBUTION"));
         DistributionGraph memGraph = new DistributionGraph();
-        memGraph.setName("内存资源消耗分布");
+        memGraph.setName(MessageSourceUtil.get("MEMORY_RESOURCE_USAGE_DISTRIBUTION"));
         DistributionGraph numGraph = new DistributionGraph();
-        numGraph.setName("任务数量分布图");
+        numGraph.setName(MessageSourceUtil.get("JOB_AMOUNT_DISTRIBUTION"));
 
         List<DistributionData> cpuList = new ArrayList<>();
         List<DistributionData> menList = new ArrayList<>();
@@ -467,9 +468,9 @@ public class ReportServiceImpl implements ReportService {
             DistributionData memData = new DistributionData();
             DistributionData numData = new DistributionData();
             String name;
-            name = AppCategoryEnum.getAppCategoryOfDesc(bucket.getKeyAsString());
+            name = AppCategoryEnum.getAppCategory(bucket.getKeyAsString());
             if (name == null) {
-                name = JobCategoryEnum.getJobNameMsg(bucket.getKeyAsString());
+                name = JobCategoryEnum.getLangMsgByCategory(bucket.getKeyAsString());
             }
             cpuData.setName(name);
             memData.setName(name);

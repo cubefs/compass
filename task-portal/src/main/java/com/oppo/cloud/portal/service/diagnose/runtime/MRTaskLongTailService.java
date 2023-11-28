@@ -28,6 +28,7 @@ import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.TaskLongTail;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
@@ -84,13 +85,13 @@ public class MRTaskLongTailService extends RunTimeBaseService<TaskLongTail> {
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("Task运行耗时的最大值超过%sms,最大值/中位值比值map超过%s或者reduce超过%s",
+        return String.format(MessageSourceUtil.get("MR_LONG_TAIL_CONCLUSION_DESC"),
                 thresholdMap.get("taskDuration"), thresholdMap.get("mapThreshold"), thresholdMap.get("reduceThreshold"));
     }
 
     @Override
     public String generateItemDesc() {
-        return "MR长尾Task分析";
+        return MessageSourceUtil.get("MR_LONG_TAIL_ANALYSIS");
     }
 
     @Override
@@ -101,19 +102,19 @@ public class MRTaskLongTailService extends RunTimeBaseService<TaskLongTail> {
 
     private void buildChartInfo(Chart<MetricInfo> chart) {
         chart.setX("task id");
-        chart.setY("任务耗时");
+        chart.setY(MessageSourceUtil.get("MR_LONG_TAIL_CHART_Y"));
         chart.setUnit("ms");
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(1);
-        dataCategory.put("max", new Chart.ChartInfo("最大值", UIUtil.ABNORMAL_COLOR));
-        dataCategory.put("median", new Chart.ChartInfo("中位值", UIUtil.KEY_COLOR));
-        dataCategory.put("normal", new Chart.ChartInfo("正常值", UIUtil.NORMAL_COLOR));
+        dataCategory.put("max", new Chart.ChartInfo(MessageSourceUtil.get("MR_LONG_TAIL_CHART_MAX"), UIUtil.ABNORMAL_COLOR));
+        dataCategory.put("median", new Chart.ChartInfo(MessageSourceUtil.get("MR_LONG_TAIL_CHART_MEDIAN"), UIUtil.KEY_COLOR));
+        dataCategory.put("normal", new Chart.ChartInfo(MessageSourceUtil.get("MR_LONG_TAIL_CHART_NORMAL"), UIUtil.NORMAL_COLOR));
         chart.setDataCategory(dataCategory);
     }
 
     private Chart<MetricInfo> buildTaskChart(String taskType, List<TaskDurationGraph> graphList, List<String> info) {
         Chart<MetricInfo> chart = new Chart<>();
         buildChartInfo(chart);
-        chart.setDes(String.format("%s任务运行耗时分布图", taskType));
+        chart.setDes(String.format(MessageSourceUtil.get("MR_LONG_TAIL_CHART_DESC"), taskType));
         List<MetricInfo> metricInfoList = chart.getDataList();
         double max = 0.0;
         double median = 0.0;
@@ -135,8 +136,7 @@ public class MRTaskLongTailService extends RunTimeBaseService<TaskLongTail> {
                 median = taskDurationGraph.getDuration();
             }
         }
-        info.add(String.format(
-                "%s task[<span style=\"color: #e24a4a;\">%s</span>]运行耗时为<span style=\"color: #e24a4a;\">%s</span> 中位值为%s",
+        info.add(String.format(MessageSourceUtil.get("MR_LONG_TAIL_CONCLUSION_INFO"),
                 taskType, taskId, DateUtil.timeSimplify(max / 1000), DateUtil.timeSimplify(median / 1000)));
         return chart;
     }

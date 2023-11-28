@@ -50,7 +50,7 @@ async function diagnosisSearch() {
   } else {
     loading = false
     if (res.flinkTaskAnalysis == null) {
-      ElMessage.error("诊断失败")
+      ElMessage.error(t('diagnosis.diagnosisFailed'))
     } else {
       emit('searchComplete', res.flinkTaskAnalysis)
     }
@@ -68,7 +68,7 @@ defineExpose({
   <el-dialog v-model="dialogVisible" width="550px">
     <template #header>
       <span>
-        进度
+        {{ $t('diagnosis.progress') }}
       </span>
       <el-icon v-if="loading" class="is-loading">
         <Loading />

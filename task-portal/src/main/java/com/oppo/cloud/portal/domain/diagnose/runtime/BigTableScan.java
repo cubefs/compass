@@ -18,6 +18,7 @@ package com.oppo.cloud.portal.domain.diagnose.runtime;
 
 import com.oppo.cloud.portal.domain.diagnose.IsAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.Table;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -35,9 +36,9 @@ public class BigTableScan extends IsAbnormal {
 
     public BigTableScan() {
         LinkedHashMap<String, String> titleMap = new LinkedHashMap<>();
-        titleMap.put("hiveTable", "扫描的hive表名称");
-        titleMap.put("columns", "扫描行数");
-        titleMap.put("threshold", "阈值");
+        titleMap.put("hiveTable", MessageSourceUtil.get("HIVE_TABLE"));
+        titleMap.put("columns", MessageSourceUtil.get("COLUMNS"));
+        titleMap.put("threshold", MessageSourceUtil.get("THRESHOLD"));
         table.setTitles(titleMap);
     }
 

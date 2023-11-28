@@ -25,6 +25,7 @@ import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.SpeculativeTask;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class SpeculativeTaskService extends RunTimeBaseService<SpeculativeTask> 
         List<Chart<MetricInfo>> chartList = speculativeTask.getChartList();
         Chart<MetricInfo> chartSummary = new Chart<>();
         buildChart(chartSummary);
-        chartSummary.setDes("每个Stage推测执行数量分布");
+        chartSummary.setDes(MessageSourceUtil.get("SPECULATIVE_TASK_CHART_DESC"));
         List<MetricInfo> metricInfoList = chartSummary.getDataList();
         List<String> jobStages = new ArrayList<>();
         List<String> values = new ArrayList<>();
@@ -65,9 +66,9 @@ public class SpeculativeTaskService extends RunTimeBaseService<SpeculativeTask> 
             // judge abnormal
             if (speculativeTaskAbnormal.getAbnormal()) {
                 yValue.setType("abnormal");
-                values.add(String.format("%d个", speculativeTaskAbnormal.getSpeculativeCount()));
+                values.add(String.format("%d", speculativeTaskAbnormal.getSpeculativeCount()));
                 jobStages.add(String.format("job[<span style=\"color: #e24a4a;\">%d</span>].stage[<span style=\"color" +
-                        ": #e24a4a;\">%d</span>]", speculativeTaskAbnormal.getJobId(),
+                                ": #e24a4a;\">%d</span>]", speculativeTaskAbnormal.getJobId(),
                         speculativeTaskAbnormal.getStageId()));
             }
             yValues.add(yValue);
@@ -82,12 +83,12 @@ public class SpeculativeTaskService extends RunTimeBaseService<SpeculativeTask> 
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("Stage中推测执行任务数超过%s个，即可判定为推测执行过多", thresholdMap.getOrDefault("threshold", "30"));
+        return String.format(MessageSourceUtil.get("SPECULATIVE_TASK_CONCLUSION_DESC"), thresholdMap.getOrDefault("threshold", "30"));
     }
 
     @Override
     public String generateItemDesc() {
-        return "推测执行过多分析";
+        return MessageSourceUtil.get("SPECULATIVE_TASK_ANALYSIS");
     }
 
     @Override
@@ -97,11 +98,11 @@ public class SpeculativeTaskService extends RunTimeBaseService<SpeculativeTask> 
 
     private void buildChart(Chart<MetricInfo> chart) {
         chart.setX("stage id");
-        chart.setY("推测执行数量");
+        chart.setY(MessageSourceUtil.get("SPECULATIVE_TASK_CHART_Y"));
         chart.setUnit("");
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("normal", new Chart.ChartInfo("正常stage", UIUtil.NORMAL_COLOR));
-        dataCategory.put("abnormal", new Chart.ChartInfo("异常stage", UIUtil.ABNORMAL_COLOR));
+        dataCategory.put("normal", new Chart.ChartInfo(MessageSourceUtil.get("SPECULATIVE_TASK_CHART_NORMAL"), UIUtil.NORMAL_COLOR));
+        dataCategory.put("abnormal", new Chart.ChartInfo(MessageSourceUtil.get("SPECULATIVE_TASK_CHART_ABNORMAL"), UIUtil.ABNORMAL_COLOR));
         chart.setDataCategory(dataCategory);
     }
 }

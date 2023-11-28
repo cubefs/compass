@@ -28,6 +28,7 @@ import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.JobDuration;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +59,7 @@ public class JobDurationService extends RunTimeBaseService<JobDuration> {
         List<Chart<MetricInfo>> chartList = jobDuration.getChartList();
         Chart<MetricInfo> chartSummary = new Chart<>();
         buildChart(chartSummary);
-        chartSummary.setDes(String.format("每个Job计算-空闲时间分布(%s)", chartSummary.getUnit()));
+        chartSummary.setDes(String.format(MessageSourceUtil.get("JOB_DURATION_CHART_DESC"), chartSummary.getUnit()));
         List<MetricInfo> metricInfoList = chartSummary.getDataList();
         List<String> jobIds = new ArrayList<>();
         List<String> values = new ArrayList<>();
@@ -96,13 +97,13 @@ public class JobDurationService extends RunTimeBaseService<JobDuration> {
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("Job中空闲时间 (job总时间 - stage累计时间) 与总时间的占比超过%s%%，即判定为Job耗时异常",
+        return String.format(MessageSourceUtil.get("JOB_DURATION_CONCLUSION_DESC"),
                 thresholdMap.getOrDefault("threshold", ""));
     }
 
     @Override
     public String generateItemDesc() {
-        return "Job耗时异常分析";
+        return MessageSourceUtil.get("JOB_DURATION_ABNORMAL_ANALYSIS");
     }
 
     @Override
@@ -115,8 +116,8 @@ public class JobDurationService extends RunTimeBaseService<JobDuration> {
         chart.setY("duration");
         chart.setUnit("s");
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("compute", new Chart.ChartInfo("job计算时间", UIUtil.NORMAL_COLOR));
-        dataCategory.put("idle", new Chart.ChartInfo("job空闲时间", UIUtil.PLAIN_COLOR));
+        dataCategory.put("compute", new Chart.ChartInfo(MessageSourceUtil.get("JOB_DURATION_CHART_COMPUTE"), UIUtil.NORMAL_COLOR));
+        dataCategory.put("idle", new Chart.ChartInfo(MessageSourceUtil.get("JOB_DURATION_CHART_IDLE"), UIUtil.PLAIN_COLOR));
         chart.setDataCategory(dataCategory);
     }
 }

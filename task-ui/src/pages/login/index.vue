@@ -3,6 +3,7 @@ import { ElMessage } from 'element-plus'
 import { post } from '~/utils/request'
 import { useStore } from '~/store/user.ts'
 import logo from '~/access/icon/logo2.png'
+const { t } = useI18n()
 const store = useStore()
 const form = reactive({
   username: '',
@@ -17,7 +18,6 @@ const onSubmit = async () => {
   const res = await post('/user/login', form)
   localStorage.setItem('token', res.token)
   localStorage.setItem('username', res.username)
-  ElMessage.success('登录成功')
   store.updateUser(res.username)
   router.push({
     name: 'report'
@@ -34,14 +34,14 @@ const onSubmit = async () => {
       <el-image class="title-logo" :src="logo" />
       <el-form :model="form">
         <el-form-item>
-          <el-input v-model="form.username" :rows="10" placeholder="用户名" />
+          <el-input v-model="form.username" :rows="10" :placeholder="t('login.username')" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="form.password" type="password" show-password placeholder="密码" />
+          <el-input v-model="form.password" type="password" show-password :placeholder="t('login.password')" />
         </el-form-item>
       </el-form>
       <el-button type="primary" :class="{disabled: !canLogin}" style="width:100%;height:40px;font-size: 16px;font-weight: bold;margin-top: 20px;" :disabled="!canLogin" @click="onSubmit">
-        立即登录
+       {{ $t('login.login')}}
       </el-button>
     </div>
   </div>

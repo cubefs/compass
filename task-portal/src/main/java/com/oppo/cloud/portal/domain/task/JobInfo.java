@@ -22,6 +22,7 @@ import com.oppo.cloud.common.constant.JobCategoryEnum;
 import com.oppo.cloud.common.domain.opensearch.JobAnalysis;
 import com.oppo.cloud.common.domain.opensearch.SimpleUser;
 import com.oppo.cloud.common.util.DateUtil;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.TaskUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -106,8 +107,8 @@ public class JobInfo {
         jobInfo.setCreateTime(jobAnalysis.getCreateTime() != null ? DateUtil.format(jobAnalysis.getCreateTime()) : "");
         jobInfo.setUpdateTime(jobAnalysis.getUpdateTime() != null ? DateUtil.format(jobAnalysis.getUpdateTime()) : "");
         List<String> categories = new ArrayList<>();
-        categories.addAll(JobCategoryEnum.getJobCategoryCh(jobAnalysis.getCategories()));
-        categories.addAll(AppCategoryEnum.getAppCategoryCh(jobAnalysis.getCategories()));
+        categories.addAll(JobCategoryEnum.getLangMsgByCategories(jobAnalysis.getCategories()));
+        categories.addAll(AppCategoryEnum.getLangMsgByCategories(jobAnalysis.getCategories()));
         jobInfo.setCategories(categories);
         jobInfo.setTaskStatus(jobAnalysis.getTaskStatus() == null ? 0 : jobAnalysis.getTaskStatus());
         if (stateCache != null) {
@@ -123,17 +124,18 @@ public class JobInfo {
         List<String> others = new ArrayList<>();
 
         if (jobAnalysis.getMemory() != null) {
-            others.add(String.format("广播使用内存%f，占比内存%f", jobAnalysis.getMemory(), jobAnalysis.getMemoryRatio()));
+            others.add(String.format("%s%f, %s%f", MessageSourceUtil.get("BROADCAST_USED_MEMORY"), jobAnalysis.getMemory(),
+                    MessageSourceUtil.get("RATIO_MEMORY"), jobAnalysis.getMemoryRatio()));
         }
         if (jobAnalysis.getDurationBaseline() != null) {
-            others.add(String.format("正常耗时区间:0 ~ %s", jobAnalysis.getDurationBaseline()));
+            others.add(String.format("%s:0 ~ %s", MessageSourceUtil.get("BASELINE_DURATION"), jobAnalysis.getDurationBaseline()));
         }
         if (jobAnalysis.getEndTimeBaseline() != null) {
-            others.add(String.format("正常结束区间:<%s", jobAnalysis.getEndTimeBaseline()));
+            others.add(String.format("%s:<%s", MessageSourceUtil.get("BASELINE_END_TIME"), jobAnalysis.getEndTimeBaseline()));
         }
         if (jobAnalysis.getSuccessExecutionDay() != null && jobAnalysis.getSuccessDays() != null) {
-            others.add(String.format("最近一次成功的时间:%s，距今%s天", jobAnalysis.getSuccessExecutionDay(),
-                    jobAnalysis.getSuccessDays()));
+            others.add(String.format("%s:%s, %s%s%s", MessageSourceUtil.get("LAST_SUCCESSFUL_TIME"), jobAnalysis.getSuccessExecutionDay(),
+                    MessageSourceUtil.get("SINCE_NOW"), jobAnalysis.getSuccessDays(), MessageSourceUtil.get("DAY")));
         }
         // TODO: 其他
         jobInfo.setOthers(others);

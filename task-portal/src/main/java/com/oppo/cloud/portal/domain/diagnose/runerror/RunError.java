@@ -19,6 +19,7 @@ package com.oppo.cloud.portal.domain.diagnose.runerror;
 import com.oppo.cloud.portal.domain.diagnose.IsAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.Table;
 import com.oppo.cloud.portal.domain.log.LogInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -34,11 +35,11 @@ public class RunError extends IsAbnormal {
 
     public RunError() {
         LinkedHashMap<String, String> titleMap = new LinkedHashMap<>();
-        titleMap.put("logType", "日志类型");
-        titleMap.put("event", "事件描述");
-        titleMap.put("logTime", "时间");
-        titleMap.put("logContent", "关键日志");
-        titleMap.put("advice", "诊断建议");
+        titleMap.put("logType", MessageSourceUtil.get("LOG_TYPE"));
+        titleMap.put("event", MessageSourceUtil.get("EVENT"));
+        titleMap.put("logTime", MessageSourceUtil.get("LOG_TIME"));
+        titleMap.put("logContent", MessageSourceUtil.get("LOG_CONTENT"));
+        titleMap.put("advice", MessageSourceUtil.get("ADVICE"));
         this.table.setTitles(titleMap);
     }
 }

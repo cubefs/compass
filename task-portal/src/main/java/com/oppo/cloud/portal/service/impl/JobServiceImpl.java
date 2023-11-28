@@ -37,6 +37,7 @@ import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.log.LogInfo;
 import com.oppo.cloud.portal.domain.task.*;
 import com.oppo.cloud.portal.service.*;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -122,7 +123,7 @@ public class JobServiceImpl implements JobService {
         Map<String, List<TaskAppInfo>> taskAppMap = this.formatJobApps(taskApps, userInfo.getSchedulerType());
         // build TaskAppInfo
         for (int i = 0; i <= jobInfo.getTryNumber(); i++) {
-            String key = String.format("第%d次执行", i + 1);
+            String key = String.format(MessageSourceUtil.get("TRY_NUMBER"), i + 1);
             if (!taskAppMap.containsKey(key)) {
                 TaskAppInfo taskAppInfo = new TaskAppInfo();
                 taskAppInfo.setCategories(null);
@@ -132,7 +133,7 @@ public class JobServiceImpl implements JobService {
                 taskAppInfo.setExecutionDate(DateUtil.format(jobDetailRequest.getExecutionDate()));
                 taskAppInfo.setDuration("0.00s");
                 taskAppInfo.setResource("0 vcore·s 0 GB·s");
-                taskAppInfo.setApplicationId("applicationId不存在");
+                taskAppInfo.setApplicationId(MessageSourceUtil.get("APPLICATION_NOT_EXIST"));
                 taskAppMap.put(key, Collections.singletonList(taskAppInfo));
             }
         }
@@ -163,12 +164,12 @@ public class JobServiceImpl implements JobService {
         // Get job diagnostic summary
         List<String> taskCategory = new ArrayList<>();
         JobAnalysis jobAnalysis = items.get(0);
-        List<String> categoryCh = JobCategoryEnum.getJobCategoryCh(jobAnalysis.getCategories());
-        categoryCh.addAll(AppCategoryEnum.getAppCategoryCh(jobAnalysis.getCategories()));
-        for (String category : categoryCh) {
+        List<String> categoryLangMsg = JobCategoryEnum.getLangMsgByCategories(jobAnalysis.getCategories());
+        categoryLangMsg.addAll(AppCategoryEnum.getLangMsgByCategories(jobAnalysis.getCategories()));
+        for (String category : categoryLangMsg) {
             taskCategory.add(UIUtil.transferRed(category));
         }
-        res.add(String.format("该任务发生%s", String.join(",", taskCategory)));
+        res.add(String.format("%s%s", MessageSourceUtil.get("APPLICATION_CATEGORY"), String.join(",", taskCategory)));
         if (completableFutureYarn.get() != null) {
             res.add(completableFutureYarn.get());
         }
@@ -178,7 +179,7 @@ public class JobServiceImpl implements JobService {
         if (completableFutureApps.get() != null) {
             List<String> appSummary = completableFutureApps.get();
             for (String appException : appSummary) {
-                res.add(String.format("检测到%s, 具体情况请点击查看其诊断报告", appException));
+                res.add(String.format(MessageSourceUtil.get("APPLICATION_EXCEPTION"), appException));
             }
         }
         return res;
@@ -188,15 +189,15 @@ public class JobServiceImpl implements JobService {
     public Item<TableData<LogInfo>> searchLogInfo(JobDetailRequest jobDetailRequest) throws Exception {
         Item<TableData<LogInfo>> res = new Item<>();
         TableData<LogInfo> tableData = new TableData<>();
-        res.setName("异常日志分析");
-        res.setConclusion(new Conclusion("运行过程发生错误异常,请根据关键日志和相应的诊断建议进行问题修改", "抓取scheduler中的错误日志"));
+        res.setName(MessageSourceUtil.get("ABNORMAL_LOG_ANALYSIS"));
+        res.setConclusion(new Conclusion(MessageSourceUtil.get("ABNORMAL_LOG_CONCLUSION"), MessageSourceUtil.get("ABNORMAL_LOG_CONCLUSION_DESC")));
         int totalTryNum = jobDetailRequest.getTryNumber();
         for (int i = 0; i <= totalTryNum; i++) {
             jobDetailRequest.setTryNumber(i);
             List<LogInfo> logInfoList = logService.getLogDetect(jobDetailRequest, "scheduler");
             if (logInfoList != null && logInfoList.size() != 0) {
                 Table<LogInfo> table = new Table<>();
-                table.setDes(String.format("第%d次执行错误日志汇总", i + 1));
+                table.setDes(String.format(MessageSourceUtil.get("ABNORMAL_LOG_SUMMARY"), i + 1));
                 table.setData(logInfoList);
                 table.setTitles(LogInfo.getTitles());
                 tableData.getTableList().add(table);
@@ -221,7 +222,7 @@ public class JobServiceImpl implements JobService {
         if (items.size() == 0) {
             return res;
         }
-        res.setName("运行耗时异常分析");
+        res.setName(MessageSourceUtil.get("JOB_DURATION_ANALYSIS"));
         JobAnalysis jobAnalysis = items.get(0);
         res.setConclusion(new Conclusion(getDurationConclusion(jobAnalysis), ""));
         List<MetricInfo> metricInfoList = taskInstanceService.getJobDurationTrend(jobDetailRequest);
@@ -229,12 +230,12 @@ public class JobServiceImpl implements JobService {
             chartData = new ChartData();
             Chart<MetricInfo> chart = new Chart<>();
             chart.setDataList(metricInfoList);
-            chart.setDes("运行耗时趋势图");
+            chart.setDes(MessageSourceUtil.get("JOB_DURATION_TREND"));
             chart.setUnit("s");
-            chart.setX("执行周期");
-            chart.setY("运行耗时");
+            chart.setX(MessageSourceUtil.get("JOB_EXECUTION_DATE"));
+            chart.setY(MessageSourceUtil.get("JOB_DURATION"));
             Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(1);
-            dataCategory.put("duration", new Chart.ChartInfo("最大值", UIUtil.ABNORMAL_COLOR));
+            dataCategory.put("duration", new Chart.ChartInfo(MessageSourceUtil.get("MAX_VALUE"), UIUtil.ABNORMAL_COLOR));
             chart.setDataCategory(dataCategory);
             chartData.getChartList().add(chart);
             chartData.setThreshold(StringUtils.isNotEmpty(jobAnalysis.getDurationBaseline()) ? UnitUtil.transferSecond(jobAnalysis.getDurationBaseline()) : jobAnalysis.getDuration() * 1.6);
@@ -247,7 +248,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public Item<Datum> searchJobDatum(JobDetailRequest jobDetailRequest) throws Exception {
         Item<Datum> res = new Item<>();
-        res.setName("基线时间异常分析");
+        res.setName(MessageSourceUtil.get("BASELINE_TIME_ANALYSIS"));
         res.setType("chart");
         Map<String, Object> termQuery = jobDetailRequest.getTermQuery();
         Map<String, SortOrder> sortQuery = jobDetailRequest.getSortConditions();
@@ -259,7 +260,7 @@ public class JobServiceImpl implements JobService {
         }
         JobAnalysis jobAnalysis = items.get(0);
         if (jobAnalysis.getCategories().contains(JobCategoryEnum.endTimeAbnormal.name())) {
-            res.setConclusion(new Conclusion(String.format("本任务结束时间为%s, 基线时间为%s, 运行发生晚点", DateUtil.format(jobAnalysis.getEndTime()), jobAnalysis.getEndTimeBaseline()), "根据该任务的上下由关系，分析本次任务晚点的原因"));
+            res.setConclusion(new Conclusion(String.format(MessageSourceUtil.get("BASELINE_TIME_CONCLUSION"), DateUtil.format(jobAnalysis.getEndTime()), jobAnalysis.getEndTimeBaseline()), MessageSourceUtil.get("BASELINE_TIME_CONCLUSION_DESC")));
             Datum datum = taskInstanceService.getJobDatum(jobDetailRequest);
             res.setItem(datum);
         }
@@ -282,17 +283,17 @@ public class JobServiceImpl implements JobService {
         String timeUnit;
         switch (request.getGraphType()) {
             case "cpuTrend":
-                trendGraph.setName("CPU趋势");
+                trendGraph.setName(MessageSourceUtil.get("CPU_USAGE_TREND"));
                 data = openSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(), jobsIndex,
                         "executionDate", "vcoreSeconds");
                 break;
             case "memoryTrend":
-                trendGraph.setName("内存趋势");
+                trendGraph.setName(MessageSourceUtil.get("MEMORY_USAGE_TREND"));
                 data = openSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(), jobsIndex,
                         "executionDate", "memorySeconds");
                 break;
             case "numTrend":
-                trendGraph.setName("数量趋势");
+                trendGraph.setName(MessageSourceUtil.get("AMOUNT_TREND"));
                 data = openSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), jobsIndex, "executionDate");
                 break;
             default:
@@ -387,14 +388,14 @@ public class JobServiceImpl implements JobService {
      * Generate duration conclusions.
      */
     private String getDurationConclusion(JobAnalysis jobAnalysis) {
-        String info = String.format("本任务运行耗时为%s", UnitUtil.transferRed(UnitUtil.transferSecond(jobAnalysis.getDuration() == null ? 0 : jobAnalysis.getDuration())));
+        String info = String.format(MessageSourceUtil.get("JOB_DURATION_INFO"), UnitUtil.transferRed(UnitUtil.transferSecond(jobAnalysis.getDuration() == null ? 0 : jobAnalysis.getDuration())));
         if (Strings.isNotBlank(jobAnalysis.getDurationBaseline())) {
-            info = String.format("%s, 基线运行耗时为%s", info, UnitUtil.transferRed(jobAnalysis.getDurationBaseline()));
+            info = String.format(MessageSourceUtil.get("BASELINE_DURATION_INFO"), info, UnitUtil.transferRed(jobAnalysis.getDurationBaseline()));
         }
         if (jobAnalysis.getCategories().contains(JobCategoryEnum.durationAbnormal.name())) {
-            info = String.format("%s, 运行耗时异常", info);
+            info = String.format(MessageSourceUtil.get("DURATION_EXCEPTION"), info);
         } else {
-            info = String.format("%s, 未检测到异常", info);
+            info = String.format(MessageSourceUtil.get("DURATION_NORMAL"), info);
         }
         return info;
     }
@@ -407,10 +408,10 @@ public class JobServiceImpl implements JobService {
         if (yarnDetectLog.size() > 0) {
             Set<String> eventSet = new HashSet<>();
             for (LogInfo logInfo : yarnDetectLog) {
-                String event = logInfo.getEvent() == null ? "其他错误" : logInfo.getEvent();
+                String event = logInfo.getEvent() == null ? MessageSourceUtil.get("OTHER_ERROR") : logInfo.getEvent();
                 eventSet.add(UIUtil.transferRed(event));
             }
-            return String.format("从Yarn日志中检测到'%s'异常, 详细日志和诊断建议请查看异常日志分析", String.join(",", eventSet));
+            return String.format(MessageSourceUtil.get("YARN_ERROR"), String.join(",", eventSet));
         }
         return null;
     }
@@ -423,10 +424,10 @@ public class JobServiceImpl implements JobService {
         if (logInfoList.size() > 0) {
             Set<String> eventSet = new HashSet<>();
             for (LogInfo logInfo : logInfoList) {
-                String event = logInfo.getEvent() == null ? "其他错误" : logInfo.getEvent();
+                String event = logInfo.getEvent() == null ? MessageSourceUtil.get("OTHER_ERROR") : logInfo.getEvent();
                 eventSet.add(UIUtil.transferRed(event));
             }
-            return String.format("从调度日志中检测到%s, 详细日志和诊断建议请查看异常日志分析", String.join(",", eventSet));
+            return String.format(MessageSourceUtil.get("SCHEDULER_ERROR"), String.join(",", eventSet));
         }
         return null;
     }
@@ -440,7 +441,7 @@ public class JobServiceImpl implements JobService {
             List<String> category = taskApp.getCategories();
             if (category != null && category.size() > 0) {
                 Collections.sort(category);
-                String categoryCh = category.stream().map(AppCategoryEnum::getAppCategoryOfChina).map(UIUtil::transferRed).collect(Collectors.joining(","));
+                String categoryCh = category.stream().map(AppCategoryEnum::getAppCategory).map(UIUtil::transferRed).collect(Collectors.joining(","));
                 List<String> appList = categoryApps.getOrDefault(categoryCh, new ArrayList<>());
                 appList.add(UIUtil.transferHyperLink(String.format("/#/offline/application/detail?applicationId=%s", taskApp.getApplicationId()), taskApp.getApplicationId()));
                 categoryApps.put(categoryCh, appList);
@@ -463,7 +464,7 @@ public class JobServiceImpl implements JobService {
             if (stringBuilder.charAt(stringBuilder.length() - 1) == ',') {
                 stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             }
-            categorySumApp.add(String.format("%s发生%s", stringBuilder.toString(), categoryStr));
+            categorySumApp.add(String.format(MessageSourceUtil.get("OCCUR"), stringBuilder.toString(), categoryStr));
         }
         return categorySumApp.size() == 0 ? null : categorySumApp;
     }
@@ -479,11 +480,11 @@ public class JobServiceImpl implements JobService {
         for (TaskApp taskApp : taskApps) {
             if (taskApp.getApplicationId() == null) {
                 // appId does not exist
-                taskApp.setApplicationId("applicationId不存在");
+                taskApp.setApplicationId(MessageSourceUtil.get("APPLICATION_NOT_EXIST"));
             }
             TaskAppInfo taskAppInfo = TaskAppInfo.from(taskApp);
             taskAppInfo.setTryNumber(TryNumberUtil.updateTryNumber(taskAppInfo.getTryNumber(), schedulerType));
-            String key = String.format("第%d次执行", taskAppInfo.getTryNumber() + 1);
+            String key = String.format(MessageSourceUtil.get("TRY_NUMBER"), taskAppInfo.getTryNumber() + 1);
             List<TaskAppInfo> tryNumberTaskApps = taskAppMap.getOrDefault(key, new ArrayList<>());
             // Deduplication of appId
             boolean contains = false;
