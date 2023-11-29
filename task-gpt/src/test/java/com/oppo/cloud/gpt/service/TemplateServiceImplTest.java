@@ -24,14 +24,14 @@ public class TemplateServiceImplTest {
     public void updateTemplate() {
         String cid = "30b0f6173e5b426c8c0590758f802925";
         String cluster = "cluster test content";
-        templateService.update(cid, cluster);
+        templateService.update(cid, cluster, null);
     }
 
     @Test
     public void updateTime() {
         // only update time
-        String cid= "46af0cc3fd7a416d937493bd53643415";
-        templateService.update(cid, null);
+        String cid = "46af0cc3fd7a416d937493bd53643415";
+        templateService.update(cid, null, null);
     }
 
     @Test

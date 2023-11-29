@@ -22,9 +22,9 @@
         <module>task-canal-adapter</module>
         <module>task-flink-core</module>
         <module>task-flink</module>
-        <module>task-assembly</module>
         <module>task-ui</module>
         <module>task-gpt</module>
+        <module>task-assembly</module>
     </modules>
 
     <parent>

@@ -44,7 +44,7 @@ public class LogMatchServiceImpl implements LogMatchService {
             } else {
                 String advice = templateService.getAdvice(logCluster.getId());
                 logStoreService.updateAdvice(logMessage.getIndex(), logCluster.getId(), advice);
-                templateService.update(logCluster.getId(), null); // update time
+                templateService.update(logCluster.getId(), null, null); // update time
             }
         }
     }
