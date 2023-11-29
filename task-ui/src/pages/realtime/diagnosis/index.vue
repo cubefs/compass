@@ -17,13 +17,7 @@ const tableColumn = [
 ]
 const placeholderText =t('common.inputPlaceholder') + 'flink application id'
 let taskAppInfo: any = $ref({})
-let categories: any = $ref([])
 let rules :any[] = []
-get('/api/flink/diagnosisRules', {})
-  .then(r => {
-    rules = r
-    console.log(rules)
-  })
 async function submit() {
   if (!applicationId)
     return ElMessage.warning(t('common.inputPlaceholder') + 'applicationId')
@@ -31,9 +25,6 @@ async function submit() {
 }
 function searchComplete(info: any) {
   taskAppInfo = info
-  let categories = taskAppInfo.diagnosisTypes
-  console.log(categories)
-  console.log('category :' + categories)
 }
 const goReport = () => {
   router.push({
@@ -78,18 +69,18 @@ const goReport = () => {
       <el-card shadow="never" w-270>
         <div v-if="Object.keys(taskAppInfo).length !== 0">
           <div m-b-3>
-            <span v-for="(category, c_index) in categories" :key="category" class="category-card" :title="category"
+            <span v-for="(category, c_index) in taskAppInfo.diagnosisTypes" :key="category" class="category-card" :title="category"
               :style="{ 'border-left': `5px solid ${cloudTheme[c_index]}` }">
               {{ category }}
             </span>
           </div>
           <div>
-            <span style="font-size:15px" m-r-10>{{ $t('diagnosis.startTime') }}：{{ dayjs(taskAppInfo.startTime).format('YYYY-MM-DD HH:mm:ss')
+            <span style="font-size:15px" class="m-r-10">{{ $t('diagnosis.startTime') }}：{{ dayjs(taskAppInfo.startTime).format('YYYY-MM-DD HH:mm:ss')
             }}</span>
-            <span style="font-size:15px" m-r-10>{{ $t('diagnosis.taskParallel') }}：{{ taskAppInfo.parallel }}</span>
-            <span style="font-size:15px" m-r-10>{{ $t('diagnosis.taskTmNum') }}：{{ taskAppInfo.tmNum }} 个</span>
-            <span style="font-size:15px" m-r-10>{{ $t('diagnosis.taskTmCore') }}：{{ taskAppInfo.tmCore }} 个</span>
-            <span style="font-size:15px" m-r-10>{{ $t('diagnosis.taskTmMem') }}:{{ taskAppInfo.tmMem }} MB</span>
+            <span style="font-size:15px" class="m-r-10">{{ $t('diagnosis.taskParallel') }}：{{ taskAppInfo.parallel }}</span>
+            <span style="font-size:15px" class="m-r-10">{{ $t('diagnosis.taskTmNum') }}：{{ taskAppInfo.tmNum }} </span>
+            <span style="font-size:15px" class="m-r-10">{{ $t('diagnosis.taskTmCore') }}：{{ taskAppInfo.tmCore }} </span>
+            <span style="font-size:15px" class="m-r-10">{{ $t('diagnosis.taskTmMem') }}: {{ taskAppInfo.tmMemory }} MB</span>
             <el-button text type="primary" style="float:right" @click="goReport">
               {{ $t('diagnosis.viewReport') }}
             </el-button>
@@ -112,6 +103,10 @@ const goReport = () => {
   font-size: 20px;
   font-weight: bold;
   border: 2px solid #e0e0e0;
+}
+
+.m-r-10{
+    margin-right: 10px;
 }
 </style>
 

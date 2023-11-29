@@ -8,9 +8,6 @@ server:
       timeout: 86400
 
 spring:
-#  web:
-#    locale: en_US
-#    #localeResolver: fixed
   messages:
     encoding: UTF-8
     basename: i18n/messages
