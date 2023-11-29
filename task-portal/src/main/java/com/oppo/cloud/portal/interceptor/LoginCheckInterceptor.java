@@ -72,11 +72,9 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         ThreadLocalUserInfo.set(userInfo);
 
         String language = request.getHeader(LANGUAGE);
-        log.info("language:{}", language);
         if (StringUtils.isNotBlank(token)) {
             LocaleContextHolder.setLocale(org.springframework.util.StringUtils.parseLocale(language));
             LocaleContextHolder.setDefaultLocale(org.springframework.util.StringUtils.parseLocale(language));
-            log.info("getLocale:{}",  LocaleContextHolder.getLocale());
         }
 
         return true;
