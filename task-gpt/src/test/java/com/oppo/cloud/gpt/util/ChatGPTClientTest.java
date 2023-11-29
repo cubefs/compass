@@ -8,5 +8,6 @@ public class ChatGPTClientTest {
 
     @Test
     public void completions() {
+
     }
 }

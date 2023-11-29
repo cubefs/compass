@@ -128,7 +128,7 @@ public class TemplateServiceImpl implements TemplateService {
 
             // There are two templates similar, merge templates, delete new one.
             if (logCluster.getState().equals(LogClusterState.CLUSTER_CHANGED)) {
-                this.update(logCluster.getId(), logCluster.getTemplate());
+                this.update(logCluster.getId(), logCluster.getTemplate(), null);
                 this.delete(template.getCid());
             }
 
@@ -181,12 +181,13 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public void update(String cid, String cluster) {
+    public void update(String cid, String cluster, String advice) {
         TemplateExample example = new TemplateExample();
         example.or().andCidEqualTo(cid);
 
         Template template = new Template();
         template.setCluster(cluster);
+        template.setAdvice(advice);
         template.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 
         templateMapper.updateByExampleSelective(template, example);

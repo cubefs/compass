@@ -1,4 +1,3 @@
-
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
     <id>${revision}</id>
@@ -59,11 +58,15 @@
             <directory>${project.parent.basedir}/task-syncer/target/task-syncer</directory>
             <outputDirectory>task-syncer</outputDirectory>
         </fileSet>
+
         <fileSet>
             <directory>${project.parent.basedir}/task-flink/target/task-flink</directory>
             <outputDirectory>task-flink</outputDirectory>
         </fileSet>
 
+        <fileSet>
+            <directory>${project.parent.basedir}/task-gpt/target/task-gpt</directory>
+            <outputDirectory>task-gpt</outputDirectory>
+        </fileSet>
     </fileSets>
-
 </assembly>

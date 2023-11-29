@@ -9,7 +9,7 @@ public interface TemplateService {
 
     void delete(String cid);
 
-    void update(String cid, String cluster);
+    void update(String cid, String cluster, String advice);
 
     void save(Template template);
 
