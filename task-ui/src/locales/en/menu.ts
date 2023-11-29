@@ -1,7 +1,7 @@
 export default {
     lang: 'English',
-    offline: 'Offline',
-    realtime: 'Realtime',
+    offline: 'Spark',
+    realtime: 'Flink',
     logout: 'Logout',
     reportOverview: 'Overview',
     oneClick: 'One Click',
