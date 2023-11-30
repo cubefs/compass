@@ -5,28 +5,25 @@ spring:
   application:
     name: task-gpt
   datasource:
-    #    url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-    url: jdbc:mysql://10.52.60.134:33066/diagnose_data?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-    username: collation
-    password: gcUHBQoCw6L15MY_x8OberqmRzSSGHxA-igEgwqmycg_Y6HyC3EIz7Qir4vAoKzi
+    url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
     druid:
       initial-size: 5
       min-idle: 10
       max-active: 20
   kafka:
-    #    bootstrap-servers: "localhost:9095"
-    bootstrap-servers: "ht-diagnose-task-kafka.global.yyyvmc.kafka.oppo.local:9095,ht-diagnose-task-kafka.global.yyyqmc.kafka.oppo.local:9095,ht-diagnose-task-kafka.global.yyycmc.kafka.oppo.local:9095"
+    bootstrap-servers: "localhost:9095"
     listener:
       type: batch # enable batch to consume.
       ack-mode: MANUAL_IMMEDIATE
     match-consumer:
-      #      topics: "exception-log"
-      topics: "report-other-error-log"
+      topics: "exception-log"   # consume this topic, match the log from drain, update advice to log in es, or send to drain-log topic if no advice.
       group-id: "cp-task-gpt-match"
       auto:
         start: true
     aggregate-consumer:
-      topics: "drain-log"
+      topics: "drain-log"      # aggregate logs from drain log topic and save the log template.
       group-id: "cp-task-gpt-aggregate"
 
   opensearch:
@@ -55,7 +52,7 @@ drain:
   maxClusters: 10000 # max templates, -1 is unlimited
   maxTokens: 50 # max token limit, -1 is unlimited
   delimiters: [ ]
-  maskRules:
+  maskRules: # preprocessing the log in advice, log will be replaced by `maskWith` if `regex` matches it.
     - regex: "((?<=[^A-z0-9])|^)((hdfs|cfs|file):)?/?(/[A-z0-9!_.=/*-]+)((?=['\"\\s,])|$)"  # 'hdfs://directory/file'
       maskWith: "FILE"
     - regex: "(`[A-z0-9_]+`\\.?){2,}" # `db`.`table`
@@ -80,7 +77,7 @@ template:
 
 chatgpt:
   enable: true
-  apiKeys: sk-xxx1,sk-xxx2
+  apiKeys: "sk-xxx1,sk-xxx2"
   proxy: "https://proxy" # keep empty if no proxy
   model: "gpt-3.5-turbo"
   prompt: "你是一位资深大数据专家，教导初始者，我会给你一些异常，你将提供异常的解决方案"

@@ -26,10 +26,11 @@ check() {
 start() {
   check
 
+  CHATGPT_OPTS="-Dchatgpt.enable=${CHATGPT_ENABLE} -Dchatgpt.apiKeys=${CHATGPT_API_KEYS} -Dchatgpt.proxy=${CHATGPT_PROXY} -Dchatgpt.model=${CHATGPT_MODEL} -Dchatgpt.model=${CHATGPT_PROMPT}"
   JAVA_OPTS="-DappName=${APP_NAME} -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/./urandom"
   JAVA_OPTS_GC="-server -XX:+UseG1GC -XX:G1HeapRegionSize=8m -verbose:GC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${HOME_DIR}/logs/dump.hprof -Xloggc:${HOME_DIR}/logs/gc-${APP_NAME}.log"
 
-  nohup java $JAVA_OPTS $JAVA_OPTS_GC -cp "${HOME_DIR}/conf":"${HOME_DIR}/lib/*" com.oppo.cloud.gpt.TaskGptApplication >/dev/null 2>&1 &
+  nohup java $JAVA_OPTS $CHATGPT_OPTS $JAVA_OPTS_GC -cp "${HOME_DIR}/conf":"${HOME_DIR}/lib/*" com.oppo.cloud.gpt.TaskGptApplication >/dev/null 2>&1 &
 
   pid=$!
   echo $pid
