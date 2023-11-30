@@ -52,6 +52,7 @@ public class LogAggregateServiceImpl implements LogAggregateService {
         for (String message : messages) {
             doAggregate(message);
         }
+        ack.acknowledge();
     }
 
     public void doAggregate(String message) {
