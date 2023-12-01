@@ -214,6 +214,16 @@ CREATE INDEX idx_username ON flink_task_app (username);
 CREATE INDEX idx_job_name ON flink_task_app (job_name);
 CREATE INDEX idx_task_state ON flink_task_app (task_state);
 
+CREATE TABLE template (
+    id serial PRIMARY KEY NOT NULL,
+    cid character varying(64),
+    cluster text,
+    advice text,
+    raw_log text,
+    create_time timestamp DEFAULT NULL,
+    update_time timestamp DEFAULT NULL
+);
+CREATE UNIQUE INDEX idx_cid ON template (cid);
 
 INSERT INTO user_info (username, password) values ('compass', 'compass');
 

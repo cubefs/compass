@@ -199,14 +199,15 @@ CREATE TABLE `task_datum` (
 -- Table structure for template
 -- ----------------------------
 CREATE TABLE `template` (
-    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-    `cid` varchar(32) DEFAULT NULL COMMENT 'Log cluster id',
-    `cluster` mediumtext DEFAULT NULL COMMENT 'Content of template',
-    `raw_log` mediumtext DEFAULT NULL COMMENT 'Raw log of template',
-    `update_time` datetime DEFAULT NULL COMMENT 'Update time when log matches template',
-    `create_time` datetime DEFAULT NULL COMMENT 'Create time',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_cid` (`cid`)
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'record id',
+  `cid` varchar(32) DEFAULT NULL COMMENT 'cluster id',
+  `cluster` mediumtext COMMENT 'template content',
+  `advice` mediumtext COMMENT 'advice',
+  `raw_log` mediumtext COMMENT 'raw_log',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_cid` (`cid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Template for log cluster';
 
 -- ----------------------------
