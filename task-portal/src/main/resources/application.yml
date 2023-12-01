@@ -35,7 +35,7 @@ spring:
     cluster:
       nodes: localhost:6379
     password:
-  jackson:
+  jackson: # serialize & deserialize time zone.
     time-zone: Asia/Shanghai
 
 mybatis:

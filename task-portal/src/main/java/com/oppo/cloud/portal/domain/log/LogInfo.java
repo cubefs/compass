@@ -23,6 +23,7 @@ import com.oppo.cloud.model.TaskDiagnosisAdvice;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -56,7 +57,11 @@ public class LogInfo {
         Map<String, String> vars = logSum.getGroupData();
         logInfo.setLogType(logSum.getLogType());
         logInfo.setEvent(diagnoseAdvice.getDescription());
-        logInfo.setAdvice(diagnoseAdvice.genAdvice(vars));
+        if (StringUtils.isNotBlank(logSum.getAdvice())) {
+            logInfo.setAdvice(logSum.getAdvice());
+        } else {
+            logInfo.setAdvice(diagnoseAdvice.genAdvice(vars));
+        }
         logInfo.setLogTime(DateUtil.format(new Date(logSum.getLogTimestamp() * 1000L)));
         logInfo.setAction(logSum.getAction());
         logInfo.setLogContent(logSum.getRawLog());

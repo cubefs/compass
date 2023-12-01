@@ -86,7 +86,7 @@ public class ConsumerMessage {
                 pre.setTaskState(flinkTaskApp.getTaskState());
                 flinkTaskAppMapper.updateByPrimaryKeySelective(pre);
             } else {
-                log.error("realtimeTaskApps size 大于1 , appid:{}", flinkTaskApp.getApplicationId());
+                log.error("realtimeTaskApps size > 1 , appid:{}", flinkTaskApp.getApplicationId());
             }
         } catch (Throwable t) {
             log.error(t.getMessage(), t);

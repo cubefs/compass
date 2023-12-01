@@ -51,8 +51,8 @@ public class KafkaConfig {
     /**
      * Topic to save application metadata
      */
-    @Value("${spring.kafka.taskApplicationTopic}")
-    private String taskApplicationTopic;
+    @Value("${spring.kafka.producer.topics:task-application}")
+    private String producerTopics;
     /**
      * Consume group
      */

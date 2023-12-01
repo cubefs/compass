@@ -196,6 +196,21 @@ CREATE TABLE `task_datum` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Task baseline run table';
 
 -- ----------------------------
+-- Table structure for template
+-- ----------------------------
+CREATE TABLE `template` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'record id',
+  `cid` varchar(32) DEFAULT NULL COMMENT 'cluster id',
+  `cluster` mediumtext COMMENT 'template content',
+  `advice` mediumtext COMMENT 'advice',
+  `raw_log` mediumtext COMMENT 'raw_log',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_cid` (`cid`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Template for log cluster';
+
+-- ----------------------------
 -- Flink: Table structure for flink_app
 -- ----------------------------
  CREATE TABLE `flink_task` (

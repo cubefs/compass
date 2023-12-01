@@ -1,0 +1,84 @@
+server:
+  port: 7078
+
+spring:
+  application:
+    name: task-gpt
+  datasource:
+    url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    druid:
+      initial-size: 5
+      min-idle: 10
+      max-active: 20
+  kafka:
+    bootstrap-servers: "localhost:9095"
+    listener:
+      type: batch # enable batch to consume.
+      ack-mode: MANUAL_IMMEDIATE
+    match-consumer:
+      topics: "exception-log"   # consume this topic, match the log from drain, update advice to log in es, or send to drain-log topic if no advice.
+      group-id: "cp-task-gpt-match"
+      auto:
+        start: true
+    aggregate-consumer:
+      topics: "drain-log"      # aggregate logs from drain log topic and save the log template.
+      group-id: "cp-task-gpt-aggregate"
+
+  opensearch:
+    nodes: localhost:9200
+    username:
+    password:
+    truststore:
+    truststore-password:
+  jackson: # serialize & deserialize time zone.
+    time-zone: Asia/Shanghai
+
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# drain config for aggregating log.
+drain:
+  maskPrefix: "<:"
+  maskSuffix: ":>"
+  similarityThreshold: 0.7 # similarity between two tokens.
+  maxDepth: 15 # max depth of prefix tree.
+  maxChildren: 1000 # max children in the save level of prefix tree
+  maxClusters: 10000 # max templates, -1 is unlimited
+  maxTokens: 50 # max token limit, -1 is unlimited
+  delimiters: [ ]
+  maskRules: # preprocessing the log in advice, log will be replaced by `maskWith` if `regex` matches it.
+    - regex: "((?<=[^A-z0-9])|^)((hdfs|cfs|file):)?/?(/[A-z0-9!_.=/*-]+)((?=['\"\\s,])|$)"  # 'hdfs://directory/file'
+      maskWith: "FILE"
+    - regex: "(`[A-z0-9_]+`\\.?){2,}" # `db`.`table`
+      maskWith: "TABLE"
+    - regex: "application_\\d+_\\d+"
+      maskWith: "APPID"
+    - regex: "((?<=[^A-Za-z0-9])|^)(?![0-9]+(\\.?\\s|\\.?$))(?![A-z]+(\\.?\\s|\\.?$))([0-9A-z-]+)((?=\\.?\\s)|\\.?$)" #  f22f56ae-8de5-4752-823b-752ae77f7caa
+      maskWith: "SEQ"
+    - regex: "((?<=[^A-Za-z0-9])|^)(([0-9a-f]{2,}:){3,}([0-9a-f]{2,}))((?=[^A-z0-9])|$)"
+      maskWith: "ID"
+    - regex: "((?<=[^A-Za-z0-9])|^)(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})((?=[^A-z0-9])|$)"
+      maskWith: "IP"
+    - regex: "((?<=[^A-Za-z0-9])|^)(0x[a-f0-9A-F]+)((?=[^A-z0-9])|$)"
+      maskWith: "HEX"
+    - regex: "((?<=[^A-Za-z0-9])|^)([\\-\\+]?\\d+)((?=[^A-z0-9])|$)"
+      maskWith: "NUM"
+
+# cron for reloading template aggregated by drain, which is in db.
+template:
+  reload:
+    cron: "*/10 * * * * ?"
+
+chatgpt:
+  enable: true
+  apiKeys: "sk-xxx1,sk-xxx2"
+  proxy: "https://proxy" # keep empty if no proxy
+  model: "gpt-3.5-turbo"
+  prompt: "你是一位资深大数据专家，教导初始者，我会给你一些异常，你将提供异常的解决方案"
+#  prompt: "You are a senior expert in big data, teaching beginners. I will give you some anomalies and you will provide solutions to them."

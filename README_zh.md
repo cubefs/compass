@@ -27,6 +27,8 @@
 - 提交 pull request, 请阅读 [contributing guideline](https://github.com/cubefs/compass/blob/main/CONTRIBUTING.md),
 - 讨论 [Idea & Question](https://github.com/cubefs/compass/discussions).
 
+我们将会尽快回复。
+
 罗盘已支持诊断类型概览：
 
 <table>
