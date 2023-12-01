@@ -70,6 +70,9 @@ public class LogSummary extends OpenSearchInfo {
     @ApiModelProperty(value = "log timestamp")
     private Integer logTimestamp;
 
+    @ApiModelProperty(value = "advice")
+    private String advice;
+
     public Map<String, Object> genDoc() throws Exception {
         Map<String, Object> res = new HashMap<>();
         Field[] fileds = this.getClass().getDeclaredFields();
