@@ -43,7 +43,7 @@ public class LogMatchServiceImpl implements LogMatchService {
                 logStoreService.AddToQueue(message);
             } else {
                 String advice = templateService.getAdvice(logCluster.getId());
-                logStoreService.updateAdvice(logMessage.getIndex(), logCluster.getId(), advice);
+                logStoreService.updateAdvice(logMessage.getIndex(), logMessage.getId(), advice);
                 templateService.update(logCluster.getId(), null, null); // update time
             }
         }

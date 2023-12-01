@@ -4,14 +4,14 @@
 export SCHEDULER="dolphinscheduler"
 export SPRING_PROFILES_ACTIVE="hadoop,${SCHEDULER}"
 
-# Scheduler MySQL
+# Configuration for Scheduler MySQL, compass will subscribe data from scheduler database via canal
 export SCHEDULER_MYSQL_ADDRESS="localhost:33066"
 export SCHEDULER_MYSQL_DB="dolphinscheduler"
 export SCHEDULER_DATASOURCE_URL="jdbc:mysql://${SCHEDULER_MYSQL_ADDRESS}/${SCHEDULER_MYSQL_DB}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
 export SCHEDULER_DATASOURCE_USERNAME=""
 export SCHEDULER_DATASOURCE_PASSWORD=""
 
-# Compass datasource(mysql or postgresql)
+# Configuration for compass database(mysql or postgresql)
 export DATASOURCE_TYPE="mysql"
 export COMPASS_DATASOURCE_ADDRESS="localhost:33066"
 export COMPASS_DATASOURCE_DB="compass"
@@ -19,10 +19,10 @@ export SPRING_DATASOURCE_URL="jdbc:${DATASOURCE_TYPE}://${COMPASS_DATASOURCE_ADD
 export SPRING_DATASOURCE_USERNAME=""
 export SPRING_DATASOURCE_PASSWORD=""
 
-# Kafka
+# Configuration for compass Kafka, used to subscribe data by canal and log queue, etc.
 export SPRING_KAFKA_BOOTSTRAPSERVERS="host1:port,host2:port"
 
-# Redis
+# Configuration for compass redis, used to cache and log queue, etc.
 export SPRING_REDIS_CLUSTER_NODES="localhost:6379"
 # Optional
 export SPRING_REDIS_PASSWORD=""
@@ -41,11 +41,25 @@ export SPRING_OPENSEARCH_TRUSTSTORE=""
 # Optional, needed by OpenSearch, keep empty if OpenSearch does not use truststore.
 export SPRING_OPENSEARCH_TRUSTSTOREPASSWORD=""
 
-# Prometheus for flink, ignore it if you do not use flink.
+# Prometheus for flink, ignore it if you do not need flink.
 export FLINK_PROMETHEUS_HOST="http://localhost:9090"
 export FLINK_PROMETHEUS_TOKEN=""
 export FLINK_PROMETHEUS_DATABASE=""
 
+# Optional, needed by task-gpt module to get exception solution, ignore if you do not need it.
+export CHATGPT_ENABLE=false
+# Openai keys needed by enabling chatgpt, random access the key if there are multiple keys.
+export CHATGPT_API_KEYS=sk-xxx1,sk-xxx2
+# Optional, needed if setting proxy, or keep it empty.
+export CHATGPT_PROXY="" # for example, https://proxy.ai
+# chatgpt model
+export CHATGPT_MODEL="gpt-3.5-turbo"
+# chatgpt prompt
+export CHATGPT_PROMPT="You are a senior expert in big data, teaching beginners. I will give you some anomalies and you will provide solutions to them."
+
+#-----------------------------------------------------------------------------------
+# The following export items will be automatically filled by the configuration above.
+#-----------------------------------------------------------------------------------
 # task-canal
 export CANAL_INSTANCE_MASTER_ADDRESS=${SCHEDULER_MYSQL_ADDRESS}
 export CANAL_INSTANCE_DBUSERNAME=${SCHEDULER_DATASOURCE_USERNAME}
@@ -60,7 +74,7 @@ fi
 
 export CANAL_ZKSERVERS=${SPRING_ZOOKEEPER_NODES}
 export KAFKA_BOOTSTRAPSERVERS=${SPRING_KAFKA_BOOTSTRAPSERVERS}
-export CANAL_MQ_TOPIC="mysqldata"
+export CANAL_MQ_TOPIC="mysqldata"  # topic to subscribe scheduler data, you can change it if necessary.
 export CANAL_SERVERMODE="kafka"
 
 # task-canal-adapter
