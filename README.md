@@ -85,21 +85,18 @@ Usually We will reply it quickly.
 ### UI
 
 Spark:
-![overview](document/manual/img/overview.png)
-![overview-1](document/manual/img/overview-1.png)
-![tasks](document/manual/img/tasks.png)
-![onclick](document/manual/img/onclick.png)
-![application](document/manual/img/application.png)
-![cpu](document/manual/img/cpu.png)
-![memory](document/manual/img/memory.png)
+![overview](document/manual/img/spark_report.png)
+![overview-1](document/manual/img/spark_report_trend.png)
+![tasks](document/manual/img/spark_scheduler.png)
+![onclick](document/manual/img/application_report_memory.png)
 
-Flink:
-![overview](document/manual/img/flink-overview-1.png)
-![overview-1](document/manual/img/flink-overview-2.png)
-![tasks](document/manual/img/flink-list.png)
-![report](document/manual/img/flink-report.png)
 
 ### License
 
 Compass is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) For detail
 see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+### Reference
+The Drain algorithm is based on `logpai` project, for more please see 
+- [https://github.com/logpai/Drain3](https://github.com/logpai/Drain3)
+- [https://jiemingzhu.github.io/pub/pjhe_icws2017.pdf](https://jiemingzhu.github.io/pub/pjhe_icws2017.pdf)

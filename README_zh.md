@@ -231,3 +231,7 @@ Flink:
 罗盘许可证是 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)，详情请参考 [LICENSE](LICENSE)
 and [NOTICE](NOTICE) 。
 
+## 引用
+Drain算法基于`Logpai`项目, 详情请查看
+- [https://github.com/logpai/Drain3](https://github.com/logpai/Drain3)
+- [https://jiemingzhu.github.io/pub/pjhe_icws2017.pdf](https://jiemingzhu.github.io/pub/pjhe_icws2017.pdf)
