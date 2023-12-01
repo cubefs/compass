@@ -35,6 +35,7 @@ import com.oppo.cloud.portal.domain.diagnose.IsAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.resources.MemoryWaste;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,17 +91,12 @@ public class MRMemoryWasteService extends ResourceBaseService<MemoryWaste> {
 
     @Override
     public String generateConclusionDesc(IsAbnormal data) {
-        return String.format(
-                "内存浪费计算规则:<br/> &nbsp;  总内存时间 = sum(map/reduce配置内存大小 * map/reduce运行时间) <br/> &nbsp;  执行消耗内存时间 = sum(map/reduce峰值内存 * map/reduce执行时间) <br/>"
-                        +
-                        "&nbsp;  浪费内存的百分比 = (总内存时间-执行消耗内存时间)/总内存时间" +
-                        "<br/>&nbsp;  当map内存浪费占比超过%s或reduce内存浪费占比超过%s, 即判断发生内存浪费",
-                data.getVars().get("mapThreshold"), data.getVars().get("reduceThreshold"));
+        return String.format(MessageSourceUtil.get("MR_MEMORY_WASTE_CONCLUSION_DESC"), data.getVars().get("mapThreshold"), data.getVars().get("reduceThreshold"));
     }
 
     @Override
     public String generateItemDesc() {
-        return "MR内存浪费分析";
+        return MessageSourceUtil.get("MR_MEMORY_WASTE_ANALYSIS");
     }
 
 
@@ -120,25 +116,23 @@ public class MRMemoryWasteService extends ResourceBaseService<MemoryWaste> {
             executorPeakUsed = Math.max(executorPeakUsed, mrTaskMemPeak.getPeakUsed());
             metricInfoList.add(metricInfo);
         }
-        info.add(String.format(
-                "%s分配内存<span style=\"color: #e24a4a;\">%s</span>, 峰值内存<span style=\"color: #e24a4a;\">%s</span>, " +
-                        "内存浪费为<span style=\"color: #e24a4a;\">%s</span>",
+        info.add(String.format(MessageSourceUtil.get("MR_MEMORY_WASTE_CONCLUSION_INFO"),
                 memWasteAbnormal.getTaskType(), String.format("%.2fGB", UnitUtil.transferMBToGB((memWasteAbnormal.getMemory()))),
-                        String.format("%.2fGB", UnitUtil.transferMBToGB((executorPeakUsed))),
-                        String.format("%.2f%%",  memWasteAbnormal.getWastePercent())));
+                String.format("%.2fGB", UnitUtil.transferMBToGB((executorPeakUsed))),
+                String.format("%.2f%%", memWasteAbnormal.getWastePercent())));
 
         return chart;
     }
 
     private void buildMapReduceChartInfo(Chart<MetricInfo> chart, String taskType) {
-        chart.setDes(String.format("%s任务的峰值内存和最大内存分布图", taskType));
+        chart.setDes(String.format(MessageSourceUtil.get("MR_MEMORY_WASTE_CHART_DESC"), taskType));
         chart.setUnit("GB");
         chart.setX("task id");
-        chart.setY("内存");
+        chart.setY(MessageSourceUtil.get("MEMORY_WASTE_CHART_Y"));
 
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("free", new Chart.ChartInfo("空闲内存", UIUtil.PLAIN_COLOR));
-        dataCategory.put("peak", new Chart.ChartInfo("峰值内存", UIUtil.KEY_COLOR));
+        dataCategory.put("free", new Chart.ChartInfo(MessageSourceUtil.get("MEMORY_WASTE_CHART_FREE"), UIUtil.PLAIN_COLOR));
+        dataCategory.put("peak", new Chart.ChartInfo(MessageSourceUtil.get("MEMORY_WASTE_CHART_PEAK"), UIUtil.KEY_COLOR));
 
         chart.setDataCategory(dataCategory);
     }

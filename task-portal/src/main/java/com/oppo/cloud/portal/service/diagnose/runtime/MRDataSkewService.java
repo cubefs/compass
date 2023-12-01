@@ -28,6 +28,7 @@ import com.oppo.cloud.portal.domain.diagnose.Chart;
 import com.oppo.cloud.portal.domain.diagnose.runtime.DataSkew;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
@@ -81,14 +82,14 @@ public class MRDataSkewService extends RunTimeBaseService<DataSkew> {
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("Task处理的最大数据量超过%sMB,时间超过%sms,最大值/中位值比值map超过%s或者reduce超过%s",
+        return String.format(MessageSourceUtil.get("MR_DATA_SKEW_CONCLUSION_DESC"),
                 thresholdMap.get("taskSize"), thresholdMap.get("taskDuration"), thresholdMap.get("mapThreshold"),
                 thresholdMap.get("reduceThreshold"));
     }
 
     @Override
     public String generateItemDesc() {
-        return "MR数据倾斜分析";
+        return MessageSourceUtil.get("MR_DATA_SKEW_ANALYSIS");
     }
 
     @Override
@@ -99,19 +100,19 @@ public class MRDataSkewService extends RunTimeBaseService<DataSkew> {
 
     private void buildChartInfo(Chart<MetricInfo> chart) {
         chart.setX("task id");
-        chart.setY("数据量");
+        chart.setY(MessageSourceUtil.get("MR_DATA_SKEW_CHART_Y"));
         chart.setUnit("MB");
-        Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("max", new Chart.ChartInfo("最大值", UIUtil.ABNORMAL_COLOR));
-        dataCategory.put("median", new Chart.ChartInfo("中位值", UIUtil.KEY_COLOR));
-        dataCategory.put("normal", new Chart.ChartInfo("正常值", UIUtil.NORMAL_COLOR));
+        Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(4);
+        dataCategory.put("max", new Chart.ChartInfo(MessageSourceUtil.get("MR_DATA_SKEW_CHART_MAX"), UIUtil.ABNORMAL_COLOR));
+        dataCategory.put("median", new Chart.ChartInfo(MessageSourceUtil.get("MR_DATA_SKEW_CHART_MEDIAN"), UIUtil.KEY_COLOR));
+        dataCategory.put("normal", new Chart.ChartInfo(MessageSourceUtil.get("MR_DATA_SKEW_CHART_NORMAL"), UIUtil.NORMAL_COLOR));
         chart.setDataCategory(dataCategory);
     }
 
     private Chart<MetricInfo> buildTaskChart(MRDataSkewAbnormal dataSkewAbnormal, List<String> info) {
         Chart<MetricInfo> chart = new Chart<>();
         buildChartInfo(chart);
-        chart.setDes(String.format("%s任务处理数据量分布图", dataSkewAbnormal.getTaskType()));
+        chart.setDes(String.format(MessageSourceUtil.get("MR_DATA_SKEW_CHART_TASK_DESC"), dataSkewAbnormal.getTaskType()));
         List<MetricInfo> metricInfoList = chart.getDataList();
         double max = 0.0;
         double median = 0.0;
@@ -133,9 +134,7 @@ public class MRDataSkewService extends RunTimeBaseService<DataSkew> {
                 median = dataSkewGraph.getDataSize();
             }
         }
-        info.add(String.format(
-                "%s task[<span style=\"color: #e24a4a;\">%s</span>]处理数据量为<span style=\"color: #e24a4a;\">%s</span>, " +
-                        "运行耗时为<span style=\"color: #e24a4a;\">%s</span>, 中位值为%s",
+        info.add(String.format(MessageSourceUtil.get("MR_DATA_SKEW_CONCLUSION_INFO"),
                 dataSkewAbnormal.getTaskType(), taskId, UnitUtil.transferByte(max),
                 DateUtil.timeSimplify((double) (dataSkewAbnormal.getElapsedTime() / 1000)), UnitUtil.transferByte(median)));
         return chart;

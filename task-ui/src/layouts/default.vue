@@ -13,14 +13,17 @@ import appLogo from '~/access/icon/application.png'
 import whiteLogo from '~/access/icon/whitelist.png'
 import logo from '~/access/icon/logo.png'
 import { useStore } from '~/store/user'
-
+import { useLocaleStore } from '~/store/locale'
+import { useI18n } from 'vue-i18n'
+const { locale } = useI18n()
+const { t } = useI18n()
 const currentRoute = useRoute()
-console.log(currentRoute)
-console.log(currentRoute.meta.name)
-console.log(currentRoute.path)
 const router = useRouter()
 const store = useStore()
+const localeStore = useLocaleStore()
 let activeRoute: string = $ref('offline')
+let currentLocale: string = $ref(localeStore.locale)
+locale.value = currentLocale
 if(currentRoute.path.indexOf('realtime')!=-1){
   activeRoute = 'realtime'
 }
@@ -51,7 +54,7 @@ const logout = async () => {
   localStorage.removeItem('username')
   localStorage.removeItem('token')
   store.updateUser('')
-  ElMessage.success('注销成功')
+  ElMessage.success(t('menu.logoutSuccess'))
   router.push({
     name: 'login',
   })
@@ -62,6 +65,18 @@ const handleCommand = (command: string) => {
       logout()
       break
   }
+}
+const handleI18n = (command: string) => {
+  switch (command) {
+    case 'toggle':
+      currentLocale = currentLocale === 'zh_CN' ? 'en_US' : 'zh_CN'
+      locale.value = currentLocale
+      console.log(locale.value)
+      localeStore.updateLocale(locale.value)
+      localStorage.setItem('language', locale.value)
+      break
+  }
+  
 }
 const getHeight = () => {
   return `${window.screen.availHeight - 200}px`
@@ -83,15 +98,30 @@ const getHeight = () => {
         <el-image class="title-logo" :src="logo" />
         <el-menu-item index="offline">
           <template #title>
-            离线诊断
+            {{ $t('menu.offline') }}
           </template>
         </el-menu-item>
         <el-menu-item index="realtime">
           <template #title>
-            实时诊断
+            {{ $t('menu.realtime') }}
           </template>
         </el-menu-item>
         <div class="flex-grow" />
+        <el-dropdown class="user-box" @command="handleI18n">
+          <span style="display: flex;align-items: center; margin-right: 20px">
+            {{ currentLocale === 'zh_CN' ? '中文' : 'English' }}
+            <el-icon class="el-icon--right">
+              <arrow-down />
+            </el-icon>
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu style="width:100px">
+              <el-dropdown-item command="toggle">
+                {{ currentLocale === 'zh_CN' ? 'English' : '中文' }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>        
         <el-dropdown class="user-box" @command="handleCommand">
           <span
             style="display: flex;align-items: center; margin-right: 10px"
@@ -104,7 +134,7 @@ const getHeight = () => {
           <template #dropdown>
             <el-dropdown-menu style="width:100px">
               <el-dropdown-item command="logout">
-                注销
+                {{ $t('menu.logout') }}
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -125,42 +155,42 @@ const getHeight = () => {
           <el-menu-item :index="`/${activeRoute}/report`">
             <el-icon><el-image class="logo" :src="reportLogo" /></el-icon>
             <template #title>
-              报告总览
+              {{ $t('menu.reportOverview') }}
             </template>
           </el-menu-item>
           <el-menu-item :index="`/${activeRoute}/diagnosis`">
             <el-icon><el-image class="logo" :src="diagnosisLogo" /></el-icon>
             <template #title>
-              一键诊断
+              {{ $t('menu.oneClick') }}
             </template>
           </el-menu-item>
           <el-menu-item :index="`/${activeRoute}/scheduler`">
             <el-icon><el-image class="logo" :src="taskLogo" /></el-icon>
             <template #title>
-              调度任务
+              {{ $t('menu.schedulerTask') }}
             </template>
           </el-menu-item>
           <el-menu-item v-if="`${activeRoute}`=='offline'" :index="`/${activeRoute}/application`">
             <el-icon><el-image class="logo" :src="appLogo" /></el-icon>
             <template #title>
-              计算任务
+              {{ $t('menu.computingTask') }}
             </template>
           </el-menu-item>
           <el-menu-item v-if="`${activeRoute}`=='realtime'" :index="`/${activeRoute}/metadata`">
             <el-icon><el-image class="logo" :src="appLogo" /></el-icon>
             <template #title>
-              元数据
+              {{ $t('menu.metadata') }}
             </template>
           </el-menu-item>
           <el-menu-item :index="`/${activeRoute}/white`">
             <el-icon><el-image class="logo" :src="whiteLogo" /></el-icon>
             <template #title>
-              白名单
+              {{ $t('menu.blocklist') }}
             </template>
           </el-menu-item>
           <el-tooltip
             effect="dark"
-            :content="isCollapse ? '打开' : '关闭'"
+            :content="isCollapse ? t('menu.open') : t('menu.close')"
             placement="top-start"
           >
             <el-button class="scalin-btn" :link="true" :icon="isCollapse ? Expand : Fold" @click="handleScalin" />

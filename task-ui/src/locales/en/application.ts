@@ -1,0 +1,25 @@
+export default {
+    // Spark & Flink
+    applicationDetails: 'Application Report',
+    basicInfo: 'Basic Info',
+    clusterInfo: 'Cluster Info',
+    clusterName: 'Cluster Name',
+    queue: 'Queue',
+    user: 'User',
+    environment: 'Environment',
+    conclusion: 'Conclusion',
+    executorResource: 'Executor Resource',
+    driverResource: 'Driver Resource',
+    // Flink
+    parallel: 'Parallel',
+    tmNum: 'Tm number',
+    diagnosisParameters: 'Param Advice',
+    diagnosisStartTime: 'Diagnostic Start Time',
+    diagnosisEndTime: 'Diagnostic End Time',
+    diagnosisParallel: 'Advice Parallel',
+    diagnosisTmMemory: 'Advice Taskmanger Memory',
+    diagnosisTmSlotNum: 'Advice Taskmanger Slot',
+    diagnosisTmCoreNum: 'Advice Taskmanger Cores',
+    diagnosisJmMemory: 'Advice Jobmanager Memory',
+    resourceAdvice: 'Resource Advice',
+}

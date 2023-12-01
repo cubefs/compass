@@ -22,6 +22,7 @@ import com.oppo.cloud.model.TaskDiagnosisAdvice;
 import com.oppo.cloud.model.TaskDiagnosisAdviceExample;
 import com.oppo.cloud.portal.domain.base.Conclusion;
 import com.oppo.cloud.portal.domain.log.LogInfo;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -43,13 +44,12 @@ public class OtherExceptionService extends RunErrorBaseService {
 
     @Override
     public String generateItemDesc() {
-        return "错误日志分析";
+        return MessageSourceUtil.get("OTHER_EXCEPTION_ANALYSIS");
     }
 
     @Override
     public Conclusion generateConclusion() {
-        String conclusion = "运行过程发生错误异常,请根据关键日志和相应的诊断建议进行问题修改";
-        return new Conclusion(conclusion, "抓取Driver/Executor中的错误日志");
+        return new Conclusion(MessageSourceUtil.get("OTHER_EXCEPTION_CONCLUSION"), MessageSourceUtil.get("OTHER_EXCEPTION_CONCLUSION_DESC"));
     }
 
     @Override

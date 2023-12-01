@@ -28,6 +28,7 @@ import com.oppo.cloud.portal.domain.diagnose.runtime.TaskLongTail;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.MetricInfo;
 import com.oppo.cloud.portal.domain.diagnose.runtime.base.ValueInfo;
 import com.oppo.cloud.portal.service.OpenSearchService;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
         // Stage chart
         Chart<MetricInfo> chartSummary = new Chart<>();
         buildSummaryChartInfo(chartSummary);
-        chartSummary.setDes("每个Stage 任务运行耗时最大值与中位值比值的分布图");
+        chartSummary.setDes(MessageSourceUtil.get("TASK_LONG_TAIL_CHART_STAGE_DESC"));
         List<MetricInfo> metricSummaryList = chartSummary.getDataList();
         List<String> info = new ArrayList<>();
         for (TaskDurationAbnormal taskDurationAbnormal : taskDurationAbnormalList) {
@@ -92,12 +93,12 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("Stage中任务运行耗时的最大值与中位值的比值大于%s，即判定为Stage耗时异常", thresholdMap.getOrDefault("threshold", ""));
+        return String.format(MessageSourceUtil.get("TASK_LONG_TAIL_CONCLUSION_DESC"), thresholdMap.getOrDefault("threshold", ""));
     }
 
     @Override
     public String generateItemDesc() {
-        return "长尾Task分析";
+        return MessageSourceUtil.get("TASK_LONG_TAIL_ANALYSIS");
     }
 
     @Override
@@ -111,7 +112,7 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
     private Chart<MetricInfo> buildTaskChart(TaskDurationAbnormal taskDurationAbnormal, List<String> info) {
         Chart<MetricInfo> chart = new Chart<>();
         buildChart(chart);
-        chart.setDes(String.format("Stage[%s]每个Task耗时分布(%s)", taskDurationAbnormal.getStageId(), chart.getUnit()));
+        chart.setDes(String.format(MessageSourceUtil.get("TASK_LONG_TAIL_CHART_TASK_DESC"), taskDurationAbnormal.getStageId(), chart.getUnit()));
         List<MetricInfo> metricInfoList = chart.getDataList();
         double max = 0;
         long taskId = 0;
@@ -131,8 +132,7 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
                 median = taskDurationGraph.getDuration();
             }
         }
-        info.add(String.format("job[<span style=\"color: #e24a4a;\">%d</span>].stage[<span style=\"color: #e24a4a;" +
-                "\">%d</span>].task[<span style=\"color: #e24a4a;\">%d</span>]运行耗时<span style=\"color: #e24a4a;\">%s</span> 中位值为%s",
+        info.add(String.format(MessageSourceUtil.get("TASK_LONG_TAIL_CONCLUSION_INFO"),
                 taskDurationAbnormal.getJobId(),
                 taskDurationAbnormal.getStageId(), taskId, DateUtil.timeSimplify(max / 1000),
                 DateUtil.timeSimplify(median / 1000)));
@@ -148,9 +148,9 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
         chart.setUnit("s");
 
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("max", new Chart.ChartInfo("最大值", UIUtil.ABNORMAL_COLOR));
-        dataCategory.put("median", new Chart.ChartInfo("中位值", UIUtil.KEY_COLOR));
-        dataCategory.put("normal", new Chart.ChartInfo("正常值", UIUtil.NORMAL_COLOR));
+        dataCategory.put("max", new Chart.ChartInfo(MessageSourceUtil.get("TASK_LONG_TAIL_CHART_MAX"), UIUtil.ABNORMAL_COLOR));
+        dataCategory.put("median", new Chart.ChartInfo(MessageSourceUtil.get("TASK_LONG_TAIL_CHART_MEDIAN"), UIUtil.KEY_COLOR));
+        dataCategory.put("normal", new Chart.ChartInfo(MessageSourceUtil.get("TASK_LONG_TAIL_CHART_NORMAL"), UIUtil.NORMAL_COLOR));
 
         chart.setDataCategory(dataCategory);
     }
@@ -164,8 +164,8 @@ public class TaskLongTailService extends RunTimeBaseService<TaskLongTail> {
         chart.setUnit("");
 
         Map<String, Chart.ChartInfo> dataCategory = new HashMap<>(2);
-        dataCategory.put("normal", new Chart.ChartInfo("正常Stage", UIUtil.NORMAL_COLOR));
-        dataCategory.put("abnormal", new Chart.ChartInfo("长尾Stage", UIUtil.ABNORMAL_COLOR));
+        dataCategory.put("normal", new Chart.ChartInfo(MessageSourceUtil.get("TASK_LONG_TAIL_CHART_STAGE_NORMAL"), UIUtil.NORMAL_COLOR));
+        dataCategory.put("abnormal", new Chart.ChartInfo(MessageSourceUtil.get("TASK_LONG_TAIL_CHART_STAGE_ABNORMAL"), UIUtil.ABNORMAL_COLOR));
 
         chart.setDataCategory(dataCategory);
     }

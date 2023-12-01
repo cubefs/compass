@@ -5,6 +5,8 @@ const props = defineProps({
     default: () => [],
   },
 })
+const { t } = useI18n()
+const labelText =t('common.diagnosisType') + ':'
 const emit = defineEmits(['change'])
 const selectTag = (item) => {
   item.selected = !item.selected
@@ -14,7 +16,7 @@ const selectTag = (item) => {
 
 <template>
   <el-form label-width="85px">
-    <el-form-item label="诊断类型：">
+    <el-form-item :label="labelText">
       <el-tag
         v-for="item in categories"
         :key="item"

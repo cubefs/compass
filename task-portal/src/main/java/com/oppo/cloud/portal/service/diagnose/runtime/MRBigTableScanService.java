@@ -23,6 +23,7 @@ import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.domain.mr.MRLargeTableScanAbnormal;
 import com.oppo.cloud.portal.domain.diagnose.Table;
 import com.oppo.cloud.portal.domain.diagnose.runtime.mr.MRBigTableScan;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
@@ -63,12 +64,12 @@ public class MRBigTableScanService extends RunTimeBaseService<MRBigTableScan> {
 
     @Override
     public String generateConclusionDesc(Map<String, String> thresholdMap) {
-        return String.format("扫描表的行数超过%s行的任务", thresholdMap.getOrDefault("threshold", ""));
+        return String.format(MessageSourceUtil.get("MR_BIG_TABLE_SCAN_CONCLUSION_DESC"), thresholdMap.getOrDefault("threshold", ""));
     }
 
     @Override
     public String generateItemDesc() {
-        return "MR大表扫描分析";
+        return MessageSourceUtil.get("MR_BIG_TABLE_SCAN_ANALYSIS");
     }
 
     @Override

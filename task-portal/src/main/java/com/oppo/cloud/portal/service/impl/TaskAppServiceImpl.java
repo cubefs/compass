@@ -39,6 +39,7 @@ import com.oppo.cloud.portal.service.diagnose.resource.ResourceBaseService;
 import com.oppo.cloud.portal.service.diagnose.runerror.RunErrorBaseService;
 import com.oppo.cloud.portal.service.diagnose.runinfo.RunInfoService;
 import com.oppo.cloud.portal.service.diagnose.runtime.RunTimeBaseService;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import com.oppo.cloud.portal.util.UnitUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.search.builder.SearchSourceBuilder;
@@ -372,17 +373,17 @@ public class TaskAppServiceImpl implements TaskAppService {
         String timeUnit;
         switch (request.getGraphType()) {
             case "cpuTrend":
-                trendGraph.setName("CPU趋势");
+                trendGraph.setName(MessageSourceUtil.get("CPU_USAGE_TREND"));
                 data = openSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(),
                         taskAppsIndex, "executionDate", "vcoreSeconds");
                 break;
             case "memoryTrend":
-                trendGraph.setName("内存趋势");
+                trendGraph.setName(MessageSourceUtil.get("MEMORY_USAGE_TREND"));
                 data = openSearchService.sumAggregationByDay(builder, request.getStart(), request.getEnd(),
                         taskAppsIndex, "executionDate", "memorySeconds");
                 break;
             case "numTrend":
-                trendGraph.setName("数量趋势");
+                trendGraph.setName(MessageSourceUtil.get("AMOUNT_TREND"));
                 data = openSearchService.countDocByDay(builder, request.getStart(), request.getEnd(), taskAppsIndex, "executionDate");
                 break;
             default:

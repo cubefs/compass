@@ -32,6 +32,7 @@ import com.oppo.cloud.mapper.FlinkTaskAppMapper;
 import com.oppo.cloud.model.*;
 import com.oppo.cloud.portal.domain.flink.*;
 import com.oppo.cloud.portal.service.FlinkTaskDiagnosisService;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +70,7 @@ public class FlinkTaskDiagnosisController {
         for (FlinkRule ediagnosisRule : flinkRules) {
             DiagnosisRuleResp diagnosisRuleResp = new DiagnosisRuleResp();
             diagnosisRuleResp.setCode(ediagnosisRule.getCode());
-            diagnosisRuleResp.setName(ediagnosisRule.getName());
+            diagnosisRuleResp.setName(FlinkRule.getLangMsgByName(ediagnosisRule.name()));
             diagnosisRuleResp.setDesc(ediagnosisRule.getDesc());
             list.add(diagnosisRuleResp);
         }
@@ -101,7 +102,7 @@ public class FlinkTaskDiagnosisController {
             if (ediagnosisRule.getRuleType() == DiagnosisRuleType.ResourceRule.getCode()) {
                 DiagnosisRuleResp diagnosisRuleResp = new DiagnosisRuleResp();
                 diagnosisRuleResp.setCode(ediagnosisRule.getCode());
-                diagnosisRuleResp.setName(ediagnosisRule.getName());
+                diagnosisRuleResp.setName(FlinkRule.getLangMsgByName(ediagnosisRule.name()));
                 diagnosisRuleResp.setDesc(ediagnosisRule.getDesc());
                 list.add(diagnosisRuleResp);
             }
@@ -118,7 +119,7 @@ public class FlinkTaskDiagnosisController {
             if (ediagnosisRule.getRuleType() == DiagnosisRuleType.RuntimeExceptionRule.getCode()) {
                 DiagnosisRuleResp diagnosisRuleResp = new DiagnosisRuleResp();
                 diagnosisRuleResp.setCode(ediagnosisRule.getCode());
-                diagnosisRuleResp.setName(ediagnosisRule.getName());
+                diagnosisRuleResp.setName(FlinkRule.getLangMsgByName(ediagnosisRule.name()));
                 diagnosisRuleResp.setDesc(ediagnosisRule.getDesc());
                 list.add(diagnosisRuleResp);
             }
@@ -153,11 +154,7 @@ public class FlinkTaskDiagnosisController {
         if (includeCategories != null) {
             List<Integer> includeRules = new ArrayList<>();
             for (String msg : includeCategories) {
-                for (FlinkRule fr : FlinkRule.values()) {
-                    if (fr.getName().equals(msg)) {
-                        includeRules.add(fr.getCode());
-                    }
-                }
+                includeRules.add(FlinkRule.getCodeByLangMsg(msg));
             }
             request.setDiagnosisRule(includeRules);
         }
@@ -222,19 +219,19 @@ public class FlinkTaskDiagnosisController {
     @ApiOperation(value = "order map")
     public CommonStatus<?> getOrderMap() {
         Map<String, String> orderMap = new HashMap<>();
-        orderMap.put("tm_num * tm_mem - diagnosis_tm_num * diagnosis_tm_mem_size", "任务可优化总内存数");
-        orderMap.put("tm_num * tm_container_vcore_num - diagnosis_tm_num * diagnosis_tm_core_num", "任务可优化总核数");
-        orderMap.put("parallel", "任务并行度");
-        orderMap.put("tm_mem", "任务tm内存");
-        orderMap.put("tm_num * tm_mem", "任务总内存数");
-        orderMap.put("tm_slot_num", "任务slot数量");
-        orderMap.put("jm_mem", "任务jm内存数");
-        orderMap.put("tm_num * tm_container_vcore_num", "任务总core数");
-        orderMap.put("diagnosis_tm_num * diagnosis_tm_core_num", "任务建议总core数");
-        orderMap.put("diagnosis_parallel", "任务建议并行度");
-        orderMap.put("diagnosis_tm_mem_size", "任务建议tm内存");
-        orderMap.put("diagnosis_tm_num * diagnosis_tm_mem_size", "任务建议总内存数");
-        orderMap.put("diagnosis_jm_mem_size", "任务建议jm内存");
+        orderMap.put("tm_num * tm_mem - diagnosis_tm_num * diagnosis_tm_mem_size", MessageSourceUtil.get("OPTIMIZE_MEMORY"));
+        orderMap.put("tm_num * tm_container_vcore_num - diagnosis_tm_num * diagnosis_tm_core_num", MessageSourceUtil.get("OPTIMIZE_CORE"));
+        orderMap.put("parallel", MessageSourceUtil.get("TASK_PARALLEL"));
+        orderMap.put("tm_mem", MessageSourceUtil.get("TASK_TM_MEM"));
+        orderMap.put("tm_num * tm_mem", MessageSourceUtil.get("TASK_TOTAL_MEMORY"));
+        orderMap.put("tm_slot_num", MessageSourceUtil.get("TASK_SLOT_AMOUNT"));
+        orderMap.put("jm_mem", MessageSourceUtil.get("TASK_JM_MEMORY"));
+        orderMap.put("tm_num * tm_container_vcore_num", MessageSourceUtil.get("TASK_TOTAL_CORE"));
+        orderMap.put("diagnosis_tm_num * diagnosis_tm_core_num", MessageSourceUtil.get("TASK_ADVICE_CORE"));
+        orderMap.put("diagnosis_parallel", MessageSourceUtil.get("TASK_ADVICE_PARALLEL"));
+        orderMap.put("diagnosis_tm_mem_size", MessageSourceUtil.get("TASK_ADVICE_TM_MEM"));
+        orderMap.put("diagnosis_tm_num * diagnosis_tm_mem_size", MessageSourceUtil.get("TASK_ADVICE_TOTAL_MEMORY"));
+        orderMap.put("diagnosis_jm_mem_size", MessageSourceUtil.get("TASK_ADVICE_JM_MEMORY"));
         return CommonStatus.success(orderMap);
     }
 
@@ -242,8 +239,8 @@ public class FlinkTaskDiagnosisController {
     @ApiOperation(value = "sort type")
     public CommonStatus<?> getOrderType() {
         Map<String, String> orderMap = new HashMap<>();
-        orderMap.put("desc", "倒序");
-        orderMap.put("asc", "正序");
+        orderMap.put("desc", MessageSourceUtil.get("DESC"));
+        orderMap.put("asc", MessageSourceUtil.get("ASC"));
         return CommonStatus.success(orderMap);
     }
 
@@ -251,22 +248,22 @@ public class FlinkTaskDiagnosisController {
     @ApiOperation(value = "get optional column of a table")
     public CommonStatus<?> getTableColumns() {
         Map<String, String> orderMap = new HashMap<>();
-        orderMap.put("parallel", "并行度");
-        orderMap.put("tmSlot", "TM的slot数量");
-        orderMap.put("tmCore", "TM的core数量");
-        orderMap.put("tmMem", "tm内存MB");
-        orderMap.put("jmMem", "jm内存MB");
-        orderMap.put("tmNum", "tm数量");
-        orderMap.put("diagnosisStartTime", "诊断起始时间");
-        orderMap.put("diagnosisEndTime", "诊断结束时间");
-        orderMap.put("diagnosisParallel", "建议并行度");
-        orderMap.put("diagnosisJmMemSize", "建议jm内存MB");
-        orderMap.put("diagnosisTmSlotNum", "建议TM的slot数量");
-        orderMap.put("diagnosisTmCoreNum", "建议tm的core数量");
-        orderMap.put("diagnosisTmNum", "建议tm数量");
-        orderMap.put("metricJobName", "上报metric的job名字");
-        orderMap.put("flinkTrackUrl", "Flink track url");
-        orderMap.put("applicationId", "Application ID");
+        orderMap.put("parallel", MessageSourceUtil.get("PARALLEL"));
+        orderMap.put("tmSlot", MessageSourceUtil.get("TM_SLOT_AMOUNT"));
+        orderMap.put("tmCore", MessageSourceUtil.get("TM_CORE_AMOUNT"));
+        orderMap.put("tmMem", MessageSourceUtil.get("TM_MEM"));
+        orderMap.put("jmMem", MessageSourceUtil.get("JM_MEM"));
+        orderMap.put("tmNum", MessageSourceUtil.get("TM_NUM"));
+        orderMap.put("diagnosisStartTime", MessageSourceUtil.get("DIAGNOSIS_START_TIME"));
+        orderMap.put("diagnosisEndTime", MessageSourceUtil.get("DIAGNOSIS_END_TIME"));
+        orderMap.put("diagnosisParallel", MessageSourceUtil.get("DIAGNOSIS_PARALLEL"));
+        orderMap.put("diagnosisJmMemSize", MessageSourceUtil.get("DIAGNOSIS_JM_MEM_SIZE"));
+        orderMap.put("diagnosisTmSlotNum", MessageSourceUtil.get("DIAGNOSIS_TM_SLOT_NUM"));
+        orderMap.put("diagnosisTmCoreNum", MessageSourceUtil.get("DIAGNOSIS_TM_CORE_NUM"));
+        orderMap.put("diagnosisTmNum", MessageSourceUtil.get("DIAGNOSIS_TM_NUM"));
+        orderMap.put("metricJobName", MessageSourceUtil.get("METRIC_JOB_NAME"));
+        orderMap.put("flinkTrackUrl", MessageSourceUtil.get("FLINK_TRACK_URL"));
+        orderMap.put("applicationId", MessageSourceUtil.get("APPLICATION_ID"));
         return CommonStatus.success(orderMap);
     }
 
@@ -277,7 +274,7 @@ public class FlinkTaskDiagnosisController {
     }
 
     @PostMapping("/getGeneralViewNumber")
-    @ApiOperation(value = "获取概览数值指标")
+    @ApiOperation(value = "get general view")
     public CommonStatus<?> getGeneralViewNumber(@Validated @RequestBody DiagnosisGeneralViewReq request) throws Exception {
         DiagnosisGeneralViewNumberResp generalViewNumber = flinkTaskDiagnosisService.getGeneralViewNumber(request);
         return CommonStatus.success(generalViewNumber);
@@ -296,7 +293,7 @@ public class FlinkTaskDiagnosisController {
         if (generalViewTrend != null) {
             return CommonStatus.success(generalViewTrend);
         } else {
-            return CommonStatus.failed("该周期内无数据");
+            return CommonStatus.failed(MessageSourceUtil.get("NO_DATA_PERIOD"));
         }
     }
 

@@ -2,6 +2,7 @@
 import { ElMessage } from 'element-plus'
 import Copy from '~/components/Copy.vue'
 import { post } from '~/utils/request'
+const { t } = useI18n()
 const props = defineProps({
   data: {
     type: Array,
@@ -15,15 +16,15 @@ const props = defineProps({
 const emit = defineEmits(['search'])
 const router = useRouter()
 const tableInfo = $ref([
-  { label: '工作流', prop: 'flowName', copy: true },
-  { label: '实例', prop: 'taskName', copy: true },
-  { label: '项目', prop: 'projectName' },
-  { label: '执行周期', prop: 'executionDate', width: 200 },
-  { label: '运行耗时', prop: 'duration' },
-  { label: '资源消耗', prop: 'resource' },
+  { label: t('common.flowName'), prop: 'flowName', copy: true },
+  { label: t('common.taskName'), prop: 'taskName', copy: true },
+  { label: t('common.projectName'), prop: 'projectName' },
+  { label: t('common.executionDate'), prop: 'executionDate', width: 200 },
+  { label: t('common.duration'), prop: 'duration' },
+  { label: t('common.resource'), prop: 'resource' },
   // { label: '处理状态', prop: 'taskStatus' },
-  { label: '创建人', prop: 'users' },
-  { label: '其他信息', prop: 'others' },
+  { label: t('common.creator'), prop: 'users' },
+  { label: t('common.otherInfo'), prop: 'others' },
 ])
 const findColor = (value: String) => {
   const result = props.colorMap.find(item => item.name === value)
@@ -35,7 +36,7 @@ const addWhite = async (row) => {
     projectName: row.projectName,
     taskName: row.taskName,
   })
-  ElMessage.success('添加成功')
+  ElMessage.success(t('common.success'))
 }
 const handleState = async (row) => {
   if (row.taskStatus === 1)
@@ -49,7 +50,7 @@ const handleState = async (row) => {
   }, {
     confirmTips: '是否将该记录及其之前记录设置为已处理？',
   })
-  ElMessage.success('设置成功')
+  ElMessage.success(t('common.success'))
   emit('search')
 }
 const goReport = (row) => {
@@ -80,7 +81,7 @@ const goReport = (row) => {
         <template #default="scope">
           <span v-if="item.copy"><Copy :value="scope.row[item.prop]" style="margin:15px 5px 15px 0px;" />{{ scope.row[item.prop] }}</span>
           <span v-else-if="item.label === '处理状态'"><el-tag class="pointer" :type="scope.row.taskStatus === 1 ? '' : 'success'" @click="handleState(scope.row)">{{ scope.row.taskStatus === 1 ? '已处理' : '未处理' }}</el-tag></span>
-          <span v-else-if="item.label === '其他信息'">{{ scope.row.others.length ? scope.row.others.join(',') : '-' }}</span>
+          <span v-else-if="item.label === t('common.otherInfo')">{{ scope.row.others.length ? scope.row.others.join(',') : '-' }}</span>
           <span v-else>{{ scope.row[item.prop] }}</span>
         </template>
       </el-table-column>
@@ -88,7 +89,7 @@ const goReport = (row) => {
         <template #default="scope">
           <div class="bottom-bar">
             <div>
-              <span>诊断类型：</span>
+              <span>{{ $t('common.diagnosisType') }}：</span>
               <span
                 v-for="item in scope.row.categories"
                 :key="item"
@@ -101,10 +102,10 @@ const goReport = (row) => {
             </div>
             <div>
               <el-button type="primary" text @click="addWhite(scope.row)">
-                添加白名单
+                {{ $t('common.addBlocklist') }}
               </el-button>
               <el-button type="primary" text @click="goReport(scope.row)">
-                查看详情
+                {{ $t('common.viewDetails') }}
               </el-button>
             </div>
           </div>

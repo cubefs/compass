@@ -23,12 +23,12 @@ async function diagnosisSearch() {
   var startTs = time[0] / 1000
   var res
   try {
-    resp = await post('/api/flink/diagnosis', {
+    const resp = await post('/api/flink/diagnosis', {
       appId: applicationId,
       start: startTs,
       end: endTs,
     })
-    res = resp.data
+    res = resp
   } catch (error) {
     loading = false
     setTimeout(() => {
@@ -37,20 +37,15 @@ async function diagnosisSearch() {
     console.log(error)
     return
   }
-  console.log(res)
-  // processInfoList = res.processInfoList
   if (res.status != 'succeed') {
     loading = false
     setTimeout(() => {
       dialogVisible = false
     }, 2000)
-    // setTimeout(() => {
-    //   diagnosisSearch()
-    // }, 5000)
   } else {
     loading = false
     if (res.flinkTaskAnalysis == null) {
-      ElMessage.error("诊断失败")
+      ElMessage.error(t('diagnosis.diagnosisFailed'))
     } else {
       emit('searchComplete', res.flinkTaskAnalysis)
     }
@@ -68,7 +63,7 @@ defineExpose({
   <el-dialog v-model="dialogVisible" width="550px">
     <template #header>
       <span>
-        进度
+        {{ $t('diagnosis.progress') }}
       </span>
       <el-icon v-if="loading" class="is-loading">
         <Loading />

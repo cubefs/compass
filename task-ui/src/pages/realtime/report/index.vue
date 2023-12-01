@@ -77,7 +77,7 @@ onMounted(() => {
 
 <template>
   <el-card>
-    项目
+    {{ $t('report.project') }}
     <el-select v-model="project">
       <el-option v-for="item in projectList" :key="item" :label="item" :value="item" />
     </el-select>
@@ -85,9 +85,9 @@ onMounted(() => {
 
   <el-card class="m-t-5">
     <div m-b-5>
-      <span style="background: #f2f2f2; padding: 2px; font-size: 14px;">最近数据周期：{{ dayjs().format('YYYY-MM-DD') }}</span>
+      <span style="background: #f2f2f2; padding: 2px; font-size: 14px;">{{ $t('report.latestPeriod') }}：{{ dayjs().format('YYYY-MM-DD') }}</span>
       <el-button type="primary" class="f-r" @click="getRealtimeStatistics">
-        刷新
+        {{ $t('report.refresh') }}
       </el-button>
     </div>
     <el-scrollbar>
@@ -95,13 +95,13 @@ onMounted(() => {
         <div class="report-card" style="border-left: 5px solid #00bfbf">
           <div class="report-card-left">
             <div class="left-first">
-              异常作业数
+              {{ $t('report.exceptionTaskCntSum') }}
             </div>
             <div class="left-second">
               {{ sData.generalViewNumberDto.exceptionTaskCntSum }}
             </div>
             <div class="left-third">
-              <span m-r-3 style="color:#7f7f7f">诊断作业数</span><span>{{ sData.generalViewNumberDto.baseTaskCntSum }}</span>
+              <span m-r-3 style="color:#7f7f7f">{{ $t('report.baseTaskCntSum') }}</span><span>{{ sData.generalViewNumberDto.baseTaskCntSum }}</span>
             </div>
           </div>
           <CardRight :chain-ratio="sData.abnormalJobNumChainRatio" :ratio="sData.abnormalJobNumRatio"
@@ -110,13 +110,13 @@ onMounted(() => {
         <div class="report-card" style="border-left: 5px solid #02a7f0">
           <div class="report-card-left">
             <div class="left-first">
-              可优化资源作业数
+              {{ $t('report.resourceTaskCntSum') }}
             </div>
             <div class="left-second">
               {{ sData.generalViewNumberDto.resourceTaskCntSum }}
             </div>
             <div class="left-third">
-              <span m-r-3 style="color:#7f7f7f">诊断作业数</span><span>{{ sData.generalViewNumberDto.baseTaskCntSum }}</span>
+              <span m-r-3 style="color:#7f7f7f">{{ $t('report.baseTaskCntSum') }}</span><span>{{ sData.generalViewNumberDto.baseTaskCntSum }}</span>
             </div>
           </div>
           <CardRight :chain-ratio="sData.resourceJobNumChainRatio" :ratio="sData.resourceJobNumRatio"
@@ -125,13 +125,13 @@ onMounted(() => {
         <div class="report-card" style="border-left: 5px solid #f59a23">
           <div class="report-card-left">
             <div class="left-first">
-              可优化CPU数
+              {{ $t('report.cutCoreNumSum') }}
             </div>
             <div class="left-second">
               {{ sData.generalViewNumberDto.cutCoreNumSum }}&nbsp;<span class="unit">{{ sData.cpuUnit }}</span>
             </div>
             <div class="left-third">
-              <span m-r-3 style="color:#7f7f7f">CPU总数</span><span>{{ sData.generalViewNumberDto.totalCoreNumSum }} {{ sData.cpuUnit }}</span>
+              <span m-r-3 style="color:#7f7f7f">{{ $t('report.totalCoreNumSum') }}</span><span>{{ sData.generalViewNumberDto.totalCoreNumSum }} {{ sData.cpuUnit }}</span>
             </div>
           </div>
           <CardRight :chain-ratio="sData.resourceCpuNumChainRatio" :ratio="sData.resourceCpuNumRatio"
@@ -140,13 +140,13 @@ onMounted(() => {
         <div class="report-card" style="border-left: 5px solid #70b603">
           <div class="report-card-left">
             <div class="left-first">
-              可优化内存数
+              {{ $t('report.cutMemNumSum') }}
             </div>
             <div class="left-second">
               {{ sData.generalViewNumberDto.cutMemNumSum }}&nbsp;<span class="unit">{{ sData.memoryUnit }}</span>
             </div>
             <div class="left-third">
-              <span m-r-3 style="color:#7f7f7f">内存数总数</span><span>{{ sData.generalViewNumberDto.totalMemNumSum }} {{ sData.memoryUnit }}</span>
+              <span m-r-3 style="color:#7f7f7f">{{ $t('report.totalMemNumSum') }}</span><span>{{ sData.generalViewNumberDto.totalMemNumSum }} {{ sData.memoryUnit }}</span>
             </div>
           </div>
           <CardRight :chain-ratio="sData.resourceMemoryNumChainRatio" :ratio="sData.resourceMemoryNumRatio"

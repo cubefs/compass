@@ -67,7 +67,7 @@ export default {
   <div ref="container" class="expand-container" :class="{ 'expand-disable': !showAll }">
     <span ref="inner" :class="{ 'cursor-pointer': expandType === 'click' }" @mousedown="mousedown" @mouseup="mouseup" v-html="value" />
     <span class="footer-icon cursor-pointer" :class="{ 'footer-icon-before': !showAll }" @click="spanClick">
-      {{ !showAll ? '展开' : '收起' }}
+      {{ !showAll ? $t('common.expand') : $t('common.collapse') }}
     </span>
   </div>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import * as echarts from 'echarts'
+const { t } = useI18n()
 const props = defineProps({
   data: {
     type: Object,
@@ -36,7 +37,7 @@ const option = {
   },
   yAxis: {
     type: 'value',
-    name: `单位（${props.data.unit}）`
+    name: `${t('common.unit')}（${props.data.unit}）`
   },
   barMaxWidth: 30,
   series: [],

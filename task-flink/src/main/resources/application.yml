@@ -13,7 +13,7 @@ spring:
       time-zone: GMT+8
       date-format: yyyy-MM-dd HH:mm:ss
   datasource:
-    url: jdbc:mysql://localhost:33066/diagnose_data?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username:
     password:
     druid:
@@ -29,7 +29,7 @@ spring:
       auto-offset-reset: "latest"  # Start consuming from the submitted offset. If no offset is submitted, consume from the beginning.
       max-poll-interval-ms: 300000  # The time interval between two active consumptions is 5 minutes
   opensearch:
-    hosts: localhost:19527
+    nodes: localhost:9200
     username:
     password:
     truststore:

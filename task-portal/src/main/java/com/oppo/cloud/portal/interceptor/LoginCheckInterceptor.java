@@ -20,9 +20,11 @@ import com.oppo.cloud.common.api.CommonStatus;
 import com.oppo.cloud.portal.config.ThreadLocalUserInfo;
 import com.oppo.cloud.portal.domain.task.UserResponse;
 import com.oppo.cloud.portal.util.JWTUtil;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -40,6 +42,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     private static final String VERIFY_KEY = "/api";
     private static final String DOCS_KEY = "api-docs";
     private static final String TOKEN = "token";
+    private static final String LANGUAGE = "language";
 
     @Autowired
     private JWTUtil jwtUtil;
@@ -54,7 +57,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         String token = request.getHeader(TOKEN);
         if (StringUtils.isEmpty(token)) {
-            handleFalseResponse(response, "登录失效，请重新登录");
+            handleFalseResponse(response, MessageSourceUtil.get("TOKEN_VERIFY_FAILED"));
             return false;
         }
 
@@ -62,11 +65,17 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         try {
             userInfo = jwtUtil.verifyToken(token);
         } catch (Exception e) {
-            handleFalseResponse(response, "登录失效，请重新登录");
+            handleFalseResponse(response, MessageSourceUtil.get("TOKEN_VERIFY_FAILED"));
             return false;
         }
         log.info("userInfo:{}", userInfo);
         ThreadLocalUserInfo.set(userInfo);
+
+        String language = request.getHeader(LANGUAGE);
+        if (StringUtils.isNotBlank(token)) {
+            LocaleContextHolder.setLocale(org.springframework.util.StringUtils.parseLocale(language));
+            LocaleContextHolder.setDefaultLocale(org.springframework.util.StringUtils.parseLocale(language));
+        }
 
         return true;
     }

@@ -68,10 +68,10 @@ public class JobController {
     @GetMapping(value = "/apps")
     @ApiOperation(value = "App list", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "taskName", value = "任务名称", dataType = "String", dataTypeClass = String.class),
+            @ApiImplicitParam(name = "taskName", value = "taskName", dataType = "String", dataTypeClass = String.class),
             @ApiImplicitParam(name = "flowName", value = "dagId", dataType = "String", dataTypeClass = String.class),
             @ApiImplicitParam(name = "projectName", value = "projectName", dataType = "String", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "executionDate", value = "执行周期:2021-07-16 15:57:06", dataType = "String", dataTypeClass = String.class)
+            @ApiImplicitParam(name = "executionDate", value = "executionDate", dataType = "String", dataTypeClass = String.class)
     })
     public CommonStatus<?> searchJobs(@RequestParam(value = "taskName") String taskName,
                                                    @RequestParam(value = "flowName") String flowName,
@@ -117,8 +117,8 @@ public class JobController {
     @ApiOperation(value = "app category type")
     public CommonStatus<?> getCategories() {
         List<String> res = new ArrayList<>();
-        res.addAll(JobCategoryEnum.getAllAppCategoryOfChina());
-        res.addAll(AppCategoryEnum.getAllAppCategoryOfChina());
+        res.addAll(JobCategoryEnum.getAllLangMsg());
+        res.addAll(AppCategoryEnum.getAllLangMsg());
         return CommonStatus.success(res);
     }
 

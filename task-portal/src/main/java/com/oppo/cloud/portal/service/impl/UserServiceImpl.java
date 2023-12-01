@@ -27,8 +27,11 @@ import com.oppo.cloud.portal.service.UserService;
 import com.oppo.cloud.portal.util.CryptoUtil;
 import com.oppo.cloud.portal.util.EncryptionUtils;
 import com.oppo.cloud.portal.util.JWTUtil;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -46,6 +49,9 @@ public class UserServiceImpl implements UserService {
     private JWTUtil jwtUtil;
     @Autowired
     private UserInfoMapper userMapper;
+
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * Get user information by username
@@ -70,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
         UserInfo user = getByUsername(username);
         if (user == null) {
-            throw new Exception("用户名不存在");
+            throw new Exception(MessageSourceUtil.get("USER_NOT_EXIST"));
         }
         String schedulerType = user.getSchedulerType();
         boolean loginFlag;
@@ -86,7 +92,7 @@ public class UserServiceImpl implements UserService {
             loginFlag = true;
         }
         if (!loginFlag) {
-            throw new Exception("用户名或密码错误");
+            throw new Exception(MessageSourceUtil.get("LOGIN_FAILED"));
         }
 
         UserResponse userInfo = new UserResponse();

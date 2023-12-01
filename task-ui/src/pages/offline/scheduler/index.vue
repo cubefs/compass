@@ -5,6 +5,8 @@ import Categories from './components/CategoriesBar.vue'
 import PageBar from './components/PageBar.vue'
 import { get, post } from '~/utils/request'
 import { cloudTheme } from '~/utils/setting'
+const { t } = useI18n()
+const timeText =t('common.time') + ':'
 const formInline: any = $ref({
   projectName: '',
   flowName: '',
@@ -13,10 +15,10 @@ const formInline: any = $ref({
   time: [],
 })
 const searchInfo = $ref([
-  { label: '项目：', value: 'projectName' },
-  { label: '工作流：', value: 'flowName' },
-  { label: '实例：', value: 'taskName' },
-  { label: '创建人：', value: 'username' },
+  { label: t('common.projectName')+'：', value: 'projectName' },
+  { label: t('common.flowName')+'：', value: 'flowName' },
+  { label: t('common.taskName')+'：', value: 'taskName' },
+  { label: t('common.creator')+'：', value: 'username' },
 ])
 const tableData = $ref({
   data: [],
@@ -122,13 +124,13 @@ onMounted(() => {
       <el-form-item v-for="item in searchInfo" :key="item.value" :label="item.label">
         <el-input v-model="formInline[item.value]" @keyup.enter="search" />
       </el-form-item>
-      <el-form-item label="时间：">
+      <el-form-item :label="timeText">
         <el-date-picker
           v-model="formInline.time"
           type="datetimerange"
           range-separator="-"
-          start-placeholder="开始时间"
-          end-placeholder="结束时间"
+          :start-placeholder="t('common.startPlaceholder')"
+          :end-placeholder="t('common.endPlaceholder')"
           value-format="x"
           @change="search"
         />

@@ -4,34 +4,27 @@ import Process from './ProcessDialog.vue'
 import { cloudTheme } from '~/utils/setting'
 import dayjs from 'dayjs'
 import { get, post } from '~/utils/request'
+const { t } = useI18n()
 const applicationId: string = $ref('')
 const refDialog: any = ref(null)
 const router = useRouter()
 const tableColumn = [
-  { label: 'application_id', value: 'applicationId' },
-  { label: '工作流', value: 'flowName' },
-  { label: '实例', value: 'taskName' },
-  { label: '开始时间', value: 'startTime' },
-  { label: '创建人', value: 'username' },
+  { label: t('common.applicationId'), value: 'applicationId' },
+  { label: t('common.flowName'), value: 'flowName' },
+  { label: t('common.taskName'), value: 'taskName' },
+  { label: t('common.startTime'), value: 'startTime' },
+  { label: t('common.creator'), value: 'username' },
 ]
+const placeholderText =t('common.inputPlaceholder') + 'flink application id'
 let taskAppInfo: any = $ref({})
-let categories: any = $ref([])
 let rules :any[] = []
-get('/api/flink/diagnosisRules', {})
-  .then(r => {
-    rules = r
-    console.log(rules)
-  })
 async function submit() {
   if (!applicationId)
-    return ElMessage.warning('请输入applicationId')
+    return ElMessage.warning(t('common.inputPlaceholder') + 'applicationId')
   refDialog.value.init(applicationId)
 }
 function searchComplete(info: any) {
   taskAppInfo = info
-  let categories = taskAppInfo.diagnosisTypes
-  console.log(categories)
-  console.log('category :' + categories)
 }
 const goReport = () => {
   router.push({
@@ -49,17 +42,17 @@ const goReport = () => {
     <div flex="~" justify-center flex-col items-center>
       <div h-40 />
       <div flex="~" w-160 m-b-10>
-        <el-input v-model="applicationId" placeholder="请输入flink application id">
+        <el-input v-model="applicationId" :placeholder="placeholderText">
           <template #append>
             <el-button @click="submit">
-              一键诊断
+              {{ $t('diagnosis.oneClick') }}
             </el-button>
           </template>
         </el-input>
       </div>
       <div>
         <div class="result-title" w-270>
-          任务信息
+          {{ $t('diagnosis.applicationInfo') }}
         </div>
       </div>
       <el-card shadow="never" w-270>
@@ -70,26 +63,26 @@ const goReport = () => {
       </el-card>
       <div m-t-10>
         <div class="result-title" w-270>
-          诊断结果
+          {{ $t('diagnosis.diagnosticResult') }}
         </div>
       </div>
       <el-card shadow="never" w-270>
         <div v-if="Object.keys(taskAppInfo).length !== 0">
           <div m-b-3>
-            <span v-for="(category, c_index) in categories" :key="category" class="category-card" :title="category"
+            <span v-for="(category, c_index) in taskAppInfo.diagnosisTypes" :key="category" class="category-card" :title="category"
               :style="{ 'border-left': `5px solid ${cloudTheme[c_index]}` }">
               {{ category }}
             </span>
           </div>
           <div>
-            <span style="font-size:15px" m-r-10>开始时间：{{ dayjs(taskAppInfo.startTime).format('YYYY-MM-DD HH:mm:ss')
+            <span style="font-size:15px" class="m-r-10">{{ $t('diagnosis.startTime') }}：{{ dayjs(taskAppInfo.startTime).format('YYYY-MM-DD HH:mm:ss')
             }}</span>
-            <span style="font-size:15px" m-r-10>任务并行度：{{ taskAppInfo.parallel }}</span>
-            <span style="font-size:15px" m-r-10>任务tm个数：{{ taskAppInfo.tmNum }} 个</span>
-            <span style="font-size:15px" m-r-10>任务tm core：{{ taskAppInfo.tmCore }} 个</span>
-            <span style="font-size:15px" m-r-10>任务tm mem:{{ taskAppInfo.tmMem }} MB</span>
+            <span style="font-size:15px" class="m-r-10">{{ $t('diagnosis.taskParallel') }}：{{ taskAppInfo.parallel }}</span>
+            <span style="font-size:15px" class="m-r-10">{{ $t('diagnosis.taskTmNum') }}：{{ taskAppInfo.tmNum }} </span>
+            <span style="font-size:15px" class="m-r-10">{{ $t('diagnosis.taskTmCore') }}：{{ taskAppInfo.tmCore }} </span>
+            <span style="font-size:15px" class="m-r-10">{{ $t('diagnosis.taskTmMem') }}: {{ taskAppInfo.tmMemory }} MB</span>
             <el-button text type="primary" style="float:right" @click="goReport">
-              点击查看诊断报告
+              {{ $t('diagnosis.viewReport') }}
             </el-button>
           </div>
         </div>
@@ -110,6 +103,10 @@ const goReport = () => {
   font-size: 20px;
   font-weight: bold;
   border: 2px solid #e0e0e0;
+}
+
+.m-r-10{
+    margin-right: 10px;
 }
 </style>
 

@@ -110,7 +110,7 @@ public class AppController {
     @GetMapping(value = "/categories")
     @ApiOperation(value = "app category type")
     public CommonStatus<?> getCategories() {
-        return CommonStatus.success(AppCategoryEnum.getAllAppCategoryOfChina());
+        return CommonStatus.success(AppCategoryEnum.getAllLangMsg());
     }
 
     @PostMapping(value = "/graph")

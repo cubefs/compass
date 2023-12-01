@@ -2,6 +2,7 @@
 import dayjs from 'dayjs'
 import * as echarts from 'echarts'
 import { post } from '~/utils/request'
+const { t } = useI18n()
 const lineTab: string = $ref('first')
 let cpuData = $ref({})
 let memData = $ref({})
@@ -72,7 +73,7 @@ watch(
   () => {
     console.log(cpuData)
     option.title.text = cpuData.name
-    option.yAxis.name = cpuData.unit ? `单位（${cpuData.unit}）` : ''
+    option.yAxis.name = cpuData.unit ? `${t('common.unit')}（${cpuData.unit}）` : ''
     option.xAxis.data = cpuData.jobUsage.data.map(item => item.date.slice(0, 10))
     option.series = [
       {
@@ -93,7 +94,7 @@ watch(
   () => memData,
   () => {
     option.title.text = memData.name
-    option.yAxis.name = `单位（${memData.unit}）`
+    option.yAxis.name = `${t('common.unit')}（${memData.unit}）`
     option.xAxis.data = memData.jobUsage.data.map(item => item.date.slice(0, 10))
     option.series = [
       {
@@ -136,8 +137,8 @@ onBeforeUnmount(() => {
         value-format="x" @change="getLineChart" />
       <div style="width:8%" />
     </div>
-    <el-tab-pane label="资源趋势" name="first" />
-    <el-tab-pane label="数量趋势" name="second" />
+    <el-tab-pane :label="$t('report.resourceTrend')" name="first" />
+    <el-tab-pane :label="$t('report.amountTrend')" name="second" />
     <div flex="~">
       <div id="chart1" key="chart1" style="height:250px;width:50%" />
       <div v-show="lineTab === 'first'" id="chart2" style="height:250px;width:50%" />

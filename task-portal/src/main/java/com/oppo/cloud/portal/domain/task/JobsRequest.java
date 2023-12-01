@@ -86,8 +86,8 @@ public class JobsRequest {
             termQuery.put("taskName.keyword", taskName);
         }
         if (categories != null && categories.size() != 0) {
-            List<String> categoriesEnglish = JobCategoryEnum.getJobCategoryEn(categories);
-            categoriesEnglish.addAll(AppCategoryEnum.getAppCategoryEn(categories));
+            List<String> categoriesEnglish = JobCategoryEnum.getCategoryByLangMsg(categories);
+            categoriesEnglish.addAll(AppCategoryEnum.getCategoryByLangMsg(categories));
             termQuery.put("categories.keyword", categoriesEnglish);
         }
         UserResponse userInfo = ThreadLocalUserInfo.getCurrentUser();

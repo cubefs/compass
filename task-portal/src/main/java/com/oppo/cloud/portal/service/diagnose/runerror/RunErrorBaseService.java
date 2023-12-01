@@ -28,6 +28,7 @@ import com.oppo.cloud.portal.domain.diagnose.runerror.RunError;
 import com.oppo.cloud.portal.domain.log.LogInfo;
 import com.oppo.cloud.portal.service.OpenSearchService;
 import com.oppo.cloud.portal.service.diagnose.Generate;
+import com.oppo.cloud.portal.util.MessageSourceUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.opensearch.search.builder.SearchSourceBuilder;
 import org.opensearch.search.sort.SortOrder;
@@ -160,7 +161,7 @@ public abstract class RunErrorBaseService implements Generate {
         item.setItem(this.generateTable(data));
         Conclusion conclusion = this.generateConclusion();
         if (data == null || data.size() == 0) {
-            conclusion.setConclusion("未检测到异常");
+            conclusion.setConclusion(MessageSourceUtil.get("RUN_ERROR_CONCLUSION"));
         }
         item.setConclusion(conclusion);
         item.setError(error);
