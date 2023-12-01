@@ -31,7 +31,7 @@ const onSubmit = async () => {
 <template>
   <div class="content">
     <div class="login">
-      <el-image class="title-logo" :src="logo" />
+      <!-- <el-image class="title-logo" :src="logo" /> -->
       <el-form :model="form">
         <el-form-item>
           <el-input v-model="form.username" :rows="10" :placeholder="t('login.username')" />
