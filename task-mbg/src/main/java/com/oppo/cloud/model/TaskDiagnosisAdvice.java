@@ -173,6 +173,9 @@ public class TaskDiagnosisAdvice implements Serializable {
      * detect Yarn diagnostics
      */
     public String detectDiagnostics(String diagnostics) {
+        if (this.getRule() == null) {
+            return this.getAbnormalAdvice();
+        }
         String result = null;
         Pattern pattern = Pattern.compile(this.getRule(), Pattern.DOTALL);
         String[] variables = this.getVariables() == null ? new String[0] : this.getVariables().split(",");
