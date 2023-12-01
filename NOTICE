@@ -10,3 +10,7 @@ Copyright 2019-2022 The Apache Software Foundation. All Rights Reserved.
 
 The part of bin and conf directories in task-canal and task-canal-adapter
 was created by Apache canal (https://github.com/apache/canal).
+
+This product bundles drain3 algorithm, which is available under a
+"MIT" license. For details, see
+https://github.com/logpai/Drain3/blob/master/LICENSE.txt
