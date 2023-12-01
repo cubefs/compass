@@ -83,8 +83,6 @@ Usually We will reply it quickly.
 
 
 ### UI
-
-Spark:
 ![overview](document/manual/img/spark_report.png)
 ![overview-1](document/manual/img/spark_report_trend.png)
 ![tasks](document/manual/img/spark_scheduler.png)
