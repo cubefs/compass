@@ -5,7 +5,7 @@ import en_US from './en'
 const i18n = createI18n({
   legacy: false,
   globalInjection: true,
-  locale: 'zh_CN',
+  locale: 'en_US',
   messages: {
     zh_CN,
     en_US
