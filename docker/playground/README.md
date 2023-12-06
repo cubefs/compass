@@ -14,31 +14,53 @@ Included components:
 
 # Install Compass Playground
 
-Build compass distribution and copy it to docker/playground:
+1. Build compass distribution and copy it to docker/playground:
 
 ```
 mvn clean package -DskipTests -Pdist
 
-cp dist/compass-v1.1.2.tar.gz docker/playground
+cp dist/compass-*.tar.gz docker/playground
 ```
 
-Create and start all containers:
-
+2. Change vm.max_map_count(for postgresql)
 ```
-cd docker/playground
+# Linux
+sudo sysctl -w vm.max_map_count=262144
 
-## Start dependent components
-docker compose up -d
+# Windows: 
+wsl -d docker-desktop
+sysctl -w vm.max_map_count=262144
+```
 
-## With Dolphinscheduler (Optional)
+3. Create dependent components (postgres,zookeeper,kafka,redis,opensearch)
+```
+docker compose --profile dependencies up -d
+```
+If the dependent components do not use dokcer, you need to modify the conf/compass_env.sh configuration
+
+
+4. Start compass components
+
+You can just start a compass demo (Optional)
+```
+docker compose --profile compass-demo up -d
+```
+
+To Start compass all components, You should dowload [canal.deployer](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.deployer-1.1.6.tar.gz) and [canal.adapter](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.adapter-1.1.6.tar.gz) first.
+```
+cp canal.deployer-*.tar.gz docker/playground
+cp canal.adapter-*.tar.gz docker/playground
+# docker rm --force playground-compass-demo-1 (if you start the compass demo)
+docker compose --profile compass up -d --build
+```
+
+Web UI : http://127.0.0.1:7075/compass
+
+6. With Dolphinscheduler (Optional)
+```
 # init dolphinscheduler database
 docker compose --profile schema up -d
 
 # start dolphinscheduler services
 docker compose --profile dolphinscheduler up -d
-
-## Start compass
-docker compose --profile compass up -d
 ```
-
-Web UI : http://127.0.0.1:7075/compass
