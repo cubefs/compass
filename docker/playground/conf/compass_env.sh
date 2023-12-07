@@ -4,16 +4,17 @@
 export SCHEDULER="dolphinscheduler"
 export SPRING_PROFILES_ACTIVE="hadoop,${SCHEDULER}"
 
-# Scheduler MySQL
-export SCHEDULER_MYSQL_ADDRESS="postgres:5432"
-export SCHEDULER_MYSQL_DB="postgres"
-export SCHEDULER_DATASOURCE_URL="jdbc:postgresql://${SCHEDULER_MYSQL_ADDRESS}/${SCHEDULER_MYSQL_DB}"
-export SCHEDULER_DATASOURCE_USERNAME="postgres"
-export SCHEDULER_DATASOURCE_PASSWORD="postgres"
+# Configuration for Scheduler MySQL, compass will subscribe data from scheduler database via canal
+export SCHEDULER_MYSQL_ADDRESS="localhost:33066"
+export SCHEDULER_MYSQL_DB="dolphinscheduler"
+export SCHEDULER_DATASOURCE_URL="jdbc:mysql://${SCHEDULER_MYSQL_ADDRESS}/${SCHEDULER_MYSQL_DB}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
+export SCHEDULER_DATASOURCE_USERNAME=""
+export SCHEDULER_DATASOURCE_PASSWORD=""
 
-# Compass MySQL
+# Configuration for compass database(mysql or postgresql)
+export DATASOURCE_TYPE="postgresql"
 export COMPASS_MYSQL_ADDRESS="postgres:5432"
-export COMPASS_MYSQL_DB="postgres"
+export COMPASS_MYSQL_DB="compass"
 export SPRING_DATASOURCE_URL="jdbc:postgresql://${COMPASS_MYSQL_ADDRESS}/${COMPASS_MYSQL_DB}"
 export SPRING_DATASOURCE_USERNAME="postgres"
 export SPRING_DATASOURCE_PASSWORD="postgres"
@@ -22,7 +23,7 @@ export SPRING_DATASOURCE_PASSWORD="postgres"
 export SPRING_KAFKA_BOOTSTRAPSERVERS="kafka:9092"
 
 # Redis
-export SPRING_REDIS_CLUSTER_NODES="redis:6379"
+export SPRING_REDIS_CLUSTER_NODES="redis1:6379,redis2:6380,redis3:6381"
 # Optional
 export SPRING_REDIS_PASSWORD=""
 
@@ -30,7 +31,7 @@ export SPRING_REDIS_PASSWORD=""
 export SPRING_ZOOKEEPER_NODES="zookeeper:2181"
 
 # OpenSearch (default version: 1.3.12) or Elasticsearch (7.x~)
-export SPRING_OPENSEARCH_NODES="elasticsearch:9200"
+export SPRING_OPENSEARCH_NODES="opensearch:9200"
 # Optional
 export SPRING_OPENSEARCH_USERNAME=""
 # Optional

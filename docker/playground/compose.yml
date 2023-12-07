@@ -1,8 +1,7 @@
-# https://dolphinscheduler.apache.org/en-us/docs/3.1.8/guide/start/docker#using-exists-postgresql-zookeeper
-
 services:
   postgres:
     image: postgres:${POSTGRES_VERSION}
+    profiles: ["dependencies"]
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -12,22 +11,25 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./script/hive-schema-2.3.0.postgres.sql:/docker-entrypoint-initdb.d/hive-schema-2.3.0.postgres.sql
-      - ./script/hive-txn-schema-2.3.0.postgres.sql:/docker-entrypoint-initdb.d/hive-txn-schema-2.3.0.postgres.sql
+      - ./script/compass_postgresql.sql:/docker-entrypoint-initdb.d/compass_postgresql.sql
 
   zookeeper:
     image: zookeeper:${ZOOKEEPER_VERSION}
+    profiles: ["dependencies"]
     ports:
       - 2181
     container_name: zookeeper
     hostname: zookeeper
 
   kafka:
-    image: confluentinc/cp-kafka:7.5.0
+    image: bitnami/kafka:latest
+    profiles: ["dependencies"]
     environment:
-      KAFKA_BROKER_ID: 0
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
     container_name: kafka
     hostname: kafka
     ports:
@@ -35,57 +37,104 @@ services:
     depends_on:
       - zookeeper
 
-  redis:
+  redis1:
     image: redis:7.2.1
-    container_name: redis
-    hostname: redis
+    profiles: ["dependencies"]
+    command: ["sh", "-c", "redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf"]
+    container_name: redis1
+    hostname: redis1
     ports:
-      - 6379
+      - 6379:6379
 
-  elasticsearch:
-    image: elasticsearch:8.10.2
+  redis2:
+    image: redis:7.2.1
+    profiles: ["dependencies"]
+    command: ["sh", "-c", "redis-server --port 6380 --cluster-enabled yes --cluster-config-file nodes.conf"]
+    container_name: redis2
+    hostname: redis2
+    ports:
+      - 6380:6380
+
+  redis3:
+    image: redis:7.2.1
+    profiles: ["dependencies"]
+    command: ["sh", "-c", "redis-server --port 6381 --cluster-enabled yes --cluster-config-file nodes.conf"]
+    container_name: redis3
+    hostname: redis3
+    ports:
+      - 6381:6381
+
+  redis-cluster:
+    image: redis:7.2.1
+    profiles: ["dependencies"]
+    command: ["sh", "-c", "sleep 10 && redis-cli -h redis1 -p 6379 --cluster create redis1:6379 redis2:6380 redis3:6381 --cluster-replicas 0 --cluster-yes"]
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
+
+  # elasticsearch:
+  #   image: elasticsearch:8.10.2
+  #   profiles: ["dependencies"]
+  #   environment:
+  #     ES_JAVA_OPTS: "-Xms512M -Xmx512M"
+  #     ES_PORT: 0.0.0.0:9200
+  #     discovery.type: single-node
+  #     xpack.security.enabled: false
+  #   container_name: elasticsearch
+  #   hostname: elasticsearch
+  #   ports:
+  #     - 9200:9200
+
+  opensearch:
+    image: opensearchproject/opensearch:1.3.12
+    profiles: ["dependencies"]
     environment:
-      ES_JAVA_OPTS: "-Xms512M -Xmx512M"
-      ES_PORT: 0.0.0.0:9200
-      discovery.type: single-node
-      xpack.security.enabled: false
-    container_name: elasticsearch
-    hostname: elasticsearch
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "DISABLE_INSTALL_DEMO_CONFIG=true"
+      - "DISABLE_SECURITY_PLUGIN=true"
+    container_name: opensearch
+    hostname: opensearch
     ports:
       - 9200:9200
 
-#  minio:
-#    image: bitnami/minio:2023-debian-11
-#    environment:
-#      MINIO_ROOT_USER: minio
-#      MINIO_ROOT_PASSWORD: minio_minio
-#      MINIO_DEFAULT_BUCKETS: spark-bucket,iceberg-bucket
-#    container_name: minio
-#    hostname: minio
-#    ports:
-#      - 9000
-#      - 9001:9001
-#
-#  metastore:
-#    build:
-#      context: ./dockerfiles
-#      dockerfile: compass-playground-hadoop.Dockerfile
-#      args:
-#        AWS_JAVA_SDK_VERSION: ${AWS_JAVA_SDK_VERSION}
-#        HADOOP_VERSION: ${HADOOP_VERSION}
-#        HIVE_VERSION: ${HIVE_VERSION}
-#        APACHE_MIRROR: ${APACHE_MIRROR}
-#        MAVEN_MIRROR: ${MAVEN_MIRROR}
-#    container_name: metastore
-#    hostname: metastore
-#    ports:
-#      - 9083
-#    volumes:
-#      - ./conf/core-site.xml:/etc/hadoop/conf/core-site.xml
-#      - ./conf/hive-site.xml:/etc/hive/conf/hive-site.xml
-#    depends_on:
-#      - minio
-#      - postgres
+
+  #  minio:
+  #    image: bitnami/minio:2023-debian-11
+  #    environment:
+  #      MINIO_ROOT_USER: minio
+  #      MINIO_ROOT_PASSWORD: minio_minio
+  #      MINIO_DEFAULT_BUCKETS: spark-bucket,iceberg-bucket
+  #    container_name: minio
+  #    hostname: minio
+  #    ports:
+  #      - 9000
+  #      - 9001:9001
+  #
+  #  metastore:
+  #    build:
+  #      context: ./dockerfiles
+  #      dockerfile: compass-playground-hadoop.Dockerfile
+  #      args:
+  #        AWS_JAVA_SDK_VERSION: ${AWS_JAVA_SDK_VERSION}
+  #        HADOOP_VERSION: ${HADOOP_VERSION}
+  #        HIVE_VERSION: ${HIVE_VERSION}
+  #        APACHE_MIRROR: ${APACHE_MIRROR}
+  #        MAVEN_MIRROR: ${MAVEN_MIRROR}
+  #    container_name: metastore
+  #    hostname: metastore
+  #    ports:
+  #      - 9083
+  #    volumes:
+  #      - ./conf/core-site.xml:/etc/hadoop/conf/core-site.xml
+  #      - ./conf/hive-site.xml:/etc/hive/conf/hive-site.xml
+  #    depends_on:
+  #      - minio
+  #      - postgres
 
   dolphinscheduler-schema-initializer:
     image: apache/dolphinscheduler-tools:3.1.8
@@ -169,6 +218,15 @@ services:
       - postgres
       - zookeeper
 
+  compass-demo:
+    build:
+      context: ./
+      dockerfile: dockerfiles/compass-demo.Dockerfile
+    ports:
+      - "7075:7075"
+    tty: true
+    profiles: ["compass-demo"]
+
   compass:
     build:
       context: ./
@@ -177,9 +235,3 @@ services:
       - "7075:7075"
     tty: true
     profiles: ["compass"]
-    depends_on:
-      - postgres
-      - zookeeper
-      - kafka
-      - redis
-      - elasticsearch

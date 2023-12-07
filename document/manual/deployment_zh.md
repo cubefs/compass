@@ -2,6 +2,8 @@
 
 # Compass(罗盘) 部署指南
 
+[使用Docker Compose部署](../../docker/playground/README.md)
+
 Compass 依赖了调度平台、Hadoop、Spark、Canal、MySQL、Kafka、Redis、Zookeeper、OpenSearch，需要提前准备好相关环境。
 
 ## 环境要求
