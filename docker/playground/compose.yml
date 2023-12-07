@@ -22,12 +22,14 @@ services:
     hostname: zookeeper
 
   kafka:
-    image: confluentinc/cp-kafka:7.5.0
+    image: bitnami/kafka:latest
     profiles: ["dependencies"]
     environment:
-      KAFKA_BROKER_ID: 0
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
     container_name: kafka
     hostname: kafka
     ports:
@@ -35,13 +37,41 @@ services:
     depends_on:
       - zookeeper
 
-  redis:
+  redis1:
     image: redis:7.2.1
     profiles: ["dependencies"]
-    container_name: redis
-    hostname: redis
+    command: ["sh", "-c", "redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf"]
+    container_name: redis1
+    hostname: redis1
     ports:
-      - 6379
+      - 6379:6379
+
+  redis2:
+    image: redis:7.2.1
+    profiles: ["dependencies"]
+    command: ["sh", "-c", "redis-server --port 6380 --cluster-enabled yes --cluster-config-file nodes.conf"]
+    container_name: redis2
+    hostname: redis2
+    ports:
+      - 6380:6380
+
+  redis3:
+    image: redis:7.2.1
+    profiles: ["dependencies"]
+    command: ["sh", "-c", "redis-server --port 6381 --cluster-enabled yes --cluster-config-file nodes.conf"]
+    container_name: redis3
+    hostname: redis3
+    ports:
+      - 6381:6381
+
+  redis-cluster:
+    image: redis:7.2.1
+    profiles: ["dependencies"]
+    command: ["sh", "-c", "sleep 10 && redis-cli -h redis1 -p 6379 --cluster create redis1:6379 redis2:6380 redis3:6381 --cluster-replicas 0 --cluster-yes"]
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
 
   # elasticsearch:
   #   image: elasticsearch:8.10.2

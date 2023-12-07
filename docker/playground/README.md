@@ -36,7 +36,7 @@ sysctl -w vm.max_map_count=262144
 ```
 docker compose --profile dependencies up -d
 ```
-If the dependent components do not use dokcer, you need to modify the conf/compass_env.sh configuration
+If the dependent components do not use docker, you need to modify the conf/compass_env.sh configuration
 
 
 4. Start compass components
@@ -46,17 +46,20 @@ You can just start a compass demo (Optional)
 docker compose --profile compass-demo up -d
 ```
 
-To Start compass all components, You should dowload [canal.deployer](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.deployer-1.1.6.tar.gz) and [canal.adapter](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.adapter-1.1.6.tar.gz) first.
+To Start compass all components, You should dowload [canal.deployer](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.deployer-1.1.6.tar.gz) and [canal.adapter](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.adapter-1.1.6.tar.gz) first,
+
+then modify the conf/compass_env.sh and application-hadoop.yml configuration.
+
 ```
 cp canal.deployer-*.tar.gz docker/playground
 cp canal.adapter-*.tar.gz docker/playground
-# docker rm --force playground-compass-demo-1 (if you start the compass demo)
+docker rm --force playground-compass-demo-1 (if you start the compass demo)
 docker compose --profile compass up -d --build
 ```
 
 Web UI : http://127.0.0.1:7075/compass
 
-6. With Dolphinscheduler (Optional)
+5. With Dolphinscheduler (Optional)
 ```
 # init dolphinscheduler database
 docker compose --profile schema up -d
