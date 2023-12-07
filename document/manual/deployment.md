@@ -1,6 +1,9 @@
 # Compass Deployment
 
+[Using Docker Compose To Deploy](../../docker/playground/README.md)
+
 Compass depends on Canal,MySQL,Kafka,Redis,Zookeeper,OpenSearch
+
 ## Required Environment 
 |Dependency|Version|Optional|Description|
 |----------|------|--------|----|

@@ -67,3 +67,5 @@ docker compose --profile schema up -d
 # start dolphinscheduler services
 docker compose --profile dolphinscheduler up -d
 ```
+
+For more details, please refer to [deployment document](./deployment.md)
