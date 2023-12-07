@@ -68,4 +68,4 @@ docker compose --profile schema up -d
 docker compose --profile dolphinscheduler up -d
 ```
 
-For more details, please refer to [deployment document](./deployment.md)
+For more details, please refer to [deployment document](../../document/manual/deployment.md)
