@@ -19,15 +19,15 @@ export SPRING_DATASOURCE_URL="jdbc:${DATASOURCE_TYPE}://${COMPASS_DATASOURCE_ADD
 export SPRING_DATASOURCE_USERNAME=""
 export SPRING_DATASOURCE_PASSWORD=""
 
-# Configuration for compass Kafka, used to subscribe data by canal and log queue, etc.
+# Configuration for compass Kafka, used to subscribe data by canal and log queue, etc. (default version: 3.4.0)
 export SPRING_KAFKA_BOOTSTRAPSERVERS="host1:port,host2:port"
 
-# Configuration for compass redis, used to cache and log queue, etc.
+# Configuration for compass redis, used to cache and log queue, etc . (cluster mode)
 export SPRING_REDIS_CLUSTER_NODES="localhost:6379"
 # Optional
 export SPRING_REDIS_PASSWORD=""
 
-# Zookeeper
+# Zookeeper (cluster: 3.4.5, needed by canal)
 export SPRING_ZOOKEEPER_NODES="localhost:2181"
 
 # OpenSearch (default version: 1.3.12) or Elasticsearch (7.x~)

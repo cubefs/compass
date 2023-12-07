@@ -58,7 +58,6 @@ public class ChatGPTClient {
         if (response.getChoices().isEmpty()) {
             return "";
         }
-        System.out.println(response);
         return response.getChoices().get(0).getMessage().getContent();
     }
 

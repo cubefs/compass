@@ -24,9 +24,23 @@ const localeStore = useLocaleStore()
 let activeRoute: string = $ref('offline')
 let currentLocale: string = $ref(localeStore.locale)
 locale.value = currentLocale
+
 if(currentRoute.path.indexOf('realtime')!=-1){
   activeRoute = 'realtime'
 }
+
+// Only show the ui of spark or flink
+let showUI: boolean = true
+if (__APP_UI__) {
+  if (__APP_UI__ == 'spark') {
+    activeRoute = 'offline'
+    showUI = false
+  } else if (__APP_UI__ == 'flink') {
+    activeRoute = 'realtime'
+    showUI = false
+  }
+}
+
 const handleSelect = (index: string) => {
   if (activeRoute !== index) {
     activeRoute = index
@@ -76,7 +90,7 @@ const handleI18n = (command: string) => {
       localStorage.setItem('language', locale.value)
       break
   }
-  
+
 }
 const getHeight = () => {
   return `${window.screen.availHeight - 200}px`
@@ -96,12 +110,13 @@ const getHeight = () => {
         @select="handleSelect"
       >
         <el-image class="title-logo" :src="logo" />
-        <el-menu-item index="offline">
+        <div class="title-space" />
+        <el-menu-item index="offline" v-if="showUI">
           <template #title>
             {{ $t('menu.offline') }}
           </template>
         </el-menu-item>
-        <el-menu-item index="realtime">
+        <el-menu-item index="realtime" v-if="showUI">
           <template #title>
             {{ $t('menu.realtime') }}
           </template>
@@ -121,7 +136,7 @@ const getHeight = () => {
               </el-dropdown-item>
             </el-dropdown-menu>
           </template>
-        </el-dropdown>        
+        </el-dropdown>
         <el-dropdown class="user-box" @command="handleCommand">
           <span
             style="display: flex;align-items: center; margin-right: 10px"
@@ -220,14 +235,24 @@ const getHeight = () => {
   font-size: 24px;
   color: #978f8f;
 }
+
 .logo {
   width: 23px;
   height: 23px;
 }
+
 .title-logo {
-  height: 60px;
-  width: 185px;
+  width: 40px;
+  height: 40px;
+  margin-left: 12px;
+  margin-top: 9px;
+  margin-bottom: 9px;
 }
+
+.title-space {
+  width: 2.5%;
+}
+
 .menu {
   :deep(.is-active){
     background-color: #f2f2f2 !important;

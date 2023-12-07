@@ -54,7 +54,7 @@
               <goal>pnpm</goal>
             </goals>
             <configuration>
-              <arguments>run build</arguments>
+              <arguments>run build ${spark.ui} ${flink.ui}</arguments>
             </configuration>
           </execution>
         </executions>

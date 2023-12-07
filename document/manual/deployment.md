@@ -22,6 +22,10 @@ Use JDK 8 and maven 3.6.0+ to Compile
 git clone https://github.com/cubefs/compass.git
 cd compass
 mvn package -DskipTests -Pdist
+or 
+mvn package -DskipTests -Pdist,spark   (only pack for spark web ui)
+or 
+mvn package -DskipTests -Pdist,flink   (only pack for flink web ui)
 ```
 
 ## Workspaces
@@ -34,16 +38,18 @@ compass
 │   └── stop_all.sh                     stop script
 ├── conf
 │   └── application-hadoop.yml          hadoop configuration
-├── task-application                    Related to task instance、applicationId、hdfs_log_path
-├── task-canal                          Synchronize scheduler metadata from MySQL to Kafka
-├── task-canal-adapter                  Synchronzie scheduler metadata from MySQL to Compass
-├── task-detect                         Detect the job from scheduler
-├── task-metadata                       Syncrhonize metadata from Yarn、Spark to OpenSearch
-├── task-parser                         Log parse and spark abnormal task detect
-├── task-portal                         Visualizaiton web service for analysis
-├── task-flink                          Flink task resources and exception diagnosis
-├── task-flink-core                     Flink task diagnosis rule
-└── task-syncer                         Abstract and map the task relationship table of the scheduling platform
+├── task-application                    Associated Scheduler Instance, Spark Instance (ApplicationId), Log Path
+├── task-canal                          Synchronize scheduler metadata to Compass as a diagnostic event.
+├── task-canal-adapter                  Synchronize scheduler metadata to Compass, save the original table, and perform data-assisted queries.
+├── task-detect                         Detect abnormalities in scheduler tasks.
+├── task-metadata                       Synchronize Hadoop and Spark metadata, including Spark application and YARN application metadata, to Compass and save it
+├── task-parser                         Parse the scheduler log, Spark application event log, and executor log for abnormalities.
+├── task-portal                         Display diagnostic and analytical results for Spark, Flink, MapReduce, and the scheduler.
+├── task-flink                          Flink resource diagnostic module
+├── task-flink-core                     Flink diagnostic rules
+├── task-gpt                            Aggregate log templates and use ChatGPT to provide solutions for the templates.
+└── task-syncer                         Synchronize scheduler metadata to Compass.
+
 ```
 ### Initialize database
 
@@ -108,36 +114,38 @@ Kafka needs to have the topics 'mysqldata', 'task-instance', and 'task-applicati
 ```bash
 #!/bin/bash
 
-# Scheduling platform selection: Dolphinscheduler or Airflow or Custom
+# dolphinscheduler or airflow or custom
 export SCHEDULER="dolphinscheduler"
 export SPRING_PROFILES_ACTIVE="hadoop,${SCHEDULER}"
 
-
-# MySQL configuration used by the scheduling platform
-export SCHEDULER_MYSQL_ADDRESS="ip:port"
-export SCHEDULER_MYSQL_DB=""
+# Configuration for Scheduler MySQL, compass will subscribe data from scheduler database via canal
+export SCHEDULER_MYSQL_ADDRESS="localhost:33066"
+export SCHEDULER_MYSQL_DB="dolphinscheduler"
 export SCHEDULER_DATASOURCE_URL="jdbc:mysql://${SCHEDULER_MYSQL_ADDRESS}/${SCHEDULER_MYSQL_DB}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
 export SCHEDULER_DATASOURCE_USERNAME=""
 export SCHEDULER_DATASOURCE_PASSWORD=""
 
-# MySQL database configuration provided for use by Compass
-export COMPASS_MYSQL_ADDRESS="ip:port"
-export COMPASS_MYSQL_DB=""
-export SPRING_DATASOURCE_URL="jdbc:mysql://${COMPASS_MYSQL_ADDRESS}/${COMPASS_MYSQL_DB}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
+# Configuration for compass database(mysql or postgresql)
+export DATASOURCE_TYPE="mysql"
+export COMPASS_DATASOURCE_ADDRESS="localhost:33066"
+export COMPASS_DATASOURCE_DB="compass"
+export SPRING_DATASOURCE_URL="jdbc:${DATASOURCE_TYPE}://${COMPASS_DATASOURCE_ADDRESS}/${COMPASS_DATASOURCE_DB}"
 export SPRING_DATASOURCE_USERNAME=""
 export SPRING_DATASOURCE_PASSWORD=""
 
-# Kafka (default version: 3.4.0)
-export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
+# Configuration for compass Kafka, used to subscribe data by canal and log queue, etc. (default version: 3.4.0)
+export SPRING_KAFKA_BOOTSTRAPSERVERS="host1:port,host2:port"
 
-# Redis (cluster mode)
-export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
+# Configuration for compass redis, used to cache and log queue, etc . (cluster mode)
+export SPRING_REDIS_CLUSTER_NODES="localhost:6379"
+# Optional
+export SPRING_REDIS_PASSWORD=""
 
 # Zookeeper (cluster: 3.4.5, needed by canal)
-export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
+export SPRING_ZOOKEEPER_NODES="localhost:2181"
 
 # OpenSearch (default version: 1.3.12) or Elasticsearch (7.x~)
-export SPRING_OPENSEARCH_NODES="ip1:port,ip2:port"
+export SPRING_OPENSEARCH_NODES="localhost:19527"
 # Optional
 export SPRING_OPENSEARCH_USERNAME=""
 # Optional
@@ -147,10 +155,21 @@ export SPRING_OPENSEARCH_TRUSTSTORE=""
 # Optional, needed by OpenSearch, keep empty if OpenSearch does not use truststore.
 export SPRING_OPENSEARCH_TRUSTSTOREPASSWORD=""
 
-# Flink metric prometheus
-export FLINK_PROMETHEUS_HOST="host"
+# Prometheus for flink, ignore it if you do not need flink.
+export FLINK_PROMETHEUS_HOST="http://localhost:9090"
 export FLINK_PROMETHEUS_TOKEN=""
 export FLINK_PROMETHEUS_DATABASE=""
+
+# Optional, needed by task-gpt module to get exception solution, ignore if you do not need it.
+export CHATGPT_ENABLE=false
+# Openai keys needed by enabling chatgpt, random access the key if there are multiple keys.
+export CHATGPT_API_KEYS=sk-xxx1,sk-xxx2
+# Optional, needed if setting proxy, or keep it empty.
+export CHATGPT_PROXY="" # for example, https://proxy.ai
+# chatgpt model
+export CHATGPT_MODEL="gpt-3.5-turbo"
+# chatgpt prompt
+export CHATGPT_PROMPT="You are a senior expert in big data, teaching beginners. I will give you some anomalies and you will provide solutions to them."
 
 # task-canal configuration
 
@@ -674,7 +693,7 @@ custom:
      ...
 ```
 
-## task-portal 与 task-ui
+## task-portal and task-ui
 
 **task-portal** and **task-ui** are visual front-end and back-end modules that provide services such as diagnostic recommendations, report overviews, one-click diagnosis, task execution, APP execution, and whitelist.
 
@@ -758,7 +777,10 @@ For example：
 }
 ```
 
+## Task-flink (including task-core) 
+
 
 ## One-Click diagnosis
 
 Offline diagnosis supports one-click diagnosis for all Spark/MapReduce tasks, including those not submitted to the scheduling platform. If you only want to experience this function, simply start the task-portal, task-metadata, and task-parser modules.
+

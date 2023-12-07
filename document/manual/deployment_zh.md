@@ -25,6 +25,10 @@ Use JDK 8 and maven 3.6.0+ to Compile
 git clone https://github.com/cubefs/compass.git
 cd compass
 mvn package -DskipTests -Pdist
+或者
+mvn package -DskipTests -Pdist,spark (打包时web展示只有spark诊断页面)
+或者
+mvn package -DskipTests -Pdist,flink (打包时web展示只有flink诊断页面)
 ```
 
 ## 工程目录
@@ -47,6 +51,7 @@ compass
 ├── task-flink                          Flink任务资源及异常诊断
 ├── task-flink-core                     Flink任务诊断规则逻辑
 ├── task-portal                         异常任务的可视化服务
+├── task-gpt                            聚合日志模板，并使用chatgpt给模板解决方案
 └── task-syncer                         调度平台任务关系表的抽象和映射
 ```
 ### 初始化数据库
@@ -113,41 +118,62 @@ Kafka需要预先创建好topic: mysqldata,task-instance,task-application按实�
 ```bash
 #!/bin/bash
 
-# 调度平台选择：dolphinscheduler or airflow or custom
+# dolphinscheduler or airflow or custom
 export SCHEDULER="dolphinscheduler"
 export SPRING_PROFILES_ACTIVE="hadoop,${SCHEDULER}"
 
-
-# 调度平台所使用的MySQL配置
-export SCHEDULER_MYSQL_ADDRESS="ip:port"
-export SCHEDULER_MYSQL_DB=""
+# Configuration for Scheduler MySQL, compass will subscribe data from scheduler database via canal
+export SCHEDULER_MYSQL_ADDRESS="localhost:33066"
+export SCHEDULER_MYSQL_DB="dolphinscheduler"
 export SCHEDULER_DATASOURCE_URL="jdbc:mysql://${SCHEDULER_MYSQL_ADDRESS}/${SCHEDULER_MYSQL_DB}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
 export SCHEDULER_DATASOURCE_USERNAME=""
 export SCHEDULER_DATASOURCE_PASSWORD=""
 
-# 提供给Compass使用的MySQL数据库配置
-export COMPASS_MYSQL_ADDRESS="ip:port"
-export COMPASS_MYSQL_DB=""
-export SPRING_DATASOURCE_URL="jdbc:mysql://${COMPASS_MYSQL_ADDRESS}/${COMPASS_MYSQL_DB}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
+# Configuration for compass database(mysql or postgresql)
+export DATASOURCE_TYPE="mysql"
+export COMPASS_DATASOURCE_ADDRESS="localhost:33066"
+export COMPASS_DATASOURCE_DB="compass"
+export SPRING_DATASOURCE_URL="jdbc:${DATASOURCE_TYPE}://${COMPASS_DATASOURCE_ADDRESS}/${COMPASS_DATASOURCE_DB}"
 export SPRING_DATASOURCE_USERNAME=""
 export SPRING_DATASOURCE_PASSWORD=""
 
-# Kafka (默认版本: 3.4.0)
-export SPRING_KAFKA_BOOTSTRAPSERVERS="ip1:port,ip2:port"
+# Configuration for compass Kafka, used to subscribe data by canal and log queue, etc. (default version: 3.4.0)
+export SPRING_KAFKA_BOOTSTRAPSERVERS="host1:port,host2:port"
 
-# Redis (cluster 模式)
-export SPRING_REDIS_CLUSTER_NODES="ip1:port,ip2:port"
+# Configuration for compass redis, used to cache and log queue, etc . (cluster mode)
+export SPRING_REDIS_CLUSTER_NODES="localhost:6379"
+# Optional
+export SPRING_REDIS_PASSWORD=""
 
-# Zookeeper (默认版本: 3.4.5, canal使用)
-export SPRING_ZOOKEEPER_NODES="ip1:port,ip2:port"
+# Zookeeper (cluster: 3.4.5, needed by canal)
+export SPRING_ZOOKEEPER_NODES="localhost:2181"
 
-# OpenSearch (默认版本: 1.3.12)
-export SPRING_OPENSEARCH_NODES="ip1:port,ip2:port"
+# OpenSearch (default version: 1.3.12) or Elasticsearch (7.x~)
+export SPRING_OPENSEARCH_NODES="localhost:19527"
+# Optional
+export SPRING_OPENSEARCH_USERNAME=""
+# Optional
+export SPRING_OPENSEARCH_PASSWORD=""
+# Optional, needed by OpenSearch, keep empty if OpenSearch does not use truststore.
+export SPRING_OPENSEARCH_TRUSTSTORE=""
+# Optional, needed by OpenSearch, keep empty if OpenSearch does not use truststore.
+export SPRING_OPENSEARCH_TRUSTSTOREPASSWORD=""
 
-# Flink metric prometheus
-export FLINK_PROMETHEUS_HOST="host"
+# Prometheus for flink, ignore it if you do not need flink.
+export FLINK_PROMETHEUS_HOST="http://localhost:9090"
 export FLINK_PROMETHEUS_TOKEN=""
 export FLINK_PROMETHEUS_DATABASE=""
+
+# Optional, needed by task-gpt module to get exception solution, ignore if you do not need it.
+export CHATGPT_ENABLE=false
+# Openai keys needed by enabling chatgpt, random access the key if there are multiple keys.
+export CHATGPT_API_KEYS=sk-xxx1,sk-xxx2
+# Optional, needed if setting proxy, or keep it empty.
+export CHATGPT_PROXY="" # for example, https://proxy.ai
+# chatgpt model
+export CHATGPT_MODEL="gpt-3.5-turbo"
+# chatgpt prompt
+export CHATGPT_PROMPT="You are a senior expert in big data, teaching beginners. I will give you some anomalies and you will provide solutions to them."
 
 # task-canal模块配置
 
