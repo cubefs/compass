@@ -23,7 +23,7 @@ compass
 └── task-syncer                         Synchronize scheduler metadata to Compass.
 
 ```
-### Initialize database
+### Historical data synchronization
 
 If the scheduling platform database is MySQL and the Compass database is PostgreSQL, you can use [pgloader](https://github.com/dimitri/pgloader) to create dependent tables and synchronize historical full data.
 
