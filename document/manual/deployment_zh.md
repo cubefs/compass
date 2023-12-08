@@ -704,6 +704,23 @@ custom:
      ...
 ```
 
+## task-gpt
+
+task-gpt模块用于聚合日志模板，并使用chatgpt给模板解决方案
+
+### 核心配置
+
+conf/application.yml
+```
+chatgpt:
+  enable: true
+  apiKeys: "sk-xxx1,sk-xxx2"
+  proxy: "https://proxy"
+  model: "gpt-3.5-turbo"
+  prompt: "你是一位资深大数据专家，教导初始者，我会给你一些异常，你将提供异常的解决方案"
+```
+
+
 ## task-portal 与 task-ui
 
 task-portal 与 task-ui 可视化前后端模块，提供诊断建议、报告总览、一键诊断、任务运行、APP运行、白名单等服务

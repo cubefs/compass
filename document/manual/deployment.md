@@ -696,6 +696,23 @@ custom:
      ...
 ```
 
+## task-gpt
+
+The task-gpt module is used to aggregate log templates and use ChatGPT to provide solutions for the templates.
+
+### Configuration
+
+conf/application.yml
+```
+chatgpt:
+  enable: true
+  apiKeys: "sk-xxx1,sk-xxx2"
+  proxy: "https://proxy"
+  model: "gpt-3.5-turbo"
+  prompt: "You are a senior expert in big data, teaching beginners. I will give you some anomalies and you will provide solutions to them."
+```
+
+
 ## task-portal and task-ui
 
 **task-portal** and **task-ui** are visual front-end and back-end modules that provide services such as diagnostic recommendations, report overviews, one-click diagnosis, task execution, APP execution, and whitelist.
