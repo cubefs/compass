@@ -1,4 +1,4 @@
--# Compass(罗盘) 部署指南
+# Compass(罗盘) 部署指南
 
 [使用Docker Compose部署](../../docker/playground/README.md)
 

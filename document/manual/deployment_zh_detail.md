@@ -56,18 +56,27 @@ LOAD DATABASE
 同步dolphinscheduler表：
 
 curl "localhost:8181/etl/rdb/mysql1/t_ds_process_definition.yml" -X POST
+
 curl "localhost:8181/etl/rdb/mysql1/t_ds_process_instance.yml" -X POST
+
 curl "localhost:8181/etl/rdb/mysql1/t_ds_process_task_relation.yml" -X POST
+
 curl "localhost:8181/etl/rdb/mysql1/t_ds_project.yml" -X POST
+
 curl "localhost:8181/etl/rdb/mysql1/t_ds_task_definition.yml" -X POST
+
 curl "localhost:8181/etl/rdb/mysql1/t_ds_task_instance.yml" -X POST
+
 curl "localhost:8181/etl/rdb/mysql1/t_ds_user.yml" -X POST
 
 同步airflow表：
 
 curl "localhost:8181/etl/rdb/mysql1/airflow_db_ab_user.yml" -X POST
+
 curl "localhost:8181/etl/rdb/mysql1/airflow_db_dag_run.yml" -X POST
+
 curl "localhost:8181/etl/rdb/mysql1/airflow_db_dag.yml" -X POST
+
 curl "localhost:8181/etl/rdb/mysql1/airflow_db_task_instance.yml" -X POST
 
 
