@@ -12,12 +12,13 @@
 - 支持工作流层异常诊断，识别各种失败和基线耗时异常问题。
 - 支持引擎层异常诊断，包含数据倾斜、大表扫描、内存浪费等14种异常类型。
 - 支持各种日志匹配规则编写和异常阈值调整，可自行根据实际场景优化。
+- 支持一键诊断全量(包含非调度平台提交任务)Spark/MapReduce任务
 
 ## 文档
 
 [部署指南](document/manual/deployment_zh.md)
 
-[架构文档](document/manual/architecture.md)
+[架构文档](document/manual/architecture_zh.md)
 
 ## 社区
 

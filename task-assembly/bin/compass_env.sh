@@ -5,7 +5,7 @@ export SCHEDULER="dolphinscheduler"
 export SPRING_PROFILES_ACTIVE="hadoop,${SCHEDULER}"
 
 # Configuration for Scheduler MySQL, compass will subscribe data from scheduler database via canal
-export SCHEDULER_MYSQL_ADDRESS="localhost:33066"
+export SCHEDULER_MYSQL_ADDRESS="localhost:3306"
 export SCHEDULER_MYSQL_DB="dolphinscheduler"
 export SCHEDULER_DATASOURCE_URL="jdbc:mysql://${SCHEDULER_MYSQL_ADDRESS}/${SCHEDULER_MYSQL_DB}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
 export SCHEDULER_DATASOURCE_USERNAME=""
@@ -13,7 +13,7 @@ export SCHEDULER_DATASOURCE_PASSWORD=""
 
 # Configuration for compass database(mysql or postgresql)
 export DATASOURCE_TYPE="mysql"
-export COMPASS_DATASOURCE_ADDRESS="localhost:33066"
+export COMPASS_DATASOURCE_ADDRESS="localhost:3306"
 export COMPASS_DATASOURCE_DB="compass"
 export SPRING_DATASOURCE_URL="jdbc:${DATASOURCE_TYPE}://${COMPASS_DATASOURCE_ADDRESS}/${COMPASS_DATASOURCE_DB}"
 export SPRING_DATASOURCE_USERNAME=""
@@ -31,7 +31,7 @@ export SPRING_REDIS_PASSWORD=""
 export SPRING_ZOOKEEPER_NODES="localhost:2181"
 
 # OpenSearch (default version: 1.3.12) or Elasticsearch (7.x~)
-export SPRING_OPENSEARCH_NODES="localhost:19527"
+export SPRING_OPENSEARCH_NODES="localhost:9200"
 # Optional
 export SPRING_OPENSEARCH_USERNAME=""
 # Optional
