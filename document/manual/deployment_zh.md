@@ -32,6 +32,14 @@ mvn package -DskipTests -Pdist,spark (打包时web展示只有spark诊断页面)
 或者
 mvn package -DskipTests -Pdist,flink (打包时web展示只有flink诊断页面)
 ```
+使用docker compose启动应用服务
+```
+cp dist/compass-v1.1.2.tar.gz docker/playground
+cd docker/playground/
+docker compose --profile dependencies up -d
+docker compose --profile compass-demo up -d
+```
+更多请查看文档 [docker-playground](https://github.com/cubefs/compass/blob/main/docker/playground/README.md)
 
 ## 工程目录
 

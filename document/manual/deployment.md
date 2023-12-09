@@ -30,7 +30,14 @@ mvn package -DskipTests -Pdist,spark   (only pack for spark web ui)
 or 
 mvn package -DskipTests -Pdist,flink   (only pack for flink web ui)
 ```
-
+Use docker compose to start application
+```
+cp dist/compass-v1.1.2.tar.gz docker/playground
+cd docker/playground/
+docker compose --profile dependencies up -d
+docker compose --profile compass-demo up -d
+```
+For more, please see [docker-playground doc](https://github.com/cubefs/compass/blob/main/docker/playground/README.md)
 ## Workspaces
 
 ```
