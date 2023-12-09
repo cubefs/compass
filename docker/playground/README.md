@@ -1,4 +1,4 @@
-# (WIP) Compass Playground based on docker compose
+# Compass Playground based on docker compose
 
 Included components:
 
@@ -12,6 +12,7 @@ Included components:
 - [X] Dolphinscheduler Services (Optional) [dolphinscheduler-tools、dolphinscheduler-api、dolphinscheduler-alert-server、dolphinscheduler-master、dolphinscheduler-worker(with spark 3.3)]
 - [X] Compass Services
 
+Note: You can install virtulbox to start docker compose, which requires about 10G of memory. If you simply start compass-demo and deploy other dependent components (redis, kafka, opensearch, postpresql, etc.) on other machines, the memory required will be very small.
 # Install Compass Playground
 
 1. Build compass distribution and copy it to docker/playground:
@@ -36,6 +37,8 @@ sysctl -w vm.max_map_count=262144
 ```
 docker compose --profile dependencies up -d
 ```
+Note: redis-cluster container is to join the redis node into cluster, then it will stop and exit.
+
 If the dependent components do not use docker, you need to modify the conf/compass_env.sh configuration
 
 
