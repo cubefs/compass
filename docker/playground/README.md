@@ -6,7 +6,7 @@ Included components:
 - [X] Zookeeper
 - [X] Kafka
 - [X] Redis
-- [X] Elasticsearch
+- [X] OpenSearch
 - [X] Minio
 - [X] Hive Metastore
 - [X] Dolphinscheduler Services (Optional) [dolphinscheduler-tools、dolphinscheduler-api、dolphinscheduler-alert-server、dolphinscheduler-master、dolphinscheduler-worker(with spark 3.3)]
@@ -61,6 +61,7 @@ docker compose --profile compass up -d --build
 ```
 
 Web UI : http://127.0.0.1:7075/compass
+Login Account & Password: compass / compass
 
 5. With Dolphinscheduler (Optional)
 ```
