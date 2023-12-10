@@ -61,6 +61,7 @@ docker compose --profile compass up -d --build
 ```
 
 Web UI : http://127.0.0.1:7075/compass
+
 Login Account & Password: compass / compass
 
 5. With Dolphinscheduler (Optional)
