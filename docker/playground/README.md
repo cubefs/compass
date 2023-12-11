@@ -49,7 +49,7 @@ You can just start a compass demo (Optional)
 docker compose --profile compass-demo up -d
 ```
 
-To Start compass all components, You should dowload [canal.deployer](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.deployer-1.1.6.tar.gz) and [canal.adapter](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.adapter-1.1.6.tar.gz) first,
+To Start compass all components, You should download [canal.deployer](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.deployer-1.1.6.tar.gz) and [canal.adapter](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.adapter-1.1.6.tar.gz) first,
 
 then modify the conf/compass_env.sh and application-hadoop.yml configuration.
 
