@@ -13,9 +13,9 @@ export SCHEDULER_DATASOURCE_PASSWORD=""
 
 # Configuration for compass database(mysql or postgresql)
 export DATASOURCE_TYPE="postgresql"
-export COMPASS_MYSQL_ADDRESS="postgres:5432"
-export COMPASS_MYSQL_DB="compass"
-export SPRING_DATASOURCE_URL="jdbc:postgresql://${COMPASS_MYSQL_ADDRESS}/${COMPASS_MYSQL_DB}"
+export COMPASS_DATASOURCE_ADDRESS="postgres:5432"
+export COMPASS_DATASOURCE_DB="compass"
+export SPRING_DATASOURCE_URL="jdbc:postgresql://${COMPASS_DATASOURCE_ADDRESS}/${COMPASS_DATASOURCE_DB}"
 export SPRING_DATASOURCE_USERNAME="postgres"
 export SPRING_DATASOURCE_PASSWORD="postgres"
 
@@ -46,6 +46,20 @@ export SPRING_OPENSEARCH_TRUSTSTOREPASSWORD=""
 # export FLINK_PROMETHEUS_TOKEN=""
 # export FLINK_PROMETHEUS_DATABASE=""
 
+# Optional, needed by task-gpt module to get exception solution, ignore if you do not need it.
+export CHATGPT_ENABLE=false
+# Openai keys needed by enabling chatgpt, random access the key if there are multiple keys.
+export CHATGPT_API_KEYS=sk-xxx1,sk-xxx2
+# Optional, needed if setting proxy, or keep it empty.
+export CHATGPT_PROXY="" # for example, https://proxy.ai
+# chatgpt model
+export CHATGPT_MODEL="gpt-3.5-turbo"
+# chatgpt prompt
+export CHATGPT_PROMPT="You are a senior expert in big data, teaching beginners. I will give you some anomalies and you will provide solutions to them."
+
+#-----------------------------------------------------------------------------------
+# The following export items will be automatically filled by the configuration above.
+#-----------------------------------------------------------------------------------
 # task-canal
 export CANAL_INSTANCE_MASTER_ADDRESS=${SCHEDULER_MYSQL_ADDRESS}
 export CANAL_INSTANCE_DBUSERNAME=${SCHEDULER_DATASOURCE_USERNAME}

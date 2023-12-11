@@ -182,10 +182,10 @@ conf/application.yml
 canal.conf:
   srcDataSources:
     defaultDS:
-      # 调度平台MySQL同步账号
-      url: ${CANAL_ADAPTER_SOURCE_MYSQL_URL}
-      username: ${CANAL_ADAPTER_SOURCE_MYSQL_USERNAME}
-      password: ${CANAL_ADAPTER_SOURCE_MYSQL_PASSWORD}
+      # Scheduling platform MySQL synchronization account
+      url: ${CANAL_ADAPTER_SOURCE_DATASOURCE_URL}
+      username: ${CANAL_ADAPTER_SOURCE_DATASOURCE_USERNAME}
+      password: ${CANAL_ADAPTER_SOURCE_DATASOURCE_PASSWORD}
 
   canalAdapters:
   - instance: mysqldata # kafka topic
@@ -195,11 +195,10 @@ canal.conf:
       - name: rdb
         key: mysql1
         properties:
-          jdbc.driverClassName: com.mysql.jdbc.Driver
-          # compass平台MySQL账号
-          jdbc.url: ${CANAL_ADAPTER_DESTINATION_MYSQL_URL}
-          jdbc.username: ${CANAL_ADAPTER_DESTINATION_MYSQL_USERNAME}
-          jdbc.password: ${CANAL_ADAPTER_DESTINATION_MYSQL_PASSWORD}
+          # Compass platform datasource account
+          jdbc.url: ${CANAL_ADAPTER_DESTINATION_DATASOURCE_URL}
+          jdbc.username: ${CANAL_ADAPTER_DESTINATION_DATASOURCE_USERNAME}
+          jdbc.password: ${CANAL_ADAPTER_DESTINATION_DATASOURCE_PASSWORD}
 ```
 
 conf/rdb/template.yml
