@@ -17,9 +17,12 @@
 package com.oppo.cloud.parser.service.job.parser;
 
 import com.oppo.cloud.parser.domain.job.CommonResult;
+import com.oppo.cloud.parser.service.job.oneclick.ParserListenerBus;
 
-public interface IParser {
+public abstract class IParser extends ParserListenerBus {
 
-    CommonResult run();
+    public CommonResult run() {
+        return null;
+    }
 
 }

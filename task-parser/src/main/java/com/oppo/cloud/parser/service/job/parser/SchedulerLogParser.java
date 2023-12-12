@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class SchedulerLogParser extends CommonTextParser implements IParser {
+public class SchedulerLogParser extends CommonTextParser {
 
     private final ParserParam param;
 

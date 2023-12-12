@@ -32,34 +32,33 @@ public class ParserFactory {
      * create parser
      */
     public static IParser create(ParserParam parserParam, IProgressListener listener) {
+        IParser parser = createParserInternal(parserParam, listener);
+        if (parser != null) {
+            parser.addListener(listener);
+        }
+        return parser;
+    }
+
+    private static IParser createParserInternal(ParserParam parserParam, IProgressListener listener) {
         switch (parserParam.getLogType()) {
 
             case SCHEDULER:
-                SchedulerLogParser schedulerLogParser = new SchedulerLogParser(parserParam);
-                schedulerLogParser.addListener(listener);
-                return schedulerLogParser;
+                return new SchedulerLogParser(parserParam);
 
             case SPARK_EVENT:
-                SparkEventLogParser sparkEventLogParser = new SparkEventLogParser(parserParam);
-                sparkEventLogParser.addListener(listener);
-                return sparkEventLogParser;
+                return new SparkEventLogParser(parserParam);
 
             case SPARK_EXECUTOR:
                 ThreadPoolTaskExecutor parserThreadPool = (ThreadPoolTaskExecutor) SpringBeanUtil.getBean(ThreadPoolConfig.PARSER_THREAD_POOL);
                 List<String> jvmTypeList = (List<String>) SpringBeanUtil.getBean(CustomConfig.GC_CONFIG);
                 SparkExecutorLogParser sparkExecutorLogParser = new SparkExecutorLogParser(parserParam, parserThreadPool, jvmTypeList);
-                sparkExecutorLogParser.addListener(listener);
                 return sparkExecutorLogParser;
 
             case MAPREDUCE_JOB_HISTORY:
-                MapReduceJobHistoryParser mapReduceJobHistoryParser = new MapReduceJobHistoryParser(parserParam);
-                mapReduceJobHistoryParser.addListener(listener);
-                return mapReduceJobHistoryParser;
+                return new MapReduceJobHistoryParser(parserParam);
 
             case MAPREDUCE_CONTAINER:
-                MapReduceContainerLogParser mapReduceContainerLogParser = new MapReduceContainerLogParser(parserParam);
-                mapReduceContainerLogParser.addListener(listener);
-                return mapReduceContainerLogParser;
+                return new MapReduceContainerLogParser(parserParam);
 
             default:
                 return null;

@@ -18,15 +18,14 @@ package com.oppo.cloud.parser.service.job.parser;
 
 import com.oppo.cloud.common.util.textparser.*;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
-import com.oppo.cloud.parser.service.job.oneclick.OneClickSubject;
+import com.oppo.cloud.parser.service.job.oneclick.ParserListenerBus;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.*;
 
 @Slf4j
-public abstract class CommonTextParser extends OneClickSubject {
+public abstract class CommonTextParser extends IParser {
 
     private ReaderObject readerObject;
     private List<ParserAction> actions;
