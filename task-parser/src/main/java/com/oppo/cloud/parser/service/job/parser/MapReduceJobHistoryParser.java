@@ -31,7 +31,7 @@ import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.mr.MRAppInfo;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.service.job.detector.DetectorManager;
-import com.oppo.cloud.parser.service.job.oneclick.OneClickSubject;
+import com.oppo.cloud.parser.service.job.oneclick.ParserListenerBus;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
 import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class MapReduceJobHistoryParser extends OneClickSubject implements IParser {
+public class MapReduceJobHistoryParser extends IParser {
 
     private final ParserParam param;
 

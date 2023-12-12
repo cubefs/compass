@@ -46,7 +46,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 @Slf4j
-public class SparkExecutorLogParser extends CommonTextParser implements IParser {
+public class SparkExecutorLogParser extends CommonTextParser {
 
     private final ParserParam param;
 
