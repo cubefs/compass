@@ -12,7 +12,7 @@
 - 支持工作流层异常诊断，识别各种失败和基线耗时异常问题。
 - 支持引擎层异常诊断，包含数据倾斜、大表扫描、内存浪费等14种异常类型。
 - 支持各种日志匹配规则编写和异常阈值调整，可自行根据实际场景优化。
-- 支持一键诊断全量(包含非调度平台提交任务)Spark/MapReduce任务
+- 支持一键诊断全量(包含非调度平台提交任务)Spark/MapReduce任务。
 
 ## 文档
 
@@ -24,9 +24,9 @@
 
 欢迎加入社区咨询使用或成为 Compass 开发者。以下是获得帮助的方法：
 
-- 提交 [issue](https://github.com/cubefs/compass/issues).
-- 提交 pull request, 请阅读 [contributing guideline](https://github.com/cubefs/compass/blob/main/CONTRIBUTING.md),
-- 讨论 [Idea & Question](https://github.com/cubefs/compass/discussions).
+- 提交 [issue](https://github.com/cubefs/compass/issues)。
+- 提交 pull request, 请阅读 [contributing guideline](https://github.com/cubefs/compass/blob/main/CONTRIBUTING.md)。
+- 讨论 [Idea & Question](https://github.com/cubefs/compass/discussions)。
 
 我们将会尽快回复。
 
