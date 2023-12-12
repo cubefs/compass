@@ -24,11 +24,11 @@ Use JDK 8 and maven 3.6.0+ to Compile
 ```
 git clone https://github.com/cubefs/compass.git
 cd compass
-mvn package -DskipTests -Pdist
+mvn clean package -DskipTests -Pdist
 或者
-mvn package -DskipTests -Pdist,spark (打包时web展示只有spark诊断页面)
+mvn clean package -DskipTests -Pdist,spark (打包时web展示只有spark诊断页面)
 或者
-mvn package -DskipTests -Pdist,flink (打包时web展示只有flink诊断页面)
+mvn clean package -DskipTests -Pdist,flink (打包时web展示只有flink诊断页面)
 ```
 使用docker compose启动应用服务
 ```
