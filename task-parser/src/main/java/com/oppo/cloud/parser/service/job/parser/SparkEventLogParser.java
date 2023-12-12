@@ -24,7 +24,6 @@ import com.oppo.cloud.common.domain.eventlog.config.SparkEnvironmentConfig;
 import com.oppo.cloud.common.domain.job.LogPath;
 import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
 import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
-import com.oppo.cloud.common.util.spring.SpringBeanUtil;
 import com.oppo.cloud.parser.domain.job.*;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkApplication;
@@ -32,7 +31,6 @@ import com.oppo.cloud.parser.domain.spark.eventlog.SparkExecutor;
 import com.oppo.cloud.parser.service.job.detector.DetectorManager;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
-import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
 import com.oppo.cloud.parser.utils.ReplaySparkEventLogs;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,10 +47,9 @@ public class SparkEventLogParser extends IParser {
 
     private boolean isOneClick;
 
-    public SparkEventLogParser(ParserParam param) {
+    public SparkEventLogParser(ParserParam param, DetectorConfig config) {
         this.param = param;
-        JobRulesConfigService jobRulesConfigService = (JobRulesConfigService) SpringBeanUtil.getBean(JobRulesConfigService.class);
-        this.config = jobRulesConfigService.detectorConfig;
+        this.config = config;
         this.isOneClick = param.getLogRecord().getIsOneClick();
     }
 
