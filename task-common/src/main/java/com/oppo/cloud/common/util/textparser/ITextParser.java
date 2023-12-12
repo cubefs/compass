@@ -32,4 +32,9 @@ public interface ITextParser {
      * Get the result
      */
     Map<String, ParserAction> getResults();
+
+    /**
+     * Close the text parser
+     */
+    void close();
 }

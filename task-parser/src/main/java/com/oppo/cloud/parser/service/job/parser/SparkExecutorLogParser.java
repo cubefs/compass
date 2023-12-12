@@ -160,6 +160,7 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
                 break;
             }
             if (line == null) {
+                headTextParser.close();
                 break;
             }
             headTextParser.parse(line);

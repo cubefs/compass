@@ -103,6 +103,16 @@ public class TextParser implements ITextParser {
         }
     }
 
+    @Override
+    public void close() {
+        // if position state is middle, means the text parser is parsing.
+        // we should set current parse results when paring the last line,
+        // or nothing will be parsed.
+        if (PositionState.MIDDLE.equals(this.state)) {
+            setParserResults(null);
+        }
+    }
+
     /**
      * Get parsing results
      */
