@@ -41,12 +41,10 @@ public class MapReduceContainerLogParser extends CommonTextParser {
 
     private boolean isOneClick;
 
-
     public MapReduceContainerLogParser(ParserParam param) {
         this.param = param;
         this.isOneClick = param.getLogRecord().getIsOneClick();
     }
-
 
     @Override
     public CommonResult run() {
@@ -87,7 +85,6 @@ public class MapReduceContainerLogParser extends CommonTextParser {
         updateParserProgress(ProgressState.SUCCEED, 0, 0);
         return commonResult;
     }
-
 
     public void updateParserProgress(ProgressState state, Integer progress, Integer count) {
         if (!this.isOneClick) {

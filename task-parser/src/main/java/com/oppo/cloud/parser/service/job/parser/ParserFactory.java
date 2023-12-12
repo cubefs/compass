@@ -16,11 +16,13 @@
 
 package com.oppo.cloud.parser.service.job.parser;
 
+import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.util.spring.SpringBeanUtil;
 import com.oppo.cloud.parser.config.CustomConfig;
 import com.oppo.cloud.parser.config.ThreadPoolConfig;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.service.job.oneclick.IProgressListener;
+import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.List;
@@ -46,7 +48,7 @@ public class ParserFactory {
                 return new SchedulerLogParser(parserParam);
 
             case SPARK_EVENT:
-                return new SparkEventLogParser(parserParam);
+                return new SparkEventLogParser(parserParam, getDetectorConf());
 
             case SPARK_EXECUTOR:
                 ThreadPoolTaskExecutor parserThreadPool = (ThreadPoolTaskExecutor) SpringBeanUtil.getBean(ThreadPoolConfig.PARSER_THREAD_POOL);
@@ -55,7 +57,7 @@ public class ParserFactory {
                 return sparkExecutorLogParser;
 
             case MAPREDUCE_JOB_HISTORY:
-                return new MapReduceJobHistoryParser(parserParam);
+                return new MapReduceJobHistoryParser(parserParam, getDetectorConf());
 
             case MAPREDUCE_CONTAINER:
                 return new MapReduceContainerLogParser(parserParam);
@@ -63,5 +65,10 @@ public class ParserFactory {
             default:
                 return null;
         }
+    }
+
+    private static DetectorConfig getDetectorConf() {
+        JobRulesConfigService jobRulesConfigService = (JobRulesConfigService) SpringBeanUtil.getBean(JobRulesConfigService.class);
+        return jobRulesConfigService.detectorConfig;
     }
 }
