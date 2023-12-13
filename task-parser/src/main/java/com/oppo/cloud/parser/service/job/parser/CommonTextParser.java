@@ -54,6 +54,7 @@ public abstract class CommonTextParser extends IParser {
                 break;
             }
             if (line == null) {
+                headTextParser.close();
                 break;
             }
             headTextParser.parse(line);
