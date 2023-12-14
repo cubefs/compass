@@ -2,7 +2,9 @@
 
 [English document](README.md)
 
-罗盘是一个大数据任务诊断平台，旨在提升用户排查问题效率，降低用户异常任务成本。
+Compass是一个诊断大数据生态系统中计算引擎和调度器的平台，旨在提高故障排除的效率并降低问题调整的复杂性。
+它自动收集日志和指标，除了使用启发式规则来识别问题并提供调整建议，对于日志，还使用了ChatGPT还提供诊断建议，
+日志将使用drain算法自动聚合为模板，可用于人工干预等，提升诊断自动化和优化方案能力。
 
 其主要功能特性如下：
 
@@ -13,6 +15,22 @@
 - 支持引擎层异常诊断，包含数据倾斜、大表扫描、内存浪费等14种异常类型。
 - 支持各种日志匹配规则编写和异常阈值调整，可自行根据实际场景优化。
 - 支持一键诊断全量(包含非调度平台提交任务)Spark/MapReduce任务。
+- 支持ChatGPT对异常日志进行诊断，提供解决方案，使用了drain算法聚合模板，节约成本。
+
+## 支持特性
+### Feature Support
+- [x] ChatGPT
+- [x] Spark
+- [x] Flink
+- [x] Mapreduce
+- [ ] Trino
+- [ ] Spark Tez
+- [x] Airflow
+- [x] DolphinScheduler
+- [ ] Azkaban
+- [ ] Oozie
+- [ ] Debezium (同步Postgresql到Postgresql的数据同步)
+- [ ] Other(我们非常欢迎与倾听其他任务建设性意见)...
 
 ## 文档
 
