@@ -46,7 +46,8 @@ public abstract class Task {
         Map<String, List<LogPath>> logPathMap = this.taskParam.getLogInfo().getLogPathMap();
         if (logPathMap != null && logPathMap.size() > 0) {
             for (Map.Entry<String, List<LogPath>> map : logPathMap.entrySet()) {
-                IParser parser = ParserFactory.create(new ParserParam(map.getKey(), this.taskParam.getLogRecord(),
+                ParserFactory parserFactory = new ParserFactory();
+                IParser parser = parserFactory.create(new ParserParam(map.getKey(), this.taskParam.getLogRecord(),
                         this.taskParam.getApp(), map.getValue()), new ProgressListener());
                 if (parser != null) {
                     parsers.add(parser);

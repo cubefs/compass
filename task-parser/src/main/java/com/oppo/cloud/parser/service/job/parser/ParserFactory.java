@@ -16,59 +16,41 @@
 
 package com.oppo.cloud.parser.service.job.parser;
 
+import com.oppo.cloud.common.constant.LogType;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.util.spring.SpringBeanUtil;
+import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.parser.config.CustomConfig;
+import com.oppo.cloud.parser.config.DiagnosisConfig;
 import com.oppo.cloud.parser.config.ThreadPoolConfig;
-import com.oppo.cloud.parser.domain.job.ParserParam;
-import com.oppo.cloud.parser.service.job.oneclick.IProgressListener;
 import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
 
-public class ParserFactory {
+public class ParserFactory implements IParserFactory {
 
-    /**
-     * create parser
-     */
-    public static IParser create(ParserParam parserParam, IProgressListener listener) {
-        IParser parser = createParserInternal(parserParam, listener);
-        if (parser != null) {
-            parser.addListener(listener);
-        }
-        return parser;
-    }
-
-    private static IParser createParserInternal(ParserParam parserParam, IProgressListener listener) {
-        switch (parserParam.getLogType()) {
-
-            case SCHEDULER:
-                return new SchedulerLogParser(parserParam);
-
-            case SPARK_EVENT:
-                return new SparkEventLogParser(parserParam, getDetectorConf());
-
-            case SPARK_EXECUTOR:
-                ThreadPoolTaskExecutor parserThreadPool = (ThreadPoolTaskExecutor) SpringBeanUtil.getBean(ThreadPoolConfig.PARSER_THREAD_POOL);
-                List<String> jvmTypeList = (List<String>) SpringBeanUtil.getBean(CustomConfig.GC_CONFIG);
-                SparkExecutorLogParser sparkExecutorLogParser = new SparkExecutorLogParser(parserParam, parserThreadPool, jvmTypeList);
-                return sparkExecutorLogParser;
-
-            case MAPREDUCE_JOB_HISTORY:
-                return new MapReduceJobHistoryParser(parserParam, getDetectorConf());
-
-            case MAPREDUCE_CONTAINER:
-                return new MapReduceContainerLogParser(parserParam);
-
-            default:
-                return null;
-        }
-    }
-
-    private static DetectorConfig getDetectorConf() {
-        JobRulesConfigService jobRulesConfigService = (JobRulesConfigService) SpringBeanUtil.getBean(JobRulesConfigService.class);
+    @Override
+    public DetectorConfig getDetectorConf() {
+        JobRulesConfigService jobRulesConfigService = (JobRulesConfigService) SpringBeanUtil.getBean(
+                JobRulesConfigService.class);
         return jobRulesConfigService.detectorConfig;
     }
+
+    @Override
+    public List<ParserAction> getParserActions(LogType logType) {
+        return DiagnosisConfig.getInstance().getActions(logType.getName());
+    }
+
+    @Override
+    public Executor getTaskExecutor() {
+        return (Executor) SpringBeanUtil.getBean(ThreadPoolConfig.PARSER_THREAD_POOL);
+    }
+
+    @Override
+    public List<String> getJvmList() {
+        return (List<String>) SpringBeanUtil.getBean(CustomConfig.GC_CONFIG);
+    }
+
 }

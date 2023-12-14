@@ -24,7 +24,6 @@ import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
 import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.common.util.textparser.ParserManager;
 import com.oppo.cloud.common.util.textparser.TextParser;
-import com.oppo.cloud.parser.config.DiagnosisConfig;
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.job.SparkExecutorLogParserResult;
@@ -34,7 +33,6 @@ import com.oppo.cloud.parser.service.reader.LogReaderFactory;
 import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
 import com.oppo.cloud.parser.utils.GCReportUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -56,10 +54,14 @@ public class SparkExecutorLogParser extends CommonTextParser {
 
     private final List<String> jvmTypeList;
 
+    private  List<ParserAction> actions;
+
     public SparkExecutorLogParser(ParserParam param,
-                                  ThreadPoolTaskExecutor threadPool,
+                                  List<ParserAction> actions,
+                                  Executor threadPool,
                                   List<String> jvmTypeList) {
         this.param = param;
+        this.actions = actions;
         this.isOneClick = param.getLogRecord().getIsOneClick();
         this.parserThreadPool = threadPool;
         this.jvmTypeList = jvmTypeList;
@@ -143,7 +145,6 @@ public class SparkExecutorLogParser extends CommonTextParser {
     }
 
     private SparkExecutorLogParserResult parseRootAction(String logType, ReaderObject readerObject) throws Exception {
-        List<ParserAction> actions = DiagnosisConfig.getInstance().getActions(logType);
         Map<Integer, byte[]> gcLogMap = new HashMap<>();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         boolean isGCLog = false;

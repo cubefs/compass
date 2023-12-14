@@ -21,7 +21,6 @@ import com.oppo.cloud.common.domain.job.LogPath;
 import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
 import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
 import com.oppo.cloud.common.util.textparser.ParserAction;
-import com.oppo.cloud.parser.config.DiagnosisConfig;
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
@@ -41,8 +40,13 @@ public class MapReduceContainerLogParser extends CommonTextParser {
 
     private boolean isOneClick;
 
-    public MapReduceContainerLogParser(ParserParam param) {
+    private List<ParserAction> actions;
+
+    public MapReduceContainerLogParser(ParserParam param,
+                                       List<ParserAction> actions) {
+
         this.param = param;
+        this.actions = actions;
         this.isOneClick = param.getLogRecord().getIsOneClick();
     }
 
@@ -53,7 +57,6 @@ public class MapReduceContainerLogParser extends CommonTextParser {
         List<String> categories = new ArrayList<>();
         updateParserProgress(ProgressState.PROCESSING, 0, 0);
         String logType = this.param.getLogType().getName();
-        List<ParserAction> actions = DiagnosisConfig.getInstance().getActions(logType);
 
         for (LogPath logPath : this.param.getLogPaths()) {
             List<ReaderObject> readerObjects;
