@@ -2,9 +2,11 @@
 [Chinese Document](README_zh.md)
 
 ### Abstract
-Compass is a platform to diagnose computing engines and schedulers around big data ecosystem, which aims to improve the 
-efficiency of troubleshooting and reduce the complexity of problem tuning. It automatically gathers logs and metrics,
-runs with heuristic rules to identify problem and offers tuning advice.
+Compass is a platform for diagnosing computing engines and schedulers in the big data ecosystem, aiming to improve 
+the efficiency of troubleshooting and reduce the complexity of problem tuning. It automatically collects logs and
+metrics, and uses heuristic rules to identify problems and provide tuning advice. In addition, for logs, ChatGPT is 
+used to provide diagnostic suggestions. The logs are automatically aggregated into templates using the drain algorithm, 
+which can be used for manual intervention, etc., to improve the automation of diagnosis and optimization solutions.
 
 ### Feature
 1. Non-invasive, in-time diagnosis, no need to modify the original platform code.
@@ -12,19 +14,20 @@ runs with heuristic rules to identify problem and offers tuning advice.
 3. Supports diagnostics for kinds of scheduling job issues, such as failure, abnormal elapsed time, abnormal baseline, etc.
 4. Supports diagnostics for kinds of engine task issues, such as data skew, big table scan,  memory waste, long tail task, etc.
 5. Supports diagnostics for capturing log exception and offers advise or solution.
+6. Supports ChatGPT to diagnose abnormal logs and provide solutions; uses the drain algorithm to aggregate templates, saving costs.
 
-### Engine Support
+### Feature Support
+- [x] ChatGPT
 - [x] Spark
 - [x] Flink
 - [x] Mapreduce
 - [ ] Trino
-- [ ] Other(Any suggestions are welcomed, high valued)...
-
-### Scheduler Support
+- [ ] Spark Tez
 - [x] Airflow
 - [x] DolphinScheduler
 - [ ] Azkaban
 - [ ] Oozie
+- [ ] Debezium (Synchronize Postgresql data to Postgresql)
 - [ ] Other(Any suggestions are welcomed, high valued)...
 
 ###  Documents
