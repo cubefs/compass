@@ -9,7 +9,8 @@
 
 ### 系统架构图
 
-![Compass架构](img/architecture.png)
+![Compass架构](img/architecture_1.png)
+![Compass架构](img/architecture_2.png)
 
 ### 架构说明
 
