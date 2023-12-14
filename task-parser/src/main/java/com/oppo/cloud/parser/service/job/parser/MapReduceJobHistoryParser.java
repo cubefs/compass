@@ -42,16 +42,12 @@ import java.util.Map;
 @Slf4j
 public class MapReduceJobHistoryParser extends IParser {
 
-    private final ParserParam param;
-
     private DetectorConfig config;
 
-    private boolean isOneClick;
-
-    public MapReduceJobHistoryParser(ParserParam param, DetectorConfig config) {
-        this.param = param;
+    public MapReduceJobHistoryParser(ParserParam param,
+                                     DetectorConfig config) {
+        super(param);
         this.config = config;
-        this.isOneClick = param.getLogRecord().getIsOneClick();
     }
 
     @Override
@@ -132,21 +128,6 @@ public class MapReduceJobHistoryParser extends IParser {
             }
         }
         return env;
-    }
-
-    public void updateParserProgress(ProgressState state, Integer progress, Integer count) {
-        if (!this.isOneClick) {
-            return;
-        }
-        OneClickProgress oneClickProgress = new OneClickProgress();
-        oneClickProgress.setAppId(this.param.getApp().getAppId());
-        oneClickProgress.setLogType(this.param.getLogType());
-        ProgressInfo executorProgress = new ProgressInfo();
-        executorProgress.setCount(count);
-        executorProgress.setProgress(progress);
-        executorProgress.setState(state);
-        oneClickProgress.setProgressInfo(executorProgress);
-        update(oneClickProgress);
     }
 
 }
