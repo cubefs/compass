@@ -17,8 +17,7 @@ Compass是一个诊断大数据生态系统中计算引擎和调度器的平台�
 - 支持一键诊断全量(包含非调度平台提交任务)Spark/MapReduce任务。
 - 支持ChatGPT对异常日志进行诊断，提供解决方案，使用了drain算法聚合模板，节约成本。
 
-## 支持特性
-### Feature Support
+## 支持组件
 - [x] ChatGPT
 - [x] Spark
 - [x] Flink
