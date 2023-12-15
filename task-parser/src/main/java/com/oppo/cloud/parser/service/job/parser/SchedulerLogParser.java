@@ -25,6 +25,7 @@ import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
 import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
+import com.oppo.cloud.parser.service.writer.ParserResultSink;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -35,8 +36,9 @@ import java.util.Map;
 public class SchedulerLogParser extends CommonTextParser {
 
     public SchedulerLogParser(ParserParam param,
-                              List<ParserAction> actions) {
-        super(param, actions);
+                              List<ParserAction> actions,
+                              ParserResultSink parserResultSink) {
+        super(param, actions, parserResultSink);
     }
 
     @Override
@@ -67,8 +69,8 @@ public class SchedulerLogParser extends CommonTextParser {
                 } finally {
                     readerObject.close();
                 }
-                List<String> list = OpenSearchWriter.getInstance()
-                        .saveParserActions(logType, readerObject.getLogPath(), this.param, results);
+                List<String> list = getSink().saveParserActions(
+                        logType, readerObject.getLogPath(), this.param, results);
                 categories.addAll(list);
             }
         }

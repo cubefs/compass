@@ -26,6 +26,7 @@ import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.job.TaskParam;
 import com.oppo.cloud.parser.domain.job.TaskResult;
 import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
+import com.oppo.cloud.parser.service.writer.ParserResultSink;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -72,8 +73,10 @@ public class YarnTask extends Task {
         ParserParam param = new ParserParam(LogType.YARN.getName(), this.taskParam.getLogRecord(),
                 this.taskParam.getApp(), null);
 
-        List<String> list = OpenSearchWriter.getInstance()
-                .saveParserActions(LogType.YARN.getName(), "", param, results);
+        ParserResultSink parserResultSink = new ParserResultSink();
+        parserResultSink.register(OpenSearchWriter.getInstance());
+        List<String> list = parserResultSink.saveParserActions(
+                LogType.YARN.getName(), "", param, results);
 
         return new TaskResult(this.taskParam.getApp().getAppId(), new ArrayList<>(list));
     }

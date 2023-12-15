@@ -42,7 +42,7 @@ class SchedulerLogParserTest {
                 logRecord.getApps().get(0), logPathMap.get(LogType.SCHEDULER.getName()));
         List<ParserAction> actions = DiagnosisConfig.getInstance().getActions(LogType.SPARK_EXECUTOR.getName());
 
-        SchedulerLogParser schedulerLogParser = new SchedulerLogParser(param, actions);
+        SchedulerLogParser schedulerLogParser = new SchedulerLogParser(param, actions, ParserTestUtil.getLogSink());
 
         CommonResult commonResult = schedulerLogParser.run();
         System.out.println(commonResult);

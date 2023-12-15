@@ -29,6 +29,7 @@ import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
 import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
+import com.oppo.cloud.parser.service.writer.ParserResultSink;
 import com.oppo.cloud.parser.utils.GCReportUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,9 +51,10 @@ public class SparkExecutorLogParser extends CommonTextParser {
 
     public SparkExecutorLogParser(ParserParam param,
                                   List<ParserAction> actions,
+                                  ParserResultSink parserResultSink,
                                   Executor threadPool,
                                   List<String> jvmTypeList) {
-        super(param, actions);
+        super(param, actions, parserResultSink);
         this.parserThreadPool = threadPool;
         this.jvmTypeList = jvmTypeList;
     }
@@ -118,13 +120,12 @@ public class SparkExecutorLogParser extends CommonTextParser {
             readerObject.close();
         }
         if (result != null && result.getActionMap() != null) {
-            List<String> categories = OpenSearchWriter.getInstance()
-                    .saveParserActions(logType, readerObject.getLogPath(), this.param, result.getActionMap());
+            List<String> categories = getSink().saveParserActions(
+                    logType, readerObject.getLogPath(), this.param, result.getActionMap());
             result.setCategories(categories);
         }
         return result;
     }
-
 
     private SparkExecutorLogParserResult parseAction(String logType, ReaderObject readerObject) throws Exception {
         SparkExecutorLogParserResult result = parseRootAction(logType, readerObject);
