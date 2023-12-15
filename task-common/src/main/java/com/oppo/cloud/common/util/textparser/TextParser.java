@@ -245,7 +245,9 @@ public class TextParser implements ITextParser {
 
     private void extractGroupData(Matcher m) {
         // 尾行当标志位，不参与提取
-        if (this.parsingAction.getGroupNames() != null && this.state != PositionState.TAIL) {
+        if (m != null &&
+                this.parsingAction.getGroupNames() != null &&
+                this.state != PositionState.TAIL) {
             Map<String, String> groupMap = this.parsingAction.getGroupData();
             if (groupMap == null) {
                 groupMap = new HashMap<>();

@@ -5,14 +5,14 @@
 Compass 依赖了Canal、PostgreSQL(或MySQL)、Kafka、Redis、Zookeeper、OpenSearch，需要提前准备好相关环境。
 
 ## 环境要求
-| Dependency | Version | Optional |Description|
-|------------|---------|----------|----|
-| Canal      | v1.1.6+ | yes      | needed by Airflow,DolphinScheduler|
+| Dependency | Version | Optional | Description                        |
+|------------|---------|----------|------------------------------------|
+| Canal      | v1.1.6+ | yes      | needed by Airflow,DolphinScheduler |
 | MySQL      | 5.7+    | yes      ||
 | PostgreSQL | 10.0+   | no       ||
 | Kafka      | all     | no       ||
-| Redis      | all     | no       |deployed in cluster mode|
-| Zookeeper  | 3.4.5   | no       |needed by canal|
+| Redis      | all     | no       | deployed in cluster mode           |
+| Zookeeper  | 3.4.5   | no       | needed by canal                    |
 | OpenSearch | 1.3.12  | no       ||
 
 OpenSearch兼容Elasticsearch 7.0+。
@@ -20,7 +20,7 @@ OpenSearch兼容Elasticsearch 7.0+。
 Compass 支持单机和集群部署，可按模块弹性扩缩容。
 
 ## 编译
-Use JDK 8 and maven 3.6.0+ to Compile
+请使用`JDK 8`以及`maven 3.6.0+`进行编译，构建流程步骤如下：
 ```
 git clone https://github.com/cubefs/compass.git
 cd compass

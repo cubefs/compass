@@ -128,6 +128,14 @@ public class ParamUtil {
 
         logPathMap.put("scheduler", schedulerList);
 
+        LogPath driver = new LogPath();
+        driver.setProtocol("hdfs");
+        driver.setLogType("driver");
+        driver.setLogPathType(LogPathType.DIRECTORY);
+        driver.setLogPath("hdfs://localhost:8020/logs");
+        List<LogPath> driverList = new ArrayList<>();
+        driverList.add(driver);
+
         LogPath executor = new LogPath();
         executor.setProtocol("hdfs");
         executor.setLogType("executor");
@@ -147,6 +155,7 @@ public class ParamUtil {
         Map<String, List<LogPath>> sprakLogPathMap = new HashMap<>();
         sprakLogPathMap.put("event", eventList);
         sprakLogPathMap.put("executor", executorList);
+        sprakLogPathMap.put("driver", driverList);
 
         LogPath jobHistory = new LogPath();
         jobHistory.setProtocol("hdfs");
