@@ -35,10 +35,8 @@ public abstract class CommonTextParser extends IParser {
         this.actions = actions;
     }
 
-    public Map<String, ParserAction> parse(ReaderObject readerObject, List<ParserAction> actions) throws Exception {
+    public Map<String, ParserAction> parse(ReaderObject readerObject) throws Exception {
         this.readerObject = readerObject;
-        this.actions = actions;
-
         Map<String, ParserAction> rootActions = getRootAction();
         for (Map.Entry<String, ParserAction> action : rootActions.entrySet()) {
             ParserManager.parseChildActions(action.getValue());

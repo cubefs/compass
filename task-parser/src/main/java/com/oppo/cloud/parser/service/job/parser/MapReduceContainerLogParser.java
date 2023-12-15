@@ -60,7 +60,7 @@ public class MapReduceContainerLogParser extends CommonTextParser {
             for (ReaderObject readerObject : readerObjects) {
                 Map<String, ParserAction> results;
                 try {
-                    results = super.parse(readerObject, this.getActions());
+                    results = super.parse(readerObject);
                 } catch (Exception e) {
                     log.error("Exception:", e);
                     continue;
