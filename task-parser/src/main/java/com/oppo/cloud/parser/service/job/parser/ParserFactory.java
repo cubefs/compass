@@ -33,9 +33,8 @@ public class ParserFactory implements IParserFactory {
 
     @Override
     public DetectorConfig getDetectorConf() {
-        JobRulesConfigService jobRulesConfigService = (JobRulesConfigService) SpringBeanUtil.getBean(
-                JobRulesConfigService.class);
-        return jobRulesConfigService.detectorConfig;
+        return ((JobRulesConfigService) SpringBeanUtil.getBean(
+                JobRulesConfigService.class)).detectorConfig;
     }
 
     @Override

@@ -19,8 +19,6 @@ package com.oppo.cloud.parser.service.job.parser;
 import com.oppo.cloud.common.constant.LogType;
 import com.oppo.cloud.common.constant.ProgressState;
 import com.oppo.cloud.common.domain.job.LogPath;
-import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
-import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
 import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.common.util.textparser.ParserManager;
 import com.oppo.cloud.common.util.textparser.TextParser;
@@ -46,23 +44,15 @@ import java.util.concurrent.Future;
 @Slf4j
 public class SparkExecutorLogParser extends CommonTextParser {
 
-    private final ParserParam param;
-
-    private final boolean isOneClick;
-
     private final Executor parserThreadPool;
 
     private final List<String> jvmTypeList;
-
-    private  List<ParserAction> actions;
 
     public SparkExecutorLogParser(ParserParam param,
                                   List<ParserAction> actions,
                                   Executor threadPool,
                                   List<String> jvmTypeList) {
-        this.param = param;
-        this.actions = actions;
-        this.isOneClick = param.getLogRecord().getIsOneClick();
+        super(param, actions);
         this.parserThreadPool = threadPool;
         this.jvmTypeList = jvmTypeList;
     }
@@ -150,7 +140,7 @@ public class SparkExecutorLogParser extends CommonTextParser {
         boolean isGCLog = false;
         boolean isStderr = false;
 
-        TextParser headTextParser = new TextParser(actions);
+        TextParser headTextParser = new TextParser(this.getActions());
         BufferedReader bufferedReader = readerObject.getBufferedReader();
         while (true) {
             String line;
@@ -219,19 +209,4 @@ public class SparkExecutorLogParser extends CommonTextParser {
         return LogType.SPARK_EXECUTOR.getName();
     }
 
-
-    public void updateParserProgress(ProgressState state, Integer progress, Integer count) {
-        if (!this.isOneClick) {
-            return;
-        }
-        OneClickProgress oneClickProgress = new OneClickProgress();
-        oneClickProgress.setAppId(this.param.getApp().getAppId());
-        oneClickProgress.setLogType(LogType.SPARK_EXECUTOR);
-        ProgressInfo executorProgress = new ProgressInfo();
-        executorProgress.setCount(count);
-        executorProgress.setProgress(progress);
-        executorProgress.setState(state);
-        oneClickProgress.setProgressInfo(executorProgress);
-        super.update(oneClickProgress);
-    }
 }

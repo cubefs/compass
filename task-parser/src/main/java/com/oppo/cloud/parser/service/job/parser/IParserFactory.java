@@ -39,14 +39,14 @@ public interface IParserFactory {
      * create parser
      */
     default IParser create(ParserParam parserParam, IProgressListener listener) {
-        IParser parser = createParserInternal(parserParam, listener);
+        IParser parser = createParserInternal(parserParam);
         if (parser != null && listener != null) {
             parser.addListener(listener);
         }
         return parser;
     }
 
-    default IParser createParserInternal(ParserParam parserParam, IProgressListener listener) {
+    default IParser createParserInternal(ParserParam parserParam) {
         LogType logType = parserParam.getLogType();
         switch (logType) {
 

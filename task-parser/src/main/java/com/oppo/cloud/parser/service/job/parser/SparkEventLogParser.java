@@ -41,16 +41,11 @@ import java.util.Map;
 @Slf4j
 public class SparkEventLogParser extends IParser {
 
-    private final ParserParam param;
-
     private DetectorConfig config;
 
-    private boolean isOneClick;
-
     public SparkEventLogParser(ParserParam param, DetectorConfig config) {
-        this.param = param;
+        super(param);
         this.config = config;
-        this.isOneClick = param.getLogRecord().getIsOneClick();
     }
 
     @Override
@@ -176,22 +171,6 @@ public class SparkEventLogParser extends IParser {
         }
         memoryCalculateParam.setExecutorRuntimeMap(executorRuntimeMap);
         return memoryCalculateParam;
-    }
-
-
-    public void updateParserProgress(ProgressState state, Integer progress, Integer count) {
-        if (!this.isOneClick) {
-            return;
-        }
-        OneClickProgress oneClickProgress = new OneClickProgress();
-        oneClickProgress.setAppId(this.param.getApp().getAppId());
-        oneClickProgress.setLogType(this.param.getLogType());
-        ProgressInfo executorProgress = new ProgressInfo();
-        executorProgress.setCount(count);
-        executorProgress.setProgress(progress);
-        executorProgress.setState(state);
-        oneClickProgress.setProgressInfo(executorProgress);
-        update(oneClickProgress);
     }
 
 }
