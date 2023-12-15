@@ -218,6 +218,25 @@ services:
       - postgres
       - zookeeper
 
+  hadoop:
+    build:
+      context: ./
+      dockerfile: dockerfiles/compass-playground-hadoop.Dockerfile
+      args:
+        AWS_JAVA_SDK_VERSION: ${AWS_JAVA_SDK_VERSION}
+        HADOOP_VERSION: ${HADOOP_VERSION}
+        HIVE_VERSION: ${HIVE_VERSION}
+        APACHE_MIRROR: ${APACHE_MIRROR}
+        MAVEN_MIRROR: ${MAVEN_MIRROR}
+    container_name: hadoop
+    hostname: hadoop
+    ports:
+      - 8088:8088
+      - 9870:9870
+      - 8020:8020
+    profiles: ["hadoop"]
+
+
   compass-demo:
     build:
       context: ./

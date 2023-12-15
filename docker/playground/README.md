@@ -73,4 +73,11 @@ docker compose --profile schema up -d
 docker compose --profile dolphinscheduler up -d
 ```
 
+6. With hadoop (Optional)
+
+```
+wget https://dlcdn.apache.org/hadoop/core/hadoop-3.2.4/hadoop-3.2.4.tar.gz
+docker compose --profile hadoop up -d
+```
+
 For more details, please refer to [deployment document](../../document/manual/deployment.md)
