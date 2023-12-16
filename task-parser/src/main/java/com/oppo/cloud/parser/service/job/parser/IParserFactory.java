@@ -21,6 +21,7 @@ import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.service.job.oneclick.IProgressListener;
+import com.oppo.cloud.parser.service.writer.ParserResultSink;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -34,6 +35,8 @@ public interface IParserFactory {
     Executor getTaskExecutor();
 
     List<String> getJvmList();
+
+    ParserResultSink getParserResultSink();
 
     /**
      * create parser
@@ -51,20 +54,20 @@ public interface IParserFactory {
         switch (logType) {
 
             case SCHEDULER:
-                return new SchedulerLogParser(parserParam, getParserActions(logType));
+                return new SchedulerLogParser(parserParam, getParserActions(logType), getParserResultSink());
 
             case SPARK_EVENT:
                 return new SparkEventLogParser(parserParam, getDetectorConf());
 
             case SPARK_EXECUTOR:
-                return new SparkExecutorLogParser(parserParam, getParserActions(logType),
+                return new SparkExecutorLogParser(parserParam, getParserActions(logType), getParserResultSink(),
                         getTaskExecutor(), getJvmList());
 
             case MAPREDUCE_JOB_HISTORY:
                 return new MapReduceJobHistoryParser(parserParam, getDetectorConf());
 
             case MAPREDUCE_CONTAINER:
-                return new MapReduceContainerLogParser(parserParam, getParserActions(logType));
+                return new MapReduceContainerLogParser(parserParam, getParserActions(logType), getParserResultSink());
 
             default:
                 return null;

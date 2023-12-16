@@ -24,6 +24,8 @@ import com.oppo.cloud.parser.config.CustomConfig;
 import com.oppo.cloud.parser.config.DiagnosisConfig;
 import com.oppo.cloud.parser.config.ThreadPoolConfig;
 import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
+import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
+import com.oppo.cloud.parser.service.writer.ParserResultSink;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -50,6 +52,14 @@ public class ParserFactory implements IParserFactory {
     @Override
     public List<String> getJvmList() {
         return (List<String>) SpringBeanUtil.getBean(CustomConfig.GC_CONFIG);
+    }
+
+    @Override
+    public ParserResultSink getParserResultSink() {
+        // TODO implement more kinds of writers and let them configurable.
+        ParserResultSink parserResultSink = new ParserResultSink();
+        parserResultSink.register(OpenSearchWriter.getInstance());
+        return parserResultSink;
     }
 
 }

@@ -19,6 +19,7 @@ package com.oppo.cloud.parser.service.job.parser;
 import com.oppo.cloud.common.util.textparser.*;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
+import com.oppo.cloud.parser.service.writer.ParserResultSink;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -30,9 +31,14 @@ public abstract class CommonTextParser extends IParser {
     private ReaderObject readerObject;
     private List<ParserAction> actions;
 
-    public CommonTextParser(ParserParam param, List<ParserAction> actions) {
+    private ParserResultSink parserResultSink;
+
+    public CommonTextParser(ParserParam param,
+                            List<ParserAction> actions,
+                            ParserResultSink parserResultSink) {
         super(param);
         this.actions = actions;
+        this.parserResultSink = parserResultSink;
     }
 
     public Map<String, ParserAction> parse(ReaderObject readerObject) throws Exception {
@@ -66,6 +72,11 @@ public abstract class CommonTextParser extends IParser {
     }
 
     public List<ParserAction> getActions() {
-        return actions;
+        return this.actions;
     }
+
+    public ParserResultSink getSink() {
+        return this.parserResultSink;
+    }
+
 }
