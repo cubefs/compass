@@ -28,7 +28,6 @@ import com.oppo.cloud.parser.domain.job.SparkExecutorLogParserResult;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
-import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
 import com.oppo.cloud.parser.service.writer.ParserResultSink;
 import com.oppo.cloud.parser.utils.GCReportUtil;
 import lombok.extern.slf4j.Slf4j;

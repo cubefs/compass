@@ -22,8 +22,6 @@ import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.domain.job.LogPath;
 import com.oppo.cloud.common.domain.mr.config.MREnvironmentConfig;
-import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
-import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.domain.job.ParserParam;

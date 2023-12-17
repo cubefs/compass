@@ -22,8 +22,6 @@ import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.domain.eventlog.config.SparkEnvironmentConfig;
 import com.oppo.cloud.common.domain.job.LogPath;
-import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
-import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
 import com.oppo.cloud.parser.domain.job.*;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkApplication;
