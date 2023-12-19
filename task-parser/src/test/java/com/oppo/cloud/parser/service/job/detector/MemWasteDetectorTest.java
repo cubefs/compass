@@ -16,27 +16,19 @@
 
 package com.oppo.cloud.parser.service.job.detector;
 
-import com.oppo.cloud.common.domain.eventlog.config.MemWasteConfig;
+import com.oppo.cloud.common.domain.eventlog.DetectorResult;
 import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.service.ParamUtil;
 import com.oppo.cloud.parser.service.job.detector.spark.MemWasteDetector;
-import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.annotation.Resource;
 
-@SpringBootTest
 class MemWasteDetectorTest {
-
-    @Resource
-    JobRulesConfigService jobRulesConfigService;
 
     @Test
     void detect() throws Exception {
-        MemWasteConfig memWasteConfig = jobRulesConfigService.detectorConfig.getMemWasteConfig();
         DetectorParam param = ParamUtil.getDetectorParam();
-        MemWasteDetector detector = new MemWasteDetector(memWasteConfig);
+        MemWasteDetector detector = new MemWasteDetector(param.getConfig().getMemWasteConfig());
         // DetectorResult detectorResult = detector.detect();
         // System.out.println(detectorResult);
     }

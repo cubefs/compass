@@ -26,6 +26,7 @@ import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.job.SparkExecutorLogParserResult;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
+import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
 import com.oppo.cloud.parser.service.writer.ParserResultSink;
@@ -49,11 +50,12 @@ public class SparkExecutorLogParser extends CommonTextParser {
     private final List<String> jvmTypeList;
 
     public SparkExecutorLogParser(ParserParam param,
+                                  ILogReaderFactory logReaderFactory,
                                   List<ParserAction> actions,
                                   ParserResultSink parserResultSink,
                                   Executor threadPool,
                                   List<String> jvmTypeList) {
-        super(param, actions, parserResultSink);
+        super(param, logReaderFactory, actions, parserResultSink);
         this.parserThreadPool = threadPool;
         this.jvmTypeList = jvmTypeList;
     }
@@ -66,7 +68,7 @@ public class SparkExecutorLogParser extends CommonTextParser {
         for (LogPath logPath : this.param.getLogPaths()) {
             List<ReaderObject> readerObjects;
             try {
-                IReader reader = LogReaderFactory.create(logPath);
+                IReader reader = getReader(logPath);
                 readerObjects = reader.getReaderObjects();
             } catch (Exception e) {
                 log.error("Exception:", e);

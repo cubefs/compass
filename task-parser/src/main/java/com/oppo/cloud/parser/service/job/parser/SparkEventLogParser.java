@@ -27,6 +27,7 @@ import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkApplication;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkExecutor;
 import com.oppo.cloud.parser.service.job.detector.DetectorManager;
+import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
 import com.oppo.cloud.parser.utils.ReplaySparkEventLogs;
@@ -41,8 +42,10 @@ public class SparkEventLogParser extends IParser {
 
     private DetectorConfig config;
 
-    public SparkEventLogParser(ParserParam param, DetectorConfig config) {
-        super(param);
+    public SparkEventLogParser(ParserParam param,
+                               ILogReaderFactory logReaderFactory,
+                               DetectorConfig config) {
+        super(param, logReaderFactory);
         this.config = config;
     }
 
@@ -53,13 +56,13 @@ public class SparkEventLogParser extends IParser {
             LogPath logPath = this.param.getLogPaths().get(0);
             ReaderObject readerObject;
             try {
-                IReader reader = LogReaderFactory.create(logPath);
+                IReader reader = getReader(logPath);
                 readerObject = reader.getReaderObject();
             } catch (FileNotFoundException e) {
                 String path = logPath.getLogPath().substring(0, logPath.getLogPath().lastIndexOf("_"));
                 logPath.setLogPath(path);
                 try {
-                    readerObject = LogReaderFactory.create(logPath).getReaderObject();
+                    readerObject = getReader(logPath).getReaderObject();
                 } catch (Exception ex) {
                     log.error("Exception:", e);
                     updateParserProgress(ProgressState.FAILED, 0, 0);

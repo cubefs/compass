@@ -34,11 +34,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-@SpringBootTest
 class HDFSUtilTest extends ResourcePreparer {
-
-    @Resource(name = HadoopConfig.NAME_NODE_MAP)
-    Map<String, NameNodeConf> nameNodeMap;
 
     @Test
     void readLines() throws Exception {
@@ -47,7 +43,7 @@ class HDFSUtilTest extends ResourcePreparer {
         Assertions.assertTrue(files.hasNext());
         while (files.hasNext()) {
             String path = files.next().getPath().toString();
-            NameNodeConf nameNode = HDFSUtil.getNameNode(nameNodeMap, path);
+            NameNodeConf nameNode = HDFSUtil.getNameNode(getNameNodeConfMap(), path);
             ReaderObject readerObject = HDFSUtil.getReaderObject(nameNode, path);
             while (true) {
                 String line = readerObject.getBufferedReader().readLine();

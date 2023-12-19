@@ -23,7 +23,6 @@ import com.oppo.cloud.parser.service.job.detector.spark.LargeTableScanDetector;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class LargeTableScanDetectorTest {
 
     @Test

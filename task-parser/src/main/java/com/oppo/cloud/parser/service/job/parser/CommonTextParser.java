@@ -22,6 +22,7 @@ import com.oppo.cloud.common.util.textparser.*;
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
+import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
 import com.oppo.cloud.parser.service.writer.ParserResultSink;
@@ -39,9 +40,10 @@ public abstract class CommonTextParser extends IParser {
     private ParserResultSink parserResultSink;
 
     public CommonTextParser(ParserParam param,
+                            ILogReaderFactory logReaderFactory,
                             List<ParserAction> actions,
                             ParserResultSink parserResultSink) {
-        super(param);
+        super(param, logReaderFactory);
         this.actions = actions;
         this.parserResultSink = parserResultSink;
     }
@@ -57,7 +59,7 @@ public abstract class CommonTextParser extends IParser {
         for (LogPath logPath : this.param.getLogPaths()) {
             List<ReaderObject> readerObjects;
             try {
-                IReader reader = LogReaderFactory.create(logPath);
+                IReader reader = getReader(logPath);
                 readerObjects = reader.getReaderObjects();
             } catch (Exception e) {
                 log.error("Exception:", e);

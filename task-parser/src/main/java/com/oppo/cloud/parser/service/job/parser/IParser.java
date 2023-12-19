@@ -17,22 +17,32 @@
 package com.oppo.cloud.parser.service.job.parser;
 
 import com.oppo.cloud.common.constant.ProgressState;
+import com.oppo.cloud.common.domain.job.LogPath;
 import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
 import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.service.job.oneclick.ParserListenerBus;
+import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
+import com.oppo.cloud.parser.service.reader.IReader;
 
 public abstract class IParser extends ParserListenerBus {
 
     protected ParserParam param;
 
-    public IParser(ParserParam param) {
+    protected ILogReaderFactory logReaderFactory;
+
+    public IParser(ParserParam param, ILogReaderFactory logReaderFactory) {
         this.param = param;
+        this.logReaderFactory = logReaderFactory;
     }
 
     public CommonResult run() {
         return null;
+    }
+
+    public IReader getReader(LogPath logPath) throws Exception {
+        return logReaderFactory.create(logPath);
     }
 
     public void updateParserProgress(ProgressState state, Integer progress, Integer count) {

@@ -23,7 +23,6 @@ import com.oppo.cloud.parser.service.job.detector.spark.TaskDurationDetector;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class TaskDurationDetectorTest {
 
     @Test
