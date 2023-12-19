@@ -28,6 +28,7 @@ import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.mr.MRAppInfo;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.service.job.detector.DetectorManager;
+import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
 import com.oppo.cloud.parser.utils.JobHistoryUtil;
@@ -43,8 +44,9 @@ public class MapReduceJobHistoryParser extends IParser {
     private DetectorConfig config;
 
     public MapReduceJobHistoryParser(ParserParam param,
+                                     ILogReaderFactory logReaderFactory,
                                      DetectorConfig config) {
-        super(param);
+        super(param, logReaderFactory);
         this.config = config;
     }
 
@@ -58,7 +60,7 @@ public class MapReduceJobHistoryParser extends IParser {
         for (LogPath logPath : this.param.getLogPaths()) {
             List<ReaderObject> results;
             try {
-                IReader reader = LogReaderFactory.create(logPath);
+                IReader reader = getReader(logPath);
                 results = reader.getReaderObjects();
             } catch (Exception e) {
                 log.error("Exception: ", e);

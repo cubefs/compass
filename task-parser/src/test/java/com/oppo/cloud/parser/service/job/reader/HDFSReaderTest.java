@@ -46,7 +46,7 @@ class HDFSReaderTest extends ResourcePreparer {
         LogPath logPath = new LogPath();
         logPath.setLogPath(getTextLogDir());
         logPath.setProtocol(PROTOCAL_TYPE);
-        HDFSReader hdfsReader = new HDFSReader(logPath);
+        HDFSReader hdfsReader = new HDFSReader(logPath, getNameNodeConf());
         List<String> list = null;
         try {
             list = hdfsReader.listFiles();
@@ -61,14 +61,14 @@ class HDFSReaderTest extends ResourcePreparer {
         LogPath logDirPath = new LogPath();
         logDirPath.setLogPath(getTextLogDir());
         logDirPath.setProtocol(PROTOCAL_TYPE);
-        HDFSReader hdfsReader = new HDFSReader(logDirPath);
+        HDFSReader hdfsReader = new HDFSReader(logDirPath, getNameNodeConf());
         final List<String> logFileList = hdfsReader.listFiles();
         Assertions.assertTrue(logFileList.size() > 0, "logs dir is empty.");
         for (String logFilePath : logFileList) {
             LogPath logPath = new LogPath();
             logPath.setLogPath(logFilePath);
             logPath.setProtocol(PROTOCAL_TYPE);
-            HDFSReader logFileReader = new HDFSReader(logPath);
+            HDFSReader logFileReader = new HDFSReader(logPath, getNameNodeConf());
             final BufferedReader bufferedReader = logFileReader.getReaderObject().getBufferedReader();
             while (true) {
                 String line = bufferedReader.readLine();

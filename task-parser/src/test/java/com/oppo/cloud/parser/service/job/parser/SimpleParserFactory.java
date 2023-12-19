@@ -17,55 +17,56 @@
 package com.oppo.cloud.parser.service.job.parser;
 
 import com.oppo.cloud.common.constant.LogType;
+import com.oppo.cloud.common.domain.cluster.hadoop.NameNodeConf;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
-import com.oppo.cloud.common.util.spring.SpringBeanUtil;
 import com.oppo.cloud.common.util.textparser.ParserAction;
-import com.oppo.cloud.parser.config.CustomConfig;
 import com.oppo.cloud.parser.config.DiagnosisConfig;
-import com.oppo.cloud.parser.config.ThreadPoolConfig;
 import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
-import com.oppo.cloud.parser.service.reader.LogReaderFactory;
-import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
-import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
+import com.oppo.cloud.parser.service.writer.LogWriter;
 import com.oppo.cloud.parser.service.writer.ParserResultSink;
+import com.oppo.cloud.parser.utils.ParserConfigLoader;
+import com.oppo.cloud.parser.utils.ResourcePreparer;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
-
-public class ParserFactory implements IParserFactory {
+public class SimpleParserFactory extends ResourcePreparer implements IParserFactory {
 
     @Override
     public DetectorConfig getDetectorConf() {
-        return ((JobRulesConfigService) SpringBeanUtil.getBean(
-                JobRulesConfigService.class)).detectorConfig;
+        return null;
     }
 
     @Override
     public List<ParserAction> getParserActions(LogType logType) {
-        return DiagnosisConfig.getInstance().getActions(logType.getName());
+        return null;
     }
 
     @Override
     public Executor getTaskExecutor() {
-        return (Executor) SpringBeanUtil.getBean(ThreadPoolConfig.PARSER_THREAD_POOL);
+        return null;
     }
 
     @Override
     public List<String> getJvmList() {
-        return (List<String>) SpringBeanUtil.getBean(CustomConfig.GC_CONFIG);
+        return null;
     }
 
     @Override
     public ParserResultSink getParserResultSink() {
-        // TODO implement more kinds of writers and let them configurable.
         ParserResultSink parserResultSink = new ParserResultSink();
-        parserResultSink.register(OpenSearchWriter.getInstance());
+        parserResultSink.register(new LogWriter());
         return parserResultSink;
     }
 
     @Override
     public ILogReaderFactory createLogReaderFactory() {
-        return new LogReaderFactory();
+        return new ILogReaderFactory() {
+            @Override
+            public Map<String, NameNodeConf> getNameNodeConf() {
+                return ParserConfigLoader.getNameNodeConf();
+            }
+        };
     }
 }

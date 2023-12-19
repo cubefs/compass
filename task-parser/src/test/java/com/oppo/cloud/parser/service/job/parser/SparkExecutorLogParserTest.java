@@ -55,7 +55,14 @@ class SparkExecutorLogParserTest extends ResourcePreparer {
                 SpringBeanUtil.getBean(ThreadPoolConfig.PARSER_THREAD_POOL);
         List<String> jvmTypeList = (List<String>) SpringBeanUtil.getBean(CustomConfig.GC_CONFIG);
         List<ParserAction> actions = DiagnosisConfig.getInstance().getActions(LogType.SPARK_DRIVER.getName());
-        SparkExecutorLogParser parser = new SparkExecutorLogParser(param, actions, ParserTestUtil.getLogSink(), parserThreadPool, jvmTypeList);
+
+        SimpleParserFactory simpleParserFactory = new SimpleParserFactory();
+        SparkExecutorLogParser parser = new SparkExecutorLogParser(param,
+                simpleParserFactory.createLogReaderFactory(),
+                actions,
+                ParserTestUtil.getLogSink(),
+                parserThreadPool,
+                jvmTypeList);
         CommonResult commonResult = parser.run();
         List<SparkExecutorLogParserResult> results = (List<SparkExecutorLogParserResult>) commonResult.getResult();
         Assertions.assertTrue(results.size() == 1);

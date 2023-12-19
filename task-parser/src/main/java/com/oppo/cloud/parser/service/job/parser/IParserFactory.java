@@ -21,6 +21,7 @@ import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.service.job.oneclick.IProgressListener;
+import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
 import com.oppo.cloud.parser.service.writer.ParserResultSink;
 
 import java.util.List;
@@ -38,6 +39,8 @@ public interface IParserFactory {
 
     ParserResultSink getParserResultSink();
 
+    ILogReaderFactory createLogReaderFactory();
+
     /**
      * create parser
      */
@@ -54,20 +57,25 @@ public interface IParserFactory {
         switch (logType) {
 
             case SCHEDULER:
-                return new SchedulerLogParser(parserParam, getParserActions(logType), getParserResultSink());
+                return new SchedulerLogParser(parserParam,
+                        createLogReaderFactory(), getParserActions(logType), getParserResultSink());
 
             case SPARK_EVENT:
-                return new SparkEventLogParser(parserParam, getDetectorConf());
+                return new SparkEventLogParser(parserParam,
+                        createLogReaderFactory(), getDetectorConf());
 
             case SPARK_EXECUTOR:
-                return new SparkExecutorLogParser(parserParam, getParserActions(logType), getParserResultSink(),
+                return new SparkExecutorLogParser(parserParam,
+                        createLogReaderFactory(), getParserActions(logType), getParserResultSink(),
                         getTaskExecutor(), getJvmList());
 
             case MAPREDUCE_JOB_HISTORY:
-                return new MapReduceJobHistoryParser(parserParam, getDetectorConf());
+                return new MapReduceJobHistoryParser(parserParam,
+                        createLogReaderFactory(), getDetectorConf());
 
             case MAPREDUCE_CONTAINER:
-                return new MapReduceContainerLogParser(parserParam, getParserActions(logType), getParserResultSink());
+                return new MapReduceContainerLogParser(parserParam,
+                        createLogReaderFactory(), getParserActions(logType), getParserResultSink());
 
             default:
                 return null;

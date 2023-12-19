@@ -26,7 +26,7 @@ import org.junit.jupiter.api.BeforeAll;
 import java.io.IOException;
 
 @Slf4j
-public class MiniHdfsCluster {
+public class MiniHdfsCluster extends ParserConfigLoader {
     private static MiniDFSCluster hdfsCluster;
     private static Integer nameNodePort = 8020;
 

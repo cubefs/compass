@@ -18,6 +18,7 @@ package com.oppo.cloud.parser.service.job.parser;
 
 import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.parser.domain.job.ParserParam;
+import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
 import com.oppo.cloud.parser.service.writer.ParserResultSink;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,9 +28,10 @@ import java.util.List;
 public class MapReduceContainerLogParser extends CommonTextParser {
 
     public MapReduceContainerLogParser(ParserParam param,
+                                       ILogReaderFactory logReaderFactory,
                                        List<ParserAction> actions,
                                        ParserResultSink parserResultSink) {
-        super(param, actions, parserResultSink);
+        super(param, logReaderFactory, actions, parserResultSink);
     }
 
 }
