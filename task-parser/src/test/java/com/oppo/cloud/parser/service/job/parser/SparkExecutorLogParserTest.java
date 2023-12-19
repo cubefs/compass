@@ -19,11 +19,7 @@ package com.oppo.cloud.parser.service.job.parser;
 import com.oppo.cloud.common.constant.LogType;
 import com.oppo.cloud.common.domain.job.LogPath;
 import com.oppo.cloud.common.domain.job.LogRecord;
-import com.oppo.cloud.common.util.spring.SpringBeanUtil;
-import com.oppo.cloud.common.util.textparser.ParserAction;
-import com.oppo.cloud.parser.config.CustomConfig;
-import com.oppo.cloud.parser.config.DiagnosisConfig;
-import com.oppo.cloud.parser.config.ThreadPoolConfig;
+
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.job.SparkExecutorLogParserResult;
@@ -31,13 +27,10 @@ import com.oppo.cloud.parser.service.ParamUtil;
 import com.oppo.cloud.parser.utils.ResourcePreparer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.List;
 import java.util.Map;
 
-@SpringBootTest
 class SparkExecutorLogParserTest extends ResourcePreparer {
 
     @Test
@@ -51,18 +44,13 @@ class SparkExecutorLogParserTest extends ResourcePreparer {
                 logPathMap.get(LogType.SPARK_DRIVER.getName())
         );
 
-        ThreadPoolTaskExecutor parserThreadPool = (ThreadPoolTaskExecutor)
-                SpringBeanUtil.getBean(ThreadPoolConfig.PARSER_THREAD_POOL);
-        List<String> jvmTypeList = (List<String>) SpringBeanUtil.getBean(CustomConfig.GC_CONFIG);
-        List<ParserAction> actions = DiagnosisConfig.getInstance().getActions(LogType.SPARK_DRIVER.getName());
-
         SimpleParserFactory simpleParserFactory = new SimpleParserFactory();
         SparkExecutorLogParser parser = new SparkExecutorLogParser(param,
                 simpleParserFactory.createLogReaderFactory(),
-                actions,
-                ParserTestUtil.getLogSink(),
-                parserThreadPool,
-                jvmTypeList);
+                simpleParserFactory.getParserActions(LogType.SPARK_DRIVER),
+                simpleParserFactory.getParserResultSink(),
+                simpleParserFactory.getTaskExecutor(),
+                simpleParserFactory.getJvmList());
         CommonResult commonResult = parser.run();
         List<SparkExecutorLogParserResult> results = (List<SparkExecutorLogParserResult>) commonResult.getResult();
         Assertions.assertTrue(results.size() == 1);

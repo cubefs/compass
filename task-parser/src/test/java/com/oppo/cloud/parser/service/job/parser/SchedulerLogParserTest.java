@@ -19,18 +19,14 @@ package com.oppo.cloud.parser.service.job.parser;
 import com.oppo.cloud.common.constant.LogType;
 import com.oppo.cloud.common.domain.job.LogPath;
 import com.oppo.cloud.common.domain.job.LogRecord;
-import com.oppo.cloud.common.util.textparser.ParserAction;
-import com.oppo.cloud.parser.config.DiagnosisConfig;
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.service.ParamUtil;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Map;
 
-@SpringBootTest
 class SchedulerLogParserTest {
 
     @Test
@@ -40,11 +36,12 @@ class SchedulerLogParserTest {
 
         ParserParam param = new ParserParam(LogType.SCHEDULER.getName(), logRecord,
                 logRecord.getApps().get(0), logPathMap.get(LogType.SCHEDULER.getName()));
-        List<ParserAction> actions = DiagnosisConfig.getInstance().getActions(LogType.SPARK_EXECUTOR.getName());
 
         SimpleParserFactory simpleParserFactory = new SimpleParserFactory();
         SchedulerLogParser schedulerLogParser = new SchedulerLogParser(param,
-                simpleParserFactory.createLogReaderFactory(), actions, ParserTestUtil.getLogSink());
+                simpleParserFactory.createLogReaderFactory(),
+                simpleParserFactory.getParserActions(LogType.SCHEDULER),
+                simpleParserFactory.getParserResultSink());
 
         CommonResult commonResult = schedulerLogParser.run();
         System.out.println(commonResult);

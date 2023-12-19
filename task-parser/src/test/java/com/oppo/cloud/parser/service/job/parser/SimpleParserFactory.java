@@ -27,30 +27,39 @@ import com.oppo.cloud.parser.service.writer.ParserResultSink;
 import com.oppo.cloud.parser.utils.ParserConfigLoader;
 import com.oppo.cloud.parser.utils.ResourcePreparer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SimpleParserFactory extends ResourcePreparer implements IParserFactory {
 
+    public SimpleParserFactory() {
+        DiagnosisConfig.getInstance().setRuleMap(getRulesConfig());
+        DiagnosisConfig.getInstance().setDetectorConfig(getDetectorConfig());
+    }
+
     @Override
     public DetectorConfig getDetectorConf() {
-        return null;
+        return DiagnosisConfig.getInstance().detectorConfig;
     }
 
     @Override
     public List<ParserAction> getParserActions(LogType logType) {
-        return null;
+        return DiagnosisConfig.getInstance().getActions(logType.getName());
     }
 
     @Override
     public Executor getTaskExecutor() {
-        return null;
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        return executorService;
     }
 
     @Override
     public List<String> getJvmList() {
-        return null;
+        return Arrays.asList("Java HotSpot", "OpenJDK");
     }
 
     @Override
@@ -65,7 +74,7 @@ public class SimpleParserFactory extends ResourcePreparer implements IParserFact
         return new ILogReaderFactory() {
             @Override
             public Map<String, NameNodeConf> getNameNodeConf() {
-                return ParserConfigLoader.getNameNodeConf();
+                return ParserConfigLoader.getNameNodeConfMap();
             }
         };
     }

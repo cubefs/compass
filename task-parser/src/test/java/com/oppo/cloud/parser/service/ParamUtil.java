@@ -28,14 +28,16 @@ import com.oppo.cloud.common.domain.job.LogRecord;
 import com.oppo.cloud.common.util.spring.SpringBeanUtil;
 import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
+import com.oppo.cloud.parser.utils.ParserConfigLoader;
 import com.oppo.cloud.parser.utils.ReplaySparkEventLogs;
+import com.oppo.cloud.parser.utils.ResourcePreparer;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 
-public class ParamUtil {
+public class ParamUtil extends ResourcePreparer {
 
     public static String[] readLines(String path) throws IOException {
         File file = new File(ParamUtil.class.getClassLoader().getResource(path).getPath());
@@ -51,6 +53,7 @@ public class ParamUtil {
     }
 
     public static DetectorParam getDetectorParam() throws Exception {
+        ParserConfigLoader.init();
         ReplaySparkEventLogs replayEventLogs = getReplayEventLogs();
 
         Long appDuration = replayEventLogs.getApplication().getAppDuration();
@@ -58,14 +61,13 @@ public class ParamUtil {
             appDuration = 0L;
         }
 
-        JobRulesConfigService jobRulesConfigService = (JobRulesConfigService) SpringBeanUtil.getBean(JobRulesConfigService.class);
-        LogRecord logRecord = getLogRecord();
+       LogRecord logRecord = getLogRecord();
 
         DetectorParam detectorParam = new DetectorParam(logRecord.getJobAnalysis().getFlowName(),
                 logRecord.getJobAnalysis().getProjectName(), logRecord.getJobAnalysis().getTaskName(),
                 logRecord.getJobAnalysis().getExecutionDate(), logRecord.getJobAnalysis().getRetryTimes(),
                 logRecord.getApps().get(0).getAppId(), ApplicationType.SPARK, appDuration, "",
-                jobRulesConfigService.detectorConfig, logRecord.getIsOneClick());
+                getDetectorConfig(), logRecord.getIsOneClick());
         detectorParam.setReplayEventLogs(replayEventLogs);
 
         return detectorParam;

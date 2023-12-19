@@ -20,24 +20,73 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.oppo.cloud.common.domain.cluster.hadoop.NameNodeConf;
+import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
+import com.oppo.cloud.parser.domain.rule.Rules;
 import org.junit.jupiter.api.BeforeAll;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ParserConfigLoader {
 
+    private static Map<String, String> rulesConfig;
+    private static DetectorConfig detectorConfig;
     private static Map<String, NameNodeConf> nameNodeConfMap;
 
     @BeforeAll
-    static void init() {
-        nameNodeConfMap = readNameNodeConf();
+    public static void init() {
+        if (rulesConfig == null) {
+            rulesConfig = readRulesConfig();
+        }
+        if (detectorConfig == null) {
+            detectorConfig = readDetectorConfig();
+        }
+        if (nameNodeConfMap == null) {
+            nameNodeConfMap = readNameNodeConf();
+        }
     }
-    public static Map<String, NameNodeConf> getNameNodeConf() {
+    public static Map<String, String> getRulesConfig() {
+        return rulesConfig;
+    }
+
+    public static DetectorConfig getDetectorConfig() {
+        return detectorConfig;
+    }
+
+    public static Map<String, NameNodeConf> getNameNodeConfMap() {
         return nameNodeConfMap;
+    }
+
+
+    private static Map<String, String> readRulesConfig() {
+        HashMap<String, String> rulesMap = new HashMap<>();
+        InputStream resource = ParserConfigLoader.class.getClassLoader().getResourceAsStream("rules.json");
+        if (resource == null) {
+            return null;
+        }
+        List<Rules> rules = JSON.parseArray(JSON.parseArray(resource).toString(), Rules.class);
+        for (Rules rule: rules) {
+            rulesMap.put(rule.getLogType(), JSON.toJSONString(rule.getActions()));
+        }
+        return rulesMap;
+    }
+
+    private static DetectorConfig readDetectorConfig() {
+        try {
+            final Yaml yaml = new Yaml();
+            final Map<String, Object> confMap = yaml.load(createFileReader("application.yml"));
+            JSONObject detectorConfigJSON = JSONObject.parseObject(JSON.toJSONString(confMap))
+                    .getJSONObject("custom")
+                    .getJSONObject("detector");
+            return JSONObject.parseObject(detectorConfigJSON.toString(), DetectorConfig.class);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static Map<String, NameNodeConf> readNameNodeConf() {

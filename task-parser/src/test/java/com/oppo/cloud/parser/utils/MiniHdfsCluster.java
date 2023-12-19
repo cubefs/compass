@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
+import org.apache.hadoop.util.ShutdownHookManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -32,17 +33,20 @@ public class MiniHdfsCluster extends ParserConfigLoader {
 
     @BeforeAll
     static void startMiniDFS() throws IOException {
-        Configuration conf = new Configuration();
-        // TODO read properties from yml file like HDFSUtil#getFileSystem
-        // TODO support HA DFS
-        try {
-            hdfsCluster = new MiniDFSCluster.Builder(conf)
-                    .nameNodePort(nameNodePort)
-                    .build();
-            hdfsCluster.waitClusterUp();
-        } catch (IOException e) {
-            log.warn("Set up miniDFSCluster failed.", e);
-            throw e;
+        if (hdfsCluster == null) {
+            // TODO read properties from yml file like HDFSUtil#getFileSystem
+            // TODO support HA DFS
+            try {
+                Configuration conf = new Configuration();
+                hdfsCluster = new MiniDFSCluster.Builder(conf)
+                        .nameNodePort(nameNodePort)
+                        .build();
+                hdfsCluster.waitClusterUp();
+                registerShutdownHook();
+            } catch (IOException e) {
+                log.warn("Set up miniDFSCluster failed.", e);
+                throw e;
+            }
         }
     }
 
@@ -60,10 +64,12 @@ public class MiniHdfsCluster extends ParserConfigLoader {
         return null;
     }
 
-    @AfterAll
-    static void shutdown() {
-        if (hdfsCluster != null) {
-            hdfsCluster.shutdown();
-        }
+
+    static void registerShutdownHook() {
+        ShutdownHookManager.get().addShutdownHook((Runnable) () -> {
+            if (hdfsCluster != null) {
+                hdfsCluster.shutdown();
+            }
+        }, 1);
     }
 }

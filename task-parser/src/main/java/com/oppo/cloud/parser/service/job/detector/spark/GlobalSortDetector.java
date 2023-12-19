@@ -41,7 +41,6 @@ public class GlobalSortDetector implements IDetector {
     public GlobalSortDetector(DetectorParam param) {
         this.param = param;
         this.config = param.getConfig().getGlobalSortConfig();
-
     }
 
     @Override
