@@ -69,4 +69,13 @@ public class TaskDetectScheduler {
         diagnosisService.diagnosisAppHourly(start, end, DiagnosisFrom.JobUptime);
         log.info("End execution of scheduled diagnostic tasks");
     }
+
+
+    /**
+     * Hourly scheduled sync yarn metadata
+     */
+    @Scheduled(cron = "* */5 * * * ?")
+    public void syncYarnMetadata(){
+
+    }
 }
