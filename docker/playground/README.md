@@ -64,20 +64,25 @@ Web UI : http://127.0.0.1:7075/compass
 
 Login Account & Password: compass / compass
 
-5. With Dolphinscheduler (Optional)
+5. With hadoop (Optional)
+
 ```
-# init dolphinscheduler database
-docker compose --profile schema up -d
+wget https://archive.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz
+wget https://dlcdn.apache.org/spark/spark-3.3.4/spark-3.3.4-bin-hadoop3.tgz
+
+docker compose --profile hadoop up -d
+```
+
+6. With Dolphinscheduler (Optional)
+```
+wget https://archive.apache.org/dist/dolphinscheduler/3.1.5/apache-dolphinscheduler-3.1.5-bin.tar.gz
+wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar
+wget https://archive.apache.org/dist/flume/1.11.0/apache-flume-1.11.0-bin.tar.gz
 
 # start dolphinscheduler services
 docker compose --profile dolphinscheduler up -d
 ```
 
-6. With hadoop (Optional)
 
-```
-wget https://dlcdn.apache.org/hadoop/core/hadoop-3.2.4/hadoop-3.2.4.tar.gz
-docker compose --profile hadoop up -d
-```
 
 For more details, please refer to [deployment document](../../document/manual/deployment.md)

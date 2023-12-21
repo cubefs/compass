@@ -12,6 +12,7 @@ services:
       - 5432:5432
     volumes:
       - ./script/compass_postgresql.sql:/docker-entrypoint-initdb.d/compass_postgresql.sql
+      - ./script/ds_postgresql.sql:/docker-entrypoint-initdb.d/ds_postgresql.sql
 
   zookeeper:
     image: zookeeper:${ZOOKEEPER_VERSION}
@@ -136,87 +137,24 @@ services:
   #      - minio
   #      - postgres
 
-  dolphinscheduler-schema-initializer:
-    image: apache/dolphinscheduler-tools:3.1.8
-    profiles: ["schema"]
-    environment:
-      DATABASE: postgresql
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-    command: [ tools/bin/upgrade-schema.sh ]
-    depends_on:
-      - postgres
 
-  dolphinscheduler-api:
-    image: apache/dolphinscheduler-api:3.1.8
-    ports:
-      - "12345:12345"
-      - "25333:25333"
-    profiles: ["dolphinscheduler"]
-    environment:
-      DATABASE: postgresql
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      REGISTRY_ZOOKEEPER_CONNECT_STRING: zookeeper:2181
-    depends_on:
-      - postgres
-      - zookeeper
-
-  dolphinscheduler-alert:
-    image: apache/dolphinscheduler-alert-server:3.1.8
-    profiles: ["dolphinscheduler"]
-    environment:
-      DATABASE: postgresql
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      REGISTRY_ZOOKEEPER_CONNECT_STRING: zookeeper:2181
-    depends_on:
-      - postgres
-      - zookeeper
-
-  dolphinscheduler-master:
-    image: apache/dolphinscheduler-master:3.1.8
-    profiles: ["dolphinscheduler"]
-    environment:
-      DATABASE: postgresql
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      REGISTRY_ZOOKEEPER_CONNECT_STRING: zookeeper:2181
-    depends_on:
-      - postgres
-      - zookeeper
-
-  dolphinscheduler-worker:
+  dolphinscheduler:
     build:
-      context: ./dockerfiles
-      dockerfile: compass-playground-dolphinscheduler-worker.Dockerfile
+      context: ./
+      dockerfile: dockerfiles/compass-playground-dolphinscheduler.Dockerfile
       args:
-        AWS_JAVA_SDK_VERSION: ${AWS_JAVA_SDK_VERSION}
-        SPARK_HADOOP_VERSION: ${SPARK_HADOOP_VERSION}
-        POSTGRES_JDBC_VERSION: ${POSTGRES_JDBC_VERSION}
-        SCALA_BINARY_VERSION: ${SCALA_BINARY_VERSION}
+        TZ: Asia/Shanghai
+        MYSQL_USERNAME: root
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: dolphinscheduler
+        HADOOP_VERSION: ${HADOOP_VERSION}
         SPARK_VERSION: ${SPARK_VERSION}
-        SPARK_BINARY_VERSION: ${SPARK_BINARY_VERSION}
-        APACHE_MIRROR: ${APACHE_MIRROR}
-        MAVEN_MIRROR: ${MAVEN_MIRROR}
     profiles: ["dolphinscheduler"]
-    environment:
-      DATABASE: postgresql
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      REGISTRY_ZOOKEEPER_CONNECT_STRING: zookeeper:2181
-    volumes:
-      - ./conf/core-site.xml:/etc/hadoop/conf/core-site.xml
-      - ./conf/hive-site.xml:/etc/hive/conf/hive-site.xml
-      - ./conf/spark-defaults.conf:/etc/spark/conf/spark-defaults.conf
-    depends_on:
-      - postgres
-      - zookeeper
+    container_name: dolphinscheduler
+    hostname: dolphinscheduler
+    ports:
+      - 3306:3306
+      - 12345:12345
 
   hadoop:
     build:
@@ -234,6 +172,8 @@ services:
       - 8088:8088
       - 9870:9870
       - 8020:8020
+      - 8032:8032
+      - 19888:19888
     profiles: ["hadoop"]
 
 

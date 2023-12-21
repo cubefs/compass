@@ -13,4 +13,7 @@ sbin/start-yarn.sh
 bin/mapred --daemon start historyserver
 bin/hdfs dfsadmin -safemode leave
 
+cd /opt/spark
+sbin/start-history-server.sh
+
 tail -f /dev/null
