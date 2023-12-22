@@ -59,7 +59,7 @@ COPY conf/dolphinscheduler/common.properties /opt/dolphinscheduler/worker-server
 
 # MySQL
 RUN set -ex && \
-    chmod 755 /opt/ds/ds-entrypoint.sh && \
+    chmod 755 /opt/dolphinscheduler/ds-entrypoint.sh && \
     sed -i '/\[mysqld\]/a server-id=1' /etc/mysql/mysql.conf.d/mysqld.cnf && \
     sed -i '/\[mysqld\]/a log-bin=mysql-bin' /etc/mysql/mysql.conf.d/mysqld.cnf && \
     sed -i '/\[mysqld\]/a binlog_format=row' /etc/mysql/mysql.conf.d/mysqld.cnf && \
@@ -96,4 +96,4 @@ COPY conf/hadoop/yarn-site.xml /opt/hadoop/etc/hadoop
 COPY conf/hadoop/hadoop-env.sh /opt/hadoop/etc/hadoop
 
 
-ENTRYPOINT ["/opt/ds/ds-entrypoint.sh"]
+ENTRYPOINT ["/opt/dolphinscheduler/ds-entrypoint.sh"]

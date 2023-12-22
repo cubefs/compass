@@ -2,7 +2,7 @@
 
 service mysql start
 
-cd /opt/ds
+cd /opt/dolphinscheduler
 useradd -ms /bin/bash dolphinscheduler && echo 'dolphinscheduler:dolphinscheduler' | chpasswd
 sed -i '$adolphinscheduler  ALL=(ALL)  NOPASSWD: NOPASSWD: ALL' /etc/sudoers
 sed -i 's/Defaults    requirett/#Defaults    requirett/g' /etc/sudoers
