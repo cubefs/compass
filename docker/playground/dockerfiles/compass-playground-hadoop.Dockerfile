@@ -21,6 +21,7 @@ ENV HADOOP_TAR_NAME=hadoop-${HADOOP_VERSION}.tar.gz
 COPY ${HADOOP_TAR_NAME} /opt
 COPY spark-${SPARK_VERSION}-bin-hadoop3.tgz /opt
 
+
 RUN set -x && \
     tar -xzf /opt/hadoop-${HADOOP_VERSION}.tar.gz -C /opt && \
     ln -s /opt/hadoop-${HADOOP_VERSION} ${HADOOP_HOME} && \

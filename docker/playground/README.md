@@ -73,6 +73,12 @@ wget https://dlcdn.apache.org/spark/spark-3.3.4/spark-3.3.4-bin-hadoop3.tgz
 docker compose --profile hadoop up -d
 ```
 
+Run spark example
+
+```
+docker exec hadoop /bin/bash -c "/opt/spark/bin/spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster --executor-memory 1G  --num-executors 1 /opt/spark/examples/jars/spark-examples_2.12-3.3.4.jar"
+```
+
 6. With Dolphinscheduler (Optional)
 ```
 wget https://archive.apache.org/dist/dolphinscheduler/3.1.5/apache-dolphinscheduler-3.1.5-bin.tar.gz

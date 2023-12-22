@@ -166,6 +166,7 @@ services:
         HIVE_VERSION: ${HIVE_VERSION}
         APACHE_MIRROR: ${APACHE_MIRROR}
         MAVEN_MIRROR: ${MAVEN_MIRROR}
+        SPARK_VERSION: ${SPARK_VERSION}
     container_name: hadoop
     hostname: hadoop
     ports:
@@ -173,7 +174,9 @@ services:
       - 9870:9870
       - 8020:8020
       - 8032:8032
+      - 8042:8042      
       - 19888:19888
+      - 18018:18018
     profiles: ["hadoop"]
 
 

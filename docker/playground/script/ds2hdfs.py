@@ -169,7 +169,7 @@ class LogFileEventHandler(FileSystemEventHandler):
 
 if __name__ == "__main__":
     # Set working directory
-    working_directory = "/opt/soft/"
+    working_directory = "/opt/"
     os.chdir(working_directory)
     # Watch the root path of log
     directory_to_watch = "/opt/ds/worker-server/logs"

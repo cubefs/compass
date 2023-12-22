@@ -18,9 +18,10 @@ ENV PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
 # Python
 RUN set -x && \
     apt-get update -q && \
+    # service dbus start && \
     apt-get install -y software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
-    apt-get install -yq install python3.8 && \
+    apt-get install -yq python3.8 && \
     apt-get install -yq python3-pip
 
 ARG MYSQL_DATABASE
@@ -40,20 +41,20 @@ COPY apache-dolphinscheduler-3.1.5-bin.tar.gz /opt
 
 RUN set -x && \
     tar -xzf /opt/apache-dolphinscheduler-3.1.5-bin.tar.gz -C /opt && \
-    ln -s /opt/apache-dolphinscheduler-3.1.5-bin /opt/ds && \
+    ln -s /opt/apache-dolphinscheduler-3.1.5-bin /opt/dolphinscheduler && \
     rm /opt/apache-dolphinscheduler-3.1.5-bin.tar.gz
     
 
-COPY mysql-connector-java-8.0.19.jar /opt/ds/tools/libs
-COPY mysql-connector-java-8.0.19.jar /opt/ds/api-server/libs
-COPY mysql-connector-java-8.0.19.jar /opt/ds/master-server/libs
-COPY mysql-connector-java-8.0.19.jar /opt/ds/worker-server/libs
+COPY mysql-connector-java-8.0.19.jar /opt/dolphinscheduler/tools/libs
+COPY mysql-connector-java-8.0.19.jar /opt/dolphinscheduler/api-server/libs
+COPY mysql-connector-java-8.0.19.jar /opt/dolphinscheduler/master-server/libs
+COPY mysql-connector-java-8.0.19.jar /opt/dolphinscheduler/worker-server/libs
 
-COPY conf/ds/install_env.sh /opt/ds/bin/env
-COPY conf/ds/dolphinscheduler_env.sh /opt/ds/bin/env
-COPY conf/ds/ds-entrypoint.sh /opt/ds
-COPY conf/ds/common.properties /opt/ds/api-server/conf
-COPY conf/ds/common.properties /opt/ds/worker-server/conf
+COPY conf/dolphinscheduler/install_env.sh /opt/dolphinscheduler/bin/env
+COPY conf/dolphinscheduler/dolphinscheduler_env.sh /opt/dolphinscheduler/bin/env
+COPY conf/dolphinscheduler/ds-entrypoint.sh /opt/dolphinscheduler
+COPY conf/dolphinscheduler/common.properties /opt/dolphinscheduler/api-server/conf
+COPY conf/dolphinscheduler/common.properties /opt/dolphinscheduler/worker-server/conf
 
 
 # MySQL
@@ -77,7 +78,7 @@ COPY apache-flume-1.11.0-bin.tar.gz /opt
 # Hadoop, Spark, Flume
 RUN set -x && \
     tar -xzf /opt/hadoop-${HADOOP_VERSION}.tar.gz -C /opt && \
-    ln -s /opt/soft/hadoop-${HADOOP_VERSION} /opt/hadoop && \
+    ln -s /opt/hadoop-${HADOOP_VERSION} /opt/hadoop && \
     rm /opt/hadoop-${HADOOP_VERSION}.tar.gz && \
     tar -xzf /opt/spark-${SPARK_VERSION}-bin-hadoop3.tgz -C /opt && \
     ln -s /opt/spark-${SPARK_VERSION}-bin-hadoop3 /opt/spark && \
@@ -86,13 +87,13 @@ RUN set -x && \
     ln -s /opt/apache-flume-1.11.0-bin /opt/flume && \
     rm /opt/apache-flume-1.11.0-bin.tar.gz
 
-COPY script/ds2hdfs.py /opt/soft
+COPY script/ds2hdfs.py /opt
 
-COPY conf/hadoop/core-site.xml /opt/soft/hadoop/etc/hadoop
-COPY conf/hadoop/hdfs-site.xml /opt/soft/hadoop/etc/hadoop
-COPY conf/hadoop/mapred-site.xml /opt/soft/hadoop/etc/hadoop
-COPY conf/hadoop/yarn-site.xml /opt/soft/hadoop/etc/hadoop
-COPY conf/hadoop/hadoop-env.sh /opt/soft/hadoop/etc/hadoop
+COPY conf/hadoop/core-site.xml /opt/hadoop/etc/hadoop
+COPY conf/hadoop/hdfs-site.xml /opt/hadoop/etc/hadoop
+COPY conf/hadoop/mapred-site.xml /opt/hadoop/etc/hadoop
+COPY conf/hadoop/yarn-site.xml /opt/hadoop/etc/hadoop
+COPY conf/hadoop/hadoop-env.sh /opt/hadoop/etc/hadoop
 
 
 ENTRYPOINT ["/opt/ds/ds-entrypoint.sh"]
