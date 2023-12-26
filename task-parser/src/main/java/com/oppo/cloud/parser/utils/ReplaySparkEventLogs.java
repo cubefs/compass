@@ -73,10 +73,11 @@ public class ReplaySparkEventLogs {
     }
 
     public void replay(ReaderObject readerObject) throws Exception {
+        String compressCodec = getCompressCodec(readerObject.getLogPath());
         while (true) {
             String line;
             try {
-                line = readerObject.getBufferedReader().readLine();
+                line = readerObject.getBufferedReader(compressCodec).readLine();
             } catch (IOException e) {
                 log.error(e.getMessage());
                 break;
@@ -305,6 +306,15 @@ public class ReplaySparkEventLogs {
             for (List<Long> update : updates.getAccumUpdates()) {
                 this.driverUpdateMap.put(update.get(0), update.get(1));
             }
+        }
+    }
+
+    private String getCompressCodec(String fileName) {
+        String[] parts = fileName.split("\\.");
+        if (parts.length == 2) {
+            return parts[1];
+        } else {
+            return "none";
         }
     }
 }
