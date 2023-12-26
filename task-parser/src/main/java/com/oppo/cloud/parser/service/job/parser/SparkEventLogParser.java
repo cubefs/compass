@@ -22,18 +22,14 @@ import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.domain.eventlog.config.SparkEnvironmentConfig;
 import com.oppo.cloud.common.domain.job.LogPath;
-import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
-import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
-import com.oppo.cloud.common.util.spring.SpringBeanUtil;
 import com.oppo.cloud.parser.domain.job.*;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkApplication;
 import com.oppo.cloud.parser.domain.spark.eventlog.SparkExecutor;
 import com.oppo.cloud.parser.service.job.detector.DetectorManager;
-import com.oppo.cloud.parser.service.job.oneclick.OneClickSubject;
+import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
-import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
 import com.oppo.cloud.parser.utils.ReplaySparkEventLogs;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,19 +38,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class SparkEventLogParser extends OneClickSubject implements IParser {
-
-    private final ParserParam param;
+public class SparkEventLogParser extends IParser {
 
     private DetectorConfig config;
 
-    private boolean isOneClick;
-
-    public SparkEventLogParser(ParserParam param) {
-        this.param = param;
-        JobRulesConfigService jobRulesConfigService = (JobRulesConfigService) SpringBeanUtil.getBean(JobRulesConfigService.class);
-        this.config = jobRulesConfigService.detectorConfig;
-        this.isOneClick = param.getLogRecord().getIsOneClick();
+    public SparkEventLogParser(ParserParam param,
+                               ILogReaderFactory logReaderFactory,
+                               DetectorConfig config) {
+        super(param, logReaderFactory);
+        this.config = config;
     }
 
     @Override
@@ -64,13 +56,13 @@ public class SparkEventLogParser extends OneClickSubject implements IParser {
             LogPath logPath = this.param.getLogPaths().get(0);
             ReaderObject readerObject;
             try {
-                IReader reader = LogReaderFactory.create(logPath);
+                IReader reader = getReader(logPath);
                 readerObject = reader.getReaderObject();
             } catch (FileNotFoundException e) {
                 String path = logPath.getLogPath().substring(0, logPath.getLogPath().lastIndexOf("_"));
                 logPath.setLogPath(path);
                 try {
-                    readerObject = LogReaderFactory.create(logPath).getReaderObject();
+                    readerObject = getReader(logPath).getReaderObject();
                 } catch (Exception ex) {
                     log.error("Exception:", e);
                     updateParserProgress(ProgressState.FAILED, 0, 0);
@@ -180,22 +172,6 @@ public class SparkEventLogParser extends OneClickSubject implements IParser {
         }
         memoryCalculateParam.setExecutorRuntimeMap(executorRuntimeMap);
         return memoryCalculateParam;
-    }
-
-
-    public void updateParserProgress(ProgressState state, Integer progress, Integer count) {
-        if (!this.isOneClick) {
-            return;
-        }
-        OneClickProgress oneClickProgress = new OneClickProgress();
-        oneClickProgress.setAppId(this.param.getApp().getAppId());
-        oneClickProgress.setLogType(this.param.getLogType());
-        ProgressInfo executorProgress = new ProgressInfo();
-        executorProgress.setCount(count);
-        executorProgress.setProgress(progress);
-        executorProgress.setState(state);
-        oneClickProgress.setProgressInfo(executorProgress);
-        update(oneClickProgress);
     }
 
 }

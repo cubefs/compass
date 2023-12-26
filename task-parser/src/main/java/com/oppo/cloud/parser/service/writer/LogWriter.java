@@ -14,24 +14,36 @@
  * limitations under the License.
  */
 
-package com.oppo.cloud.parser.service.job.parser;
+package com.oppo.cloud.parser.service.writer;
 
 import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.parser.domain.job.ParserParam;
-import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
-import com.oppo.cloud.parser.service.writer.ParserResultSink;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * a writer to log parser results, now just for testing
+ */
 @Slf4j
-public class SchedulerLogParser extends CommonTextParser {
+public class LogWriter implements IParserResultWriter {
 
-    public SchedulerLogParser(ParserParam param,
-                              ILogReaderFactory logReaderFactory,
-                              List<ParserAction> actions,
-                              ParserResultSink parserResultSink) {
-        super(param, logReaderFactory, actions, parserResultSink);
+    private List<ParserAction> parserActionList;
+
+    public LogWriter() {
+        this.parserActionList = new ArrayList<>();
     }
 
+    @Override
+    public void write(String logType, String logPath, ParserParam param, ParserAction parserAction) {
+        log.info("Parsed results for logType {}," +
+                "logPath {}, param {}, parserAction {}",
+                logType, logPath, param, parserAction);
+        parserActionList.add(parserAction);
+    }
+
+    public List<ParserAction> getParserActionList() {
+        return parserActionList;
+    }
 }

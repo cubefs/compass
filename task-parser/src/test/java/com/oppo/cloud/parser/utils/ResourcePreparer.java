@@ -16,7 +16,6 @@
 
 package com.oppo.cloud.parser.utils;
 
-import com.oppo.cloud.common.constant.ProtocolType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -29,6 +28,7 @@ import java.net.URL;
 public class ResourcePreparer extends MiniHdfsCluster {
     private static String LOCAL_TEXT_LOG_DIR = "/log/text/";
     private static String HDFS_TEXT_LOG_DIR = "/logs";
+
     @BeforeAll
     static void prepareResources() throws IOException {
         final URL resourcesDir = ResourcePreparer.class.getResource(LOCAL_TEXT_LOG_DIR);

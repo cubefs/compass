@@ -22,19 +22,15 @@ import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.common.domain.eventlog.config.DetectorConfig;
 import com.oppo.cloud.common.domain.job.LogPath;
 import com.oppo.cloud.common.domain.mr.config.MREnvironmentConfig;
-import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
-import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
-import com.oppo.cloud.common.util.spring.SpringBeanUtil;
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.mr.MRAppInfo;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import com.oppo.cloud.parser.service.job.detector.DetectorManager;
-import com.oppo.cloud.parser.service.job.oneclick.OneClickSubject;
+import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
-import com.oppo.cloud.parser.service.rules.JobRulesConfigService;
 import com.oppo.cloud.parser.utils.JobHistoryUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,20 +39,15 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class MapReduceJobHistoryParser extends OneClickSubject implements IParser {
-
-    private final ParserParam param;
+public class MapReduceJobHistoryParser extends IParser {
 
     private DetectorConfig config;
 
-    private boolean isOneClick;
-
-
-    public MapReduceJobHistoryParser(ParserParam param) {
-        this.param = param;
-        JobRulesConfigService jobRulesConfigService = (JobRulesConfigService) SpringBeanUtil.getBean(JobRulesConfigService.class);
-        this.config = jobRulesConfigService.detectorConfig;
-        this.isOneClick = param.getLogRecord().getIsOneClick();
+    public MapReduceJobHistoryParser(ParserParam param,
+                                     ILogReaderFactory logReaderFactory,
+                                     DetectorConfig config) {
+        super(param, logReaderFactory);
+        this.config = config;
     }
 
     @Override
@@ -69,7 +60,7 @@ public class MapReduceJobHistoryParser extends OneClickSubject implements IParse
         for (LogPath logPath : this.param.getLogPaths()) {
             List<ReaderObject> results;
             try {
-                IReader reader = LogReaderFactory.create(logPath);
+                IReader reader = getReader(logPath);
                 results = reader.getReaderObjects();
             } catch (Exception e) {
                 log.error("Exception: ", e);
@@ -100,7 +91,6 @@ public class MapReduceJobHistoryParser extends OneClickSubject implements IParse
         }
         return detect(mrAppInfo);
     }
-
 
     private CommonResult detect(MRAppInfo mrAppInfo) {
 
@@ -138,21 +128,6 @@ public class MapReduceJobHistoryParser extends OneClickSubject implements IParse
             }
         }
         return env;
-    }
-
-    public void updateParserProgress(ProgressState state, Integer progress, Integer count) {
-        if (!this.isOneClick) {
-            return;
-        }
-        OneClickProgress oneClickProgress = new OneClickProgress();
-        oneClickProgress.setAppId(this.param.getApp().getAppId());
-        oneClickProgress.setLogType(this.param.getLogType());
-        ProgressInfo executorProgress = new ProgressInfo();
-        executorProgress.setCount(count);
-        executorProgress.setProgress(progress);
-        executorProgress.setState(state);
-        oneClickProgress.setProgressInfo(executorProgress);
-        update(oneClickProgress);
     }
 
 }

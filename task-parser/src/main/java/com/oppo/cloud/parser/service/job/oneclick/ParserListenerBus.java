@@ -21,7 +21,7 @@ import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class OneClickSubject {
+public abstract class ParserListenerBus {
 
     private List<IProgressListener> listenerList = new ArrayList<>();
 

@@ -16,10 +16,48 @@
 
 package com.oppo.cloud.parser.service.job.parser;
 
+import com.oppo.cloud.common.constant.ProgressState;
+import com.oppo.cloud.common.domain.job.LogPath;
+import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
+import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
 import com.oppo.cloud.parser.domain.job.CommonResult;
+import com.oppo.cloud.parser.domain.job.ParserParam;
+import com.oppo.cloud.parser.service.job.oneclick.ParserListenerBus;
+import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
+import com.oppo.cloud.parser.service.reader.IReader;
 
-public interface IParser {
+public abstract class IParser extends ParserListenerBus {
 
-    CommonResult run();
+    protected ParserParam param;
+
+    protected ILogReaderFactory logReaderFactory;
+
+    public IParser(ParserParam param, ILogReaderFactory logReaderFactory) {
+        this.param = param;
+        this.logReaderFactory = logReaderFactory;
+    }
+
+    public CommonResult run() {
+        return null;
+    }
+
+    public IReader getReader(LogPath logPath) throws Exception {
+        return logReaderFactory.create(logPath);
+    }
+
+    public void updateParserProgress(ProgressState state, Integer progress, Integer count) {
+        if (!this.param.getLogRecord().getIsOneClick()) {
+            return;
+        }
+        OneClickProgress oneClickProgress = new OneClickProgress();
+        oneClickProgress.setAppId(this.param.getApp().getAppId());
+        oneClickProgress.setLogType(this.param.getLogType());
+        ProgressInfo executorProgress = new ProgressInfo();
+        executorProgress.setCount(count);
+        executorProgress.setProgress(progress);
+        executorProgress.setState(state);
+        oneClickProgress.setProgressInfo(executorProgress);
+        super.update(oneClickProgress);
+    }
 
 }

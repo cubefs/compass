@@ -4,7 +4,8 @@
 
 ### System Architecture Diagram
 
-![Architecture](img/architecture-en.png)
+![Architecture](img/architecture_en_1.png)
+![Architecture](img/architecture_en_2.png)
 
 ### Architecture Description
 

@@ -103,6 +103,16 @@ public class TextParser implements ITextParser {
         }
     }
 
+    @Override
+    public void close() {
+        // if position state is middle, means the text parser is parsing.
+        // we should set current parse results when paring the last line,
+        // or nothing will be parsed.
+        if (PositionState.MIDDLE.equals(this.state)) {
+            setParserResults(null);
+        }
+    }
+
     /**
      * Get parsing results
      */
@@ -235,7 +245,9 @@ public class TextParser implements ITextParser {
 
     private void extractGroupData(Matcher m) {
         // 尾行当标志位，不参与提取
-        if (this.parsingAction.getGroupNames() != null && this.state != PositionState.TAIL) {
+        if (m != null &&
+                this.parsingAction.getGroupNames() != null &&
+                this.state != PositionState.TAIL) {
             Map<String, String> groupMap = this.parsingAction.getGroupData();
             if (groupMap == null) {
                 groupMap = new HashMap<>();

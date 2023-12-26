@@ -5,15 +5,15 @@
 Compass depends on Canal,PostgreSQL(or MySQL),Kafka,Redis,Zookeeper,OpenSearch
 
 ## Required Environment
-|Dependency|Version|Optional|Description|
-|----------|------|--------|----|
-|Canal|v1.1.6+|yes| needed by Airflow,DolphinScheduler|
+| Dependency | Version | Optional | Description                        |
+|------------|---------|----------|------------------------------------|
+| Canal      | v1.1.6+ | yes      | needed by Airflow,DolphinScheduler |
 | MySQL      | 5.7+    | yes      ||
 | PostgreSQL | 10.0+   | no       ||
-|Kafka|all|no||
-|Redis|all|no|deployed in cluster mode|
-|Zookeeper|3.4.5|no|needed by canal|
-|OpenSearch|1.3.12|no||
+| Kafka      | all     | no       ||
+| Redis      | all     | no       | deployed in cluster mode           |
+| Zookeeper  | 3.4.5   | no       | needed by canal                    |
+| OpenSearch | 1.3.12  | no       ||
 
 OpenSearch is compatible with Elasticsearch 7.0+.
 
@@ -24,11 +24,11 @@ Use JDK 8 and maven 3.6.0+ to Compile
 ```
 git clone https://github.com/cubefs/compass.git
 cd compass
-mvn package -DskipTests -Pdist
+mvn clean package -DskipTests -Pdist
 or 
-mvn package -DskipTests -Pdist,spark   (only pack for spark web ui)
+mvn clean package -DskipTests -Pdist,spark   (only pack for spark web ui)
 or 
-mvn package -DskipTests -Pdist,flink   (only pack for flink web ui)
+mvn clean package -DskipTests -Pdist,flink   (only pack for flink web ui)
 ```
 Use docker compose to start application
 ```

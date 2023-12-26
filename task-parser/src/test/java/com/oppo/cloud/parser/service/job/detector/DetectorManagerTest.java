@@ -22,7 +22,6 @@ import com.oppo.cloud.parser.service.ParamUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class DetectorManagerTest {
 
     @Test

@@ -55,6 +55,7 @@ LOAD DATABASE
 
 同步dolphinscheduler表：
 
+```shell
 curl "localhost:8181/etl/rdb/mysql1/t_ds_process_definition.yml" -X POST
 
 curl "localhost:8181/etl/rdb/mysql1/t_ds_process_instance.yml" -X POST
@@ -68,9 +69,11 @@ curl "localhost:8181/etl/rdb/mysql1/t_ds_task_definition.yml" -X POST
 curl "localhost:8181/etl/rdb/mysql1/t_ds_task_instance.yml" -X POST
 
 curl "localhost:8181/etl/rdb/mysql1/t_ds_user.yml" -X POST
+```
 
 同步airflow表：
 
+```shell
 curl "localhost:8181/etl/rdb/mysql1/airflow_db_ab_user.yml" -X POST
 
 curl "localhost:8181/etl/rdb/mysql1/airflow_db_dag_run.yml" -X POST
@@ -78,14 +81,14 @@ curl "localhost:8181/etl/rdb/mysql1/airflow_db_dag_run.yml" -X POST
 curl "localhost:8181/etl/rdb/mysql1/airflow_db_dag.yml" -X POST
 
 curl "localhost:8181/etl/rdb/mysql1/airflow_db_task_instance.yml" -X POST
-
+```
 
 ## task-canal
 
 如果您使用的是[DolphinScheduler](https://github.com/apache/dolphinscheduler)
 或者[Airflow](https://github.com/apache/airflow)或者自研的等调度平台，
 元数据存储在MySQL，可使用[canal.deployer](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.deployer-1.1.6.tar.gz)
-订阅MySQL binlog同步到Kafka，默认topic是mysqldata
+订阅MySQL binlog同步到Kafka，默认topic是mysqldata。
 
 ```
 task-canal
@@ -615,24 +618,24 @@ task-portal
 
 元数据来自http://rm-http-address:port/ws/v1/cluster/apps
 
-参数名称				| 类型		     | 是否必填	            |描述  
-:----				|:---------|:-----------------|:---	
-applicationId				| String		 | 是			             | YARN的application id
-applicationType				| String		 | 是			             | YARN的任务类型：SPARK或者MAPREDUCE
-vcoreSeconds			| Double		    | 是			             | YARN的vcoreSeconds
-memorySeconds			| Double		   | 是			             | YARN的memorySeconds
-startedTime			| Long		   | 是			             | YARN的startedTime
-finishedTime			| Long		   | 是			             | YARN的finishedTime
-elapsedTime			| Double		 | 是			             | YARN的elapsedTime
-amHostHttpAddress			| String		 | 是			             | YARN的amHostHttpAddress
-sparkEventLogFile			| String		 | SPARK任务必填			     | SparkEventLog绝对路径
-sparkExecutorLogDirectory			| String		 | SPARK任务必填			     | 到application id层级目录
-mapreduceEventLogDirectory			| String		 | MAPREDUCE任务必填			 | 到日期层级前缀目录
-mapreduceContainerLogDirectory			| String		 | MAPREDUCE任务必填			     | 到application id层级目录
-diagnostics			| String		 | 否			             | YARN的diagnostics
-queue			| String		 | 否			             | YARN的queue
-user			| String		 | 否			             | YARN的user
-clusterName			| String		 | 否			             | 集群名称
+| 参数名称                           | 类型     | 是否必填          | 描述                         |
+|:-------------------------------|:-------|:--------------|:---------------------------|
+| applicationId                  | String | 是             | YARN的applicationid         |
+| applicationType                | String | 是             | YARN的任务类型：SPARK或者MAPREDUCE |
+| vcoreSeconds                   | Double | 是             | YARN的vcoreSeconds          |
+| memorySeconds                  | Double | 是             | YARN的memorySeconds         |
+| startedTime                    | Long   | 是             | YARN的startedTime           |
+| finishedTime                   | Long   | 是             | YARN的finishedTime          |
+| elapsedTime                    | Double | 是             | YARN的elapsedTime           |
+| amHostHttpAddress              | String | 是             | YARN的amHostHttpAddress     |
+| sparkEventLogFile              | String | SPARK任务必填     | SparkEventLog绝对路径          |
+| sparkExecutorLogDirectory      | String | SPARK任务必填     | 到applicationid层级目录         |
+| mapreduceEventLogDirectory     | String | MAPREDUCE任务必填 | 到日期层级前缀目录                  |
+| mapreduceContainerLogDirectory | String | MAPREDUCE任务必填 | 到applicationid层级目录         |
+| diagnostics                    | String | 否             | YARN的diagnostics           |
+| queue                          | String | 否             | YARN的queue                 |
+| user                           | String | 否             | YARN的user                  |
+| clusterName                    | String | 否             | 集群名称                       |
 
 请求参数示例：
 ```json
