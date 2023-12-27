@@ -1,8 +1,8 @@
 hadoop:
   namenodes:
-    - nameservices: log-hdfs
-      namenodesAddr: [ "host1", "host2" ]
-      namenodes: [ "namenode1", "namenode2" ]
+    - nameservices: hadoop
+      namenodesAddr: [ "hadoop"]
+      namenodes: [ "hadoop"]
       user: hdfs
       password:
       port: 8020
@@ -21,8 +21,8 @@ hadoop:
 
   yarn:
     - clusterName: "bigdata"
-      resourceManager: [ "localhost:8088" ]
-      jobHistoryServer: "localhost:19888"
+      resourceManager: [ "hadoop:8088" ]
+      jobHistoryServer: "hadoop:19888"
 
   spark:
-    sparkHistoryServer: [ "localhost:18018" ]
+    sparkHistoryServer: [ "hadoop:18018" ]

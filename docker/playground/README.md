@@ -56,7 +56,7 @@ then modify the conf/compass_env.sh and application-hadoop.yml configuration.
 ```
 cp canal.deployer-*.tar.gz docker/playground
 cp canal.adapter-*.tar.gz docker/playground
-docker rm --force playground-compass-demo-1 (if you start the compass demo)
+docker rm -f compass-demo (if you start the compass demo)
 docker compose --profile compass up -d --build
 ```
 
