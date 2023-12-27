@@ -172,7 +172,7 @@ if __name__ == "__main__":
     working_directory = "/opt/"
     os.chdir(working_directory)
     # Watch the root path of log
-    directory_to_watch = "/opt/ds/worker-server/logs"
+    directory_to_watch = "/opt/dolphinscheduler/worker-server/logs"
     event_handler = LogFileEventHandler(directory_to_watch)
     observer = Observer()
     observer.schedule(event_handler, directory_to_watch, recursive=True)
