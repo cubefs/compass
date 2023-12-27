@@ -21,24 +21,42 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.junit.jupiter.api.BeforeAll;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
 @Slf4j
 public class ResourcePreparer extends MiniHdfsCluster {
-    private static String LOCAL_TEXT_LOG_DIR = "/log/text/";
-    private static String HDFS_TEXT_LOG_DIR = "/logs";
+    private static String LOCAL_TEXT_LOG_DIR = "/log/";
+    private static String HDFS_TEXT_LOG_DIR = "/log";
 
     @BeforeAll
-    static void prepareResources() throws IOException {
+    public static void prepareResources() throws IOException {
         final URL resourcesDir = ResourcePreparer.class.getResource(LOCAL_TEXT_LOG_DIR);
         final FileSystem fs = getFileSystem();
         if (fs != null) {
-            fs.mkdirs(new Path(HDFS_TEXT_LOG_DIR));
-            fs.copyFromLocalFile(new Path(resourcesDir.getPath()), new Path(HDFS_TEXT_LOG_DIR));
+            uploadDirectory(resourcesDir.getPath(), HDFS_TEXT_LOG_DIR, fs);
         } else {
             log.error("Got filesystem is null, maybe miniDFSCluster is not ready.");
             throw new IOException("Get FileSystem failed.");
+        }
+    }
+
+    private static void uploadDirectory(String localDir,
+                                        String hdfsDir,
+                                        FileSystem fs) throws IOException {
+        Path hdfsDirPath = new Path(hdfsDir);
+        if (!fs.exists(hdfsDirPath)) {
+            fs.mkdirs(hdfsDirPath);
+        }
+        File localDirFile = new File(localDir);
+        for (File file : localDirFile.listFiles()) {
+            String targetFilePath = hdfsDir + File.separator + file.getName();
+            if (file.isDirectory()) {
+                uploadDirectory(file.getPath(), targetFilePath, fs);
+            } else {
+                fs.copyFromLocalFile(new Path(file.getPath()), new Path(targetFilePath));
+            }
         }
     }
 

@@ -134,7 +134,7 @@ public class ParamUtil extends ResourcePreparer {
         driver.setProtocol("hdfs");
         driver.setLogType("driver");
         driver.setLogPathType(LogPathType.DIRECTORY);
-        driver.setLogPath("hdfs://localhost:8020/logs");
+        driver.setLogPath("hdfs://localhost:8020/log/text");
         List<LogPath> driverList = new ArrayList<>();
         driverList.add(driver);
 
