@@ -187,6 +187,7 @@ services:
     ports:
       - "7075:7075"
     tty: true
+    container_name: compass-demo
     profiles: ["compass-demo"]
 
   compass:
@@ -196,4 +197,5 @@ services:
     ports:
       - "7075:7075"
     tty: true
+    container_name: compass
     profiles: ["compass"]

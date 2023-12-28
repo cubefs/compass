@@ -60,7 +60,7 @@ Note: You can install virtulbox to start docker compose, which requires about 10
     ```
     cp canal.deployer-*.tar.gz docker/playground
     cp canal.adapter-*.tar.gz docker/playground
-    docker rm --force playground-compass-demo-1 (if you start the compass demo)
+    docker rm -f compass-demo (if you start the compass demo)
     docker compose --profile compass up -d --build
     ```
 
@@ -71,27 +71,29 @@ Note: You can install virtulbox to start docker compose, which requires about 10
 
 5. With hadoop (Optional)
 
-```
-wget https://archive.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz
-wget https://dlcdn.apache.org/spark/spark-3.3.4/spark-3.3.4-bin-hadoop3.tgz
-
-docker compose --profile hadoop up -d
-```
-
-Run spark example
-
-```
-docker exec hadoop /bin/bash -c "/opt/spark/bin/spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster --executor-memory 1G  --num-executors 1 /opt/spark/examples/jars/spark-examples_2.12-3.3.4.jar"
-```
-
-6. With Dolphinscheduler (Optional)
-```
-wget https://archive.apache.org/dist/dolphinscheduler/3.1.5/apache-dolphinscheduler-3.1.5-bin.tar.gz
-wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar
-wget https://archive.apache.org/dist/flume/1.11.0/apache-flume-1.11.0-bin.tar.gz
-
+    ```
+    wget https://archive.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz
+    wget https://dlcdn.apache.org/spark/spark-3.3.4/spark-3.3.4-bin-hadoop3.tgz
     
-# start dolphinscheduler services
-docker compose --profile dolphinscheduler up -d
-```
+    docker compose --profile hadoop up -d
+    ```
+
+    Run spark example
+    ```
+    docker exec hadoop /bin/bash -c "/opt/spark/bin/spark-submit --class org.apache.spark.examples.SparkPi --master yarn --deploy-mode cluster --executor-memory 1G  --num-executors 1 /opt/spark/examples/jars/spark-examples_2.12-3.3.4.jar"
+    ```
+
+6. With Dolphinscheduler (Optional) (dependent components: dolphinscheduler, hadoop, spark, flume)
+    ```
+    wget https://archive.apache.org/dist/dolphinscheduler/3.1.5/apache-dolphinscheduler-3.1.5-bin.tar.gz
+    wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar
+    wget https://archive.apache.org/dist/flume/1.11.0/apache-flume-1.11.0-bin.tar.gz
+    
+        
+    # start dolphinscheduler services
+    docker compose --profile dolphinscheduler up -d
+    ```
+
+Run dolphinscheduler example, please refer to [dolphinscheduler example document](../../document/manual/ds_example.md)
+
 For more details, please refer to [deployment document](../../document/manual/deployment.md)
