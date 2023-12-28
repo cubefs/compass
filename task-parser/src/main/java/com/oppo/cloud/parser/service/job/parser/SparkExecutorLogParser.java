@@ -19,22 +19,19 @@ package com.oppo.cloud.parser.service.job.parser;
 import com.oppo.cloud.common.constant.LogType;
 import com.oppo.cloud.common.constant.ProgressState;
 import com.oppo.cloud.common.domain.job.LogPath;
-import com.oppo.cloud.common.domain.oneclick.OneClickProgress;
-import com.oppo.cloud.common.domain.oneclick.ProgressInfo;
 import com.oppo.cloud.common.util.textparser.ParserAction;
 import com.oppo.cloud.common.util.textparser.ParserManager;
 import com.oppo.cloud.common.util.textparser.TextParser;
-import com.oppo.cloud.parser.config.DiagnosisConfig;
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.job.SparkExecutorLogParserResult;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
+import com.oppo.cloud.parser.service.reader.ILogReaderFactory;
 import com.oppo.cloud.parser.service.reader.IReader;
 import com.oppo.cloud.parser.service.reader.LogReaderFactory;
-import com.oppo.cloud.parser.service.writer.OpenSearchWriter;
+import com.oppo.cloud.parser.service.writer.ParserResultSink;
 import com.oppo.cloud.parser.utils.GCReportUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -46,21 +43,19 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 @Slf4j
-public class SparkExecutorLogParser extends CommonTextParser implements IParser {
-
-    private final ParserParam param;
-
-    private final boolean isOneClick;
+public class SparkExecutorLogParser extends CommonTextParser {
 
     private final Executor parserThreadPool;
 
     private final List<String> jvmTypeList;
 
     public SparkExecutorLogParser(ParserParam param,
-                                  ThreadPoolTaskExecutor threadPool,
+                                  ILogReaderFactory logReaderFactory,
+                                  List<ParserAction> actions,
+                                  ParserResultSink parserResultSink,
+                                  Executor threadPool,
                                   List<String> jvmTypeList) {
-        this.param = param;
-        this.isOneClick = param.getLogRecord().getIsOneClick();
+        super(param, logReaderFactory, actions, parserResultSink);
         this.parserThreadPool = threadPool;
         this.jvmTypeList = jvmTypeList;
     }
@@ -73,7 +68,7 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
         for (LogPath logPath : this.param.getLogPaths()) {
             List<ReaderObject> readerObjects;
             try {
-                IReader reader = LogReaderFactory.create(logPath);
+                IReader reader = getReader(logPath);
                 readerObjects = reader.getReaderObjects();
             } catch (Exception e) {
                 log.error("Exception:", e);
@@ -126,13 +121,12 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
             readerObject.close();
         }
         if (result != null && result.getActionMap() != null) {
-            List<String> categories = OpenSearchWriter.getInstance()
-                    .saveParserActions(logType, readerObject.getLogPath(), this.param, result.getActionMap());
+            List<String> categories = getSink().saveParserActions(
+                    logType, readerObject.getLogPath(), this.param, result.getActionMap());
             result.setCategories(categories);
         }
         return result;
     }
-
 
     private SparkExecutorLogParserResult parseAction(String logType, ReaderObject readerObject) throws Exception {
         SparkExecutorLogParserResult result = parseRootAction(logType, readerObject);
@@ -143,13 +137,12 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
     }
 
     private SparkExecutorLogParserResult parseRootAction(String logType, ReaderObject readerObject) throws Exception {
-        List<ParserAction> actions = DiagnosisConfig.getInstance().getActions(logType);
         Map<Integer, byte[]> gcLogMap = new HashMap<>();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         boolean isGCLog = false;
         boolean isStderr = false;
 
-        TextParser headTextParser = new TextParser(actions);
+        TextParser headTextParser = new TextParser(this.getActions());
         BufferedReader bufferedReader = readerObject.getBufferedReader();
         while (true) {
             String line;
@@ -160,6 +153,7 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
                 break;
             }
             if (line == null) {
+                headTextParser.close();
                 break;
             }
             headTextParser.parse(line);
@@ -217,19 +211,4 @@ public class SparkExecutorLogParser extends CommonTextParser implements IParser 
         return LogType.SPARK_EXECUTOR.getName();
     }
 
-
-    public void updateParserProgress(ProgressState state, Integer progress, Integer count) {
-        if (!this.isOneClick) {
-            return;
-        }
-        OneClickProgress oneClickProgress = new OneClickProgress();
-        oneClickProgress.setAppId(this.param.getApp().getAppId());
-        oneClickProgress.setLogType(LogType.SPARK_EXECUTOR);
-        ProgressInfo executorProgress = new ProgressInfo();
-        executorProgress.setCount(count);
-        executorProgress.setProgress(progress);
-        executorProgress.setState(state);
-        oneClickProgress.setProgressInfo(executorProgress);
-        super.update(oneClickProgress);
-    }
 }

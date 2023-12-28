@@ -28,6 +28,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class JobHistoryUtil {
         return new JobHistoryFileInfo(jobHistoryReader, confReader);
     }
 
-    public static Map<String, String> parseJobConf(ReaderObject confReader) {
+    public static Map<String, String> parseJobConf(ReaderObject confReader) throws IOException {
         Map<String, String> map = new HashMap<>();
         if (confReader == null || confReader.getBufferedReader() == null) {
             return map;

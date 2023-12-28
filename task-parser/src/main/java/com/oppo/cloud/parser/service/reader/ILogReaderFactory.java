@@ -17,19 +17,31 @@
 package com.oppo.cloud.parser.service.reader;
 
 import com.oppo.cloud.common.domain.cluster.hadoop.NameNodeConf;
-import com.oppo.cloud.common.util.spring.SpringBeanUtil;
-import com.oppo.cloud.parser.config.HadoopConfig;
+import com.oppo.cloud.common.domain.job.LogPath;
 
 import java.util.Map;
 
 /**
- * Log reader factory
+ * Log reader factory interface
  */
-public class LogReaderFactory implements ILogReaderFactory{
+public interface ILogReaderFactory {
 
-    @Override
-    public Map<String, NameNodeConf> getNameNodeConf() {
-        return (Map<String, NameNodeConf>) SpringBeanUtil.getBean(HadoopConfig.NAME_NODE_MAP);
+    String HDFS = "hdfs";
+    String S3 = "s3";
+
+    /**
+     * Create reader type
+     */
+    default IReader create(LogPath logPath) throws Exception {
+        switch (logPath.getProtocol()) {
+            case HDFS:
+                return new HDFSReader(logPath, getNameNodeConf());
+            default:
+                break;
+        }
+        return new HDFSReader(logPath, getNameNodeConf());
     }
+
+    Map<String, NameNodeConf> getNameNodeConf();
 
 }

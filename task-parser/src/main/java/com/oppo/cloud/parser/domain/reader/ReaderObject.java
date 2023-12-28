@@ -16,25 +16,61 @@
 
 package com.oppo.cloud.parser.domain.reader;
 
-import lombok.Data;
+import com.github.luben.zstd.ZstdInputStream;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import net.jpountz.lz4.LZ4BlockInputStream;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
+import org.xerial.snappy.SnappyInputStream;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.Locale;
 
-@Data
 @Slf4j
 public class ReaderObject {
 
+    @Getter
+    @Setter
     private String logPath;
-
     private BufferedReader bufferedReader;
-
+    @Getter
+    @Setter
     private FSDataInputStream fsDataInputStream;
-
+    @Getter
+    @Setter
     private FileSystem fs;
+
+    public BufferedReader getBufferedReader(String compressCodec) throws IOException {
+        if (bufferedReader != null) {
+            return bufferedReader;
+        }
+        InputStream inputStream;
+        switch (compressCodec.toLowerCase(Locale.ROOT)) {
+            case "lz4":
+                inputStream = new LZ4BlockInputStream(fsDataInputStream, false);
+                break;
+            case "snappy":
+                inputStream = new SnappyInputStream(fsDataInputStream);
+                break;
+            case "zstd":
+                inputStream = new BufferedInputStream(new ZstdInputStream(fsDataInputStream), 32 * 1023);
+                break;
+            default:
+                inputStream = fsDataInputStream;
+                break;
+        }
+        bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        return bufferedReader;
+    }
+
+    public BufferedReader getBufferedReader() throws IOException {
+        if (bufferedReader != null) {
+            return bufferedReader;
+        }
+        return getBufferedReader("none");
+    }
 
     public void close() {
         try {

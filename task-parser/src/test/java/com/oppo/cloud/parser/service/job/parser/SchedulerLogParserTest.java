@@ -23,12 +23,10 @@ import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.service.ParamUtil;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Map;
 
-@SpringBootTest
 class SchedulerLogParserTest {
 
     @Test
@@ -39,7 +37,11 @@ class SchedulerLogParserTest {
         ParserParam param = new ParserParam(LogType.SCHEDULER.getName(), logRecord,
                 logRecord.getApps().get(0), logPathMap.get(LogType.SCHEDULER.getName()));
 
-        SchedulerLogParser schedulerLogParser = new SchedulerLogParser(param);
+        SimpleParserFactory simpleParserFactory = new SimpleParserFactory();
+        SchedulerLogParser schedulerLogParser = new SchedulerLogParser(param,
+                simpleParserFactory.createLogReaderFactory(),
+                simpleParserFactory.getParserActions(LogType.SCHEDULER),
+                simpleParserFactory.getParserResultSink());
 
         CommonResult commonResult = schedulerLogParser.run();
         System.out.println(commonResult);

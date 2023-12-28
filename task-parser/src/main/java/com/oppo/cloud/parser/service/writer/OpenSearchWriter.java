@@ -58,7 +58,7 @@ import java.util.*;
  * OpenSearch writer
  */
 @Slf4j
-public class OpenSearchWriter {
+public class OpenSearchWriter implements IParserResultWriter {
 
     public RestHighLevelClient client;
 
@@ -90,28 +90,10 @@ public class OpenSearchWriter {
     }
 
     /**
-     * Save matching results
-     */
-    public List<String> saveParserActions(String logType, String logPath, ParserParam param, Map<String, ParserAction> results) {
-        List<String> categories = new ArrayList<>();
-        results.forEach((k, v) -> {
-            List<ParserAction> list = ParserActionUtil.getLeafAction(v, true);
-            if (list.size() == 0) {
-                log.error("getLeafAction:{},{}", k, v);
-                list.add(v);
-            }
-            for (ParserAction parserAction : list) {
-                categories.add(parserAction.getCategory());
-                writeToOpenSearch(logType, logPath, param, parserAction);
-            }
-        });
-        return categories;
-    }
-
-    /**
      * Write matching results to OpenSearch
      */
-    public void writeToOpenSearch(String logType, String logPath, ParserParam param, ParserAction parserAction) {
+    @Override
+    public void write(String logType, String logPath, ParserParam param, ParserAction parserAction) {
         if (parserAction.getParserResults() == null) {
             return;
         }

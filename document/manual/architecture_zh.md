@@ -9,7 +9,8 @@
 
 ### 系统架构图
 
-![Compass架构](img/architecture.png)
+![Compass架构](img/architecture_1.png)
+![Compass架构](img/architecture_2.png)
 
 ### 架构说明
 
@@ -32,7 +33,7 @@
 - 业务视图：task-portal模块提供用户报告总览、一键诊断、工作流层任务诊断、引擎层作业Application诊断、诊断建议和详细报告、白名单等功能。
 
 
-更多细节请参考[部署指南](./deployment.md)
+更多细节请参考[部署指南](./deployment.md)。
 
 
 
