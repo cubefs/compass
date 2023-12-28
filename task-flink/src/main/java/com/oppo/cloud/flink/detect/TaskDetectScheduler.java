@@ -18,6 +18,7 @@ package com.oppo.cloud.flink.detect;
 
 import com.oppo.cloud.common.domain.flink.enums.DiagnosisFrom;
 import com.oppo.cloud.flink.service.DiagnosisService;
+import com.oppo.cloud.flink.service.ITaskSyncerMetaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,6 +33,9 @@ public class TaskDetectScheduler {
 
     @Autowired
     DiagnosisService diagnosisService;
+
+    @Autowired
+    ITaskSyncerMetaService taskSyncerMetaService;
 
     /**
      * TODO: Custom schedule time
@@ -57,7 +61,7 @@ public class TaskDetectScheduler {
     /**
      * Hourly level scheduled diagnosis
      */
-     @Scheduled(cron = "0 0/1 * * * ?") // debug for 1 minutes
+    @Scheduled(cron = "0 0/1 * * * ?") // debug for 1 minutes
     //@Scheduled(cron = "1 0 * * * ?")
     public void detectHourly() {
         log.info("Start executing scheduled diagnostic tasks");
@@ -75,7 +79,7 @@ public class TaskDetectScheduler {
      * Hourly scheduled sync yarn metadata
      */
     @Scheduled(cron = "* */5 * * * ?")
-    public void syncYarnMetadata(){
-
+    public void syncYarnMetadata() {
+        taskSyncerMetaService.syncer();
     }
 }
