@@ -132,7 +132,7 @@ public class YarnMetaServiceImpl implements ITaskSyncerMetaService {
             yarnAppMap.put(id, app.getYarnAppMap());
             log.info("yarnApp-->{},{},{},{}", ip, app.getId(), app.getFinishedTime(), app.getFinalStatus());
         }
-        // todo:保存flink数据
+        // todo:save flink metadata
         log.info("saveYarnAppCount:{},{}", ip, yarnAppMap.size());
     }
 
