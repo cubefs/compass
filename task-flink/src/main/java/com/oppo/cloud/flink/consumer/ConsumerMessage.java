@@ -62,36 +62,4 @@ public class ConsumerMessage {
         consumer.commitSync();
     }
 
-    /**
-     * Consume task app metadata
-     */
-    @KafkaListener(topics = "${spring.kafka.flinkTaskApp}", containerFactory = "kafkaListenerContainerFactory")
-    public void receiveFlinkTaskApp(@Payload String message,
-                                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
-                                         @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                                         Consumer consumer,
-                                         Acknowledgment ack) {
-        log.debug(String.format("%d, From partition %d: %s", consumer.hashCode(), partition, message));
-        // Parsing message
-        FlinkTaskApp flinkTaskApp = JSON.parseObject(message, FlinkTaskApp.class);
-        try {
-            FlinkTaskAppExample flinkTaskAppExample = new FlinkTaskAppExample();
-            flinkTaskAppExample.createCriteria()
-                    .andApplicationIdEqualTo(flinkTaskApp.getApplicationId());
-            List<FlinkTaskApp> flinkTaskApps = flinkTaskAppMapper.selectByExample(flinkTaskAppExample);
-            if (flinkTaskApps == null || flinkTaskApps.size() == 0) {
-                flinkTaskAppMapper.insert(flinkTaskApp);
-            } else if (flinkTaskApps.size() == 1) {
-                FlinkTaskApp pre = flinkTaskApps.get(0);
-                pre.setTaskState(flinkTaskApp.getTaskState());
-                flinkTaskAppMapper.updateByPrimaryKeySelective(pre);
-            } else {
-                log.error("realtimeTaskApps size > 1 , appid:{}", flinkTaskApp.getApplicationId());
-            }
-        } catch (Throwable t) {
-            log.error(t.getMessage(), t);
-        }
-        consumer.commitSync();
-    }
-
 }
