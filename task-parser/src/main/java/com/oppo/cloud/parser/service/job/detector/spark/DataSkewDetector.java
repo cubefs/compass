@@ -131,7 +131,7 @@ public class DataSkewDetector implements IDetector {
                 taskDataSkew.setAbnormal(dataSkew);
                 if (dataSkew) {
                     detectorResult.setAbnormal(true);
-                    dataSkewGraphs.sort(Comparator.comparing(DataSkewGraph::getTotalShuffleReadBytes));
+                    dataSkewGraphs.sort(Comparator.comparing(DataSkewGraph::getTotalRecordsRead));
                     // get statistics data
                     Map<Long, DataSkewGraph> statisticsMap = getStatisticsMap(dataSkewGraphs);
 
