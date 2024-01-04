@@ -209,11 +209,20 @@ public class TaskApp extends OpenSearchInfo {
         }
 
         String yarnLogPath = LogPathUtil.getYarnLogPath(Constant.JHS_HDFS_PATH, yarnApp.getIp(), redisService);
-        if ("".equals(yarnLogPath)) {
+        if (StringUtils.isBlank(yarnLogPath)) {
             throw new Exception(String.format("can not find yarn log path: rm ip : %s", yarnApp.getIp()));
         }
-        // Todo: adapt to different hadoop versions
-        this.yarnLogPath = yarnLogPath + "/" + yarnApp.getUser() + "/logs/" + this.applicationId;
+        // adapt to different hadoop versions
+        String suffixPath = LogPathUtil.getYarnLogPath(Constant.JHS_HDFS_SUFFIX_PATH, yarnApp.getIp(), redisService);
+        if (StringUtils.isBlank(suffixPath)) {
+            suffixPath = LogPathUtil.DEFAULT_LOG_DIR_SUFFIX;
+        }
+        if (suffixPath.contains(LogPathUtil.BUCKET_SUFFIX)) {
+            String bucketDir = LogPathUtil.getBucketDir(this.applicationId);
+            this.yarnLogPath = String.format("%s/%s/%s/%s/%s", yarnLogPath, yarnApp.getUser(), suffixPath, bucketDir, this.applicationId);
+        } else {
+            this.yarnLogPath = String.format("%s/%s/%s/%s", yarnLogPath, yarnApp.getUser(), suffixPath, this.applicationId);
+        }
 
     }
 }

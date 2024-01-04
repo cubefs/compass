@@ -42,6 +42,9 @@ public class LogPathUtil {
 
     public static final String SPARK_EVENT_LOG_RUNNING_EXTENSION = ".inprogress";
 
+    public static final String DEFAULT_LOG_DIR_SUFFIX = "logs";
+
+    public static final String BUCKET_SUFFIX = "bucket";
 
     public static MRJobHistoryLogPath getMRJobHistoryDoneLogPath(YarnApp yarnApp, RedisService redisService) throws Exception {
         MRJobHistoryLogPath mrJobHistoryLogPath = new MRJobHistoryLogPath();
@@ -128,6 +131,11 @@ public class LogPathUtil {
             eventLogPath = String.format("%s%s", eventLogPath, SPARK_EVENT_LOG_RUNNING_EXTENSION);
         }
         return eventLogPath;
+    }
+
+    public static String getBucketDir(String appId) {
+        int bucket = jobSerialNumber(appId) % 10000;
+        return String.format("%04d", bucket);
     }
 
 }
