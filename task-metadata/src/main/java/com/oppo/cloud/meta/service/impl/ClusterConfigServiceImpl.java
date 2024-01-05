@@ -68,11 +68,6 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
 
     private static final String MARREDUCE_INTERMEDIATE_DONE_DIR = "mapreduce.jobhistory.intermediate-done-dir";
 
-    private static final String HADOOP_FILE_CONTROLLER_START_VERSION = "3.2.1";
-
-    private static final String HADOOP_FILE_CONTROLLER_END_VERSION = "3.2.4";
-
-
     /**
      * Get spark history servers
      */
@@ -240,56 +235,32 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
         return yarnPathInfo;
     }
 
-
+    /**
+     * Get the log directory suffix
+     */
     public String getDifferentHadoopSuffixDir(String ip) {
         String version = getHadoopVersion(ip);
         log.info("hadoop version:{},{}", ip, version);
         if (StringUtils.isBlank(version)) {
             return "logs";
         }
-        switch (compareVersion(version, HADOOP_FILE_CONTROLLER_START_VERSION, HADOOP_FILE_CONTROLLER_END_VERSION)) {
-            case -1:
-                // version < 3.2.1
-                return "logs";
-            case 0:
-                // 3.2.1 <= version <= 3.2.4
-                return "logs-tfile";
-            case 1:
-                // version >= 3.3.0
-                return "bucket-logs-tfile";
-            default:
-                break;
+        // Compatible with x.x.x or x.x.x-xxx format, for example 2.6.0 or 2.6.0-cdh5.14.4 etc.
+        if (version.startsWith("2.")) {
+            return "logs";
+        } else if (version.startsWith("3.0") || version.startsWith("3.1") || version.startsWith("3.2.0")) {
+            return "logs";
+        } else if (version.startsWith("3.2")) {
+            return "logs-tfile";
+        } else if (version.startsWith("3.3")) {
+            return "bucket-logs-tfile";
+        } else {
+            return "logs";
         }
-        return "logs";
     }
 
-    public static int compareVersion(String version, String startVersion, String endVersion) {
-        if (version.equals(startVersion) || version.equals(endVersion)) {
-            return 0;
-        }
-        String[] v1 = version.split("\\.");
-        String[] v2 = startVersion.split("\\.");
-        String[] v3 = endVersion.split("\\.");
-        if (v1.length != v2.length) {
-            return -1;
-        }
-        for (int i = 0; i < v1.length; i++) {
-            int d1 = Integer.parseInt(v1[i]);
-            int d2 = Integer.parseInt(v2[i]);
-            int d3 = Integer.parseInt(v3[i]);
-            if (d1 < d2) {
-                return -1;
-            }
-            if (d1 > d3) {
-                return 1;
-            }
-            if (d1 > d2 && d1 < d3) {
-                return 0;
-            }
-        }
-        return -1;
-    }
-
+    /**
+     * Get hadoop version by history server api
+     */
     public String getHadoopVersion(String ip) {
         String url = String.format(HISTORY_INFO_API, ip);
         log.info("get history info: {}", url);
