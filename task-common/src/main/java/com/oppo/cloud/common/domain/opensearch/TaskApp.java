@@ -174,7 +174,7 @@ public class TaskApp extends OpenSearchInfo {
         return StringUtils.isNotBlank(this.getDocId()) ? this.getDocId() : UUID.randomUUID().toString();
     }
 
-    public void updateTaskApp(YarnApp yarnApp, SparkApp sparkApp, RedisService redisService) throws Exception {
+    public void updateTaskApp(YarnApp yarnApp, SparkApp sparkApp, RedisService redisService, String sparkCompressionCodec) throws Exception {
         this.applicationId = yarnApp.getId();
         this.applicationType = yarnApp.getApplicationType();
         this.executeUser = yarnApp.getUser();
@@ -199,7 +199,7 @@ public class TaskApp extends OpenSearchInfo {
         this.amHost = amHost[0];
         if (sparkApp != null) {
             this.eventLogPath = LogPathUtil.getSparkEventLogPath(sparkApp.getEventLogDirectory(), this.applicationId,
-                    sparkApp.getAttemptId(), yarnApp.getState());
+                    sparkApp.getAttemptId(), yarnApp.getState(), sparkCompressionCodec);
         }
         if (ApplicationType.MAPREDUCE.getValue().equals(yarnApp.getApplicationType())) {
             MRJobHistoryLogPath mrJobHistoryLogPath = LogPathUtil.getMRJobHistoryDoneLogPath(yarnApp, redisService);

@@ -310,9 +310,10 @@ public class ReplaySparkEventLogs {
     }
 
     private String getCompressCodec(String fileName) {
-        String[] parts = fileName.split("\\.");
-        if (parts.length == 2) {
-            return parts[1];
+        int lastSlashIndex = fileName.lastIndexOf("/");
+        int lastDotIndex = fileName.lastIndexOf(".");
+        if (lastDotIndex > lastSlashIndex) {
+            return fileName.substring(lastDotIndex + 1);
         } else {
             return "none";
         }

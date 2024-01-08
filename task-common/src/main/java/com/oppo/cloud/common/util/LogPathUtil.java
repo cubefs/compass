@@ -122,10 +122,13 @@ public class LogPathUtil {
         return (String) redisService.get(key);
     }
 
-    public static String getSparkEventLogPath(String prefixDir, String appId, String attemptId, String state) {
+    public static String getSparkEventLogPath(String prefixDir, String appId, String attemptId, String state, String codec) {
         String eventLogPath = String.format("%s/%s", prefixDir, appId);
         if (!StringUtils.isEmpty(attemptId)) {
             eventLogPath = String.format("%s_%s", eventLogPath, attemptId);
+        }
+        if (StringUtils.isNotBlank(codec)) {
+            eventLogPath = String.format("%s.%s", eventLogPath, codec);
         }
         if (YarnAppState.RUNNING.toString().equals(state)) {
             eventLogPath = String.format("%s%s", eventLogPath, SPARK_EVENT_LOG_RUNNING_EXTENSION);

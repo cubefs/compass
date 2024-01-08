@@ -72,3 +72,6 @@ custom:
     durationWarning: 2
     # Configuration for long-term failure, in days.
     alwaysFailedWarning: 10
+
+  spark:
+    compressionCodec: "zstd"
