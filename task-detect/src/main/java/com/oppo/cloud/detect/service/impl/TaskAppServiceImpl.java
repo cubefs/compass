@@ -61,7 +61,7 @@ public class TaskAppServiceImpl implements TaskAppService {
     @Value("${custom.schedulerType}")
     private String schedulerType;
 
-    @Value(value = "${custom.spark.compressionCodec}")
+    @Value(value = "${spark.io.compression.codec}")
     private String sparkCompressionCodec;
 
     /**

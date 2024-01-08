@@ -89,8 +89,12 @@ custom:
   jwt:
     expireDay: 15
     secret: 8ff3bf2c8344
-  spark:
-    compressionCodec: ""
+
+spark:
+  io:
+    compression:
+      codec: ""
+
 
 diagnosis:
   flinkPrometheusHost: http://localhost:9090

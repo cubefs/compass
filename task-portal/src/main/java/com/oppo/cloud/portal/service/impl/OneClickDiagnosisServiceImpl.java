@@ -65,7 +65,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
     @Value(value = "${custom.opensearch.sparkIndex.name}")
     private String sparkAppIndex;
 
-    @Value(value = "${custom.spark.compressionCodec}")
+    @Value(value = "${spark.io.compression.codec}")
     private String sparkCompressionCodec;
 
     @Autowired
