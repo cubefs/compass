@@ -90,6 +90,12 @@ custom:
     expireDay: 15
     secret: 8ff3bf2c8344
 
+spark:
+  io:
+    compression:
+      codec: ""
+
+
 diagnosis:
   flinkPrometheusHost: http://localhost:9090
   flinkPrometheusToken:

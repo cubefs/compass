@@ -65,6 +65,9 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
     @Value(value = "${custom.opensearch.sparkIndex.name}")
     private String sparkAppIndex;
 
+    @Value(value = "${spark.io.compression.codec}")
+    private String sparkCompressionCodec;
+
     @Autowired
     private RedisService redisService;
 
@@ -351,7 +354,7 @@ public class OneClickDiagnosisServiceImpl implements OneClickDiagnosisService {
         } else {
             taskApp.setExecutionDate(new Date(yarnApp.getStartedTime()));
         }
-        taskApp.updateTaskApp(yarnApp, sparkApp, redisService);
+        taskApp.updateTaskApp(yarnApp, sparkApp, redisService, sparkCompressionCodec);
 
         return taskApp;
     }

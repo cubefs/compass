@@ -19,10 +19,10 @@ package com.oppo.cloud.meta.service.impl;
 import com.alibaba.fastjson2.JSON;
 import com.oppo.cloud.common.constant.Constant;
 import com.oppo.cloud.common.domain.cluster.hadoop.YarnConf;
-import com.oppo.cloud.common.domain.cluster.yarn.ClusterInfo;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.common.util.YarnUtil;
 import com.oppo.cloud.meta.config.HadoopConfig;
+import com.oppo.cloud.meta.domain.HistoryInfoProperties;
 import com.oppo.cloud.meta.domain.YarnPathInfo;
 import com.oppo.cloud.meta.domain.Properties;
 import com.oppo.cloud.meta.domain.YarnConfProperties;
@@ -53,8 +53,10 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
 
     @Resource(name = "restTemplate")
     private RestTemplate restTemplate;
-    
+
     private static final String YARN_CONF = "http://%s/conf";
+
+    private static final String HISTORY_INFO_API = "http://%s/ws/v1/history/info";
 
     private static final String DEFAULT_FS = "fs.defaultFS";
 
@@ -65,7 +67,6 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
     private static final String MARREDUCE_DONE_DIR = "mapreduce.jobhistory.done-dir";
 
     private static final String MARREDUCE_INTERMEDIATE_DONE_DIR = "mapreduce.jobhistory.intermediate-done-dir";
-
 
     /**
      * Get spark history servers
@@ -121,18 +122,22 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
                 log.error("get {}, hdfsPath empty", host);
                 continue;
             }
-            String yarnRemotePath = Constant.JHS_HDFS_PATH + host;
-            String mapreduceStagingPath = Constant.JHS_MAPREDUCE_STAGING_PATH + host;
-            String mapreduceDonePath = Constant.JHS_MAPREDUCE_DONE_PATH + host;
-            String mapreduceIntermediateDonePath = Constant.JHS_MAPREDUCE_INTERMEDIATE_DONE_PATH + host;
-            log.info("cache yarnPathInfo:{},{}", yarnRemotePath, yarnPathInfo.getRemoteDir());
-            log.info("cache yarnPathInfo:{},{}", mapreduceStagingPath, yarnPathInfo.getMapreduceStagingDir());
-            log.info("cache yarnPathInfo:{},{}", mapreduceDonePath, yarnPathInfo.getMapreduceDoneDir());
-            log.info("cache yarnPathInfo:{},{}", mapreduceIntermediateDonePath, yarnPathInfo.getMapreduceIntermediateDoneDir());
-            redisService.set(yarnRemotePath, yarnPathInfo.getRemoteDir());
-            redisService.set(mapreduceStagingPath, yarnPathInfo.getMapreduceStagingDir());
-            redisService.set(mapreduceDonePath, yarnPathInfo.getMapreduceDoneDir());
-            redisService.set(mapreduceIntermediateDonePath, yarnPathInfo.getMapreduceIntermediateDoneDir());
+            String remotePathKey = Constant.JHS_HDFS_PATH + host;
+            String suffixPathKey = Constant.JHS_HDFS_SUFFIX_PATH + host;
+            String mapreduceStagingPathKey = Constant.JHS_MAPREDUCE_STAGING_PATH + host;
+            String mapreduceDonePathKey = Constant.JHS_MAPREDUCE_DONE_PATH + host;
+            String mapreduceIntermediateDonePathKey = Constant.JHS_MAPREDUCE_INTERMEDIATE_DONE_PATH + host;
+            String suffixPath = getDifferentHadoopSuffixDir(host);
+            log.info("cache yarnPathInfo:{},{}", remotePathKey, yarnPathInfo.getRemoteDir());
+            log.info("cache yarnPathInfo:{},{}", suffixPathKey, suffixPath);
+            log.info("cache yarnPathInfo:{},{}", mapreduceStagingPathKey, yarnPathInfo.getMapreduceStagingDir());
+            log.info("cache yarnPathInfo:{},{}", mapreduceDonePathKey, yarnPathInfo.getMapreduceDoneDir());
+            log.info("cache yarnPathInfo:{},{}", mapreduceIntermediateDonePathKey, yarnPathInfo.getMapreduceIntermediateDoneDir());
+            redisService.set(remotePathKey, yarnPathInfo.getRemoteDir());
+            redisService.set(suffixPathKey, suffixPath);
+            redisService.set(mapreduceStagingPathKey, yarnPathInfo.getMapreduceStagingDir());
+            redisService.set(mapreduceDonePathKey, yarnPathInfo.getMapreduceDoneDir());
+            redisService.set(mapreduceIntermediateDonePathKey, yarnPathInfo.getMapreduceIntermediateDoneDir());
         }
     }
 
@@ -189,7 +194,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
                     log.info("yarnConfProperties key: {}, value: {}", MARREDUCE_INTERMEDIATE_DONE_DIR, value);
                     mapreduceIntermediateDoneDir = value;
                 }
-                if(YARN_MAPREDUCE_STAGING_DIR.equals(key)){
+                if (YARN_MAPREDUCE_STAGING_DIR.equals(key)) {
                     log.info("yarnConfProperties key: {}, value: {}", YARN_MAPREDUCE_STAGING_DIR, value);
                     mapreduceStagingDir = value;
                 }
@@ -228,6 +233,61 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
         yarnPathInfo.setMapreduceIntermediateDoneDir(mapreduceIntermediateDoneDir);
         log.info("yarnPathInfo: {}, {}", url, yarnPathInfo);
         return yarnPathInfo;
+    }
+
+    /**
+     * Get the log directory suffix
+     */
+    public String getDifferentHadoopSuffixDir(String ip) {
+        String version = getHadoopVersion(ip);
+        log.info("hadoop version:{},{}", ip, version);
+        if (StringUtils.isBlank(version)) {
+            return "logs";
+        }
+        // Compatible with x.x.x or x.x.x-xxx format, for example 2.6.0 or 2.6.0-cdh5.14.4 etc.
+        if (version.startsWith("2.")) {
+            return "logs";
+        } else if (version.startsWith("3.0") || version.startsWith("3.1") || version.startsWith("3.2.0")) {
+            return "logs";
+        } else if (version.startsWith("3.2")) {
+            return "logs-tfile";
+        } else if (version.startsWith("3.3")) {
+            return "bucket-logs-tfile";
+        } else {
+            return "logs";
+        }
+    }
+
+    /**
+     * Get hadoop version by history server api
+     */
+    public String getHadoopVersion(String ip) {
+        String url = String.format(HISTORY_INFO_API, ip);
+        log.info("get history info: {}", url);
+        ResponseEntity<String> responseEntity;
+        try {
+            responseEntity = restTemplate.getForEntity(url, String.class);
+        } catch (Exception e) {
+            log.error("Exception:{}", url, e);
+            return null;
+        }
+
+        if (responseEntity.getBody() == null) {
+            log.error("get history info err: {}", url);
+            return null;
+        }
+
+        HistoryInfoProperties historyInfo = null;
+        try {
+            historyInfo = JSON.parseObject(responseEntity.getBody(), HistoryInfoProperties.class);
+        } catch (Exception e) {
+            log.error("Exception:{}", url, e);
+            return null;
+        }
+        if (historyInfo != null && historyInfo.getHistoryInfo() != null) {
+            return historyInfo.getHistoryInfo().getHadoopVersion();
+        }
+        return null;
     }
 
 

@@ -61,6 +61,9 @@ public class TaskAppServiceImpl implements TaskAppService {
     @Value("${custom.schedulerType}")
     private String schedulerType;
 
+    @Value(value = "${spark.io.compression.codec}")
+    private String sparkCompressionCodec;
+
     /**
      * Get the list information of exception task Apps.
      */
@@ -209,7 +212,7 @@ public class TaskAppServiceImpl implements TaskAppService {
             sparkApp = openSearchService.searchSparkApp(taskApplication.getApplicationId());
         }
 
-        taskApp.updateTaskApp(yarnApp, sparkApp, redisService);
+        taskApp.updateTaskApp(yarnApp, sparkApp, redisService, sparkCompressionCodec);
 
         return taskApp;
     }
