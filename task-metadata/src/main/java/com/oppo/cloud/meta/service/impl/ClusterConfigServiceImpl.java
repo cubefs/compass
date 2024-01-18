@@ -29,11 +29,21 @@ import com.oppo.cloud.meta.domain.YarnConfProperties;
 import com.oppo.cloud.meta.service.IClusterConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.annotation.Resource;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,10 +169,23 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
             log.error("getHDFSPathErr:{}", url);
             return null;
         }
+        List<String> contentType = responseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE);
+        if (contentType == null) {
+            log.error("getContentTypeErr:{}", url);
+            return null;
+        }
 
-        YarnConfProperties yarnConfProperties = null;
+        YarnConfProperties yarnConfProperties = new YarnConfProperties();
+
         try {
-            yarnConfProperties = JSON.parseObject(responseEntity.getBody(), YarnConfProperties.class);
+            if (contentType.toString().contains("json")) {
+                yarnConfProperties = JSON.parseObject(responseEntity.getBody(), YarnConfProperties.class);
+            } else if (contentType.toString().contains("xml")) {
+                parseXML(responseEntity.getBody(), yarnConfProperties);
+            } else {
+                log.error("unsupported type: {},{}", url, contentType);
+                return null;
+            }
         } catch (Exception e) {
             log.error("Exception:", e);
             return null;
@@ -233,6 +256,28 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
         yarnPathInfo.setMapreduceIntermediateDoneDir(mapreduceIntermediateDoneDir);
         log.info("yarnPathInfo: {}, {}", url, yarnPathInfo);
         return yarnPathInfo;
+    }
+
+    /**
+     * Parse xml format
+     */
+    public void parseXML(String xml, YarnConfProperties yarnConfProperties) throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
+        Element root = document.getDocumentElement();
+        NodeList nodeList = root.getElementsByTagName("property");
+        List<Properties> properties = new ArrayList<>();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Element element = (Element) nodeList.item(i);
+            String name = element.getElementsByTagName("name").item(0).getTextContent();
+            String value = element.getElementsByTagName("value").item(0).getTextContent();
+            Properties property = new Properties();
+            property.setKey(name);
+            property.setValue(value);
+            properties.add(property);
+        }
+        yarnConfProperties.setProperties(properties);
     }
 
     /**
