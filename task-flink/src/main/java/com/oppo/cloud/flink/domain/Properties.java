@@ -48,7 +48,7 @@ public class Properties {
     }
 
     private String findVariableName(String originalValue) {
-        Pattern VAR_PATTERN = Pattern.compile("\\$\\{([^{}\\s\\r\\n]+)}"); //变量格式${var_name}
+        Pattern VAR_PATTERN = Pattern.compile("\\$\\{([^{}\\s\\r\\n]+)}"); //format of variables, for example: ${var_name}
         Matcher matcher = VAR_PATTERN.matcher(originalValue);
         if (matcher.find()) {
             return matcher.group(1);
