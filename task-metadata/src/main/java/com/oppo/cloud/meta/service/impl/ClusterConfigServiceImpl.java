@@ -30,7 +30,6 @@ import com.oppo.cloud.meta.service.IClusterConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -41,7 +40,6 @@ import org.w3c.dom.NodeList;
 import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -200,7 +198,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
         if (yarnConfProperties != null && yarnConfProperties.getProperties() != null) {
             for (Properties properties : yarnConfProperties.getProperties()) {
                 String key = properties.getKey();
-                String value = properties.getValue();
+                String value = properties.getFinalValue(yarnConfProperties.getProperties());
                 if (YARN_REMOTE_APP_LOG_DIR.equals(key)) {
                     log.info("yarnConfProperties key: {}, value: {}", YARN_REMOTE_APP_LOG_DIR, value);
                     remoteDir = value;
