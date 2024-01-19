@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Data;
+import org.springframework.util.Assert;
 
 @Data
 public class Properties {
@@ -35,7 +36,7 @@ public class Properties {
         }
 
         for (Properties property : properties) {
-            if (!property.key.equals(this.key)) {
+            if (!variableName.equals(property.key)) {
                 continue;
             }
 
@@ -47,7 +48,8 @@ public class Properties {
     }
 
     private String findVariableName(String originalValue) {
-        Pattern VAR_PATTERN = Pattern.compile("\\$\\{(\\w+)}"); //变量格式${var_name}
+        Pattern VAR_PATTERN = Pattern.compile("\\$\\{([^{}\\s\\r\\n]+)}"); // format of variables, for example: ${var_name}
+
         Matcher matcher = VAR_PATTERN.matcher(originalValue);
         if (matcher.find()) {
             return matcher.group(1);
@@ -84,10 +86,10 @@ public class Properties {
         properties.add(prop_4);
         properties.add(prop_5);
 
-        assert "127.0.0.1:8188".equals(prop_1.getFinalValue(properties));
-        assert "127.0.0.1:8188".equals(prop_4.getFinalValue(properties));
-        assert "file://${hadoop.tmp.dir}/yarn/system/schedconf".equals(prop_3.getFinalValue(properties));
-        assert "^[A-Za-z_][A-Za-z0-9._-]*[$]?$".equals(prop_2.getFinalValue(properties));
-        assert "^127.0.0.1".equals(prop_5.getFinalValue(properties));
+        Assert.isTrue("127.0.0.1:8188".equals(prop_1.getFinalValue(properties)));
+        Assert.isTrue("127.0.0.1:8188".equals(prop_4.getFinalValue(properties)));
+        Assert.isTrue("file://${hadoop.tmp.dir}/yarn/system/schedconf".equals(prop_3.getFinalValue(properties)));
+        Assert.isTrue("^[A-Za-z_][A-Za-z0-9._-]*[$]?$".equals(prop_2.getFinalValue(properties)));
+        Assert.isTrue("127.0.0.1".equals(prop_5.getFinalValue(properties)));
     }
 }
