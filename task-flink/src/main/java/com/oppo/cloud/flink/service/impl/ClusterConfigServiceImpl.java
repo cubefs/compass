@@ -19,7 +19,6 @@ package com.oppo.cloud.flink.service.impl;
 import com.alibaba.fastjson2.JSON;
 import com.oppo.cloud.common.constant.Constant;
 import com.oppo.cloud.common.domain.cluster.hadoop.YarnConf;
-import com.oppo.cloud.common.domain.cluster.yarn.ClusterInfo;
 import com.oppo.cloud.common.service.RedisService;
 import com.oppo.cloud.common.util.YarnUtil;
 import com.oppo.cloud.flink.config.HadoopConfig;
@@ -29,11 +28,19 @@ import com.oppo.cloud.flink.domain.YarnPathInfo;
 import com.oppo.cloud.flink.service.IClusterConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.annotation.Resource;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,10 +161,23 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
             log.error("getHDFSPathErr:{}", url);
             return null;
         }
+        List<String> contentType = responseEntity.getHeaders().get(HttpHeaders.CONTENT_TYPE);
+        if (contentType == null) {
+            log.error("getContentTypeErr:{}", url);
+            return null;
+        }
 
-        YarnConfProperties yarnConfProperties = null;
+        YarnConfProperties yarnConfProperties = new YarnConfProperties();
+
         try {
-            yarnConfProperties = JSON.parseObject(responseEntity.getBody(), YarnConfProperties.class);
+            if (contentType.toString().contains("json")) {
+                yarnConfProperties = JSON.parseObject(responseEntity.getBody(), YarnConfProperties.class);
+            } else if (contentType.toString().contains("xml")) {
+                parseXML(responseEntity.getBody(), yarnConfProperties);
+            } else {
+                log.error("unsupported type: {},{}", url, contentType);
+                return null;
+            }
         } catch (Exception e) {
             log.error("Exception:", e);
             return null;
@@ -172,7 +192,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
         if (yarnConfProperties != null && yarnConfProperties.getProperties() != null) {
             for (Properties properties : yarnConfProperties.getProperties()) {
                 String key = properties.getKey();
-                String value = properties.getValue();
+                String value = properties.getFinalValue(yarnConfProperties.getProperties());
                 if (YARN_REMOTE_APP_LOG_DIR.equals(key)) {
                     log.info("yarnConfProperties key: {}, value: {}", YARN_REMOTE_APP_LOG_DIR, value);
                     remoteDir = value;
@@ -189,7 +209,7 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
                     log.info("yarnConfProperties key: {}, value: {}", MARREDUCE_INTERMEDIATE_DONE_DIR, value);
                     mapreduceIntermediateDoneDir = value;
                 }
-                if(YARN_MAPREDUCE_STAGING_DIR.equals(key)){
+                if (YARN_MAPREDUCE_STAGING_DIR.equals(key)) {
                     log.info("yarnConfProperties key: {}, value: {}", YARN_MAPREDUCE_STAGING_DIR, value);
                     mapreduceStagingDir = value;
                 }
@@ -230,5 +250,26 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
         return yarnPathInfo;
     }
 
+    /**
+     * Parse xml format
+     */
+    public void parseXML(String xml, YarnConfProperties yarnConfProperties) throws Exception {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(new ByteArrayInputStream(xml.getBytes()));
+        Element root = document.getDocumentElement();
+        NodeList nodeList = root.getElementsByTagName("property");
+        List<Properties> properties = new ArrayList<>();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Element element = (Element) nodeList.item(i);
+            String name = element.getElementsByTagName("name").item(0).getTextContent();
+            String value = element.getElementsByTagName("value").item(0).getTextContent();
+            Properties property = new Properties();
+            property.setKey(name);
+            property.setValue(value);
+            properties.add(property);
+        }
+        yarnConfProperties.setProperties(properties);
+    }
 
 }
