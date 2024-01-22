@@ -16,10 +16,13 @@
 
 package com.oppo.cloud.flink.config;
 
-import com.oppo.cloud.common.domain.cluster.hadoop.HadoopConf;
+import com.oppo.cloud.common.domain.cluster.hadoop.NameNodeConf;
+import com.oppo.cloud.common.domain.cluster.hadoop.YarnConf;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 /**
  * hadoop config
@@ -27,5 +30,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "hadoop")
 @Data
-public class HadoopConfig extends HadoopConf {
+public class HadoopConfig {
+    private List<NameNodeConf> namenodes;
+
+    private List<YarnConf> yarn;
 }
