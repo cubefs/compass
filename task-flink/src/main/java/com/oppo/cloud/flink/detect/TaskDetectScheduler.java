@@ -78,7 +78,7 @@ public class TaskDetectScheduler {
     /**
      * Hourly scheduled sync yarn metadata
      */
-    @Scheduled(cron = "* */5 * * * ?")
+    @Scheduled(cron = "*/10 * * * * ?")
     public void syncYarnMetadata() {
         taskSyncerMetaService.syncer();
     }

@@ -21,15 +21,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oppo.cloud.common.constant.Constant;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnApp;
 import com.oppo.cloud.common.domain.cluster.yarn.YarnResponse;
-import com.oppo.cloud.common.util.DateUtil;
-import com.oppo.cloud.common.util.opensearch.BulkApi;
 import com.oppo.cloud.flink.config.HadoopConfig;
 import com.oppo.cloud.flink.service.IClusterConfigService;
 import com.oppo.cloud.flink.service.ITaskSyncerMetaService;
 import lombok.extern.slf4j.Slf4j;
-import org.opensearch.action.bulk.BulkItemResponse;
-import org.opensearch.action.bulk.BulkResponse;
-import org.opensearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,7 +32,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,9 +51,6 @@ public class YarnMetaServiceImpl implements ITaskSyncerMetaService {
     @Value("${scheduler.yarnMeta.startedTimeBegin}")
     private long startedTimeBegin;
 
-    @Value("${spring.opensearch.yarn-app-prefix}")
-    private String yarnAppPrefix;
-
     @Resource
     private Executor yarnMetaExecutor;
 
@@ -72,8 +63,6 @@ public class YarnMetaServiceImpl implements ITaskSyncerMetaService {
     @Resource
     private ObjectMapper objectMapper;
 
-    @Resource
-    private RestHighLevelClient client;
     /**
      * Specifying a Start Time Timestamp
      */

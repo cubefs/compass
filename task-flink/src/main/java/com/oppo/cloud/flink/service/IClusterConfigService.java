@@ -16,7 +16,6 @@
 
 package com.oppo.cloud.flink.service;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,17 +24,8 @@ import java.util.Map;
 public interface IClusterConfigService {
 
     /**
-     * Obtaining the Spark History Server List
-     */
-    List<String> getSparkHistoryServers();
-
-    /**
      * Obtaining the YARN Resource Manager List
      */
-   Map<String,String> getYarnClusters();
+    Map<String, String> getYarnClusters();
 
-    /**
-     * Updating Cluster Information
-     */
-    void updateClusterConfig();
 }
