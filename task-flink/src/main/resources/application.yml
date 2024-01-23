@@ -8,10 +8,10 @@ spring:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
   profiles:
-    active:
-    jackson:
-      time-zone: GMT+8
-      date-format: yyyy-MM-dd HH:mm:ss
+    active: hadoop
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
   datasource:
     url: jdbc:mysql://localhost:33066/compass?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username:
@@ -55,3 +55,9 @@ custom:
       name: "compass-flink-report"
     flinkTaskAnalysisIndex:
       name: "compass-flink-task-analysis"
+
+
+scheduler:
+  yarnMeta:
+    # hour
+    startedTimeBegin: 6

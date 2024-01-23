@@ -19,8 +19,15 @@ package com.oppo.cloud.flink;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
 @SpringBootApplication
@@ -34,6 +41,17 @@ public class TaskFlinkApplication {
         SpringApplication.run(TaskFlinkApplication.class, args);
     }
 
+    @Primary
+    @Bean
+    public TaskExecutor primaryTaskExecutor(){
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        return executor;
+    }
+
+    @Bean
+    RestTemplate restTemplate(){
+        return new RestTemplate();
+    }
 }
 
 
