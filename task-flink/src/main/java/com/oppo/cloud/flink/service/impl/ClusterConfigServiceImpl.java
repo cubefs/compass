@@ -46,5 +46,4 @@ public class ClusterConfigServiceImpl implements IClusterConfigService {
         List<YarnConf> yarnConfList = config.getYarn();
         return YarnUtil.getYarnClusters(yarnConfList);
     }
-
 }

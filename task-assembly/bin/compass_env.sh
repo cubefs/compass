@@ -41,6 +41,9 @@ export SPRING_OPENSEARCH_TRUSTSTORE=""
 # Optional, needed by OpenSearch, keep empty if OpenSearch does not use truststore.
 export SPRING_OPENSEARCH_TRUSTSTOREPASSWORD=""
 
+# spark.io.compression.codec: lz4/snappy/zstd (default: no compression)
+export SPARK_IO_COMPRESSION_CODEC=""
+
 # Prometheus for flink, ignore it if you do not need flink.
 export FLINK_PROMETHEUS_HOST="http://localhost:9090"
 export FLINK_PROMETHEUS_TOKEN=""

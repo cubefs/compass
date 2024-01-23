@@ -42,6 +42,9 @@ public class LogPathUtil {
 
     public static final String SPARK_EVENT_LOG_RUNNING_EXTENSION = ".inprogress";
 
+    public static final String DEFAULT_LOG_DIR_SUFFIX = "logs";
+
+    public static final String BUCKET_SUFFIX = "bucket";
 
     public static MRJobHistoryLogPath getMRJobHistoryDoneLogPath(YarnApp yarnApp, RedisService redisService) throws Exception {
         MRJobHistoryLogPath mrJobHistoryLogPath = new MRJobHistoryLogPath();
@@ -119,15 +122,23 @@ public class LogPathUtil {
         return (String) redisService.get(key);
     }
 
-    public static String getSparkEventLogPath(String prefixDir, String appId, String attemptId, String state) {
+    public static String getSparkEventLogPath(String prefixDir, String appId, String attemptId, String state, String codec) {
         String eventLogPath = String.format("%s/%s", prefixDir, appId);
         if (!StringUtils.isEmpty(attemptId)) {
             eventLogPath = String.format("%s_%s", eventLogPath, attemptId);
+        }
+        if (StringUtils.isNotBlank(codec)) {
+            eventLogPath = String.format("%s.%s", eventLogPath, codec);
         }
         if (YarnAppState.RUNNING.toString().equals(state)) {
             eventLogPath = String.format("%s%s", eventLogPath, SPARK_EVENT_LOG_RUNNING_EXTENSION);
         }
         return eventLogPath;
+    }
+
+    public static String getBucketDir(String appId) {
+        int bucket = jobSerialNumber(appId) % 10000;
+        return String.format("%04d", bucket);
     }
 
 }
