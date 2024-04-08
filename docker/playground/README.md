@@ -38,7 +38,7 @@ Note: You can install virtulbox to start docker compose, which requires about 10
 3. Create dependent components (postgres,zookeeper,kafka,redis,opensearch)
 
     ```
-    docker compose --profile dependencies up -d
+    docker-compose --profile dependencies up -d
     ```
 
     Note: redis-cluster container is to join the redis node into cluster, then it will stop and exit.
@@ -51,7 +51,7 @@ Note: You can install virtulbox to start docker compose, which requires about 10
     You can just start a compass demo (Optional)
 
     ```
-    docker compose --profile compass-demo up -d
+    docker-compose --profile compass-demo up -d
     ```
 
     To Start compass all components, You should download [canal.deployer](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.deployer-1.1.6.tar.gz) and [canal.adapter](https://github.com/alibaba/canal/releases/download/canal-1.1.6/canal.adapter-1.1.6.tar.gz) first,
@@ -75,7 +75,7 @@ Note: You can install virtulbox to start docker compose, which requires about 10
     wget https://archive.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz
     wget https://dlcdn.apache.org/spark/spark-3.3.4/spark-3.3.4-bin-hadoop3.tgz
     
-    docker compose --profile hadoop up -d
+    docker-compose --profile hadoop up -d --build
     ```
 
     Run spark example
@@ -91,7 +91,7 @@ Note: You can install virtulbox to start docker compose, which requires about 10
     
         
     # start dolphinscheduler services
-    docker compose --profile dolphinscheduler up -d
+    docker-compose --profile dolphinscheduler up -d --build
     ```
 
 Run dolphinscheduler example, please refer to [dolphinscheduler example document](../../document/manual/ds_example.md)
