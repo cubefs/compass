@@ -91,7 +91,7 @@ Note: You can install virtulbox to start docker compose, which requires about 10
     
         
     # start dolphinscheduler services
-    docker compose --profile dolphinscheduler up -d
+    docker-compose --profile dolphinscheduler up -d --build
     ```
 
 Run dolphinscheduler example, please refer to [dolphinscheduler example document](../../document/manual/ds_example.md)
