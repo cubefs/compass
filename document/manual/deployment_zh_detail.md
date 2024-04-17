@@ -19,7 +19,6 @@ compass
 ├── task-portal                         异常任务的可视化服务
 ├── task-flink                          Flink任务资源及异常诊断
 ├── task-flink-core                     Flink任务诊断规则逻辑
-├── task-portal                         异常任务的可视化服务
 ├── task-gpt                            聚合日志模板，并使用chatgpt给模板解决方案
 └── task-syncer                         调度平台任务关系表的抽象和映射
 ```
