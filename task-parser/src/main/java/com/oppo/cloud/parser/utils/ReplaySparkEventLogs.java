@@ -112,12 +112,22 @@ public class ReplaySparkEventLogs {
             case "SparkListenerApplicationStart":
                 SparkListenerApplicationStart sparkListenerApplicationStart = objectMapper.readValue(line,
                         SparkListenerApplicationStart.class);
-                this.application.setAppStartTimestamp(sparkListenerApplicationStart.getTime());
+                Long appStartTimestamp = this.application.getAppStartTimestamp();
+                if (appStartTimestamp != null && appStartTimestamp < sparkListenerApplicationStart.getTime()) {
+                    this.application.setAppStartTimestamp(appStartTimestamp);
+                }else {
+                    this.application.setAppStartTimestamp(sparkListenerApplicationStart.getTime());
+                }
                 break;
             case "SparkListenerApplicationEnd":
                 SparkListenerApplicationEnd sparkListenerApplicationEnd = objectMapper.readValue(line,
                         SparkListenerApplicationEnd.class);
-                this.application.setAppEndTimestamp(sparkListenerApplicationEnd.getTime());
+                Long appEndTimestamp = this.application.getAppEndTimestamp();
+                if (appEndTimestamp != null && appEndTimestamp > sparkListenerApplicationEnd.getTime()){
+                    this.application.setAppEndTimestamp(appEndTimestamp);
+                }else {
+                    this.application.setAppEndTimestamp(sparkListenerApplicationEnd.getTime());
+                }
                 break;
             case "SparkListenerBlockManagerAdded":
                 SparkListenerBlockManagerAdded sparkListenerBlockManagerAdded = objectMapper.readValue(line,
