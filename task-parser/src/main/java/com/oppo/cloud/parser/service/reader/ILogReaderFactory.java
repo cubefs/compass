@@ -27,6 +27,7 @@ import java.util.Map;
 public interface ILogReaderFactory {
 
     String HDFS = "hdfs";
+    String STREAM =  "stream";
     String S3 = "s3";
 
     /**
@@ -36,6 +37,8 @@ public interface ILogReaderFactory {
         switch (logPath.getProtocol()) {
             case HDFS:
                 return new HDFSReader(logPath, getNameNodeConf());
+            case STREAM:
+                return new InputStreamReader(logPath);
             default:
                 break;
         }
