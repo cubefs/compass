@@ -19,6 +19,8 @@ package com.oppo.cloud.common.domain.job;
 import com.oppo.cloud.common.constant.LogPathType;
 import lombok.Data;
 
+import java.io.InputStream;
+
 /**
  * LogPath Information
  */
@@ -45,6 +47,11 @@ public class LogPath {
      */
     private String logPath;
 
+    /*
+     * InputStream fot this log
+     */
+    private InputStream inputStream;
+
     public LogPath() {
 
     }
@@ -54,6 +61,12 @@ public class LogPath {
         this.logType = logType;
         this.logPathType = logPathType;
         this.logPath = logPath;
+    }
+
+    public LogPath(String protocol, String logType, InputStream inputStream) {
+        this.protocol = protocol;
+        this.logType = logType;
+        this.inputStream = inputStream;
     }
 
 }

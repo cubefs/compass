@@ -37,7 +37,7 @@ public class ReaderObject {
     private BufferedReader bufferedReader;
     @Getter
     @Setter
-    private FSDataInputStream fsDataInputStream;
+    private InputStream inputStream;
     @Getter
     @Setter
     private FileSystem fs;
@@ -46,22 +46,22 @@ public class ReaderObject {
         if (bufferedReader != null) {
             return bufferedReader;
         }
-        InputStream inputStream;
+        InputStream decompressedInputStream;
         switch (compressCodec.toLowerCase(Locale.ROOT)) {
             case "lz4":
-                inputStream = new LZ4BlockInputStream(fsDataInputStream, false);
+                decompressedInputStream = new LZ4BlockInputStream(inputStream, false);
                 break;
             case "snappy":
-                inputStream = new SnappyInputStream(fsDataInputStream);
+                decompressedInputStream = new SnappyInputStream(inputStream);
                 break;
             case "zstd":
-                inputStream = new BufferedInputStream(new ZstdInputStream(fsDataInputStream), 32 * 1023);
+                decompressedInputStream = new BufferedInputStream(new ZstdInputStream(inputStream), 32 * 1023);
                 break;
             default:
-                inputStream = fsDataInputStream;
+                decompressedInputStream = inputStream;
                 break;
         }
-        bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        bufferedReader = new BufferedReader(new InputStreamReader(decompressedInputStream));
         return bufferedReader;
     }
 
@@ -74,8 +74,8 @@ public class ReaderObject {
 
     public void close() {
         try {
-            if (fsDataInputStream != null) {
-                fsDataInputStream.close();
+            if (inputStream != null) {
+                inputStream.close();
             }
             if (bufferedReader != null) {
                 bufferedReader.close();
