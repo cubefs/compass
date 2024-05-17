@@ -21,7 +21,6 @@ import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.service.ParamUtil;
 import com.oppo.cloud.parser.service.job.detector.spark.TaskDurationDetector;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 class TaskDurationDetectorTest {
 
