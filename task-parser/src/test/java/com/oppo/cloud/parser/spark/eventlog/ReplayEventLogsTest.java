@@ -23,7 +23,6 @@ import com.oppo.cloud.common.domain.job.LogRecord;
 import com.oppo.cloud.parser.domain.job.CommonResult;
 import com.oppo.cloud.parser.domain.job.ParserParam;
 import com.oppo.cloud.parser.domain.job.SparkEventLogParserResult;
-import com.oppo.cloud.parser.domain.job.SparkExecutorLogParserResult;
 import com.oppo.cloud.parser.service.ParamUtil;
 import com.oppo.cloud.parser.service.job.parser.SimpleParserFactory;
 import com.oppo.cloud.parser.service.job.parser.SparkEventLogParser;
@@ -35,7 +34,6 @@ import net.jpountz.lz4.LZ4BlockInputStream;
 import net.jpountz.lz4.LZ4BlockOutputStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -43,7 +41,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 

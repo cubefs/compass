@@ -17,22 +17,12 @@
 package com.oppo.cloud.parser.utils;
 
 import com.oppo.cloud.common.domain.cluster.hadoop.NameNodeConf;
-import com.oppo.cloud.common.domain.job.LogPath;
-import com.oppo.cloud.parser.config.HadoopConfig;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
-import com.oppo.cloud.parser.service.reader.HDFSReader;
-import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import javax.annotation.Resource;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 class HDFSUtilTest extends ResourcePreparer {
 
