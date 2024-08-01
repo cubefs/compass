@@ -137,7 +137,7 @@ public class HDFSUtil {
         FSDataInputStream fsDataInputStream = fs.open(new Path(path));
         ReaderObject readerObject = new ReaderObject();
         readerObject.setLogPath(path);
-        readerObject.setFsDataInputStream(fsDataInputStream);
+        readerObject.setInputStream(fsDataInputStream);
         readerObject.setFs(fs);
         return readerObject;
     }

@@ -30,6 +30,10 @@ public class ResourcePreparer extends MiniHdfsCluster {
     private static String LOCAL_TEXT_LOG_DIR = "/log/";
     private static String HDFS_TEXT_LOG_DIR = "/log";
 
+    static {
+        ParserConfigLoader.init();
+    }
+
     @BeforeAll
     public static void prepareResources() throws IOException {
         final URL resourcesDir = ResourcePreparer.class.getResource(LOCAL_TEXT_LOG_DIR);

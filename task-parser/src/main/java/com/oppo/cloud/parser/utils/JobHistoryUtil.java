@@ -20,7 +20,6 @@ import com.oppo.cloud.parser.domain.mr.JobHistoryFileInfo;
 import com.oppo.cloud.parser.domain.mr.MRAppInfo;
 import com.oppo.cloud.parser.domain.reader.ReaderObject;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hadoop.fs.FSDataInputStream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -28,6 +27,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -105,8 +105,8 @@ public class JobHistoryUtil {
     public static MRAppInfo parseJobHistory(List<ReaderObject> readerObjects) throws Exception {
         JobHistoryFileInfo jobHistoryFileInfo = getJobHistoryFileInfo(readerObjects);
         Map<String, String> conMap = parseJobConf(jobHistoryFileInfo.getConfReader());
-        FSDataInputStream fsDataInputStream = jobHistoryFileInfo.getJobHistoryReader().getFsDataInputStream();
-        ReplayMREventLogs replayMREventLogs = new ReplayMREventLogs(fsDataInputStream);
+        InputStream inputStream = jobHistoryFileInfo.getJobHistoryReader().getInputStream();
+        ReplayMREventLogs replayMREventLogs = new ReplayMREventLogs(inputStream);
         replayMREventLogs.parse();
         MRAppInfo appData = replayMREventLogs.getMRAppInfo();
         appData.setConfMap(conMap);

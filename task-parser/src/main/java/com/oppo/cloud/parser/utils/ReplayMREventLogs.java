@@ -29,6 +29,7 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.hadoop.fs.FSDataInputStream;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,13 +46,14 @@ public class ReplayMREventLogs {
 
     private static final String SPECULATION = "Speculation";
 
-    public ReplayMREventLogs(FSDataInputStream in) {
-        this.in = in;
+    public ReplayMREventLogs(InputStream in) {
+        this.in = new FSDataInputStream(in);
         this.mrAppInfo = new MRAppInfo();
     }
 
 
     public void parse() throws Exception {
+
         String version = this.in.readLine();
         String eventSchema = this.in.readLine();
         Schema schema = new Schema.Parser().parse(eventSchema);
