@@ -20,7 +20,6 @@ import com.oppo.cloud.common.domain.eventlog.DetectorStorage;
 import com.oppo.cloud.parser.domain.job.DetectorParam;
 import com.oppo.cloud.parser.service.ParamUtil;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 class DetectorManagerTest {
 
