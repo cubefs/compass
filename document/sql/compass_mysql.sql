@@ -20,7 +20,7 @@ USE compass;
 -- ----------------------------
 -- Table structure for user
 -- ----------------------------
-CREATE TABLE `user` (
+CREATE TABLE `user_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'User record id',
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT 'User ID, consistent with other systems',
   `username` varchar(64) DEFAULT NULL COMMENT 'Username',
@@ -280,7 +280,7 @@ CREATE TABLE `template` (
   KEY `idx_task_state` (`task_state`)
 ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='Flink application table';
 
-INSERT INTO `user` (`username`, `password`) values ('compass', 'compass');
+INSERT INTO `user_info` (`username`, `password`) values ('compass', 'compass');
 
 -- zh_CN
 
