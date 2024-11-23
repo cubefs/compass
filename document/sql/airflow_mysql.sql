@@ -17,6 +17,8 @@
 
 # Example of version 2.5.1, you need to be consistent with the version you actually use.
 
+USE compass;
+
 CREATE TABLE `tb_task_instance`
 (
   `task_id` varchar(250) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
